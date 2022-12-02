@@ -40,6 +40,11 @@ import geo from "./example_geo_query";
  * - A list of transactions for the drug
  */
 
+// .bgColor {
+//   background-color: #f6f6f6;
+// }
+
+
 const DoctorDetails = () => {
   const { id } = useParams();
   const [user] = useUser();

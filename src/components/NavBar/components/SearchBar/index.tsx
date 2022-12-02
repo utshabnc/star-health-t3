@@ -4,9 +4,9 @@ const options = [{ name: "Doctors" }, { name: "Manufacturers" }];
 
 function SearchBar() {
   const [inputText, setInputText] = useState("Search Doctors/Companies");
-  let inputHandler = (e: { target: { value: string; }; }) => {
+  const inputHandler = (e: { target: { value: string; }; }) => {
     //convert input text to lower case
-    var text = e.target.value;
+    const text = e.target.value;
     setInputText(text);
   };
 

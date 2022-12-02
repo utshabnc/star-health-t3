@@ -1,7 +1,12 @@
 import { capitalize } from 'lodash';
-import { Link, useNavigate } from 'react-router-dom';
+import Link from 'next/link';
+import { useRouter } from 'next/router'
 import { formatName } from '../../utils';
 import './index.css';
+
+// .buttonText {
+//   color: white;
+// }
 
 interface ResultSchema {
   id: string;
@@ -11,12 +16,15 @@ interface ResultSchema {
 }
 
 const tableHeaders =
-  screen.width > 1000
-    ? [{ title: 'Type' }, { title: 'Name' }, { title: 'Location' }]
-    : [{ title: 'Name' }, { title: 'Location' }];
+  [{ title: 'Type' }, { title: 'Name' }, { title: 'Location' }]
+
+  // const tableHeaders =
+//   screen.width > 1000
+//     ? [{ title: 'Type' }, { title: 'Name' }, { title: 'Location' }]
+//     : [{ title: 'Name' }, { title: 'Location' }];
 
 function DetailsTable({ rows }: { rows: ResultSchema[] }) {
-  const navigation = useNavigate();
+  const navigation = useRouter();
   return (
     <>
       <section className='antialiased text-gray-600 py-4' x-data='app'>
@@ -26,8 +34,8 @@ function DetailsTable({ rows }: { rows: ResultSchema[] }) {
               <table className='table-auto w-full'>
                 <thead className='text-xs font-semibold uppercase text-gray-500'>
                   <tr>
-                    {tableHeaders.map((item) => (
-                      <th className='p-2'>
+                    {tableHeaders.map((item, i) => (
+                      <th key={i} className='p-2'>
                         <div className='text-sm font-semibold text-left'>
                           {item.title}
                         </div>
@@ -36,9 +44,10 @@ function DetailsTable({ rows }: { rows: ResultSchema[] }) {
                   </tr>
                 </thead>
                 <tbody className='text-sm divide-y divide-gray-100'>
-                  {rows.map((row) => (
-                    <tr>
-                      {screen.width > 1000 && (
+                  {rows.map((row, i) => (
+                    <tr key={i}>
+                      {/* {screen.width > 1000 && ( */}
+                      {(
                         <td className='p-2'>
                           <div className='font-medium text-base text-left text-violet-700'>
                             {capitalize(row.type)}
@@ -46,7 +55,7 @@ function DetailsTable({ rows }: { rows: ResultSchema[] }) {
                         </td>
                       )}
                       <td className='p-2'>
-                        <Link to={`/${row.type}/${row.id}`}>
+                        <Link href={`/${row.type}/${row.id}`}>
                           <p className='font-medium text-base text-left sm:underline lg:no-underline text-violet-700'>
                             {formatName(row.name)}
                           </p>
@@ -57,12 +66,13 @@ function DetailsTable({ rows }: { rows: ResultSchema[] }) {
                           {row.location}
                         </div>
                       </td>
-                      {screen.width > 1000 && (
+                      {/* {screen.width > 1000 && ( */}
+                      {(
                         <td className='p-2'>
                           <div className='flex justify-center'>
                             <button
                               onClick={() =>
-                                navigation(`/${row.type}/${row.id}`)
+                                navigation.push(`/${row.type}/${row.id}`)
                               }
                               className='buttonText bg-violet-600 text-white rounded-md px-4 py-2 m-2 transition duration-500 ease hover:bg-violet-700 active:bg-violet-800'
                             >

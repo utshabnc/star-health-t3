@@ -1,6 +1,6 @@
 import { geoAlbers, geoCentroid } from 'd3-geo';
 import { scaleQuantile } from 'd3-scale';
-import { useNavigate } from 'react-router-dom';
+import { useRouter } from 'next/router';
 import {
   ComposableMap,
   Geographies,
@@ -137,7 +137,7 @@ const populations: { [key: string]: number } = {
 
 const geoUrl = 'https://cdn.jsdelivr.net/npm/us-atlas@3/states-10m.json';
 
-const offsets: { [key: string]: [number, number] } = {
+const offsets: { [key: string] : [number, number] } = {
   VT: [50, -8],
   NH: [34, 2],
   MA: [30, -1],
@@ -160,10 +160,10 @@ const colorRange = [0, 1, 2, 4, 5, 6, 7, 8, 9, 10].map(colorGradient).reverse();
 
 const UnitedStatesHeatmap = ({ data }: Props) => {
   const colorScale = scaleQuantile<string>()
-    .domain(data.map((d) => d.value / populations[d.state] ?? 1))
+    .domain(data.map((d) => d.value / (populations[d.state] ?? 1)))
     .range(colorRange);
 
-  const navigate = useNavigate();
+  const navigate = useRouter();
 
   // const proj = geoAlbers()
   // .rotate([0, 0, 0])
@@ -184,12 +184,12 @@ const UnitedStatesHeatmap = ({ data }: Props) => {
                 data.find((d) => d.state === stateId)?.value ?? 0;
 
               const fillColor =
-                colorScale(paymentAmount / populations[stateId] ?? 0) ?? '#DDD';
+                colorScale(paymentAmount / (populations[stateId] ?? 0)) ?? '#DDD';
 
               return (
                 <Geography
                   cursor='pointer'
-                  onClick={() => navigate(`/state/${stateId}`)}
+                  onClick={() => navigate.push(`/state/${stateId}`)}
                   key={geo.rsmKey}
                   stroke='#FFF'
                   geography={geo}

@@ -11,11 +11,11 @@ import {
   formatProductType,
 } from '../../utils';
 import _ from 'lodash';
-import manufacturer, {
-  ManufacturerResponse,
-} from '../../../functions/src/manufacturer';
-import { Link } from 'react-router-dom';
-import { StateResponse } from '../../../functions/src/state';
+// import manufacturer, {
+//   ManufacturerResponse,
+// } from '../../../functions/src/manufacturer';
+import Link from 'next/link';
+// import { StateResponse } from '../../../functions/src/state';
 import Dropdown from '../Dropdown';
 import CountyHeatmap from '../charts/CountyHeatmap';
 
@@ -24,7 +24,8 @@ interface StateSchema {
   drugType?: string;
   year?: string;
   onChangeDrugType: (drugType?: string) => void;
-  state: StateResponse;
+  // state: StateResponse;
+  state: any;
 }
 
 function classNames(...classes: string[]) {
@@ -70,9 +71,6 @@ export const StateDets = ({
         <div className='my-1'>
           <hr />
         </div>
-
-        {/* <p className='pt-1 text-lg text-purp-5'>State: {schema.state}</p>
-        <p className='pt-1 text-lg text-purp-5'>Country: {schema.country}</p> */}
 
         <div className='grid lg:grid-cols-3 sm:grid-rows-3 mb-3 lg:h-4'>
           <Dropdown
@@ -129,8 +127,8 @@ export const StateDets = ({
                         )}
                       </Menu.Item>
                     </div>
-                    {availableYears.map((year) => (
-                      <div className='py-1 flex justify-center'>
+                    {availableYears.map((year, i) => (
+                      <div key={i} className='py-1 flex justify-center'>
                         <Menu.Item>
                           {({ active }) => (
                             <button
@@ -176,7 +174,7 @@ export const StateDets = ({
                   .map((rec) => {
                     return (
                       <li key={rec.doctor.id}>
-                        <Link to={`/doctor/${rec.doctor.id}`}>
+                        <Link href={`/doctor/${rec.doctor.id}`} legacyBehavior>
                           <a className='text-purp-2'>
                             {formatName(
                               `${rec.doctor.firstName} ${rec.doctor.lastName}`
@@ -189,21 +187,7 @@ export const StateDets = ({
                   })}
               </ul>
             </div>
-            {/* <div className='flex flex-col '>
-              <p className='flex justify-center underline font font-semibold'>
-                Largest Payments
-              </p>
-              <ul className='flex flex-col items-center'>
-                {schema.manufacturer.largestPayments
-                  .sort((a, b) => b.amount - a.amount)
-                  .slice(0, 4)
-                  .map((rec) => {
-                    return (
-                      <li key={rec.doctor.id}>{formatMoney(rec.amount)}</li>
-                    );
-                  })}
-              </ul>
-            </div> */}
+
             <div className='flex flex-col '>
               <p className='flex justify-center text-sm sm:text-base underline font font-semibold'>
                 Most Common Items

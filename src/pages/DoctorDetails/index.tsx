@@ -22,6 +22,11 @@ import Transaction from './components/Transaction';
 import BarChart from '../../components/charts/bar';
 import DoctorReviews from '../DoctorReviews';
 
+// .bgColor {
+//   background-color: #f6f6f6;
+// }
+
+
 const DoctorDetails = () => {
   const { id } = useParams();
   const [user] = useUser();

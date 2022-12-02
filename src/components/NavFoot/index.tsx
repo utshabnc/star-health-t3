@@ -2,6 +2,12 @@ import React from "react";
 import NavBar from "../NavBar";
 import Footer from "../Footer";
 
+// .bgColor {
+//   background-color: #f6f6f6;
+//   height: 100vh;
+// }
+
+
 interface Props {
   children: React.ReactNode;
 }

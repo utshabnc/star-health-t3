@@ -58,7 +58,8 @@ export const DocDets = (schema: DocSchema) => {
             value={numStars}
             isHalf={true}
             count={5}
-            size={screen.width > 1000 ? 24 : 15}
+            // size={screen.width > 1000 ? 24 : 15}
+            size={24}
             activeColor='#ffd700'
           />
           <div className='flex flex-row items-center'>
@@ -68,7 +69,7 @@ export const DocDets = (schema: DocSchema) => {
             {!isNaN(numStars) && (
               <span className='w-1 h-1 mx-1.5'></span>
             )}
-            <Link to={`/doctor/${schema.doctor.id}/reviews`}>
+            <Link to={`/doctor/${schema.doctor.id}/reviews`} legacyBehavior>
               <a className='text-sm font-medium text-gray-900 underline hover:no-underline dark:text-white'>
                 {numReviews} {numReviews === 1 ? 'review' : 'reviews'}
               </a>
@@ -133,8 +134,8 @@ export const DocDets = (schema: DocSchema) => {
                       </button>
                     )}
                   </Menu.Item>
-                  {availableYears.map((year) => (
-                    <div className='py-1 flex justify-center'>
+                  {availableYears.map((year, i) => (
+                    <div key={i} className='py-1 flex justify-center'>
                       <Menu.Item>
                         {({ active }) => (
                           <button

@@ -1,20 +1,32 @@
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+// import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useCallback, useEffect, useState } from 'react';
-import { useUser } from '../../hooks';
-import { signIn, signOut } from '../../firebase';
+// import { useUser } from '../../hooks';
+// import { signIn, signOut } from '../../firebase';
 import { debounce } from 'lodash';
-import { useLazySearchQuery } from '../../api';
+// import { useLazySearchQuery } from '../../api';
 import '../../index.css';
 import SearchPage from '../../pages/SearchPage';
+import Image from 'next/image';
+import { useRouter } from 'next/router';
+import Link from 'next/link';
+
+// --- index.module.css ---
+// .title {
+//   margin-left: 72px;
+// }
+// .NavBar {
+//   background-color: #010139;
+// }
+
 
 function NavBar() {
-  const [user, loading] = useUser();
+  // const [user, loading] = useUser();
   const [search, setSearch] = useState<string>('');
-  const navigate = useNavigate();
-  const location = useLocation();
+  const navigate = useRouter();
+  // const location = useLocation();
 
   const onSearch = () => {
-    navigate(`/?search=${search}`);
+    navigate.push(`/?search=${search}`);
   };
 
   return (
@@ -23,8 +35,8 @@ function NavBar() {
         <div className='flex-1 flex flex-row justify-center items-center'>
           {location.pathname === '/' && screen.width < 1000 && (
             <div className={``}>
-              <Link to={'/'}>
-                <img src={'/images/Logo.png'} className=' h-12' />
+              <Link href={'/'}>
+                <Image src={'/images/Logo.png'} alt='logo' className=' h-12' />
               </Link>
             </div>
           )}
@@ -44,12 +56,12 @@ function NavBar() {
           </div>
 
           <div style={{ opacity: screen.width > 1000 ? 1 : 0 }}>
-            <Link to={'/'}>
-              <img src={'/images/Logo.png'} className='h-12' />
+            <Link href={'/'}>
+              <Image src={'/images/Logo.png'} alt={'image'} className='h-12' />
             </Link>
           </div>
 
-          <div
+          {/* <div
             style={{
               minWidth: screen.width > 1000 ? 400 : 100,
               position: 'absolute',
@@ -80,7 +92,7 @@ function NavBar() {
                 Sign In
               </button>
             )}
-          </div>
+          </div> */}
         </div>
       </nav>
     </>

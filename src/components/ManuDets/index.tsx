@@ -154,7 +154,7 @@ export const ManuDets = (schema: ManuSchema) => {
                         key={rec.doctor.id}
                         className='text-sm text-center sm:text-base '
                       >
-                        <Link to={`/doctor/${rec.doctor.id}`}>
+                        <Link to={`/doctor/${rec.doctor.id}`} legacyBehavior>
                           <a className='text-purp-2'>
                             {formatName(
                               `${rec.doctor.firstName} ${rec.doctor.lastName}`

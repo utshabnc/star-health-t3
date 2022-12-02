@@ -1,5 +1,16 @@
-import { Link } from 'react-router-dom';
+// import { Link } from 'react-router-dom';
+import Image from 'next/image';
+import Link from 'next/link';
 import styles from './index.module.css';
+
+// --- index.module.css ---
+// .Header {
+//   color: white;
+// }
+
+// .smallText {
+//   color: rgb(156 163 175);
+// }
 
 const footLinks = [
   { text: 'About Us', url: '/About' },
@@ -14,8 +25,8 @@ function Footer() {
     <div className='bg-nav p-1'>
       <div className='flex items-left'>
         <div className={``}>
-          <Link to={'/'}>
-            <img src={'/images/Logo.png'} className=' h-8' />
+          <Link href={'/'}>
+            <Image src={'/images/Logo.png'} alt={'image'} className=' h-8' />
           </Link>
         </div>
       </div>
