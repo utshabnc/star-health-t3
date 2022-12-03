@@ -169,6 +169,11 @@ const UnitedStatesHeatmap = ({ data }: Props) => {
   // .rotate([0, 0, 0])
   // .fitSize([width, height], geography as any)
 
+const handleClick = (stateId) => {
+  // e.preventDefault()
+  navigate.push(`/state/${stateId}`)
+}
+
   return (
     <ComposableMap
       // style={{ marginTop: screen.width > 1000 ? -80 : -10 }}
@@ -189,7 +194,7 @@ const UnitedStatesHeatmap = ({ data }: Props) => {
               return (
                 <Geography
                   cursor='pointer'
-                  onClick={() => navigate.push(`/state/${stateId}`)}
+                  onClick={() => handleClick(stateId)}
                   key={geo.rsmKey}
                   stroke='#FFF'
                   geography={geo}

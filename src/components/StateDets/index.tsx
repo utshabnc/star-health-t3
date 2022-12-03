@@ -17,7 +17,7 @@ import _ from 'lodash';
 import Link from 'next/link';
 // import { StateResponse } from '../../../functions/src/state';
 import Dropdown from '../Dropdown';
-import CountyHeatmap from '../charts/CountyHeatmap';
+// import CountyHeatmap from '../charts/CountyHeatmap';
 
 interface StateSchema {
   onChangeYear: (year?: number) => void;
@@ -61,12 +61,12 @@ export const StateDets = ({
               </p>
             )}
           </div>
-          <CountyHeatmap
+          {/* <CountyHeatmap
             state={state?.id ?? ''}
             data={state?.counties ?? []}
             width={250}
             height={150}
-          />
+          /> */}
         </div>
         <div className='my-1'>
           <hr />
@@ -85,10 +85,10 @@ export const StateDets = ({
           />
           <div className='flex justify-center'>
             <div className='flex flex-row'>
-              <p className='flex flex-row text-lg font-semibold'>
+              <div className='flex flex-row text-lg font-semibold'>
                 Payments for:&nbsp;
                 <p className='text-violet-700'>{!year ? 'All Years' : year}</p>
-              </p>
+              </div>
               <Menu as='div' className='relative text-left'>
                 <div>
                   <Menu.Button className='inline-flex w-full justify-center bg-white text-sm font-medium text-gray-700'>
@@ -153,12 +153,12 @@ export const StateDets = ({
             </div>
           </div>
           <div className='flex justify-center pt-1'>
-            <p className='text-gray-800 text-lg font-semibold flex'>
+            <div className='text-gray-800 text-lg font-semibold flex'>
               Total Payments:&nbsp;
               <p className='text-violet-700'>
                 {formatMoney(state.totalAmount)}
               </p>
-            </p>
+            </div>
           </div>
         </div>
         <div className='grid grid-cols-1'>

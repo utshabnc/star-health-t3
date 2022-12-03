@@ -26,6 +26,7 @@ import fda from '../assets/fda.svg';
 import cms from '../assets/cms.svg';
 import type { StaticImageData } from "next/image";
 import Image from "next/image";
+import { trpc } from '../utils/trpc';
 
 
 const info = [
@@ -116,7 +117,7 @@ const understand = [
 
 export default function Home() {
   const [drugType, setDrugType] = useState<string>();
-  // const { data: allStates } = useAllStatesQuery({ drugType });
+  const { data: allStates } = trpc.state.allStatesQuery.useQuery({ drugType })
 
   const FirstSection = () => (
     <div className='flex flex-col sm:flex-row mt-2 sm:mt-8 justify-between'>
@@ -131,30 +132,26 @@ export default function Home() {
           Heatmap of Company Payments to Doctors
         </h3>
         <Dropdown
-        items={[]}
-          // items={drugTypes.map((type) => ({
-          //   value: type,
-          //   label: _.capitalize(type),
-          // }))}
+          items={drugTypes.map((type) => ({
+            value: type,
+            label: _.capitalize(type),
+          }))}
           label={'Drug Type'}
-          // value={drugType}
-          value={'value'}
+          value={drugType}
           placeholder={'All'}
-          // onChange={setDrugType}
-          onChange={() => null}
+          onChange={setDrugType}
         />
         <div className='w-[75%] h-[75%] self-center'>
           <UnitedStatesHeatmap
-            data={[]}
-            // data={
-            //   allStates
-            //     ?.sort((a, b) => b.totalAmount - a.totalAmount)
-            //     .slice(0, 50)
-            //     .map((rec: { stateId: any; totalAmount: any }) => ({
-            //       state: rec.stateId,
-            //       value: rec.totalAmount,
-            //     })) ?? []
-            // }
+            data={
+              allStates
+                ?.sort((a, b) => b.totalAmount - a.totalAmount)
+                .slice(0, 50)
+                .map((rec: { stateId: any; totalAmount: any }) => ({
+                  state: rec.stateId,
+                  value: rec.totalAmount,
+                })) ?? []
+            }
           />
         </div>
       </div>

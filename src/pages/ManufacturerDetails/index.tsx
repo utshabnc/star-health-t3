@@ -1,6 +1,6 @@
 import { useState, Fragment, SetStateAction } from 'react';
-import { Link, useNavigate, useParams } from 'react-router-dom';
-import { useManufacturerQuery } from '../../api';
+// import { Link, useNavigate, useParams } from 'react-router-dom';
+// import { useManufacturerQuery } from '../../api';
 import BarChart from '../../components/charts/bar';
 import PieChart from '../../components/charts/pie';
 import { ManuDets } from '../../components/ManuDets';
@@ -8,24 +8,27 @@ import { colorGradient, formatMoney } from '../../utils';
 import { Menu, Transition } from '@headlessui/react';
 import { ChevronDownIcon } from '@heroicons/react/solid';
 import _ from 'lodash';
+import { useRouter } from 'next/router';
 
 const ManufacturerDetails = () => {
-  const { id } = useParams();
+  // const { id } = useParams();
+  const navigate = useRouter();
+  const { id } = navigate.query
   const [year, setYear] = useState<string>();
-  const { data: manufacturer } = useManufacturerQuery(
-    { id, year },
-    { skip: id == null }
-  );
-  const navigate = useNavigate();
+  const { data: manufacturer } = { data: {} };
+  // const { data: manufacturer } = useManufacturerQuery(
+  //   { id, year },
+  //   { skip: id == null }
+  // );
 
   function classNames(...classes: string[]) {
     return classes.filter(Boolean).join(' ');
   }
 
-  var formatter = new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'USD',
-  });
+  // var formatter = new Intl.NumberFormat('en-US', {
+  //   style: 'currency',
+  //   currency: 'USD',
+  // });
 
   const payment = [
     { title: 'Top Doctors Paid' },
@@ -47,7 +50,7 @@ const ManufacturerDetails = () => {
             <div className='flex flex-row'>
               <div>
                 <button
-                  onClick={() => navigate(-1)}
+                  onClick={navigate.back}
                   className='border border-violet-700 bg-violet-700 text-white rounded-md px-4 py-2 transition duration-500 ease select-none hover:bg-violet-900 focus:outline-none focus:shadow-outline'
                 >
                   <svg
@@ -193,7 +196,7 @@ const ManufacturerDetails = () => {
                 />
               </div>
               <div className='flex justify-center sm:w-[50%]'>
-                <PieChart
+                {/* <PieChart
                   title='Top Payments By Item'
                   data={{
                     labels: topItems.map(
@@ -214,7 +217,7 @@ const ManufacturerDetails = () => {
                       },
                     ],
                   }}
-                />
+                /> */}
               </div>
             </div>
           </div>

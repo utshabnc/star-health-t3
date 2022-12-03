@@ -1,7 +1,9 @@
-import { ScaleOptions, ScaleOptionsByType } from 'chart.js';
+import type { ScaleOptions } from 'chart.js';
+import { Chart, CategoryScale, LinearScale, BarElement } from 'chart.js';
 import React from 'react';
 import { Bar } from 'react-chartjs-2';
 
+Chart.register(CategoryScale, LinearScale, BarElement)
 const moneyFormatter = new Intl.NumberFormat('en-US', {
   style: 'currency',
   maximumFractionDigits: 0,
@@ -14,6 +16,7 @@ const BarChart = ({
   ticks = {},
 }: {
   data: React.ComponentProps<typeof Bar>['data'];
+  // data: any;
   title: string;
   ticks?: ScaleOptions['ticks'];
 }) => {

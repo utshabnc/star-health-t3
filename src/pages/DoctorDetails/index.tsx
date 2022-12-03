@@ -243,7 +243,7 @@ const DoctorDetails = () => {
 
           <div className='flex flex-col sm:flex-row  max-h-[350px]'>
             <div className='sm:w-1/2'>
-              <BarChart
+              {/* <BarChart
                 title='Transactions'
                 data={{
                   labels: topManufacturers.map((rec) => rec.manufacturerName),
@@ -256,7 +256,7 @@ const DoctorDetails = () => {
                     },
                   ],
                 }}
-              />
+              /> */}
             </div>
             <div
               style={{

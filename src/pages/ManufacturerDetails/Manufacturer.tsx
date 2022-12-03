@@ -1,17 +1,23 @@
+import Link from 'next/link';
+import { useRouter } from 'next/router';
 import { useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
-import { useManufacturerQuery } from '../../api';
+// import { Link, useParams } from 'react-router-dom';
+// import { useManufacturerQuery } from '../../api';
 import BarChart from '../../components/charts/bar';
 import PieChart from '../../components/charts/pie';
 import { colorGradient } from '../../utils';
 
 const Manufacturer = () => {
-  const { id } = useParams();
+  // const { id } = useParams();
+  const router = useRouter()
+  const { id } = router.query
+
   const [year, setYear] = useState<string>();
-  const { data: manufacturer } = useManufacturerQuery(
-    { id, year },
-    { skip: id == null }
-  );
+  const { data: manufacturer } = { data: {} }
+  // const { data: manufacturer } = useManufacturerQuery(
+  //   { id, year },
+  //   { skip: id == null }
+  // );
 
   if (!manufacturer) {
     return <>Loading StarHealth Data...</>;
@@ -24,7 +30,7 @@ const Manufacturer = () => {
   const topItems = manufacturer.items.sort((a: { totalAmount: number; }, b: { totalAmount: number; }) => b.totalAmount - a.totalAmount).slice(0,10)
   return (
     <>
-      <Link to='/'>Home</Link>
+      <Link href='/'>Home</Link>
       <br />
       <br />
       <input
@@ -32,7 +38,7 @@ const Manufacturer = () => {
         value={year}
         onChange={(e) => setYear(e.target.value)}
       />
-      <BarChart
+      {/* <BarChart
         title='Top Payments By State'
         data={{
           labels: topStates.map((rec: { state: any; }) => rec.state),
@@ -62,7 +68,7 @@ const Manufacturer = () => {
             },
           ],
         }}
-      />
+      /> */}
       <h2>Raw data:</h2>
       <pre>{JSON.stringify(manufacturer, null, 4)}</pre>
     </>

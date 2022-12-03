@@ -1,8 +1,8 @@
 import { geoAlbers } from "d3-geo"
 import { scaleQuantile } from 'd3-scale';
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import * as topojson from 'topojson-client';
+// import { useNavigate } from 'react-router-dom';
+// import * as topojson from 'topojson-client';
 import turfBbox from '@turf/bbox';
 import turfCentroid from '@turf/centroid';
 import {
@@ -13,7 +13,7 @@ import {
   Annotation,
   ZoomableGroup,
 } from 'react-simple-maps';
-import { StateResponse } from '../../../functions/src/state';
+// import { StateResponse } from '../../../functions/src/state';
 import { colorGradient, formatMoney } from '../../utils';
 import countyData from './gz_2010_us_050_00_20m.json';
 import ReactTooltip from 'react-tooltip';
@@ -84,8 +84,9 @@ const allStates = [
 const geoUrl = 'https://cdn.jsdelivr.net/npm/us-atlas@3.0.0/counties-10m.json';
 
 type Props = {
-  state: String;
-  data: StateResponse['counties'];
+  state: string;
+  // data: StateResponse['counties'];
+  data: [];
   width: number;
   height: number;
   setTooltipContent?: (content: string) => void;
@@ -107,7 +108,8 @@ const CountyHeatmap = (props: Props) => {
 const Map = ({ state, data, width, height, setTooltipContent }: Props) => {
   const colorScale = scaleQuantile<string>()
     // .domain(data.map((d) => d.totalAmount / d.population ?? 1))
-    .domain(data.map((d) => d.totalAmount))
+    // .domain(data.map((d) => d.totalAmount))
+    .domain(data.map((d) => 1))
     .range(colorRange);
 
   // const [geography, setGeography] = useState();
@@ -162,12 +164,12 @@ const Map = ({ state, data, width, height, setTooltipContent }: Props) => {
     type: 'FeatureCollection',
     features: stateCounties,
   };
-  const bounds = turfBbox(geography);
+  const bounds = turfBbox(geography as any);
 
   const centroid = turfCentroid(geography as any);
   
   const proj = geoAlbers()
-    .rotate([-centroid.geometry.coordinates[0], 0, 0])
+    .rotate([-(centroid.geometry.coordinates[0] ?? 0), 0, 0])
     .fitSize([width, height], geography as any)
 
   return (
@@ -211,7 +213,7 @@ const Map = ({ state, data, width, height, setTooltipContent }: Props) => {
                       onMouseLeave={() => {
                         setTooltipContent?.('');
                       }}
-                      //   onClick={() => navigate(`/state/${stateId}`)}
+                      // onClick={() => navigate.push(`/state/${stateId}`)}
                       key={geo.rsmKey}
                       stroke='#FFF'
                       geography={geo}
