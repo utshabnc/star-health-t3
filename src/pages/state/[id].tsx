@@ -14,7 +14,7 @@ const StateDetails = () => {
   const id = useRouter().query.id as string
   const [year, setYear] = useState<string>();
   const [drugType, setDrugType] = useState<string>();
-  const { data: state, isLoading } = trpc.state.stateQuery.useQuery({ id, year, drugType })
+  const { data: state, isLoading } = trpc.db.state.useQuery({ id, year, drugType })
 
   // Loading Screen
   if (isLoading || !state) {

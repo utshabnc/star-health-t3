@@ -1,11 +1,10 @@
 import { Menu, Transition } from '@headlessui/react';
 import { ChevronDownIcon } from '@heroicons/react/solid';
-// @ts-ignore
-import ReactStars from 'react-rating-stars-component';
+// import ReactStars from 'react-rating-stars-component';
 import { Fragment, SetStateAction, useEffect, useState } from 'react';
 import { availableYears, formatName, formatNumber } from '../../utils';
 import _ from 'lodash';
-import { Link } from 'react-router-dom';
+// import { Link } from 'react-router-dom';
 
 
 interface DrugSchema {
@@ -86,8 +85,8 @@ export const DrugDets = (schema: DrugSchema) => {
                       </button>
                     )}
                   </Menu.Item>
-                  {availableYears.map((year) => (
-                    <div className='py-1 flex justify-center'>
+                  {/* {availableYears.map((year) => (
+                    <div key={year} className='py-1 flex justify-center'>
                       <Menu.Item>
                         {({ active }) => (
                           <button
@@ -105,7 +104,7 @@ export const DrugDets = (schema: DrugSchema) => {
                         )}
                       </Menu.Item>
                     </div>
-                  ))}
+                  ))} */}
                 </Menu.Items>
               </Transition>
             </Menu>

@@ -1,12 +1,11 @@
 import { Menu, Transition } from '@headlessui/react';
 import { ChevronDownIcon } from '@heroicons/react/solid';
-// @ts-ignore
-import ReactStars from 'react-rating-stars-component';
+// import ReactStars from 'react-rating-stars-component';
 import { Fragment, SetStateAction, useEffect, useState } from 'react';
 import { availableYears, formatName, formatNumber } from '../../utils';
 // import { DoctorResponse } from '../../../functions/src/doctor';
 import _ from 'lodash';
-import { Link } from 'react-router-dom';
+// import { Link } from 'react-router-dom';
 
 interface DocSchema {
   firstName: string;
@@ -38,13 +37,13 @@ export const DocDets = (schema: DocSchema) => {
     schema.onChangeYear(year == 0 ? undefined : year);
   }, [year]);
 
-  const numStars = _.mean(
-    schema.doctor.reviews?.map((review) => review.rating)
-  );
+  // const numStars = _.mean(
+  //   schema.doctor.reviews?.map((review) => review.rating)
+  // );
 
-  console.log({ numStars });
+  // console.log({ numStars });
 
-  const numReviews = schema.doctor.reviews?.length ?? 0;
+  // const numReviews = schema.doctor.reviews?.length ?? 0;
 
   return (
     <>
@@ -53,7 +52,7 @@ export const DocDets = (schema: DocSchema) => {
           {formatName(schema.doctor.firstName + ' ' + schema.doctor.lastName)}
         </p>
         <div className='flex flex-row space-x-2 items-center'>
-          <ReactStars
+          {/* <ReactStars
             edit={false}
             value={numStars}
             isHalf={true}
@@ -61,19 +60,19 @@ export const DocDets = (schema: DocSchema) => {
             // size={screen.width > 1000 ? 24 : 15}
             size={24}
             activeColor='#ffd700'
-          />
+          /> */}
           <div className='flex flex-row items-center'>
             <p className='ml-2 text-sm font-bold text-gray-900 dark:text-white'>
-              {isNaN(numStars) ? '' : numStars.toFixed(1)}
+              {/* {isNaN(numStars) ? '' : numStars.toFixed(1)} */}
             </p>
-            {!isNaN(numStars) && (
+            {/* {!isNaN(numStars) && (
               <span className='w-1 h-1 mx-1.5'></span>
-            )}
-            <Link to={`/doctor/${schema.doctor.id}/reviews`} legacyBehavior>
+            )} */}
+            {/* <Link to={`/doctor/${schema.doctor.id}/reviews`} legacyBehavior>
               <a className='text-sm font-medium text-gray-900 underline hover:no-underline dark:text-white'>
                 {numReviews} {numReviews === 1 ? 'review' : 'reviews'}
               </a>
-            </Link>
+            </Link> */}
           </div>
         </div>
         <p className='lg:text-xl sm:text-sm font-semibold text-purp-2'>

@@ -1,6 +1,5 @@
 import { ChangeEventHandler, MouseEventHandler } from 'react';
-// @ts-ignore
-import ReactStars from 'react-rating-stars-component';
+// import ReactStars from 'react-rating-stars-component';
 
 interface Review {
   reviewText: string;
@@ -15,13 +14,13 @@ function ReviewForm(review: Review) {
     <>
       <div className='flex flex-col px-8'>
         <p className='text-purp-4 text-xl font-semibold align'>Write a Review</p>
-        <ReactStars
+        {/* <ReactStars
           value={review.reviewStars}
           count={5}
           activeColor='#ffd700'
           size={24}
           onChange={review.setReviewStars}
-        />
+        /> */}
         <textarea
           className='pl-3 shadow-lg mt-5 text-gray-800 py-2 border-purp-2 rounded-md focus:ring
 focus:ring-purp-4 ring-purp-2 ring focus:ring-offset-2 appearance-none resize-none'

@@ -13,12 +13,10 @@ import {
   Annotation,
   ZoomableGroup,
 } from 'react-simple-maps';
-// import { StateResponse } from '../../../functions/src/state';
+import type { StateResponse } from "../../server/trpc/router/db";
 import { colorGradient, formatMoney } from '../../utils';
 import countyData from './gz_2010_us_050_00_20m.json';
 import ReactTooltip from 'react-tooltip';
-import { inferRouterOutputs } from "@trpc/server";
-import { AppRouter } from "../../server/trpc/router/_app";
 
 const allStates = [
   { id: 'AL', val: '01' },
@@ -84,10 +82,6 @@ const allStates = [
 ];
 
 const geoUrl = 'https://cdn.jsdelivr.net/npm/us-atlas@3.0.0/counties-10m.json';
-
-// TODO - move these defs somewhere more appropriate and import
-type RouterOutput = inferRouterOutputs<AppRouter>
-type StateResponse = RouterOutput['state']['stateQuery']
 
 type Props = {
   state: string;

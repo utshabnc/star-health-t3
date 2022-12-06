@@ -9,8 +9,15 @@ import {
   formatProductName,
   formatProductType,
 } from '../../utils';
-import { ManufacturerResponse } from '../../../functions/src/manufacturer';
-import { Link } from 'react-router-dom';
+// import { ManufacturerResponse } from '../../../functions/src/manufacturer';
+import Link from 'next/link';
+import { inferRouterOutputs } from '@trpc/server';
+import { AppRouter } from '../../server/trpc/router/_app';
+// import { Link } from 'react-router-dom';
+
+// TODO - move these defs somewhere more appropriate and import
+type RouterOutput = inferRouterOutputs<AppRouter>
+type ManufacturerResponse = RouterOutput['manufacturer']['stateQuery']
 
 interface ManuSchema {
   name: string;
@@ -107,7 +114,7 @@ export const ManuDets = (schema: ManuSchema) => {
                       </Menu.Item>
                     </div>
                     {availableYears.map((year) => (
-                      <div className='py-1 flex justify-center'>
+                      <div key={year} className='py-1 flex justify-center'>
                         <Menu.Item>
                           {({ active }) => (
                             <button
@@ -154,7 +161,7 @@ export const ManuDets = (schema: ManuSchema) => {
                         key={rec.doctor.id}
                         className='text-sm text-center sm:text-base '
                       >
-                        <Link to={`/doctor/${rec.doctor.id}`} legacyBehavior>
+                        <Link href={`/doctor/${rec.doctor.id}`} legacyBehavior>
                           <a className='text-purp-2'>
                             {formatName(
                               `${rec.doctor.firstName} ${rec.doctor.lastName}`

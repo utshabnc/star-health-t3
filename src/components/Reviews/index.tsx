@@ -1,4 +1,3 @@
-// @ts-ignore
 // import { useState } from 'react';
 // import ReactStars from 'react-rating-stars-component';
 // // import { DoctorResponse } from '../../../functions/src/doctor';

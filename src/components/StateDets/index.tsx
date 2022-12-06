@@ -15,7 +15,7 @@ import _ from 'lodash';
 //   ManufacturerResponse,
 // } from '../../../functions/src/manufacturer';
 import Link from 'next/link';
-// import { StateResponse } from '../../../functions/src/state';
+import type { StateResponse } from '../../server/trpc/router/db';
 import Dropdown from '../Dropdown';
 import CountyHeatmap from '../charts/CountyHeatmap';
 
@@ -24,8 +24,7 @@ interface StateSchema {
   drugType?: string;
   year?: string;
   onChangeDrugType: (drugType?: string) => void;
-  // state: StateResponse;
-  state: any;
+  state: StateResponse;
 }
 
 function classNames(...classes: string[]) {

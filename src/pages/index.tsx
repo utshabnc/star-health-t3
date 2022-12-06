@@ -124,7 +124,7 @@ const understand = [
 
 export default function Home() {
   const [drugType, setDrugType] = useState<string>();
-  const { data: allStates } = trpc.state.allStatesQuery.useQuery({ drugType })
+  const { data: allStates } = trpc.db.allStates.useQuery({ drugType })
 
   const FirstSection = () => (
     <div className='flex flex-col sm:flex-row mt-2 sm:mt-8 justify-between'>
