@@ -17,7 +17,6 @@ import {
 import { colorGradient, formatMoney } from '../../utils';
 import countyData from './gz_2010_us_050_00_20m.json';
 import ReactTooltip from 'react-tooltip';
-import { trpc } from "../../utils/trpc";
 import { inferRouterOutputs } from "@trpc/server";
 import { AppRouter } from "../../server/trpc/router/_app";
 
