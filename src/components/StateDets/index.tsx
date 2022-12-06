@@ -17,7 +17,7 @@ import _ from 'lodash';
 import Link from 'next/link';
 // import { StateResponse } from '../../../functions/src/state';
 import Dropdown from '../Dropdown';
-// import CountyHeatmap from '../charts/CountyHeatmap';
+import CountyHeatmap from '../charts/CountyHeatmap';
 
 interface StateSchema {
   onChangeYear: (year?: number) => void;
@@ -61,12 +61,12 @@ export const StateDets = ({
               </p>
             )}
           </div>
-          {/* <CountyHeatmap
+          <CountyHeatmap
             state={state?.id ?? ''}
             data={state?.counties ?? []}
             width={250}
             height={150}
-          /> */}
+          />
         </div>
         <div className='my-1'>
           <hr />

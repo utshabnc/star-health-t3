@@ -11,13 +11,9 @@ export const stateRouter = router({
           year: z.string().optional(),
           drugType: z.string().optional(),
         })
-        .nullish()
     )
-    .query(async ({ ctx, input }) => {
-      // TODO - not sure if this always works
-      const { id, drugType, year } = input ?? {};
-
-      const state = ctx.prisma.state.findFirst({
+    .query(async ({ ctx, input: { id, drugType, year } }) => {
+      const state = await ctx.prisma.state.findFirst({
         where: { id },
         select: {
           id: true,

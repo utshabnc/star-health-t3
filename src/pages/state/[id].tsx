@@ -4,8 +4,8 @@ import { useState } from 'react';
 // import { Link, useParams } from 'react-router-dom';
 // import { useStateQuery } from '../../api';
 import BarChart from '../../components/charts/bar';
-// import CountyHeatmap from '../../components/charts/CountyHeatmap';
-// import PieChart from '../../components/charts/pie';
+import CountyHeatmap from '../../components/charts/CountyHeatmap';
+import PieChart from '../../components/charts/pie';
 import { StateDets } from '../../components/StateDets';
 import { colorGradient, formatMoney } from '../../utils';
 import { trpc } from '../../utils/trpc';
@@ -177,7 +177,7 @@ const StateDetails = () => {
                 />
               </div>
               <div className="flex justify-center sm:w-1/2">
-                {/* <PieChart
+                <PieChart
                   title='Top Payments By Item'
                   data={{
                     labels: topItems.map(
@@ -198,7 +198,7 @@ const StateDetails = () => {
                       },
                     ],
                   }}
-                /> */}
+                />
               </div>
             </div>
           </div>

@@ -2,7 +2,7 @@ import { geoAlbers } from "d3-geo"
 import { scaleQuantile } from 'd3-scale';
 import { useEffect, useState } from 'react';
 // import { useNavigate } from 'react-router-dom';
-// import * as topojson from 'topojson-client';
+import * as topojson from 'topojson-client';
 import turfBbox from '@turf/bbox';
 import turfCentroid from '@turf/centroid';
 import {
@@ -17,6 +17,9 @@ import {
 import { colorGradient, formatMoney } from '../../utils';
 import countyData from './gz_2010_us_050_00_20m.json';
 import ReactTooltip from 'react-tooltip';
+import { trpc } from "../../utils/trpc";
+import { inferRouterOutputs } from "@trpc/server";
+import { AppRouter } from "../../server/trpc/router/_app";
 
 const allStates = [
   { id: 'AL', val: '01' },
@@ -83,10 +86,13 @@ const allStates = [
 
 const geoUrl = 'https://cdn.jsdelivr.net/npm/us-atlas@3.0.0/counties-10m.json';
 
+// TODO - move these defs somewhere more appropriate and import
+type RouterOutput = inferRouterOutputs<AppRouter>
+type StateResponse = RouterOutput['state']['stateQuery']
+
 type Props = {
   state: string;
-  // data: StateResponse['counties'];
-  data: [];
+  data: StateResponse['counties'];
   width: number;
   height: number;
   setTooltipContent?: (content: string) => void;
@@ -108,8 +114,7 @@ const CountyHeatmap = (props: Props) => {
 const Map = ({ state, data, width, height, setTooltipContent }: Props) => {
   const colorScale = scaleQuantile<string>()
     // .domain(data.map((d) => d.totalAmount / d.population ?? 1))
-    // .domain(data.map((d) => d.totalAmount))
-    .domain(data.map((d) => 1))
+    .domain(data.map((d) => d.totalAmount))
     .range(colorRange);
 
   // const [geography, setGeography] = useState();

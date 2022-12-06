@@ -51,40 +51,47 @@ const InfoSection = ({
   return (
     <div
       className={`flex flex-col ${
-        boxStyle == null ? 'bg-gray-300 py-4' : boxStyle
+        boxStyle == null ? "bg-gray-300 py-4" : boxStyle
       }`}
     >
       {header && (
         <p
-          className={`flex text-center text-md sm:text-2xl font-semibold justify-center ${
-            'text-' + textColor ?? 'text-violet-700'
+          className={`text-md flex justify-center text-center font-semibold sm:text-2xl ${
+            "text-" + textColor ?? "text-violet-700"
           } my-2 mt-8 mb-4`}
         >
           {header}
         </p>
       )}
-      <div className='mx-2 sm:mx-20 flex flex-row justify-around'>
+      <div className="mx-2 flex flex-row justify-around sm:mx-20">
         {items.map((item, i) => (
           <div
             className={`flex flex-col items-center ${
-              boxStyle ? '' : 'bg-gray-50 rounded-lg shadow-md'
-            }   w-[25%] sm:w-[20%] p-1 sm:p-4`}
+              boxStyle ? "" : "rounded-lg bg-gray-50 shadow-md"
+            }   w-[25%] p-1 sm:w-[20%] sm:p-4`}
             key={i}
           >
-            {/* <div className='w-[170px] h-[170px]'>
-                <img src={item.img} />
-              </div> */}
             {item.img && (
               <>
-                (
-                  <Image src={item.img} alt={'image'} className='sm:w-38 sm:h-32' />
-                )
+                {typeof window != "undefined" && window.screen.width > 640 ? (
+                  <Image
+                    src={item.img}
+                    alt={item.label}
+                    className="sm:w-38 sm:h-32"
+                  />
+                ) : (
+                  <Image
+                    src={item.img}
+                    alt={item.label}
+                    style={{ height: 90, width: 100 }}
+                  />
+                )}
               </>
             )}
             <p
-              className={`text-center text-xs lg:text-lg  font-semibold justify-center ${
-                'text-' + textColor ?? 'text-violet-700'
-              }          ${itemTextSpacing && 'mt-6'}`}
+              className={`justify-center text-center text-xs  font-semibold lg:text-lg ${
+                "text-" + textColor ?? "text-violet-700"
+              }          ${itemTextSpacing && "mt-6"}`}
             >
               {item.label}
             </p>
