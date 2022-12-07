@@ -5,7 +5,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { debounce } from 'lodash';
 // import { useLazySearchQuery } from '../../api';
 import '../../index.css';
-import SearchPage from '../../pages/SearchPage';
+// import SearchPage from '../../pages/SearchPage';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
