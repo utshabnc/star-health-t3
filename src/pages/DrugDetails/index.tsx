@@ -5,13 +5,12 @@ import {
   ReactPortal,
   useState,
 } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
-import { useUser } from "../../hooks";
-import { useAddReviewMutation, useAllStatesQuery } from "../../api";
+// import { useUser } from "../../hooks";
+// import { useAddReviewMutation, useAllStatesQuery } from "../../api";
 import "./index.css";
 import { DrugDets } from "../../components/DrugDets";
 import ReviewForm from "../../components/ReviewForm";
-import Reviews from "../../components/Reviews";
+// import Reviews from "../../components/Reviews";
 import {
   formatMoney,
   formatName,
@@ -25,6 +24,7 @@ import Transaction from "./components/Transaction";
 // TODO - remove and replace with real data
 import data from "./example_payments_query";
 import geo from "./example_geo_query";
+import { useRouter } from "next/router";
 
 /*
  * This page is a work in progress. It was initially copied from the Doctor page.
@@ -46,8 +46,9 @@ import geo from "./example_geo_query";
 
 
 const DoctorDetails = () => {
-  const { id } = useParams();
-  const [user] = useUser();
+  const navigate = useRouter();
+  const id = navigate.query.id as string;
+  // const [user] = useUser();
   const [drugType, setDrugType] = useState<string>("Antibiotic");
 
   const [year, setYear] = useState<string>();
@@ -55,22 +56,21 @@ const DoctorDetails = () => {
   // TODO - implement drug query and types, something like this:
   // const { data: drug, refetch: refetchDrug } = useDrugQuery({ id, year });
 
-  const addReview = useAddReviewMutation();
+  // const addReview = useAddReviewMutation();
 
-  const [reviewText, setReviewText] = useState("");
-  const [reviewStars, setReviewStars] = useState(5);
+  // const [reviewText, setReviewText] = useState("");
+  // const [reviewStars, setReviewStars] = useState(5);
 
-  var formatter = new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
-  });
+  // var formatter = new Intl.NumberFormat("en-US", {
+  //   style: "currency",
+  //   currency: "USD",
+  // });
 
-  const payment = [
-    { title: "Top Payments Made" },
-    { title: "Top Products" },
-    { title: "Top Manufacturers" },
-  ];
-  const navigate = useNavigate();
+  // const payment = [
+  //   { title: "Top Payments Made" },
+  //   { title: "Top Products" },
+  //   { title: "Top Manufacturers" },
+  // ];
 
   if (!data) {
     return (
@@ -85,7 +85,7 @@ const DoctorDetails = () => {
             <div className="flex flex-row">
               <div>
                 <button
-                  onClick={() => navigate(-1)}
+                  onClick={navigate.back}
                   className="border border-violet-700 bg-violet-700 text-white rounded-md px-4 py-2 transition duration-500 ease select-none hover:bg-violet-900 focus:outline-none focus:shadow-outline"
                 >
                   <svg
@@ -145,7 +145,7 @@ const DoctorDetails = () => {
         <div className="flex flex-row">
           <div>
             <button
-              onClick={() => navigate(-1)}
+              onClick={navigate.back}
               className="border border-violet-700 bg-violet-700 text-white rounded-md px-4 py-2 transition duration-500 ease select-none hover:bg-violet-900 focus:outline-none focus:shadow-outline"
             >
               <svg
@@ -247,8 +247,8 @@ const DoctorDetails = () => {
                     (a, b) =>
                       new Date(b.date).getTime() - new Date(a.date).getTime()
                   )
-                  .map((payment) => (
-                    <Transaction transaction={payment}/>
+                  .map((payment, i) => (
+                    <Transaction key={i} transaction={payment}/>
                   ))}
               </div>
             </div>

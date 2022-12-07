@@ -118,7 +118,7 @@ const ManufacturerDetails = () => {
           <div className='flex flex-row'>
             <div>
               <button
-                onClick={() => navigate.back()}
+                onClick={navigate.back}
                 className='border border-violet-700 bg-violet-700 text-white rounded-md px-4 py-2 transition duration-500 ease select-none hover:bg-violet-900 focus:outline-none focus:shadow-outline'
               >
                 <svg

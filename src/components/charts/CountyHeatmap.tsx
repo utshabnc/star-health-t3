@@ -1,7 +1,6 @@
 import { geoAlbers } from "d3-geo"
 import { scaleQuantile } from 'd3-scale';
 import { useEffect, useState } from 'react';
-// import { useNavigate } from 'react-router-dom';
 import * as topojson from 'topojson-client';
 import turfBbox from '@turf/bbox';
 import turfCentroid from '@turf/centroid';
@@ -13,7 +12,7 @@ import {
   Annotation,
   ZoomableGroup,
 } from 'react-simple-maps';
-import type { StateResponse } from "../../server/trpc/router/db";
+  import type { StateResponse } from "../../server/trpc/router/db";
 import { colorGradient, formatMoney } from '../../utils';
 import countyData from './gz_2010_us_050_00_20m.json';
 import ReactTooltip from 'react-tooltip';

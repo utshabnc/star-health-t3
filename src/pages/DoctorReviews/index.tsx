@@ -1,51 +1,53 @@
+import { useRouter } from 'next/router';
 import { useState } from 'react';
-import { Link, Navigate, useNavigate, useParams } from 'react-router-dom';
-import { useAddReviewMutation, useDoctorQuery } from '../../api';
-import Modal from '../../components/ReviewLoginModal';
-import ReviewForm from '../../components/ReviewForm';
-import Reviews from '../../components/Reviews';
-import { useUser } from '../../hooks';
+import { trpc } from '../../utils/trpc';
+// import { Link, Navigate, useNavigate, useParams } from 'react-router-dom';
+// import { useAddReviewMutation, useDoctorQuery } from '../../api';
+// import Modal from '../../components/ReviewLoginModal';
+// import ReviewForm from '../../components/ReviewForm';
+// import Reviews from '../../components/Reviews';
+// import { useUser } from '../../hooks';
 
 type Props = {
   doctorId?: string;
 };
 
 const DoctorReviews = (props: Props) => {
-  const { id } = useParams();
-  const [user] = useUser();
+  const navigate = useRouter();
+  const id = navigate.query.id as string
+  // const [user] = useUser();
   const doctorId = props.doctorId ?? id;
-  const { data: doctor, refetch: refetchDoctor } = useDoctorQuery({
+  const { data: doctor, refetch: refetchDoctor } = trpc.db.doctor.useQuery({
     id: doctorId,
   });
   const [showModal, setShowModal] = useState(false);
 
-  const addReview = useAddReviewMutation();
+  // const addReview = useAddReviewMutation();
 
   const [reviewText, setReviewText] = useState('');
   const [reviewStars, setReviewStars] = useState(0);
-  const navigate = useNavigate();
 
   const onSubmitReview = () => {
     if (!doctorId) {
       return;
     }
-    if (user == null) {
-      setShowModal(true);
-      return;
-    }
-    if (reviewStars > 5) {
-      addReview({
-        doctorId,
-        text: reviewText,
-        rating: 5,
-      }).then(refetchDoctor);
-    } else {
-      addReview({
-        doctorId,
-        text: reviewText,
-        rating: reviewStars,
-      }).then(refetchDoctor);
-    }
+    // if (user == null) {
+    //   setShowModal(true);
+    //   return;
+    // }
+  //   if (reviewStars > 5) {
+  //     addReview({
+  //       doctorId,
+  //       text: reviewText,
+  //       rating: 5,
+  //     }).then(refetchDoctor);
+  //   } else {
+  //     addReview({
+  //       doctorId,
+  //       text: reviewText,
+  //       rating: reviewStars,
+  //     }).then(refetchDoctor);
+  //   }
   };
 
   if (!doctor) {
@@ -62,7 +64,7 @@ const DoctorReviews = (props: Props) => {
               {props.doctorId == null && (
                 <div>
                   <button
-                    onClick={() => navigate(-1)}
+                    onClick={navigate.back}
                     className='border border-violet-700 bg-violet-700 text-white rounded-md px-4 py-2 transition duration-500 ease select-none hover:bg-violet-900 focus:outline-none focus:shadow-outline'
                   >
                     <svg
@@ -122,13 +124,13 @@ const DoctorReviews = (props: Props) => {
   return (
     <>
       <div className=''>
-        <Modal open={showModal} onClose={() => setShowModal(false)} />
+        {/* <Modal open={showModal} onClose={() => setShowModal(false)} /> */}
         <div className='sm:p-5 rounded bg-white'>
           <div className='flex flex-row'>
             {props.doctorId == null && (
               <div>
                 <button
-                  onClick={() => navigate(-1)}
+                  onClick={navigate.back}
                   className='border border-violet-700 bg-violet-700 text-white rounded-md px-4 py-2 transition duration-500 ease select-none hover:bg-violet-900 focus:outline-none focus:shadow-outline'
                 >
                   <svg
@@ -158,20 +160,20 @@ const DoctorReviews = (props: Props) => {
             </div>
           </div>
           <div className='flex flex-col py-5 sm:px-2 lg:px-28'>
-            <ReviewForm
+            {/* <ReviewForm
               reviewText={reviewText}
               reviewStars={reviewStars}
               onSubmitReview={onSubmitReview}
               setReviewText={(e) => setReviewText(e.target.value)}
               setReviewStars={setReviewStars}
-            />
-            {doctor.reviews?.length ?? 0 > 0 ? (
+            /> */}
+            {/* {doctor.reviews?.length ?? 0 > 0 ? (
               <Reviews
-                reviews={doctor.reviews ?? []} /*stars={""} text={""}*/
+                reviews={doctor.reviews ?? []}
               />
             ) : (
               <></>
-            )}
+            )} */}
           </div>
         </div>
       </div>

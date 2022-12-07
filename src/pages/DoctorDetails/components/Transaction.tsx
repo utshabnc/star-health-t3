@@ -1,13 +1,13 @@
-import { Link } from 'react-router-dom';
-import { DoctorResponse } from '../../../../functions/src/doctor';
+import Link from "next/link";
+import type { DoctorResponse } from "../../../server/trpc/router/db";
 import {
   formatMoney,
   formatProductName,
   formatProductType,
-} from '../../../utils';
+} from "../../../utils";
 
 type Props = {
-  transaction: DoctorResponse['payments'][0];
+  transaction: DoctorResponse["payments"][0];
 };
 
 const Transaction = ({
@@ -27,32 +27,32 @@ const Transaction = ({
     year,
   },
 }: Props) => (
-  <div className='flex justify-center w-full'>
-    <div className='rounded-lg shadow-lg bg-white text-center w-full lg:w-3/4'>
-      <div className='p-2 w-full'>
-        <div className='flex flex-row justify-between'>
-          <h5 className='text-gray-900 text-md font-medium mb-2 underline'>
-            <Link to={`/manufacturer/${manufacturerId}`}>
+  <div className="flex w-full justify-center">
+    <div className="w-full rounded-lg bg-white text-center shadow-lg lg:w-3/4">
+      <div className="w-full p-2">
+        <div className="flex flex-row justify-between">
+          <h5 className="text-md mb-2 font-medium text-gray-900 underline">
+            <Link href={`/manufacturer/${manufacturerId}`}>
               {manufacturerName}
             </Link>
           </h5>
-          <p className='text-gray-700 text-base mb-1'>
-            {' '}
+          <p className="mb-1 text-base text-gray-700">
+            {" "}
             {new Date(date).toLocaleDateString()}
           </p>
         </div>
-        <div className='flex flex-row justify-between'>
-          <h5 className='text-gray-900 text-md mb-2'>
+        <div className="flex flex-row justify-between">
+          <h5 className="text-md mb-2 text-gray-900">
             {formatProductType(productType)}: {formatProductName(productName)}
           </h5>
-          <p className='text-gray-700 text-base mb-1'> {formatMoney(amount)}</p>
+          <p className="mb-1 text-base text-gray-700"> {formatMoney(amount)}</p>
         </div>
-        <div className='flex flex-row text-sm justify-between'>
-          <p className='text-gray-700 text-base mb-1'>
+        <div className="flex flex-row justify-between text-sm">
+          <p className="mb-1 text-base text-gray-700">
             Context: {paymentNature}
           </p>
 
-          <div className='border-gray-300 text-gray-600'></div>
+          <div className="border-gray-300 text-gray-600"></div>
         </div>
       </div>
     </div>

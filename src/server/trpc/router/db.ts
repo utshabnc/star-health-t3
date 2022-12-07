@@ -416,4 +416,8 @@ export const db = router({
 
 // TODO - consider moving these type defs
 type RouterOutput = inferRouterOutputs<AppRouter>;
+export type SearchResponse = RouterOutput["db"]["search"];
+export type DoctorResponse = RouterOutput["db"]["doctor"];
+export type ManufacturerResponse = RouterOutput["db"]["manufacturer"];
 export type StateResponse = RouterOutput["db"]["state"];
+export type AllStatesResponse = RouterOutput["db"]["allStates"];

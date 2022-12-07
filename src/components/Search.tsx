@@ -8,7 +8,7 @@ export default function Search() {
     <Popover
       isOpen={isPopoverOpen}
       positions={['bottom']} // preferred positions by priority
-      content={<div className='align-left'>Hi! I'm popover content.</div>}
+      content={<div className='align-left'>Hi! I&apos;m popover content.</div>}
     >
       <div onClick={() => setIsPopoverOpen(!isPopoverOpen)}>Click me!</div>
     </Popover>
