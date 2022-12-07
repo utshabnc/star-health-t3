@@ -6,21 +6,27 @@ import {
   formatProductType,
 } from "../../../utils";
 
+type Props = {
+  transaction: Payment
+}
+
 const Transaction = ({
+  transaction: {
     amount,
     contextualInfo,
-    paymentNature,
     date,
     doctorId,
     id,
     manufacturerId,
     manufacturerName,
+    paymentNature,
     paymentType,
     productCategory,
     productName,
     productType,
     year,
-}: Payment) => (
+  }
+}: Props) => (
   <div className="flex w-full justify-center">
     <div className="w-full rounded-lg bg-white text-center shadow-lg lg:w-3/4">
       <div className="w-full p-2">
