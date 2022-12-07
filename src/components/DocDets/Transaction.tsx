@@ -4,7 +4,7 @@ import {
   formatMoney,
   formatProductName,
   formatProductType,
-} from "../../../utils";
+} from "../../utils";
 
 type Props = {
   transaction: Payment

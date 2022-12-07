@@ -17,7 +17,7 @@ import {
   formatProductName,
   formatProductType,
 } from "../../utils";
-import Transaction from "./components/Transaction";
+import Transaction from "../../components/DocDets/Transaction";
 import BarChart from "../../components/charts/bar";
 import DoctorReviews from "../DoctorReviews";
 import { useRouter } from "next/router";
