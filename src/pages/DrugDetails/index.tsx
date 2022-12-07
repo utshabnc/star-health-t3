@@ -7,7 +7,7 @@ import {
 } from "react";
 // import { useUser } from "../../hooks";
 // import { useAddReviewMutation, useAllStatesQuery } from "../../api";
-import "./index.css";
+// import "./index.css";
 import { DrugDets } from "../../components/DrugDets";
 import ReviewForm from "../../components/ReviewForm";
 // import Reviews from "../../components/Reviews";

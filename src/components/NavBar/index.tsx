@@ -4,7 +4,7 @@ import { useCallback, useEffect, useState } from 'react';
 // import { signIn, signOut } from '../../firebase';
 import { debounce } from 'lodash';
 // import { useLazySearchQuery } from '../../api';
-import '../../index.css';
+// import '../../index.css';
 import SearchPage from '../../pages/SearchPage';
 import Image from 'next/image';
 import { useRouter } from 'next/router';

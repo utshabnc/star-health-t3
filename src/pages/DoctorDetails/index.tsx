@@ -7,7 +7,7 @@ import {
 } from "react";
 // import { useUser } from '../../hooks';
 // import { useAddReviewMutation, useDoctorQuery } from '../../api';
-import "./index.css";
+// import "./index.css";
 import { DocDets } from "../../components/DocDets";
 import ReviewForm from "../../components/ReviewForm";
 // import Reviews from '../../components/Reviews';
