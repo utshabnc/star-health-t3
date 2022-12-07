@@ -41,14 +41,14 @@ model State {
 }
 
 model StateCounty {
-  id        String        @id
-  stateId   String
-  name     String
-  fips      String
+  id          String @id
+  stateId     String
+  name        String
+  fips        String
   totalAmount Float
-  population Int
-  year String
-  drugType String
+  population  Int
+  year        String
+  drugType    String
 }
 
 model StateSummary {
@@ -57,8 +57,8 @@ model StateSummary {
   state       State  @relation(fields: [stateId], references: [id])
   totalAmount Float
   year        String
-  rank Int?
-  drugType String
+  rank        Int?
+  drugType    String
 }
 
 model StateItem {
@@ -70,7 +70,7 @@ model StateItem {
   year             String
   totalAmount      Float
   transactionCount Int
-  drugType String
+  drugType         String
   manufacturer     Manufacturer @relation(fields: [manufacturerId], references: [id])
   state            State        @relation(fields: [stateId], references: [id])
 }
@@ -82,7 +82,7 @@ model StateDoctor {
   year             String
   totalAmount      Float
   transactionCount Int
-  drugType String
+  drugType         String
   doctor           Doctor @relation(fields: [doctorId], references: [id])
   state            State  @relation(fields: [stateId], references: [id])
 }
@@ -94,7 +94,7 @@ model StateManufacturer {
   year             String
   totalAmount      Float
   transactionCount Int
-  drugType String
+  drugType         String
   manufacturer     Manufacturer @relation(fields: [manufacturerId], references: [id])
   state            State        @relation(fields: [stateId], references: [id])
 }
