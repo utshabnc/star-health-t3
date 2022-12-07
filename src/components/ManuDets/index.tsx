@@ -9,15 +9,8 @@ import {
   formatProductName,
   formatProductType,
 } from '../../utils';
-// import { ManufacturerResponse } from '../../../functions/src/manufacturer';
 import Link from 'next/link';
-import { inferRouterOutputs } from '@trpc/server';
-import { AppRouter } from '../../server/trpc/router/_app';
-// import { Link } from 'react-router-dom';
-
-// TODO - move these defs somewhere more appropriate and import
-type RouterOutput = inferRouterOutputs<AppRouter>
-type ManufacturerResponse = RouterOutput['manufacturer']['stateQuery']
+import type { ManufacturerResponse } from '../../server/trpc/router/db';
 
 interface ManuSchema {
   name: string;
