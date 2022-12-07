@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 // import { useLocation } from 'react-router-dom';
 import { debounce } from 'lodash';
 // import { useLazySearchQuery } from '../../api';
-import './index.css';
+// import './index.css';
 import DetailsTable from '../../components/DetailsTable';
 import { formatName } from '../../utils';
 import Search from '../../components/Search';

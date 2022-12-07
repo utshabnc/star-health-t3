@@ -2,7 +2,7 @@ import { capitalize } from 'lodash';
 import Link from 'next/link';
 import { useRouter } from 'next/router'
 import { formatName } from '../../utils';
-import './index.css';
+// import './index.css';
 
 // .buttonText {
 //   color: white;
