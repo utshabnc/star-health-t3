@@ -1,17 +1,12 @@
+import type { Payment } from "@prisma/client";
 import Link from "next/link";
-import type { DoctorResponse } from "../../../server/trpc/router/db";
 import {
   formatMoney,
   formatProductName,
   formatProductType,
 } from "../../../utils";
 
-type Props = {
-  transaction: DoctorResponse["payments"][0];
-};
-
 const Transaction = ({
-  transaction: {
     amount,
     contextualInfo,
     paymentNature,
@@ -25,8 +20,7 @@ const Transaction = ({
     productName,
     productType,
     year,
-  },
-}: Props) => (
+}: Payment) => (
   <div className="flex w-full justify-center">
     <div className="w-full rounded-lg bg-white text-center shadow-lg lg:w-3/4">
       <div className="w-full p-2">
@@ -45,7 +39,7 @@ const Transaction = ({
           <h5 className="text-md mb-2 text-gray-900">
             {formatProductType(productType)}: {formatProductName(productName)}
           </h5>
-          <p className="mb-1 text-base text-gray-700"> {amount ? formatMoney(amount) : 0}</p>
+          <p className="mb-1 text-base text-gray-700"> {formatMoney(amount)}</p>
         </div>
         <div className="flex flex-row justify-between text-sm">
           <p className="mb-1 text-base text-gray-700">
