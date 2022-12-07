@@ -4,7 +4,7 @@ const payment = [
   { title: "Top Manufacturers" },
 ];
 
-export const InfoSections = () => {
+const InfoSections = () => {
   return (
     <div className="grid grid-cols-1">
       <div className="my-2 mx-1 grid grid-cols-3 rounded-lg border-2 border-violet-400 p-2">
@@ -32,3 +32,5 @@ export const InfoSections = () => {
     </div>
   );
 };
+
+export default InfoSections;

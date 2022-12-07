@@ -22,8 +22,8 @@ import UnitedStatesHeatmap from "../../components/charts/UnitedStatesHeatmap";
 // import Transaction from "./components/Transaction";
 
 // TODO - remove and replace with real data
-import data from "./example_payments_query";
-import geo from "./example_geo_query";
+import data from "../../assets/example_payments_query";
+import geo from "../../assets/example_geo_query";
 import { useRouter } from "next/router";
 
 /*
