@@ -1,6 +1,6 @@
 // TODO - remove this file
 
-export default [
+const exampleQuery = [
   { stateId: "AK", totalAmount: 6049700.910000037 },
   { stateId: "AL", totalAmount: 120178013.8699811 },
   { stateId: "AP", totalAmount: 128071.9600000001 },
@@ -62,3 +62,5 @@ export default [
   { stateId: "VA", totalAmount: 304873812.9800281 },
   { stateId: "WY", totalAmount: 7837982.179999986 },
 ];
+
+export default exampleQuery;

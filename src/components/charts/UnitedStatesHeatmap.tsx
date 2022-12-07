@@ -169,7 +169,7 @@ const UnitedStatesHeatmap = ({ data }: Props) => {
   // .rotate([0, 0, 0])
   // .fitSize([width, height], geography as any)
 
-const handleClick = (stateId) => {
+const handleClick = (stateId: string) => {
   // e.preventDefault()
   navigate.push(`/state/${stateId}`)
 }

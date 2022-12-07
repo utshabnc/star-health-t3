@@ -1,6 +1,6 @@
 // TODO - remove this file
 
-export default {
+const exampleQuery = {
   payments: [
     {
       id: "478941713",
@@ -83,3 +83,5 @@ export default {
     { manufacturerName: "Allergan Inc.", amount: 27.99, count: 2 },
   ],
 };
+
+export default exampleQuery;

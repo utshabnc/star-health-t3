@@ -19,7 +19,7 @@ import {
 } from "../../utils";
 import BarChart from "../../components/charts/bar";
 import UnitedStatesHeatmap from "../../components/charts/UnitedStatesHeatmap";
-import Transaction from "./components/Transaction";
+// import Transaction from "./components/Transaction";
 
 // TODO - remove and replace with real data
 import data from "./example_payments_query";
@@ -247,8 +247,9 @@ const DoctorDetails = () => {
                     (a, b) =>
                       new Date(b.date).getTime() - new Date(a.date).getTime()
                   )
-                  .map((payment, i) => (
-                    <Transaction key={i} transaction={payment}/>
+                  .map((payment) => (
+                    <div key={payment.id}>[Transaction]</div>
+                    // <Transaction key={i} transaction={payment}/>
                   ))}
               </div>
             </div>
