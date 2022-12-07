@@ -192,12 +192,12 @@ const DoctorDetails = () => {
               <ul className="flex flex-col items-center">
                 <li className="text-sm text-center sm:text-base ">
                   {/* TODO replace the following with real data */}
-                  {screen.width > 1000 && `John Doe: `}
+                  {typeof window != "undefined" && window.screen.width > 1000 && `John Doe: `}
                   {"$500.00"}
                 </li>
                 <li className="text-sm text-center sm:text-base ">
                   {/* TODO replace the following with real data */}
-                  {screen.width > 1000 && `Jane Doe: `}
+                  {typeof window != 'undefined' && window.screen.width > 1000 && `Jane Doe: `}
                   {"$250.00"}
                 </li>
               </ul>
@@ -232,8 +232,8 @@ const DoctorDetails = () => {
             <div
               style={{
                 maxHeight:
-                  screen.width > 640
-                    ? Math.ceil(screen.width * 0.24)
+                  (typeof window != "undefined" && window.screen.width > 640)
+                    ? Math.ceil(window.screen.width * 0.24)
                     : undefined,
               }}
               className="flex flex-col sm:w-1/2 overflow-scroll max-h-[100%]"

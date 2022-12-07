@@ -208,7 +208,7 @@ const DoctorDetails = () => {
                         key={product.id}
                         className="text-center text-sm sm:text-base "
                       >
-                        {screen.width > 1000 &&
+                        {typeof window != 'undefined' && window.screen.width > 1000 &&
                           `${formatProductName(product.productName)}:`}
                         {formatMoney(product.amount)}
                       </li>
@@ -260,7 +260,7 @@ const DoctorDetails = () => {
             <div
               style={{
                 maxHeight:
-                  screen.width > 640
+                  (typeof window != 'undefined' && window.screen.width > 640)
                     ? Math.ceil(screen.width * 0.24)
                     : undefined,
               }}

@@ -45,7 +45,7 @@ const Transaction = ({
           <h5 className="text-md mb-2 text-gray-900">
             {formatProductType(productType)}: {formatProductName(productName)}
           </h5>
-          <p className="mb-1 text-base text-gray-700"> {formatMoney(amount)}</p>
+          <p className="mb-1 text-base text-gray-700"> {formatMoney(amount ?? 0)}</p>
         </div>
         <div className="flex flex-row justify-between text-sm">
           <p className="mb-1 text-base text-gray-700">

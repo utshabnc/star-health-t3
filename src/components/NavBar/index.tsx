@@ -33,7 +33,7 @@ function NavBar() {
     <>
       <nav className='bg-nav p-1'>
         <div className='flex-1 flex flex-row justify-center items-center'>
-          {location.pathname === '/' && screen.width < 1000 && (
+          {location.pathname === '/' && typeof window != 'undefined' && window.screen.width < 1000 && (
             <div className={``}>
               <Link href={'/'}>
                 <Image src={'/images/Logo.png'} alt='logo' className=' h-12' />
@@ -49,13 +49,13 @@ function NavBar() {
               <>
                 <SearchPage
                   buttonSmall
-                  buttonPlaceholder={screen.width <= 640 ? 'Search' : undefined}
+                  buttonPlaceholder={(typeof window != 'undefined' && window.screen.width <= 640) ? 'Search' : undefined}
                 />
               </>
             )}
           </div>
 
-          <div style={{ opacity: screen.width > 1000 ? 1 : 0 }}>
+          <div style={{ opacity: (typeof window != 'undefined' && window.screen.width > 1000) ? 1 : 0 }}>
             <Link href={'/'}>
               <Image src={'/images/Logo.png'} alt={'image'} className='h-12' />
             </Link>
