@@ -34,7 +34,7 @@ const DoctorDetails = () => {
 
   const [year, setYear] = useState<string>();
 
-  const { data: doctor } = trpc.db.doctor.useQuery({ id, year });
+  const { data: doctor, isLoading } = trpc.db.doctor.useQuery({ id, year });
 
   // const addReview = useAddReviewMutation();
 
@@ -52,7 +52,7 @@ const DoctorDetails = () => {
   //   { title: 'Top Manufacturers' },
   // ];
 
-  if (!doctor) {
+  if (!doctor || isLoading) {
     return (
       <>
         <div className="bgColor">

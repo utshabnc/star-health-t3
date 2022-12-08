@@ -8,7 +8,7 @@ import { useState } from 'react';
 // import { useAllStatesQuery } from './api';
 import UnitedStatesHeatmap from '../components/charts/UnitedStatesHeatmap';
 import Dropdown from '../components/Dropdown';
-// import SearchPage from './SearchPage';
+import SearchPage from './SearchPage';
 import { drugTypes } from '../utils';
 import _ from 'lodash'
 import transparent from '../assets/transparent.png';
@@ -132,7 +132,7 @@ export default function Home() {
         <h3 className='flex sm:w-[60%] text-3xl sm:text-6xl text-left font-bold justify-center text-violet-700 my-2 mb-4'>
           Passion for Better Healthcare
         </h3>
-        {/* <SearchPage /> */}
+        <SearchPage />
       </div>
       <div className='sm:w-[50%] flex flex-col'>
         <h3 className='flex text-md sm:text-xl text-center font-semibold justify-center text-violet-700 mb-4 mt-4 sm:mt-4'>
