@@ -48,7 +48,11 @@ model StateCounty {
   totalAmount Float
   population  Int
   year        String
-  drugType    String
+  product          Product      @relation(fields: [productId], references: [id])
+  productId        String
+  // -- old -- //
+  drugType         String
+  // -- old -- //
 }
 
 model StateSummary {
@@ -58,19 +62,27 @@ model StateSummary {
   totalAmount Float
   year        String
   rank        Int?
-  drugType    String
+  product          Product      @relation(fields: [productId], references: [id])
+  productId        String
+  // -- old -- //
+  drugType         String
+  // -- old -- //
 }
 
 model StateItem {
   id               String       @id @default(uuid())
   stateId          String
   manufacturerId   String
-  productName      String?
-  productType      String?
   year             String
   totalAmount      Float
   transactionCount Int
+  product          Product      @relation(fields: [productId], references: [id])
+  productId        String
+  // -- old -- //
+  productName      String?
+  productType      String?
   drugType         String
+  // -- old -- //
   manufacturer     Manufacturer @relation(fields: [manufacturerId], references: [id])
   state            State        @relation(fields: [stateId], references: [id])
 }
@@ -82,7 +94,11 @@ model StateDoctor {
   year             String
   totalAmount      Float
   transactionCount Int
+  product          Product      @relation(fields: [productId], references: [id])
+  productId        String
+  // -- old -- //
   drugType         String
+  // -- old -- //
   doctor           Doctor @relation(fields: [doctorId], references: [id])
   state            State  @relation(fields: [stateId], references: [id])
 }
@@ -94,7 +110,11 @@ model StateManufacturer {
   year             String
   totalAmount      Float
   transactionCount Int
+  product          Product      @relation(fields: [productId], references: [id])
+  productId        String
+  // -- old -- //
   drugType         String
+  // -- old -- //
   manufacturer     Manufacturer @relation(fields: [manufacturerId], references: [id])
   state            State        @relation(fields: [stateId], references: [id])
 }
@@ -136,8 +156,12 @@ model ManufacturerState {
 model ManufacturerItems {
   id               String       @id @default(uuid())
   manufacturerId   String
+  product          Product      @relation(fields: [productId], references: [id])
+  productId        String
+  // -- old -- //
   productName      String?
   productType      String?
+  // -- old -- //
   year             String
   totalAmount      Float
   transactionCount Int
@@ -187,10 +211,22 @@ model Payment {
   year             String
   paymentType      String?
   paymentNature    String?
+  product          Product      @relation(fields: [productId], references: [id])
+  productId        String
+  // -- old -- //
   productType      String?
   productCategory  String?
   productName      String?
+  // -- old -- //
   contextualInfo   String?
+}
+
+model Product {
+  id               String       @id @default(@uuid())
+  type             String
+  name             String
+  category         String
+  payments         Payment[]
 }
 
 // Necessary for Next auth
