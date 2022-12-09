@@ -41,29 +41,29 @@ model State {
 }
 
 model StateCounty {
-  id          String @id
+  id          String  @id
   stateId     String
   name        String
   fips        String
   totalAmount Float
   population  Int
   year        String
-  product          Product      @relation(fields: [productId], references: [id])
-  productId        String
+  product     Product @relation(fields: [productId], references: [id])
+  productId   String
   // -- old -- //
   // drugType         String
   // -- old -- //
 }
 
 model StateSummary {
-  id          String @id @default(uuid())
+  id          String  @id @default(uuid())
   stateId     String
-  state       State  @relation(fields: [stateId], references: [id])
+  state       State   @relation(fields: [stateId], references: [id])
   totalAmount Float
   year        String
   rank        Int?
-  product          Product      @relation(fields: [productId], references: [id])
-  productId        String
+  product     Product @relation(fields: [productId], references: [id])
+  productId   String
   // -- old -- //
   // drugType         String
   // -- old -- //
@@ -88,19 +88,19 @@ model StateItem {
 }
 
 model StateDoctor {
-  id               String @id @default(uuid())
+  id               String  @id @default(uuid())
   stateId          String
   doctorId         String
   year             String
   totalAmount      Float
   transactionCount Int
-  product          Product      @relation(fields: [productId], references: [id])
+  product          Product @relation(fields: [productId], references: [id])
   productId        String
   // -- old -- //
   // drugType         String
   // -- old -- //
-  doctor           Doctor @relation(fields: [doctorId], references: [id])
-  state            State  @relation(fields: [stateId], references: [id])
+  doctor           Doctor  @relation(fields: [doctorId], references: [id])
+  state            State   @relation(fields: [stateId], references: [id])
 }
 
 model StateManufacturer {
@@ -222,11 +222,17 @@ model Payment {
 }
 
 model Product {
-  id               String       @id @default(@uuid())
-  type             String
-  name             String
-  category         String
-  payments         Payment[]
+  id                String              @id @default(uuid())
+  type              String
+  name              String
+  category          String
+  payments          Payment[]
+  maufacturerItems  ManufacturerItems[]
+  StateCounty       StateCounty[]
+  StateSummary      StateSummary[]
+  StateItem         StateItem[]
+  StateDoctor       StateDoctor[]
+  StateManufacturer StateManufacturer[]
 }
 
 // Necessary for Next auth
