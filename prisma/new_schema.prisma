@@ -51,7 +51,7 @@ model StateCounty {
   product          Product      @relation(fields: [productId], references: [id])
   productId        String
   // -- old -- //
-  drugType         String
+  // drugType         String
   // -- old -- //
 }
 
@@ -65,7 +65,7 @@ model StateSummary {
   product          Product      @relation(fields: [productId], references: [id])
   productId        String
   // -- old -- //
-  drugType         String
+  // drugType         String
   // -- old -- //
 }
 
@@ -79,9 +79,9 @@ model StateItem {
   product          Product      @relation(fields: [productId], references: [id])
   productId        String
   // -- old -- //
-  productName      String?
-  productType      String?
-  drugType         String
+  // productName      String?
+  // productType      String?
+  // drugType         String
   // -- old -- //
   manufacturer     Manufacturer @relation(fields: [manufacturerId], references: [id])
   state            State        @relation(fields: [stateId], references: [id])
@@ -97,7 +97,7 @@ model StateDoctor {
   product          Product      @relation(fields: [productId], references: [id])
   productId        String
   // -- old -- //
-  drugType         String
+  // drugType         String
   // -- old -- //
   doctor           Doctor @relation(fields: [doctorId], references: [id])
   state            State  @relation(fields: [stateId], references: [id])
@@ -113,7 +113,7 @@ model StateManufacturer {
   product          Product      @relation(fields: [productId], references: [id])
   productId        String
   // -- old -- //
-  drugType         String
+  // drugType         String
   // -- old -- //
   manufacturer     Manufacturer @relation(fields: [manufacturerId], references: [id])
   state            State        @relation(fields: [stateId], references: [id])
@@ -159,8 +159,8 @@ model ManufacturerItems {
   product          Product      @relation(fields: [productId], references: [id])
   productId        String
   // -- old -- //
-  productName      String?
-  productType      String?
+  // productName      String?
+  // productType      String?
   // -- old -- //
   year             String
   totalAmount      Float
@@ -214,9 +214,9 @@ model Payment {
   product          Product      @relation(fields: [productId], references: [id])
   productId        String
   // -- old -- //
-  productType      String?
-  productCategory  String?
-  productName      String?
+  // productType      String?
+  // productCategory  String?
+  // productName      String?
   // -- old -- //
   contextualInfo   String?
 }
