@@ -426,15 +426,15 @@ export const db = router({
   allStates: publicProcedure
     .input(
       z.object({
-        category: z.string().optional(),
+        productCategory: z.string().optional(),
       })
     )
-    .query(async ({ ctx: { prisma }, input: {category} }) => {
+    .query(async ({ ctx: { prisma }, input: {productCategory} }) => {
       const states = await prisma.stateSummary.findMany({
         where: {
           year: "ALL",
           // drugType: drugType ?? "ALL",
-          product: {category: category ?? "ALL"},
+          product: {category: productCategory ?? "ALL"},
         },
         select: {
           stateId: true,
