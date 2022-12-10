@@ -304,10 +304,10 @@ export const db = router({
       z.object({
         id: z.string(),
         year: z.string().optional(),
-        drugType: z.string().optional(),
+        category: z.string().optional(),
       })
     )
-    .query(async ({ ctx: { prisma }, input: { id, drugType, year } }) => {
+    .query(async ({ ctx: { prisma }, input: { id, category, year } }) => {
       const state = await prisma.state.findFirst({
         where: { id },
         select: {
@@ -321,6 +321,7 @@ export const db = router({
         where: {
           stateId: id,
           // drugType: drugType ?? "ALL",
+          product: {category: category ?? "ALL"},
           year: year ?? "ALL",
         },
       });
@@ -329,6 +330,7 @@ export const db = router({
         where: {
           stateId: id,
           // drugType: drugType ?? "ALL",
+          product: {category: category ?? "ALL"},
           year: year ?? "ALL",
         },
         select: {
@@ -358,6 +360,7 @@ export const db = router({
         where: {
           stateId: id,
           // drugType: drugType ?? "ALL",
+          product: {category: category ?? "ALL"},
           year: year ?? "ALL",
         },
         select: {
@@ -376,6 +379,7 @@ export const db = router({
         where: {
           stateId: id,
           // drugType: drugType ?? "ALL",
+          product: {category: category ?? "ALL"},
           year: year ?? "ALL",
         },
         select: {
@@ -396,6 +400,7 @@ export const db = router({
         where: {
           stateId: id,
           // drugType: drugType ?? "ALL",
+          product: {category: category ?? "ALL"},
           year: year ?? "ALL",
         },
         select: {
@@ -421,14 +426,15 @@ export const db = router({
   allStates: publicProcedure
     .input(
       z.object({
-        drugType: z.string().optional(),
+        category: z.string().optional(),
       })
     )
-    .query(async ({ ctx: { prisma }, input }) => {
+    .query(async ({ ctx: { prisma }, input: {category} }) => {
       const states = await prisma.stateSummary.findMany({
         where: {
           year: "ALL",
-          // drugType: input.drugType ?? "ALL",
+          // drugType: drugType ?? "ALL",
+          product: {category: category ?? "ALL"},
         },
         select: {
           stateId: true,
