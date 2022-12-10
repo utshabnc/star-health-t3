@@ -41,50 +41,66 @@ model State {
 }
 
 model StateCounty {
-  id          String @id
+  id          String  @id
   stateId     String
   name        String
   fips        String
   totalAmount Float
   population  Int
   year        String
-  drugType    String
+  product     Product @relation(fields: [productId], references: [id])
+  productId   String
+  // -- old -- //
+  // drugType         String
+  // -- old -- //
 }
 
 model StateSummary {
-  id          String @id @default(uuid())
+  id          String  @id @default(uuid())
   stateId     String
-  state       State  @relation(fields: [stateId], references: [id])
+  state       State   @relation(fields: [stateId], references: [id])
   totalAmount Float
   year        String
   rank        Int?
-  drugType    String
+  product     Product @relation(fields: [productId], references: [id])
+  productId   String
+  // -- old -- //
+  // drugType         String
+  // -- old -- //
 }
 
 model StateItem {
   id               String       @id @default(uuid())
   stateId          String
   manufacturerId   String
-  productName      String?
-  productType      String?
   year             String
   totalAmount      Float
   transactionCount Int
-  drugType         String
+  product          Product      @relation(fields: [productId], references: [id])
+  productId        String
+  // -- old -- //
+  // productName      String?
+  // productType      String?
+  // drugType         String
+  // -- old -- //
   manufacturer     Manufacturer @relation(fields: [manufacturerId], references: [id])
   state            State        @relation(fields: [stateId], references: [id])
 }
 
 model StateDoctor {
-  id               String @id @default(uuid())
+  id               String  @id @default(uuid())
   stateId          String
   doctorId         String
   year             String
   totalAmount      Float
   transactionCount Int
-  drugType         String
-  doctor           Doctor @relation(fields: [doctorId], references: [id])
-  state            State  @relation(fields: [stateId], references: [id])
+  product          Product @relation(fields: [productId], references: [id])
+  productId        String
+  // -- old -- //
+  // drugType         String
+  // -- old -- //
+  doctor           Doctor  @relation(fields: [doctorId], references: [id])
+  state            State   @relation(fields: [stateId], references: [id])
 }
 
 model StateManufacturer {
@@ -94,7 +110,11 @@ model StateManufacturer {
   year             String
   totalAmount      Float
   transactionCount Int
-  drugType         String
+  product          Product      @relation(fields: [productId], references: [id])
+  productId        String
+  // -- old -- //
+  // drugType         String
+  // -- old -- //
   manufacturer     Manufacturer @relation(fields: [manufacturerId], references: [id])
   state            State        @relation(fields: [stateId], references: [id])
 }
@@ -136,8 +156,12 @@ model ManufacturerState {
 model ManufacturerItems {
   id               String       @id @default(uuid())
   manufacturerId   String
-  productName      String?
-  productType      String?
+  product          Product      @relation(fields: [productId], references: [id])
+  productId        String
+  // -- old -- //
+  // productName      String?
+  // productType      String?
+  // -- old -- //
   year             String
   totalAmount      Float
   transactionCount Int
@@ -187,10 +211,28 @@ model Payment {
   year             String
   paymentType      String?
   paymentNature    String?
-  productType      String?
-  productCategory  String?
-  productName      String?
+  product          Product      @relation(fields: [productId], references: [id])
+  productId        String
+  // -- old -- //
+  // productType      String?
+  // productCategory  String?
+  // productName      String?
+  // -- old -- //
   contextualInfo   String?
+}
+
+model Product {
+  id                String              @id @default(uuid())
+  type              String
+  name              String
+  category          String
+  payments          Payment[]
+  maufacturerItems  ManufacturerItems[]
+  stateCounty       StateCounty[]
+  stateSummary      StateSummary[]
+  stateItem         StateItem[]
+  stateDoctor       StateDoctor[]
+  stateManufacturer StateManufacturer[]
 }
 
 // Necessary for Next auth
