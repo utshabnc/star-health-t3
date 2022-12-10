@@ -304,10 +304,10 @@ export const db = router({
       z.object({
         id: z.string(),
         year: z.string().optional(),
-        category: z.string().optional(),
+        productCategory: z.string().optional(),
       })
     )
-    .query(async ({ ctx: { prisma }, input: { id, category, year } }) => {
+    .query(async ({ ctx: { prisma }, input: { id, productCategory, year } }) => {
       const state = await prisma.state.findFirst({
         where: { id },
         select: {
@@ -321,7 +321,7 @@ export const db = router({
         where: {
           stateId: id,
           // drugType: drugType ?? "ALL",
-          product: {category: category ?? "ALL"},
+          product: {category: productCategory ?? "ALL"},
           year: year ?? "ALL",
         },
       });
@@ -330,7 +330,7 @@ export const db = router({
         where: {
           stateId: id,
           // drugType: drugType ?? "ALL",
-          product: {category: category ?? "ALL"},
+          product: {category: productCategory ?? "ALL"},
           year: year ?? "ALL",
         },
         select: {
@@ -360,7 +360,7 @@ export const db = router({
         where: {
           stateId: id,
           // drugType: drugType ?? "ALL",
-          product: {category: category ?? "ALL"},
+          product: {category: productCategory ?? "ALL"},
           year: year ?? "ALL",
         },
         select: {
@@ -379,7 +379,7 @@ export const db = router({
         where: {
           stateId: id,
           // drugType: drugType ?? "ALL",
-          product: {category: category ?? "ALL"},
+          product: {category: productCategory ?? "ALL"},
           year: year ?? "ALL",
         },
         select: {
@@ -400,7 +400,7 @@ export const db = router({
         where: {
           stateId: id,
           // drugType: drugType ?? "ALL",
-          product: {category: category ?? "ALL"},
+          product: {category: productCategory ?? "ALL"},
           year: year ?? "ALL",
         },
         select: {
@@ -487,7 +487,7 @@ export const db = router({
       const transactionsSummary = topDoctors.concat(topManufacturers);
 
       return {
-        product,
+        ...product,
         totalAmount,
         topDoctors,
         topManufacturers,
