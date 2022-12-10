@@ -6,6 +6,22 @@ import { trpc } from "../utils/trpc";
 
 import "../styles/globals.css";
 
+
+{/* <React.StrictMode>
+    <BrowserRouter>
+      <NavFoot>
+        <Routes>
+          <Route path='/' element={<App />} />
+          <Route path='doctor/:id' element={<DoctorDetails />} />
+          <Route path='doctor/:id/reviews' element={<DoctorReviews />} />
+          <Route path='drug/:id' element={<DrugDetails />} />
+          <Route path='manufacturer/:id' element={<ManufacturerDetails />} />
+          <Route path='state/:id' element={<StateDetails />} />
+        </Routes>
+      </NavFoot>
+    </BrowserRouter>
+  </React.StrictMode> */}
+
 const MyApp: AppType<{ session: Session | null }> = ({
   Component,
   pageProps: { session, ...pageProps },
@@ -13,6 +29,7 @@ const MyApp: AppType<{ session: Session | null }> = ({
   return (
     <SessionProvider session={session}>
       <Component {...pageProps} />
+
     </SessionProvider>
   );
 };
