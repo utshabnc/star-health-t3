@@ -28,11 +28,6 @@ const defaultProductSelect = Prisma.validator<Prisma.ProductSelect>()({
   name: true,
   category: true,
   payments: true,
-  manufacturerItems: true,
-  stateItem: true,
-  stateDoctor: true,
-  stateManufacturer: true,
-  stateSummary: true
 })
 
 const defaultReviewSelect = Prisma.validator<Prisma.ReviewSelect>()({
@@ -165,7 +160,15 @@ export const db = router({
     .query(async ({ ctx: { prisma }, input: { id, year } }) => {
       const doctor = await prisma.doctor.findFirst({
         where: { id },
-        select: defaultDoctorSelect,
+        // select: defaultDoctorSelect,
+        include: {
+          ...defaultDoctorSelect,
+          payments: {
+            include: {
+              product: true
+            } 
+          }
+        }
       });
       const payments =
         doctor?.payments.filter((p) => !year || p.year === year) ?? [];
@@ -173,12 +176,12 @@ export const db = router({
       const totalAmount = _.round(_.sum(payments.map((p) => p.amount)), 2);
 
       const topProducts = _(payments)
-        .groupBy("productName")
+        .groupBy("product.name")
         .map((pmts, productName) => ({
           productName,
           amount: _.round(_.sumBy(pmts, "amount"), 2),
-          type: payments.find((p) => p.productName === productName)
-            ?.productType,
+          type: payments.find((p) => p.product.name === productName)
+            ?.product.type,
           count: pmts.length,
         }))
         .value();
@@ -304,10 +307,10 @@ export const db = router({
       z.object({
         id: z.string(),
         year: z.string().optional(),
-        productCategory: z.string().optional(),
+        drugType: z.string().optional(),
       })
     )
-    .query(async ({ ctx: { prisma }, input: { id, productCategory, year } }) => {
+    .query(async ({ ctx: { prisma }, input: { id, drugType, year } }) => {
       const state = await prisma.state.findFirst({
         where: { id },
         select: {
@@ -320,8 +323,7 @@ export const db = router({
       const summary = await prisma.stateSummary.findFirst({
         where: {
           stateId: id,
-          // drugType: drugType ?? "ALL",
-          product: {category: productCategory ?? "ALL"},
+          drugType: drugType ?? "ALL",
           year: year ?? "ALL",
         },
       });
@@ -329,8 +331,7 @@ export const db = router({
       const items = await prisma.stateItem.findMany({
         where: {
           stateId: id,
-          // drugType: drugType ?? "ALL",
-          product: {category: productCategory ?? "ALL"},
+          drugType: drugType ?? "ALL",
           year: year ?? "ALL",
         },
         select: {
@@ -340,7 +341,6 @@ export const db = router({
               name: true,
             },
           },
-          productName: true,
           productType: true,
           totalAmount: true,
           transactionCount: true,
@@ -359,8 +359,7 @@ export const db = router({
       const topManufacturers = await prisma.stateManufacturer.findMany({
         where: {
           stateId: id,
-          // drugType: drugType ?? "ALL",
-          product: {category: productCategory ?? "ALL"},
+          drugType: drugType ?? "ALL",
           year: year ?? "ALL",
         },
         select: {
@@ -378,8 +377,7 @@ export const db = router({
       const topDoctors = await prisma.stateDoctor.findMany({
         where: {
           stateId: id,
-          // drugType: drugType ?? "ALL",
-          product: {category: productCategory ?? "ALL"},
+          drugType: drugType ?? "ALL",
           year: year ?? "ALL",
         },
         select: {
@@ -399,8 +397,7 @@ export const db = router({
       const counties = await prisma.stateCounty.findMany({
         where: {
           stateId: id,
-          // drugType: drugType ?? "ALL",
-          product: {category: productCategory ?? "ALL"},
+          drugType: drugType ?? "ALL",
           year: year ?? "ALL",
         },
         select: {
@@ -426,15 +423,14 @@ export const db = router({
   allStates: publicProcedure
     .input(
       z.object({
-        productCategory: z.string().optional(),
+        drugType: z.string().optional(),
       })
     )
-    .query(async ({ ctx: { prisma }, input: {productCategory} }) => {
+    .query(async ({ ctx: { prisma }, input: {drugType} }) => {
       const states = await prisma.stateSummary.findMany({
         where: {
           year: "ALL",
-          // drugType: drugType ?? "ALL",
-          product: {category: productCategory ?? "ALL"},
+          drugType: drugType ?? "ALL",
         },
         select: {
           stateId: true,
@@ -454,9 +450,23 @@ export const db = router({
     .query(async ({ ctx: { prisma }, input: {id, year}}) => {
       const product = await prisma.product.findFirst({
         where: {
-          id
+          id,
+          payments: {
+            every: {
+              year: year ?? "ALL"
+            }
+          }
         },
-        select: defaultProductSelect
+        include:{
+          ...defaultProductSelect,
+          payments: {
+            include: {
+              doctor: true,
+              manufacturer: true 
+            }
+          }
+          
+        }
       })
 
       const payments =
@@ -465,11 +475,11 @@ export const db = router({
       const totalAmount = _.round(_.sum(payments.map((p) => p.amount)), 2);
 
       const topDoctors = _(payments)
-        .groupBy("doctor.name")
+        .groupBy("doctor.firstName")
         .map((pmts, doctorName) => ({
           doctorName,
           amount: _.round(_.sumBy(pmts, "amount"), 2),
-          paymentNature: payments.find((payment) => payment.doctor.name === doctorName)?.paymentNature,
+          paymentNature: payments.find((payment) => payment.doctor.firstName === doctorName)?.paymentNature,
           count: pmts.length
         }))
         .value()
@@ -479,12 +489,13 @@ export const db = router({
         .map((pmts, manufacturerName) => ({
           manufacturerName,
           amount: _.round(_.sumBy(pmts, "amount"), 2),
-          paymentNature: payments.find((payment) => payment.manufacturer.name === manufacturerName)?.paymentNature, 
+          paymentNature: payments.find((payment) => payment.manufacturerName === manufacturerName)?.paymentNature, 
           count: pmts.length
         }))
+        .value()
 
       // group together the above results to make it easier for client to display all transactions for that given product whether doctor or manufacturer
-      const transactionsSummary = topDoctors.concat(topManufacturers);
+      const transactionsSummary = [...topDoctors, ...topManufacturers];
 
       return {
         ...product,
