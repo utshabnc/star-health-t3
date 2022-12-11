@@ -514,3 +514,4 @@ export type DoctorResponse = RouterOutput["db"]["doctor"];
 export type ManufacturerResponse = RouterOutput["db"]["manufacturer"];
 export type StateResponse = RouterOutput["db"]["state"];
 export type AllStatesResponse = RouterOutput["db"]["allStates"];
+export type ProductResponse = RouterOutput["db"]["product"]
