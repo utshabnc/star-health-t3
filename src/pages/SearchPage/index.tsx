@@ -32,6 +32,8 @@ const SearchPage = ({ buttonPlaceholder, buttonSmall }: Props) => {
   const { data: searchResults, refetch: fetchSearchResults } =
     trpc.db.search.useQuery(search ?? "", { enabled: false });
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
+  console.log(searchResults);
+  
 
   useEffect(() => {
     // const params = new URLSearchParams(querySearch);

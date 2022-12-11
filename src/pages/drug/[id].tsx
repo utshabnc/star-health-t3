@@ -25,6 +25,7 @@ import UnitedStatesHeatmap from "../../components/charts/UnitedStatesHeatmap";
 import data from "../../assets/example_payments_query";
 import geo from "../../assets/example_geo_query";
 import { useRouter } from "next/router";
+import { trpc } from "../../utils/trpc";
 
 /*
  * This page is a work in progress. It was initially copied from the Doctor page.
@@ -48,6 +49,8 @@ import { useRouter } from "next/router";
 const DoctorDetails = () => {
   const navigate = useRouter();
   const id = navigate.query.id as string;
+  console.log(id);
+  
   // const [user] = useUser();
   const [drugType, setDrugType] = useState<string>("Antibiotic");
 
@@ -55,7 +58,8 @@ const DoctorDetails = () => {
 
   // TODO - implement drug query and types, something like this:
   // const { data: drug, refetch: refetchDrug } = useDrugQuery({ id, year });
-
+  const {data, isLoading, isError} = trpc.db.product.useQuery({id: id ?? "", year})
+  console.log(data)
   // const addReview = useAddReviewMutation();
 
   // const [reviewText, setReviewText] = useState("");
@@ -242,7 +246,7 @@ const DoctorDetails = () => {
                 All Transaction Summaries
               </p>
               <div className="flex gap-2 flex-col">
-                {data.payments
+                {data.payment && data.payments
                   .sort(
                     (a, b) =>
                       new Date(b.date).getTime() - new Date(a.date).getTime()

@@ -457,7 +457,7 @@ export const db = router({
             }
           }
         },
-        include:{
+        select: {
           ...defaultProductSelect,
           payments: {
             include: {
@@ -465,9 +465,14 @@ export const db = router({
               manufacturer: true 
             }
           }
-          
+
         }
       })
+
+      // check for no result -- uncomment once there is data to display
+      // if(!product){
+      //   return {errMsg: "Product not found"}
+      // }
 
       const payments =
         product?.payments.filter((p) => !year || p.year === year) ?? [];
