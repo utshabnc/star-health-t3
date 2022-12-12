@@ -22,7 +22,7 @@ function NavBar() {
   // const [user, loading] = useUser();
   const [search, setSearch] = useState<string>('');
   const navigate = useRouter();
-  console.log(navigate);
+  // console.log(navigate);
   const session = useSession();
   
   
@@ -32,16 +32,11 @@ function NavBar() {
     navigate.push(`/?search=${search}`);
   };
 
-  console.log(navigate.asPath === '/')
-  console.log(typeof window != 'undefined')
-  // console.log(window.screen.width)
-
-
   return (
     <>
-      <nav className='bg-nav bg-[#010139] p-1'>
-        <div className='flex-1 flex flex-row justify-center items-center'>
-          {navigate.asPath === '/' && typeof window != 'undefined' && (
+      <nav className='bg-nav bg-[#010139] p-1 relative'>
+        <div className='flex-1 flex justify-center  items-center'>
+          {navigate.asPath === '/' && typeof window != 'undefined' &&  (
             <div className={``}>
               <Link href={'/'}>
                 <Image src={'/images/Logo.png'} alt='logo' className=' h-12' width={150} height={10} />
@@ -62,20 +57,21 @@ function NavBar() {
               </>
             )}
           </div>
+        
 
-          <div style={{ opacity: (typeof window != 'undefined' && window.screen.width > 1000) ? 1 : 0 }}>
+          {/* <div style={{ opacity: (typeof window != 'undefined' && window.screen.width > 1000) ? 1 : 0 }}>
             <Link href={'/'}>
               <Image src={'/images/Logo.png'} alt={'image'} className='h-12' width={100} height={10} />
             </Link>
-          </div>
+          </div> */}
 
           <div
             style={{
               minWidth: (typeof window !== "undefined" && window.screen.width) > 1000 ? 400 : 100,
               position: 'absolute',
-              right: '10px',
+              right: "10px"
             }}
-            className={`flex flex-row items-center space-x-2 ${
+            className={`flex flex-row justify-end items-center space-x-2 ${
               session?.status === "loading" && 'opacity-0'
             }`}
           >
