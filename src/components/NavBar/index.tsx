@@ -24,6 +24,9 @@ function NavBar() {
   const navigate = useRouter();
   // console.log(navigate);
   const session = useSession();
+  const [width, setWidth] = useState<number>(0)
+  console.log(width);
+  
   
   
   // const location = useLocation();
@@ -32,11 +35,15 @@ function NavBar() {
     navigate.push(`/?search=${search}`);
   };
 
+  useEffect(() => {
+    setWidth(window?.innerWidth)
+  }, [width])
+
   return (
     <>
       <nav className='bg-nav bg-[#010139] p-1 relative'>
         <div className='flex-1 flex justify-center  items-center'>
-          {navigate.asPath === '/' && typeof window != 'undefined' &&  (
+          {navigate.asPath === '/' &&  (
             <div className={``}>
               <Link href={'/'}>
                 <Image src={'/images/Logo.png'} alt='logo' className=' h-12' width={150} height={10} />
@@ -84,7 +91,7 @@ function NavBar() {
               <button
                 className='w-24 lg:w-22 bg-rose-400 hover:bg-rose-500 active:bg-rose-600 rounded px-3 py-1'
                 type='button'
-                onClick={signOut}
+                onClick={() => signOut()}
               >
                 Sign out
               </button>

@@ -77,7 +77,8 @@ const InfoSection = ({
                   <Image
                     src={item.img}
                     alt={item.label}
-                    className="sm:w-38 sm:h-32"
+                    className=""
+                    style={{ height: 90, width: 100 }}
                   />
                 ) : (
                   <Image
