@@ -28,6 +28,10 @@ const formatNumber = (amount: number, decimals = 2) => {
   return formatter.format(amount);
 };
 
+const formatLocation = (country: string, state: string | null) => {
+  return state ? state + ", " + formatName(country) : formatName(country)
+}
+
 const drugTypes = [
   'antibiotic',
   'antidiabetic',
@@ -63,6 +67,7 @@ export {
   formatMoney,
   formatNumber,
   formatName,
+  formatLocation,
   formatProductType,
   formatProductName,
   drugTypes,

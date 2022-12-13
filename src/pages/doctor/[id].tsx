@@ -34,7 +34,8 @@ const DoctorDetails = () => {
 
   const [year, setYear] = useState<string>();
 
-  const { data: doctor, isLoading } = trpc.db.doctor.useQuery({ id, year });
+  const { data: doctor, isLoading: isDoctorLoading } = trpc.db.doctor.useQuery({ id, year });
+  // const { data: payments, isPaymentsLoading } = trpc.db.payments.useQuery({ 
 
   // const addReview = useAddReviewMutation();
 
@@ -52,7 +53,7 @@ const DoctorDetails = () => {
   //   { title: 'Top Manufacturers' },
   // ];
 
-  if (!doctor || isLoading) {
+  if (!doctor || isDoctorLoading) {
     return (
       <>
         <div className="bgColor">
@@ -202,15 +203,15 @@ const DoctorDetails = () => {
                 {doctor.payments
                   .sort((a, b) => b.amount - a.amount)
                   .slice(0, 4)
-                  .map((product) => {
+                  .map(({ amount, product: { id } }) => {
                     return (
                       <li
-                        key={product.id}
+                        key={id}
                         className="text-center text-sm sm:text-base "
                       >
                         {typeof window != 'undefined' && window.screen.width > 1000 &&
-                          `${formatProductName(product.productName)}:`}
-                        {formatMoney(product.amount)}
+                          `${formatProductName()}:`}
+                        {formatMoney(amount)}
                       </li>
                     );
                   })}
