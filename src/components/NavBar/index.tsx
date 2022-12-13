@@ -22,15 +22,9 @@ function NavBar() {
   // const [user, loading] = useUser();
   const [search, setSearch] = useState<string>('');
   const navigate = useRouter();
-  // console.log(navigate);
   const session = useSession();
   const [width, setWidth] = useState<number>(typeof window != "undefined" ? window?.innerWidth : 0)
-  console.log(width);
   
-  
-  
-  // const location = useLocation();
-
   const onSearch = () => {
     navigate.push(`/?search=${search}`);
   };
@@ -66,13 +60,6 @@ function NavBar() {
               </>
             )}
           </div>
-        
-
-          {/* <div style={{ opacity: (typeof window != 'undefined' && window.screen.width > 1000) ? 1 : 0 }}>
-            <Link href={'/'}>
-              <Image src={'/images/Logo.png'} alt={'image'} className='h-12' width={100} height={10} />
-            </Link>
-          </div> */}
 
           <div
             style={{
