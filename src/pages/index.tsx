@@ -78,13 +78,13 @@ const InfoSection = ({
                     src={item.img}
                     alt={item.label}
                     className=""
-                    style={{ height: 90, width: 100 }}
+                    style={{ height: 150, width: 150 }}
                   />
                 ) : (
                   <Image
                     src={item.img}
                     alt={item.label}
-                    style={{ height: 90, width: 100 }}
+                    style={{ height: 125, width: 125 }}
                   />
                 )}
               </>
