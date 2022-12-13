@@ -24,6 +24,7 @@ function NavBar() {
   const navigate = useRouter();
   const session = useSession();
   const [width, setWidth] = useState<number>(typeof window != "undefined" ? window?.innerWidth : 0)
+  console.log(navigate);
   
   const onSearch = () => {
     navigate.push(`/?search=${search}`);
@@ -37,7 +38,7 @@ function NavBar() {
 
   return (
     <>
-      <nav className='bg-nav bg-[#010139] p-1 relative'>
+      <nav className={`bg-nav bg-[#010139] ${navigate.asPath === "/" ? "p-1" : "p-7"} relative`}>
         <div className='flex-1 flex justify-center  items-center'>
           {navigate.asPath === '/' && (
             <div className={``}>
@@ -49,7 +50,7 @@ function NavBar() {
 
           <div
             style={{ position: 'absolute', left: 5 }}
-            className='flex flex-row lg:ml-2  lg:max-w-[100px]  items-center'
+            className='flex flex-row lg:ml-2 lg:max-w-[100px]  items-center'
           >
             {navigate.asPath !== '/' && (
               <>
