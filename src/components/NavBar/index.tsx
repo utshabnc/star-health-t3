@@ -48,7 +48,7 @@ function NavBar() {
           {navigate.asPath === '/' && (
             <div className={``}>
               <Link href={'/'}>
-                <Image src={'/images/Logo.png'} alt='logo' className=' h-12' width={150} height={10} />
+                <Image src={'/images/Logo.png'} alt='logo' className=' h-12' width={175} height={10} />
               </Link>
             </div>
           )}

@@ -26,7 +26,7 @@ function Footer() {
       <div className='flex items-left'>
         <div className={``}>
           <Link href={'/'}>
-            <Image src={'/images/Logo.png'} alt={'image'} className='h-8' width={100} height={10} />
+            <Image src={'/images/Logo.png'} alt={'image'} className='h-8' width={125} height={10} />
           </Link>
         </div>
       </div>
