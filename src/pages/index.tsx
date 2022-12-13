@@ -178,7 +178,7 @@ export default function Home() {
       <InfoSection
         items={data}
         header='StarHealth Data Directory'
-        boxStyle='bg-purp-3'
+        boxStyle='bg-[#6931f4]'
         textColor='white'
         itemTextSpacing={true}
       />
@@ -186,7 +186,7 @@ export default function Home() {
       <InfoSection
         items={partners}
         header='Our Partners'
-        boxStyle='bg-purp-2'
+        boxStyle='bg-[#8345fe]'
         textColor='white'
       />
 
@@ -194,7 +194,7 @@ export default function Home() {
       <InfoSection
         items={understand}
         header='Understand Healthcare through Data'
-        boxStyle='bg-purp-1'
+        boxStyle='bg-[#8d47fc]'
         textColor='white'
       />
     </div>
