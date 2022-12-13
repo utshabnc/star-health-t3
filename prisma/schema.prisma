@@ -38,11 +38,13 @@ model State {
   items         StateItem[]
   doctors       StateDoctor[]
   manufacturers StateManufacturer[]
+  stateCounty   StateCounty[]
 }
 
 model StateCounty {
   id          String @id
   stateId     String
+  state       State  @relation(fields: [stateId], references: [id])
   name        String
   fips        String
   totalAmount Float
@@ -194,9 +196,9 @@ model Payment {
 
 model Product {
   id       String    @id @default(uuid())
-  type     String
-  name     String
-  category String
+  name     String?
+  type     String?
+  category String?
   payments Payment[]
 }
 

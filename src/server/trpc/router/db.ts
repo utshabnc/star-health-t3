@@ -160,8 +160,15 @@ export const db = router({
     .query(async ({ ctx: { prisma }, input: { id, year } }) => {
       const doctor = await prisma.doctor.findFirst({
         where: { id },
-        // select: defaultDoctorSelect,
-        include: {
+        // include: {
+        //   ...defaultDoctorSelect,
+        //   payments: {
+        //     include: {
+        //       // product: true
+        //     } 
+        //   }
+        // },
+        select: {
           ...defaultDoctorSelect,
           payments: {
             include: {
