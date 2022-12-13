@@ -24,7 +24,7 @@ function NavBar() {
   const navigate = useRouter();
   // console.log(navigate);
   const session = useSession();
-  const [width, setWidth] = useState<number>(0)
+  const [width, setWidth] = useState<number>(typeof window != "undefined" ? window?.innerWidth : 0)
   console.log(width);
   
   
@@ -36,14 +36,16 @@ function NavBar() {
   };
 
   useEffect(() => {
-    setWidth(window?.innerWidth)
-  }, [width])
+    window.addEventListener("resize", () => {
+      setWidth(window?.innerWidth)
+    })
+  }, [])
 
   return (
     <>
       <nav className='bg-nav bg-[#010139] p-1 relative'>
         <div className='flex-1 flex justify-center  items-center'>
-          {navigate.asPath === '/' &&  (
+          {navigate.asPath === '/' && (
             <div className={``}>
               <Link href={'/'}>
                 <Image src={'/images/Logo.png'} alt='logo' className=' h-12' width={150} height={10} />
@@ -59,7 +61,7 @@ function NavBar() {
               <>
                 <SearchPage
                   buttonSmall
-                  buttonPlaceholder={(typeof window != 'undefined' && window.screen.width <= 640) ? 'Search' : undefined}
+                  buttonPlaceholder={(width <= 640) ? 'Search' : undefined}
                 />
               </>
             )}
@@ -74,7 +76,7 @@ function NavBar() {
 
           <div
             style={{
-              minWidth: (typeof window !== "undefined" && window.screen.width) > 1000 ? 400 : 100,
+              minWidth: width > 1000 ? 400 : 100,
               position: 'absolute',
               right: "10px"
             }}
@@ -82,7 +84,7 @@ function NavBar() {
               session?.status === "loading" && 'opacity-0'
             }`}
           >
-            {(typeof window !== "undefined" && window.screen.width) > 1000 && session?.data?.user && (
+            {(typeof window !== "undefined" && width) > 1000 && session?.data?.user && (
               <p className={`text-white   ${!session == null && 'opacity-0'} `}>
                 Signed in as {session?.data?.user?.email}
               </p>
