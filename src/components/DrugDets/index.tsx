@@ -43,12 +43,12 @@ export const DrugDets = (schema: DrugSchema) => {
         </div>
         <div className='flex flex-col sm:flex-row sm:h-[60px] justify-around items-center'>
           <div className='flex'>
-            <p className='flex flex-row text-lg font-semibold'>
+            <div className='flex flex-row text-lg font-semibold'>
               Payments for:&nbsp;
-              <p className='text-violet-700'>
+              <div className='text-violet-700'>
                 {year === 0 ? 'All Years' : year}
-              </p>
-            </p>
+              </div>
+            </div>
             <Menu as='div' className='relative text-left'>
               <div>
                 <Menu.Button className='inline-flex w-full justify-center bg-white text-sm font-medium text-gray-700'>

@@ -202,18 +202,18 @@ export const db = router({
         }))
         .value();
 
-      // TODO
-      // const reviews = await Promise.all(
-      //   doctor?.reviews?.map(async (review) => ({
-      //     ...review,
-      //     user: await getUser(review.createdBy).catch(() => {}),
-      //   })) ?? []
-      // );
+        const reviews = await Promise.all(
+          doctor?.reviews?.map(async (review) => ({
+            ...review,
+            // TODO
+            // user: await getUser(review.createdBy).catch(() => {}),
+        })) ?? []
+      );
 
       return {
         ...doctor,
         payments,
-        // reviews,
+        reviews,
         totalAmount,
         topProducts,
         topManufacturers,
@@ -348,6 +348,7 @@ export const db = router({
               name: true,
             },
           },
+          productName: true,
           productType: true,
           totalAmount: true,
           transactionCount: true,
@@ -458,11 +459,11 @@ export const db = router({
       const product = await prisma.product.findFirst({
         where: {
           id,
-          payments: {
-            every: {
-              year: year ?? "ALL"
-            }
-          }
+          // payments: {
+          //   every: {
+          //     year: year ?? "ALL"
+          //   }
+          // }
         },
         select: {
           ...defaultProductSelect,
@@ -470,7 +471,8 @@ export const db = router({
             include: {
               doctor: true,
               manufacturer: true 
-            }
+            },
+            take: 10
           }
 
         }
@@ -511,6 +513,7 @@ export const db = router({
 
       return {
         ...product,
+        payments,
         totalAmount,
         topDoctors,
         topManufacturers,

@@ -163,25 +163,23 @@ model ManufacturerTopPayment {
   year           String
   doctorId       String
   amount         Float
-  manufacturer   Manufacturer @relation(fields: [manufacturerId], references: [id])
   doctor         Doctor       @relation(fields: [doctorId], references: [id])
+  manufacturer   Manufacturer @relation(fields: [manufacturerId], references: [id])
 }
 
 model Review {
   id        String   @id @default(uuid())
-  doctor    Doctor   @relation(fields: [doctorId], references: [id])
   doctorId  String
   rating    Int
   text      String
   createdAt DateTime @default(now())
   createdBy String
+  doctor    Doctor   @relation(fields: [doctorId], references: [id])
 }
 
 model Payment {
   id               String       @id
-  doctor           Doctor       @relation(fields: [doctorId], references: [id])
   doctorId         String
-  manufacturer     Manufacturer @relation(fields: [manufacturerId], references: [id])
   manufacturerName String
   manufacturerId   String
   amount           Float
@@ -189,9 +187,11 @@ model Payment {
   year             String
   paymentType      String?
   paymentNature    String?
-  product          Product      @relation(fields: [productId], references: [id])
   productId        String
   contextualInfo   String?
+  doctor           Doctor       @relation(fields: [doctorId], references: [id])
+  manufacturer     Manufacturer @relation(fields: [manufacturerId], references: [id])
+  product          Product      @relation(fields: [productId], references: [id])
 }
 
 model Product {

@@ -5,11 +5,8 @@ import {
   ReactPortal,
   useState,
 } from "react";
-// import { useUser } from "../../hooks";
-// import { useAddReviewMutation, useAllStatesQuery } from "../../api";
-// import "./index.css";
 import { DrugDets } from "../../components/DrugDets";
-import ReviewForm from "../../components/ReviewForm";
+// import ReviewForm from "../../components/ReviewForm";
 // import Reviews from "../../components/Reviews";
 import {
   formatMoney,
@@ -26,6 +23,7 @@ import data from "../../assets/example_payments_query";
 import geo from "../../assets/example_geo_query";
 import { useRouter } from "next/router";
 import { trpc } from "../../utils/trpc";
+import Transaction from "../../components/DrugDets/Transaction";
 
 /*
  * This page is a work in progress. It was initially copied from the Doctor page.
@@ -40,11 +38,6 @@ import { trpc } from "../../utils/trpc";
  * - A map of the United States to show geographical patterns in transaction count, cost, or other variables relating to the drug (to be titled + included with a dropdown)
  * - A list of transactions for the drug
  */
-
-// .bgColor {
-//   background-color: #f6f6f6;
-// }
-
 
 const DoctorDetails = () => {
   const navigate = useRouter();
@@ -170,7 +163,7 @@ const DoctorDetails = () => {
           </div>
         </div>
 
-        <DrugDets name={"[Drug Name]"} />
+        <DrugDets name={formatName(data.name ?? '?')} />
 
         <div className="grid grid-cols-1">
           <div className="mx-1 p-2 border-2 border-violet-400 rounded-lg grid grid-cols-3">
@@ -246,23 +239,18 @@ const DoctorDetails = () => {
                 All Transaction Summaries
               </p>
               <div className="flex gap-2 flex-col">
-                {data.payment && data.payments
+                {data.payments && data.payments
                   .sort(
                     (a, b) =>
                       new Date(b.date).getTime() - new Date(a.date).getTime()
                   )
                   .map((payment) => (
-                    <div key={payment.id}>[Transaction]</div>
-                    // <Transaction key={i} transaction={payment}/>
+                    <Transaction key={payment.id} transaction={payment}/>
                   ))}
               </div>
             </div>
           </div>
 
-          <div className="mt-8">
-            {/* TODO implement the following if desired, or delete */}
-            {/* <DrugReviews drugId={drug.id} /> */}
-          </div>
         </div>
       </div>
     </div>

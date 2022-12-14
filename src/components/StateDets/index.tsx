@@ -86,7 +86,7 @@ export const StateDets = ({
             <div className='flex flex-row'>
               <div className='flex flex-row text-lg font-semibold'>
                 Payments for:&nbsp;
-                <p className='text-violet-700'>{!year ? 'All Years' : year}</p>
+                <div className='text-violet-700'>{!year ? 'All Years' : year}</div>
               </div>
               <Menu as='div' className='relative text-left'>
                 <div>

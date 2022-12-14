@@ -210,8 +210,7 @@ const DoctorDetails = () => {
                         className="text-center text-sm sm:text-base "
                       >
                         {typeof window != 'undefined' && window.screen.width > 1000 &&
-                          `${formatProductName()}:`}
-                        {formatMoney(amount)}
+                          `${formatProductName()}: ${formatMoney(amount)}`}
                       </li>
                     );
                   })}
@@ -231,9 +230,7 @@ const DoctorDetails = () => {
                         key={`${product.productName}-${idx}`}
                         className="text-center text-sm sm:text-base "
                       >
-                        {formatProductType(product.type)}:{" "}
-                        {formatProductName(product.productName)} (
-                        {product.count})
+                        {`${formatProductType(product.type)}: ${formatProductName(product.productName)} (${product.count})`}
                       </li>
                     );
                   })}

@@ -95,10 +95,10 @@ const SearchPage = ({ buttonPlaceholder, buttonSmall }: Props) => {
             ),
             // products
             ...searchResults?.products
-              .filter((product) => product.type && product.type === "Drug") // TODO - enable other products when we have somewhere to display them
+              .filter((product) => product.type && product.type.toLowerCase() === "drug") // TODO - enable other products when we have somewhere to display them
               .map(({ id, name }) => ({
-                id,
-                name,
+                id: id,
+                name: name ?? '',
                 location: '',
                 type: "drug" as const,
               })),
