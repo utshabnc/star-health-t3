@@ -5,6 +5,16 @@ import type { inferRouterOutputs } from "@trpc/server";
 import type { AppRouter } from "./_app";
 import { Prisma } from "@prisma/client";
 
+const directoryInput = z.object({
+  getDoctors: z.boolean().optional(), 
+  getProducts: z.boolean().optional(), 
+  getManufacturers: z.boolean().optional(),
+  state: z.string().optional(), 
+  city: z.string().optional(), 
+  zipCode: z.string().optional(), 
+  type: z.string().optional(), 
+})
+
 const defaultDoctorSelect = Prisma.validator<Prisma.DoctorSelect>()({
   id: true,
   firstName: true,
@@ -526,83 +536,46 @@ export const db = router({
       }
     }),
   directory: publicProcedure
-    .input(z.object({getDoctors: z.boolean().optional(), state: z.string().optional(), city: z.string().optional(), zipCode: z.string().optional(), getManufacturers: z.boolean().optional()}))
+    .input(z.object({
+      getDoctors: z.boolean().optional(), 
+      getProducts: z.boolean().optional(), 
+      getManufacturers: z.boolean().optional(),
+      state: z.string().optional(), 
+      city: z.string().optional(), 
+      zipCode: z.string().optional(), 
+      type: z.string().optional(), 
+    }))
     .query(async ({ctx: {prisma}, input}) => {
 
       const doctors = await prisma.doctor.findMany({
         where: {
-          OR: [
+          AND: [
             {
-              AND: [
-                {
-                  OR: [
-                    {
-                      state: input.state
-                    },
-                    {
-                      NOT: {
-                        state: ""
-                      }
-                    }
-                  ]
-                },
-                {
-                  OR: [
-                    {
-                      city: input.city
-                    },
-                    {
-                      NOT: {
-                        city: ""
-                      }
-                    }
-                  ]
-                },
-                {
-                  OR: [
-                    {
-                      zipCode: input.zipCode
-                    },
-                    {
-                      NOT: {
-                        zipCode: ''
-                      }
-                    }
-                  ]
-                }
-                
-
-              ]
+              state: input.state ?? {not: ""}
             },
             {
-              NOT: [
-                {
-                  state: ""
-                }
-              ]
+              city: input.city ?? {not: ""}
+            },
+            {
+              zipCode: input.zipCode ?? {not: ""}
             }
-          ],
+          ]  
         }
       });
-      console.log(doctors);
-      
+      console.log(doctors)
       const manufacturers = await prisma.manufacturer.findMany({
         where: {
-          OR: [
-            {
-              state: input.state
-            },
-            {
-              NOT: {
-                state: ""
-              }
-            }
-          ]
+          state: input.state ?? {not: ""}
         }
       });
-      // const products = await prisma.product.findMany();
 
-      return {doctors, manufacturers}
+      const products = await prisma.product.findMany({
+        where: {
+          type: input.type ?? {not: ""}
+        }
+      });
+
+      return {doctors}
     })
 });
 

@@ -4,7 +4,7 @@ import { trpc } from '../../utils/trpc';
 
 export default function Directory() {
     const navigate = useRouter();
-    const {data} = trpc.db.directory.useQuery({});
+    const {data} = trpc.db.directory.useQuery({state: "WA", zipCode: "98312"});
     console.log(data);
     
     
