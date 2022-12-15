@@ -133,19 +133,24 @@ export const db = router({
             mode: "insensitive",
           },
         },
+        
         take: 10,
       });
 
-      // TODO -- add in prisma call for drugs(products) and include in the data returned
       const products = await prisma.product.findMany({
         where: {
           name: {
             contains: search,
             mode: "insensitive"
-          }
+          },
+
         },
-        take: 10
-      })
+        include: {
+          payments: true
+        },
+        take: 10,
+      
+      })      
 
       return { doctors, manufacturers, products };
     }),
@@ -519,6 +524,56 @@ export const db = router({
         topManufacturers,
         transactionsSummary
       }
+    }),
+  directory: publicProcedure
+    .input(z.object({getDoctors: z.boolean().optional(), state: z.string().optional(), city: z.string().optional()}))
+    .query(async ({ctx: {prisma}, input}) => {
+
+      const doctors = await prisma.doctor.findMany({
+        where: {
+          OR: [
+            {
+              AND: [
+                {
+                  OR: [
+                    {
+                      state: input.state
+                    },
+                    {
+                      NOT: {state: ""}
+                    }
+                  ]
+                },
+                {
+                  OR: [
+                    {
+                      city: input.city
+                    },
+                    {
+                      NOT: {city: ""}
+                    }
+                  ]
+                },
+                
+
+              ]
+            },
+            {
+              NOT: [
+                {
+                  state: ""
+                }
+              ]
+            }
+          ],
+        }
+      });
+      console.log(doctors);
+      
+      // const manufacturers = await prisma.manufacturer.findMany();
+      // const products = await prisma.product.findMany();
+
+      return {doctors}
     })
 });
 
