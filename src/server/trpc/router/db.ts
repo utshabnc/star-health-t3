@@ -526,7 +526,7 @@ export const db = router({
       }
     }),
   directory: publicProcedure
-    .input(z.object({getDoctors: z.boolean().optional(), state: z.string().optional(), city: z.string().optional()}))
+    .input(z.object({getDoctors: z.boolean().optional(), state: z.string().optional(), city: z.string().optional(), zipCode: z.string().optional(), getManufacturers: z.boolean().optional()}))
     .query(async ({ctx: {prisma}, input}) => {
 
       const doctors = await prisma.doctor.findMany({
@@ -540,7 +540,9 @@ export const db = router({
                       state: input.state
                     },
                     {
-                      NOT: {state: ""}
+                      NOT: {
+                        state: ""
+                      }
                     }
                   ]
                 },
@@ -550,10 +552,24 @@ export const db = router({
                       city: input.city
                     },
                     {
-                      NOT: {city: ""}
+                      NOT: {
+                        city: ""
+                      }
                     }
                   ]
                 },
+                {
+                  OR: [
+                    {
+                      zipCode: input.zipCode
+                    },
+                    {
+                      NOT: {
+                        zipCode: ''
+                      }
+                    }
+                  ]
+                }
                 
 
               ]
@@ -570,10 +586,23 @@ export const db = router({
       });
       console.log(doctors);
       
-      // const manufacturers = await prisma.manufacturer.findMany();
+      const manufacturers = await prisma.manufacturer.findMany({
+        where: {
+          OR: [
+            {
+              state: input.state
+            },
+            {
+              NOT: {
+                state: ""
+              }
+            }
+          ]
+        }
+      });
       // const products = await prisma.product.findMany();
 
-      return {doctors}
+      return {doctors, manufacturers}
     })
 });
 
