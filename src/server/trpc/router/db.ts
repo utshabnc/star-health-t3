@@ -6,9 +6,7 @@ import type { AppRouter } from "./_app";
 import { Prisma } from "@prisma/client";
 
 const directoryInput = z.object({
-  getDoctors: z.boolean().optional(), 
-  getProducts: z.boolean().optional(), 
-  getManufacturers: z.boolean().optional(),
+  subject: z.string(),
   specialty: z.string().optional(),
   state: z.string().optional(), 
   city: z.string().optional(), 
@@ -540,50 +538,56 @@ export const db = router({
   directory: publicProcedure
     .input(directoryInput)
     .query(async ({ctx: {prisma}, input}) => {
+      console.log(input);
+      
 
-      if(input.getDoctors){
+      if(input.subject.toLowerCase().trim() === "doctor"){
         const doctors = await prisma.doctor.findMany({
           where: {
             AND: [
               {
-                state: input.state ?? {not: ""}
+                state: input.state !== '' ? input.state : {not: ""}
               },
               {
-                city: input.city ?? {not: ""}
+                city: input.city !== "" ? input.city : {not: ""}
               },
               {
-                zipCode: input.zipCode ?? {not: ""}
+                zipCode: input.zipCode !== "" ? input.zipCode : {not: ""}
               },
               {
-                specialty: input.specialty ?? {not: ""}
+                specialty: input.specialty !== "" ? input.specialty : {not: ""}
               }
             ]  
           }
         });
+        console.log(doctors)
 
         return {doctors}
 
       }
 
-      if(input.getManufacturers){
+      if(input.subject.toLowerCase() === "manufacturer"){
         const manufacturers = await prisma.manufacturer.findMany({
           where: {
-            state: input.state ?? {not: ""}
+            state: input.state !== "" ? input.state : {not: ""}
           }
         });
 
         return {manufacturers}
       }
 
-      if(input.getProducts){
+      if(input.subject.toLowerCase() === "product"){
         const products = await prisma.product.findMany({
           where: {
-            type: input.type ?? {not: ""}
+            type: input.type !== "" ? input.type : {not: ""}
           }
         });
 
         return {products}
       }
+
+      // else
+      return []
 
       
     })

@@ -24,7 +24,6 @@ function NavBar() {
   const navigate = useRouter();
   const session = useSession();
   const [width, setWidth] = useState<number>(typeof window != "undefined" ? window?.innerWidth : 0)
-  console.log(navigate);
   
   const onSearch = () => {
     navigate.push(`/?search=${search}`);

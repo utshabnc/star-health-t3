@@ -1,11 +1,23 @@
 import { useRouter } from 'next/router'
-import React from 'react'
+import React, { useState } from 'react'
+import { allStates } from '../../utils';
 import { trpc } from '../../utils/trpc';
+
+interface FilterParams {
+    subject: string,
+    state: string,
+    city: string,
+    zipCode: string,
+    specialty: string,
+    type: string
+}
 
 export default function Directory() {
     const navigate = useRouter();
-    // const {data} = trpc.db.directory.useQuery({getDoctors: true, state: "OH", zipCode: "43212"});
-    // console.log(data);
+    const [filterParams, setFilterParams] = useState<FilterParams>({subject: '', state: '', city: '', zipCode: '', specialty: '', type: ''})
+    const {data, error, isLoading} = trpc.db.directory.useQuery({subject: filterParams.subject, state: filterParams.state, city: filterParams.city, zipCode: filterParams.zipCode, specialty: filterParams.specialty, type: filterParams.type});
+    console.log(data);
+    console.log(filterParams)
     
     
 
@@ -78,11 +90,17 @@ export default function Directory() {
                 </div>
                 </div>
                 <div className='w-80 mx-2'>
-                    <select name="search" id="search-subject" className='bg-violet-500 w-full p-2 rounded-lg cursor-pointer text-white'>
+                    <select value={filterParams.subject} onChange={(e) => setFilterParams(prev => {
+                        return {
+                            ...prev,
+                            subject: e.target.value,
+                            state: prev.state === "" ? "AL" : prev.state
+                        }
+                    })} name="search" id="search-subject" className='bg-violet-500 w-full p-2 rounded-lg cursor-pointer text-white'>
                         <option value="">Search for...</option>
-                        <option value="Doctors">Doctors</option>
-                        <option value="Manufacturers">Manufacturers</option>
-                        <option value="Products">Products</option>
+                        <option value="doctor">Doctors</option>
+                        <option value="manufacturer">Manufacturers</option>
+                        <option value="product">Products</option>
                     </select>
 
                     <p className='text-violet-700 text-lg  my-2'>
@@ -94,9 +112,22 @@ export default function Directory() {
                     </div>
 
                     <div className="wrap-filters py-2">
-                        <button className='bg-violet-500 text-white px-4 py-2 rounded-full mx-1 hover:bg-violet-400 hover:text-violet-900 '>
+                        {/* <button className='bg-violet-500 text-white px-4 py-2 rounded-full mx-1 hover:bg-violet-400 hover:text-violet-900 '>
                             Filter
-                        </button>
+                        </button> */}
+                        <select onChange={(e) => {
+                            setFilterParams(prev => {
+                                return {
+                                    ...prev,
+                                    state: e.target.value
+                                }
+                            })
+                        }} value={filterParams.state} className='bg-violet-500 text-white px-4 py-2 rounded-full mx-1 hover:bg-violet-400 hover:text-violet-900 cursor-pointer' name="state-filter" id="state-filter">
+                            <option value={undefined}>State</option>
+                            {allStates.map((item, index) => (
+                                <option key={index} value={item}>{item}</option>
+                            ))}
+                        </select>
                         <button className='bg-violet-500 text-white py-2 px-4 rounded-full mx-1 hover:bg-violet-400 hover:text-violet-900 '>
                             Filter
                         </button>
