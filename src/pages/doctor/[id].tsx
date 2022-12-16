@@ -30,6 +30,8 @@ import { trpc } from "../../utils/trpc";
 const DoctorDetails = () => {
   const navigate = useRouter();
   const id = navigate.query.id as string;
+  console.log(navigate);
+  
   // const [user] = useUser();
 
   const [year, setYear] = useState<string>();

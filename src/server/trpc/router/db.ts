@@ -4,6 +4,7 @@ import _ from "lodash";
 import type { inferRouterOutputs } from "@trpc/server";
 import type { AppRouter } from "./_app";
 import { Prisma } from "@prisma/client";
+import { filterDuplicates } from "../../../utils";
 
 const directoryInput = z.object({
   subject: z.string(),
@@ -160,7 +161,9 @@ export const db = router({
         },
         take: 10,
       
-      })      
+      }) 
+      
+      console.log(doctors)
 
       return { doctors, manufacturers, products };
     }),
@@ -173,6 +176,8 @@ export const db = router({
       })
     )
     .query(async ({ ctx: { prisma }, input: { id, year } }) => {
+      console.log(id);
+      
       const doctor = await prisma.doctor.findFirst({
         where: { id },
         // include: {
@@ -192,6 +197,7 @@ export const db = router({
           }
         }
       });
+      console.log(doctor)
       const payments =
         doctor?.payments.filter((p) => !year || p.year === year) ?? [];
 
@@ -558,11 +564,24 @@ export const db = router({
                 specialty: input.specialty !== "" ? input.specialty : {not: ""}
               }
             ]  
-          }
+          },
+          take: 5000
         });
         console.log(doctors)
 
-        return {doctors}
+        const cities = doctors.map(item => {
+          return item.city
+        })
+
+        const zipCodes = doctors.map(item => {
+          return item.zipCode
+        })
+
+        const specialties = doctors.map(item => {
+          return item.specialty
+        })
+
+        return {doctors, cities: filterDuplicates(cities), zipCodes: filterDuplicates(zipCodes), specialties: filterDuplicates(specialties)}
 
       }
 
@@ -583,7 +602,11 @@ export const db = router({
           }
         });
 
-        return {products}
+        const productTypes = products.map(item => {
+          return item.type
+        })
+
+        return {products, productTypes: filterDuplicates(productTypes)}
       }
 
       // else
