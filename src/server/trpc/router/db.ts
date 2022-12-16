@@ -9,10 +9,12 @@ const directoryInput = z.object({
   getDoctors: z.boolean().optional(), 
   getProducts: z.boolean().optional(), 
   getManufacturers: z.boolean().optional(),
+  specialty: z.string().optional(),
   state: z.string().optional(), 
   city: z.string().optional(), 
   zipCode: z.string().optional(), 
   type: z.string().optional(), 
+
 })
 
 const defaultDoctorSelect = Prisma.validator<Prisma.DoctorSelect>()({
@@ -536,46 +538,54 @@ export const db = router({
       }
     }),
   directory: publicProcedure
-    .input(z.object({
-      getDoctors: z.boolean().optional(), 
-      getProducts: z.boolean().optional(), 
-      getManufacturers: z.boolean().optional(),
-      state: z.string().optional(), 
-      city: z.string().optional(), 
-      zipCode: z.string().optional(), 
-      type: z.string().optional(), 
-    }))
+    .input(directoryInput)
     .query(async ({ctx: {prisma}, input}) => {
 
-      const doctors = await prisma.doctor.findMany({
-        where: {
-          AND: [
-            {
-              state: input.state ?? {not: ""}
-            },
-            {
-              city: input.city ?? {not: ""}
-            },
-            {
-              zipCode: input.zipCode ?? {not: ""}
-            }
-          ]  
-        }
-      });
-      console.log(doctors)
-      const manufacturers = await prisma.manufacturer.findMany({
-        where: {
-          state: input.state ?? {not: ""}
-        }
-      });
+      if(input.getDoctors){
+        const doctors = await prisma.doctor.findMany({
+          where: {
+            AND: [
+              {
+                state: input.state ?? {not: ""}
+              },
+              {
+                city: input.city ?? {not: ""}
+              },
+              {
+                zipCode: input.zipCode ?? {not: ""}
+              },
+              {
+                specialty: input.specialty ?? {not: ""}
+              }
+            ]  
+          }
+        });
 
-      const products = await prisma.product.findMany({
-        where: {
-          type: input.type ?? {not: ""}
-        }
-      });
+        return {doctors}
 
-      return {doctors}
+      }
+
+      if(input.getManufacturers){
+        const manufacturers = await prisma.manufacturer.findMany({
+          where: {
+            state: input.state ?? {not: ""}
+          }
+        });
+
+        return {manufacturers}
+      }
+
+      if(input.getProducts){
+        const products = await prisma.product.findMany({
+          where: {
+            type: input.type ?? {not: ""}
+          }
+        });
+
+        return {products}
+      }
+
+      
     })
 });
 

@@ -4,8 +4,8 @@ import { trpc } from '../../utils/trpc';
 
 export default function Directory() {
     const navigate = useRouter();
-    const {data} = trpc.db.directory.useQuery({state: "WA", zipCode: "98312"});
-    console.log(data);
+    // const {data} = trpc.db.directory.useQuery({getDoctors: true, state: "OH", zipCode: "43212"});
+    // console.log(data);
     
     
 
@@ -44,36 +44,67 @@ export default function Directory() {
                 <hr />
                 </div>
             </div>
-            <div className="flex w-full justify-center">
-                <div className="w-full rounded-lg bg-white text-center shadow-lg lg:w-3/4">
-                <div className="w-full p-2">
-                    <div className="flex flex-row justify-between">
-                    <h5 className="text-md mb-2 font-medium text-gray-900 underline">
-                        {/* <Link href={`/manufacturer/${manufacturerId}`}>
-                        {manufacturerName}
-                        </Link> */}
-                        link
-                    </h5>
-                    <p className="mb-1 text-base text-gray-700">
-                        {" "}
-                        {/* {new Date(date).toLocaleDateString()} */}
-                        testing
-                    </p>
-                    </div>
-                    <div className="flex flex-row justify-between">
-                    <h5 className="text-md mb-2 text-gray-900">
-                        Fake Text
-                    </h5>
-                    <p className="mb-1 text-base text-gray-700"> </p>
-                    </div>
-                    <div className="flex flex-row justify-between text-sm">
-                    <p className="mb-1 text-base text-gray-700">
-                        Context: 
-                    </p>
+            <div className="flex w-full h-96 justify-center">
+                <div className='flex max-h-[100%] flex-col overflow-scroll sm:w-1/2'>
+                <div className="w-[100%] rounded-lg bg-white text-center shadow-lg">
+                    <div className=" p-2">
+                        <div className="flex flex-row justify-between">
+                        <h5 className="text-md mb-2 font-medium text-gray-900 underline">
+                            {/* <Link href={`/manufacturer/${manufacturerId}`}>
+                            {manufacturerName}
+                            </Link> */}
+                            link
+                        </h5>
+                        <p className="mb-1 text-base text-gray-700">
+                            {" "}
+                            {/* {new Date(date).toLocaleDateString()} */}
+                            testing
+                        </p>
+                        </div>
+                        <div className="flex flex-row justify-between">
+                        <h5 className="text-md mb-2 text-gray-900">
+                            Fake Text
+                        </h5>
+                        <p className="mb-1 text-base text-gray-700"> </p>
+                        </div>
+                        <div className="flex flex-row justify-between text-sm">
+                        <p className="mb-1 text-base text-gray-700">
+                            Context: 
+                        </p>
 
-                    <div className="border-gray-300 text-gray-600"></div>
+                        <div className="border-gray-300 text-gray-600"></div>
+                        </div>
                     </div>
                 </div>
+                </div>
+                <div className='w-80 mx-2'>
+                    <select name="search" id="search-subject" className='bg-violet-500 w-full p-2 rounded-lg cursor-pointer text-white'>
+                        <option value="">Search for...</option>
+                        <option value="Doctors">Doctors</option>
+                        <option value="Manufacturers">Manufacturers</option>
+                        <option value="Products">Products</option>
+                    </select>
+
+                    <p className='text-violet-700 text-lg  my-2'>
+                        Filter By
+                    </p>
+                
+                    <div className='my-1'>
+                        <hr />
+                    </div>
+
+                    <div className="wrap-filters py-2">
+                        <button className='bg-violet-500 text-white px-4 py-2 rounded-full mx-1 hover:bg-violet-400 hover:text-violet-900 '>
+                            Filter
+                        </button>
+                        <button className='bg-violet-500 text-white py-2 px-4 rounded-full mx-1 hover:bg-violet-400 hover:text-violet-900 '>
+                            Filter
+                        </button>
+                        <button className='bg-violet-500 text-white py-2 px-4 rounded-full mx-1 hover:bg-violet-400 hover:text-violet-900 '>
+                            Filter
+                        </button>
+                    </div>
+
                 </div>
             </div>
         </div>
