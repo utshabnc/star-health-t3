@@ -87,8 +87,21 @@ export default function Filters({data, filterParams, setFilterParams}) {
                             }
                         })
                     }} value={filterParams.type} className='bg-violet-500 my-2 text-white px-4 py-2 rounded-full mx-1 hover:bg-violet-400 hover:text-violet-900 cursor-pointer w-full' name="state-filter" id="state-filter">
-                        <option value="">{filterParams.type == "" ? "Types" : "Reset"}</option>
+                        <option value="">{filterParams.type == "" ? "Type" : "Reset"}</option>
                         {data?.productTypes.map((item, index) => (
+                            <option key={index} value={item}>{item === "NULL" ? "Misc" : item}</option>
+                        ))}
+                    </select>}
+                    {data && data?.products && <select onChange={(e) => {
+                        setFilterParams(prev => {
+                            return {
+                                ...prev,
+                                category: e.target.value
+                            }
+                        })
+                    }} value={filterParams.category} className='bg-violet-500 my-2 text-white px-4 py-2 rounded-full mx-1 hover:bg-violet-400 hover:text-violet-900 cursor-pointer w-full' name="state-filter" id="state-filter">
+                        <option value="">{filterParams.category == "" ? "Category" : "Reset"}</option>
+                        {data?.categories.map((item, index) => (
                             <option key={index} value={item}>{item === "NULL" ? "Misc" : item}</option>
                         ))}
                     </select>}

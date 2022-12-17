@@ -13,6 +13,7 @@ const directoryInput = z.object({
   city: z.string().optional(), 
   zipCode: z.string().optional(), 
   type: z.string().optional(), 
+  category: z.string().optional()
 
 })
 
@@ -598,7 +599,14 @@ export const db = router({
       if(input.subject.toLowerCase() === "product"){
         const products = await prisma.product.findMany({
           where: {
-            type: input.type !== "" ? input.type : {not: ""}
+            AND: [
+              {
+                type: input.type !== "" ? input.type : {not: ""}
+              },
+              {
+                category: input.category !== "" ? input.category : {not: ""}
+              }
+            ]
           }
         });
 
@@ -606,7 +614,11 @@ export const db = router({
           return item.type
         })
 
-        return {products, productTypes: filterDuplicates(productTypes)}
+        const categories = products.map(item => {
+          return item.category
+        })
+
+        return {products, productTypes: filterDuplicates(productTypes), categories: filterDuplicates(categories)}
       }
 
       // else

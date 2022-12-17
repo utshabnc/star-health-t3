@@ -13,13 +13,14 @@ interface FilterParams {
     city: string,
     zipCode: string,
     specialty: string,
-    type: string
+    type: string,
+    category: string
 }
 
 export default function Directory() {
     const navigate = useRouter();
-    const [filterParams, setFilterParams] = useState<FilterParams>({subject: '', state: '', city: '', zipCode: '', specialty: '', type: ''})
-    const {data, error, isLoading} = trpc.db.directory.useQuery({subject: filterParams.subject, state: filterParams.state, city: filterParams.city, zipCode: filterParams.zipCode, specialty: filterParams.specialty, type: filterParams.type});
+    const [filterParams, setFilterParams] = useState<FilterParams>({subject: '', state: '', city: '', zipCode: '', specialty: '', type: '', category: ''})
+    const {data, error, isLoading} = trpc.db.directory.useQuery({subject: filterParams.subject, state: filterParams.state, city: filterParams.city, zipCode: filterParams.zipCode, specialty: filterParams.specialty, type: filterParams.type, category: filterParams.category});
     const [searchData, setSearchData] = useState([])
     console.log("search", searchData);
     const [cities, setCities] = useState([])
@@ -131,38 +132,7 @@ export default function Directory() {
             <div className="flex w-full h-[70%] xl:h-[70%] justify-center">
                 <div className='flex max-h-[100%] flex-col overflow-scroll sm:w-1/2 p-1'>
                     <DirectoryCards data={data} />
-                    {/* {data && data?.doctors && data?.doctors.map((item, index) => (
-                        <>
-                            <div className="w-[100%] rounded-lg bg-white text-center shadow-lg mb-2">
-                                <div className=" p-2">
-                                    <div className="flex flex-row justify-between">
-                                        <h5 className="text-md mb-2 font-medium text-gray-900 underline">
-                                        <Link href={`/doctor/${item.id}`}>
-                                            {item.firstName} {item.lastName}
-                                        </Link>
-                                        
-                                        </h5>
-                                        <p className="mb-1 text-gray-600">
-                                        {item.addressLine1}
-                                        </p>
-                                    </div>
-                                    <div className="flex flex-row justify-between">
-                                    <h5 className="text-md mb-2 text-gray-900">
-                                    {item.city.charAt(0).toUpperCase() + item.city.slice(1, item.city.length).toLowerCase()}, {item.state}
-                                    </h5>
-                                    <p className="mb-1 text-base text-gray-700"> </p>
-                                </div>
-                                <div className="flex flex-row justify-between text-sm">
-                                    <p className="mb-1 text-xs text-gray-700">
-                                    {item.specialty} 
-                                    </p>
-
-                                <div className="border-gray-300 text-gray-600"></div>
-                            </div>
-                        </div>
-                    </div>
-                        </>
-                    ))} */}
+                    
                 </div>
                 <Filters data={data} filterParams={filterParams} setFilterParams={setFilterParams} />
             </div>
