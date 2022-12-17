@@ -9,14 +9,13 @@ export default function Filters({data, filterParams, setFilterParams}) {
 
   return (
     <>
-        <div className='w-80 mx2'>
+        <div className='w-80 mx-2'>
             <div>
                 
                 <select value={filterParams.subject} onChange={(e) => setFilterParams(prev => {
                     return {
                         ...prev,
                         subject: e.target.value,
-                        state: prev.state === "" ? "AL" : prev.state
                     }
                 })} name="search" id="search-subject" className='bg-violet-500 w-full p-2 rounded-lg cursor-pointer text-white'>
                     <option value="">Search for...</option>

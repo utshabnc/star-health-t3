@@ -4,6 +4,8 @@ import { allStates } from '../../utils';
 import { trpc } from '../../utils/trpc';
 import { filterDuplicates } from '../../utils';
 import Filters from '../../components/Filters';
+import Link from 'next/link';
+import DirectoryCards from '../../components/DirectoryCards';
 
 interface FilterParams {
     subject: string,
@@ -126,128 +128,43 @@ export default function Directory() {
                 <hr />
                 </div>
             </div>
-            <div className="flex w-full h-96 xl:h-[70%] justify-center">
-                <div className='flex max-h-[100%] flex-col overflow-scroll sm:w-1/2'>
-                    <div className="w-[100%] rounded-lg bg-white text-center shadow-lg">
-                        <div className=" p-2">
-                            <div className="flex flex-row justify-between">
-                            <h5 className="text-md mb-2 font-medium text-gray-900 underline">
-                                {/* <Link href={`/manufacturer/${manufacturerId}`}>
-                                {manufacturerName}
-                                </Link> */}
-                                link
-                            </h5>
-                            <p className="mb-1 text-base text-gray-700">
-                                {" "}
-                                {/* {new Date(date).toLocaleDateString()} */}
-                                testing
-                            </p>
-                            </div>
-                            <div className="flex flex-row justify-between">
-                            <h5 className="text-md mb-2 text-gray-900">
-                                Fake Text
-                            </h5>
-                            <p className="mb-1 text-base text-gray-700"> </p>
-                            </div>
-                            <div className="flex flex-row justify-between text-sm">
-                            <p className="mb-1 text-base text-gray-700">
-                                Context: 
-                            </p>
+            <div className="flex w-full h-[70%] xl:h-[70%] justify-center">
+                <div className='flex max-h-[100%] flex-col overflow-scroll sm:w-1/2 p-1'>
+                    <DirectoryCards data={data} />
+                    {/* {data && data?.doctors && data?.doctors.map((item, index) => (
+                        <>
+                            <div className="w-[100%] rounded-lg bg-white text-center shadow-lg mb-2">
+                                <div className=" p-2">
+                                    <div className="flex flex-row justify-between">
+                                        <h5 className="text-md mb-2 font-medium text-gray-900 underline">
+                                        <Link href={`/doctor/${item.id}`}>
+                                            {item.firstName} {item.lastName}
+                                        </Link>
+                                        
+                                        </h5>
+                                        <p className="mb-1 text-gray-600">
+                                        {item.addressLine1}
+                                        </p>
+                                    </div>
+                                    <div className="flex flex-row justify-between">
+                                    <h5 className="text-md mb-2 text-gray-900">
+                                    {item.city.charAt(0).toUpperCase() + item.city.slice(1, item.city.length).toLowerCase()}, {item.state}
+                                    </h5>
+                                    <p className="mb-1 text-base text-gray-700"> </p>
+                                </div>
+                                <div className="flex flex-row justify-between text-sm">
+                                    <p className="mb-1 text-xs text-gray-700">
+                                    {item.specialty} 
+                                    </p>
 
-                            <div className="border-gray-300 text-gray-600"></div>
+                                <div className="border-gray-300 text-gray-600"></div>
                             </div>
                         </div>
                     </div>
+                        </>
+                    ))} */}
                 </div>
                 <Filters data={data} filterParams={filterParams} setFilterParams={setFilterParams} />
-                {/* <div className='w-80 mx-2'>
-                    <select value={filterParams.subject} onChange={(e) => setFilterParams(prev => {
-                        return {
-                            ...prev,
-                            subject: e.target.value,
-                            state: prev.state === "" ? "AL" : prev.state
-                        }
-                    })} name="search" id="search-subject" className='bg-violet-500 w-full p-2 rounded-lg cursor-pointer text-white'>
-                        <option value="">Search for...</option>
-                        <option value="doctor">Doctors</option>
-                        <option value="manufacturer">Manufacturers</option>
-                        <option value="product">Products</option>
-                    </select>
-
-                    <p className='text-violet-700 text-lg  my-2'>
-                        Filter By
-                    </p>
-                
-                    <div className='my-1'>
-                        <hr />
-                    </div>
-
-
-                    <div className="wrap-filters py-2">
-                        {data && !data?.products && <select onChange={(e) => {
-                            setFilterParams(prev => {
-                                return {
-                                    ...prev,
-                                    state: e.target.value
-                                }
-                            })
-                        }} value={filterParams.state} className='bg-violet-500 my-2 text-white px-4 py-2 rounded-full mx-1 hover:bg-violet-400 hover:text-violet-900 cursor-pointer' name="state-filter" id="state-filter">
-                            <option value={undefined}>State</option>
-                            {allStates.map((item, index) => (
-                                <option key={index} value={item}>{item.charAt(0) + item.slice(1, item.length)}</option>
-                            ))}
-                        </select>}
-                        {data && data?.cities && <select value={filterParams.city} onChange={(e) => {setFilterParams(prev => {
-                            return {
-                                ...prev,
-                                city: e.target.value
-                            }
-                        })}} name="city-opt" id="city-opt" className='bg-violet-500 my-2 text-white px-4 py-2 rounded-full mx-1 hover:bg-violet-400 hover:text-violet-900 cursor-pointer w-40'>
-                            <option value="">{filterParams.city == "" ? "City" : "Reset"}</option>
-                            {data?.cities.sort().map((item, index) => (
-                                <option key={index} value={item}>{item.charAt(0).toUpperCase() + item.slice(1, item.length).toLowerCase()}</option>
-                            ))}
-                        </select>}
-                       
-                        {data && data?.zipCodes && <select value={filterParams.zipCode} onChange={(e) => {setFilterParams(prev => {
-                            return {
-                                ...prev,
-                                zipCode: e.target.value
-                            }
-                        })}} name="city-opt" id="city-opt" className='bg-violet-500 my-2 text-white px-4 py-2 rounded-full mx-1 hover:bg-violet-400 hover:text-violet-900 cursor-pointer w-28'>
-                            <option value="">{filterParams.zipCode == "" ? "Zipcode" : "Reset"}</option>
-                            {data?.zipCodes.sort((a,b) => a - b).map((item, index) => (
-                                <option className='shadow-lg' key={index} value={item}>{item.charAt(0).toUpperCase() + item.slice(1, item.length).toLowerCase()}</option>
-                            ))}
-                        </select>}
-                        {data && data?.specialties && <select value={filterParams.specialty} onChange={(e) => {setFilterParams(prev => {
-                            return {
-                                ...prev,
-                                specialty: e.target.value
-                            }
-                        })}} name="city-opt" id="city-opt" className='bg-violet-500 my-2 text-white px-4 py-2 rounded-full mx-1 hover:bg-violet-400 hover:text-violet-900 cursor-pointer w-40'>
-                            <option value="">{filterParams.specialty == "" ? "Specialties" : "Reset"}</option>
-                            {data?.specialties.sort().map((item, index) => (
-                                <option key={index} value={item}>{item.charAt(0).toUpperCase() + item.slice(1, item.length).toLowerCase()}</option>
-                            ))}
-                        </select>}
-                        {data && data?.products && <select onChange={(e) => {
-                            setFilterParams(prev => {
-                                return {
-                                    ...prev,
-                                    type: e.target.value
-                                }
-                            })
-                        }} value={filterParams.type} className='bg-violet-500 my-2 text-white px-4 py-2 rounded-full mx-1 hover:bg-violet-400 hover:text-violet-900 cursor-pointer w-full' name="state-filter" id="state-filter">
-                            <option value="">{filterParams.type == "" ? "Types" : "Reset"}</option>
-                            {data?.productTypes.map((item, index) => (
-                                <option key={index} value={item}>{item === "NULL" ? "Misc" : item}</option>
-                            ))}
-                        </select>}
-                        
-                    </div>  */}
-
-                {/* </div> */}
             </div>
         </div>
     </>
