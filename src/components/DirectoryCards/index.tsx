@@ -122,4 +122,12 @@ export default function DirectoryCards({data}) {
     )
   }
 
+  return (
+    <>
+        <div>
+            Try adjusting your search filter. No results were found.
+        </div>
+    </>
+  )
+
 }
