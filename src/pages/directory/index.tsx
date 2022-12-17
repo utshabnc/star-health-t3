@@ -1,11 +1,12 @@
 import { useRouter } from 'next/router'
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { allStates } from '../../utils';
 import { trpc } from '../../utils/trpc';
 import { filterDuplicates } from '../../utils';
 import Filters from '../../components/Filters';
 import Link from 'next/link';
 import DirectoryCards from '../../components/DirectoryCards';
+import { debounce } from 'lodash';
 
 interface FilterParams {
     subject: string,
@@ -14,17 +15,20 @@ interface FilterParams {
     zipCode: string,
     specialty: string,
     type: string,
-    category: string
+    category: string,
+    doctorFilter: string,
+    manufacturerFilter: string,
+    productFilter: string
 }
 
 export default function Directory() {
     const navigate = useRouter();
-    const [filterParams, setFilterParams] = useState<FilterParams>({subject: '', state: '', city: '', zipCode: '', specialty: '', type: '', category: ''})
-    const {data, error, isLoading} = trpc.db.directory.useQuery({subject: filterParams.subject, state: filterParams.state, city: filterParams.city, zipCode: filterParams.zipCode, specialty: filterParams.specialty, type: filterParams.type, category: filterParams.category});
-    const [searchData, setSearchData] = useState([])
-    console.log("search", searchData);
-    const [cities, setCities] = useState([])
-    console.log("cities", cities);
+    const [filterParams, setFilterParams] = useState<FilterParams>({subject: 'payment', state: '', city: '', zipCode: '', specialty: '', type: '', category: '', doctorFilter: "", manufacturerFilter: '', productFilter: ''})
+    const {data, error, isLoading} = trpc.db.directory.useQuery({subject: filterParams.subject, state: filterParams.state, city: filterParams.city, zipCode: filterParams.zipCode, specialty: filterParams.specialty, type: filterParams.type, category: filterParams.category, doctorFilter: filterParams.doctorFilter, manufacturerFilter: filterParams.manufacturerFilter, productFilter: filterParams.productFilter});
+    // const [searchData, setSearchData] = useState([])
+    // console.log("search", searchData);
+    // const [cities, setCities] = useState([])
+  
 
     if (isLoading || !data) {
         return (

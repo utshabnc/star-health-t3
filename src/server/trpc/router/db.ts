@@ -13,7 +13,10 @@ const directoryInput = z.object({
   city: z.string().optional(), 
   zipCode: z.string().optional(), 
   type: z.string().optional(), 
-  category: z.string().optional()
+  category: z.string().optional(),
+  doctorFilter: z.string().optional(),
+  manufacturerFilter: z.string().optional(),
+  productFilter: z.string().optional()
 
 })
 
@@ -66,6 +69,7 @@ export const db = router({
     .input(z.string())
     .query(async ({ ctx: { prisma }, input: search }) => {
       const names = search.split(" ");
+      
 
       let searchArgs: Prisma.DoctorWhereInput = {
         OR: [
@@ -137,6 +141,7 @@ export const db = router({
         },
         take: 10,
       });
+      
 
       const manufacturers = await prisma.manufacturer.findMany({
         where: {
@@ -590,7 +595,8 @@ export const db = router({
         const manufacturers = await prisma.manufacturer.findMany({
           where: {
             state: input.state !== "" ? input.state : {not: ""}
-          }
+          },
+          take: 100
         });
 
         return {manufacturers}
@@ -605,9 +611,10 @@ export const db = router({
               },
               {
                 category: input.category !== "" ? input.category : {not: ""}
-              }
+              },
             ]
-          }
+          },
+          take: 100
         });
 
         const productTypes = products.map(item => {
@@ -621,8 +628,108 @@ export const db = router({
         return {products, productTypes: filterDuplicates(productTypes), categories: filterDuplicates(categories)}
       }
 
+      if(input.subject === "payment"){
+        // const names = input.doctorFilter?.split(" ")
+        // console.log(names);
+        
+        let payments = await prisma.payment.findMany({
+          // where: {
+          //   AND: [
+          //     {
+          //       doctor: {
+          //         firstName: {
+          //           contains: names[0] ?? "",
+          //           mode: "insensitive"
+          //         }
+          //       }
+          //     },
+          //     {
+          //       manufacturerName: input.manufacturerFilter ? input.manufacturerFilter : {not: ""}
+          //     }
+          //   ]            
+          // },
+          include: {
+            // doctor: input.doctorInfo ? true : false ,
+            // manufacturer: {
+            //   include: {
+            //     ManufacturerState: true,
+            //     ManufacturerTopPayment: {
+            //       include: {
+            //         doctor: true
+            //       }
+            //     }
+            //   }
+            // },
+            manufacturer: true,
+            doctor: true,
+            product: true
+          },
+          take: 2000,
+        })
+
+        
+        // found to be much faster than filtering using the 'where' in the prisma call even though it queries all data first ?
+        if(input.doctorFilter){
+          payments = payments.filter(item => {
+            return input.doctorFilter?.includes(item.doctor.firstName)
+          })  
+          
+        }
+        
+        if(input.manufacturerFilter){          
+          payments = payments.filter(item => {
+            return item.manufacturerName === input.manufacturerFilter
+          })          
+        }
+
+        if(input.productFilter){
+          payments = payments.filter(item => {
+            return item.product.name === input.productFilter
+          }) 
+        }
+        
+        const doctorNames = payments.map(item => {
+          return `${item.doctor.firstName} ${item.doctor.lastName}`
+        })
+
+        const manufacturerNames = payments.map(item => {
+          return item.manufacturerName
+        })
+
+        const productNameList = payments.map(item => {
+          return item.product.name
+        })
+
+
+
+        return {payments, manufacturerList: filterDuplicates(manufacturerNames), doctorList: filterDuplicates(doctorNames), productNameList: filterDuplicates(productNameList)}
+
+      }
+
+      const summary = await prisma.stateSummary.findMany({
+        include: {
+          state: {
+            include: {
+              doctors: {
+                select:{
+                  doctor: true,
+                  totalAmount: true,
+                  transactionCount: true
+                }
+              }
+            }
+          },
+
+        },
+        take: 200
+      })
+
+      // const manuSummary = await prisma.manufacturerState.findMany({
+      //   take: 5000
+      // })
+
       // else
-      return []
+      return {summary}
 
       
     })
