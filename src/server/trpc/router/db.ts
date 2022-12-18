@@ -569,9 +569,11 @@ export const db = router({
               }
             ]  
           },
-          take: 5000
+          cursor: {
+            id: input.cursor ? input.cursor : "1"
+          },
+          take: 100
         });
-        console.log(doctors)
 
         const cities = doctors.map(item => {
           return item.city
@@ -594,6 +596,9 @@ export const db = router({
           where: {
             state: input.state !== "" ? input.state : {not: ""}
           },
+          cursor: {
+            id: input.cursor ? input.cursor : "100000000103"
+          },
           take: 100
         });
 
@@ -612,9 +617,9 @@ export const db = router({
               },
             ]
           },
-          cursor: {
-            id: input.cursor ? input.cursor : {not: ""}
-          },
+          // cursor: {
+          //   id: input.cursor ? input.cursor : 
+          // },
           take: 5
         });
 
@@ -659,9 +664,9 @@ export const db = router({
             }
           },
           cursor: {
-            id: input.cursor
+            id: input.cursor ? input.cursor : "345881410"
           },
-          take: 2000,
+          take: 100,
           
         })
 

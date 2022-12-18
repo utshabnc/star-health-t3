@@ -165,10 +165,10 @@ export default function DirectoryCards({data, filterParams}) {
     )
   }
 
-  if(data?.summary){
+  if(data?.manufacturerSummary){
     return (
         <>  
-            {data && data?.summary && data?.summary.map((item, index) => (
+            {data && data?.manufacturerSummary && data?.manufacturerSummary.map((item, index) => (
             
             <div key={index} className="w-[100%] rounded-lg bg-white text-center shadow-lg mb-2">
                 <div className=" p-2">
