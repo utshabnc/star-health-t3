@@ -17,7 +17,6 @@ const defaultDoctorSelect = Prisma.validator<Prisma.DoctorSelect>()({
   zipCode: true,
   specialty: true,
   reviews: true,
-  payments: true,
   rank: true,
 });
 
@@ -27,8 +26,7 @@ const defaultProductSelect = Prisma.validator<Prisma.ProductSelect>()({
   type: true,
   name: true,
   category: true,
-  payments: true,
-})
+});
 
 const defaultReviewSelect = Prisma.validator<Prisma.ReviewSelect>()({
   id: true,
@@ -160,22 +158,16 @@ export const db = router({
     .query(async ({ ctx: { prisma }, input: { id, year } }) => {
       const doctor = await prisma.doctor.findFirst({
         where: { id },
-        // include: {
-        //   ...defaultDoctorSelect,
-        //   payments: {
-        //     include: {
-        //       // product: true
-        //     } 
-        //   }
-        // },
         select: {
           ...defaultDoctorSelect,
           payments: {
             include: {
-              product: true
-            } 
-          }
-        }
+              product: true,
+            },
+            where: year ? { year } : undefined,
+            take: 50,
+          },
+        },
       });
       const payments =
         doctor?.payments.filter((p) => !year || p.year === year) ?? [];
@@ -187,8 +179,8 @@ export const db = router({
         .map((pmts, productName) => ({
           productName,
           amount: _.round(_.sumBy(pmts, "amount"), 2),
-          type: payments.find((p) => p.product.name === productName)
-            ?.product.type,
+          type: payments.find((p) => p.product.name === productName)?.product
+            .type,
           count: pmts.length,
         }))
         .value();
@@ -202,11 +194,11 @@ export const db = router({
         }))
         .value();
 
-        const reviews = await Promise.all(
-          doctor?.reviews?.map(async (review) => ({
-            ...review,
-            // TODO
-            // user: await getUser(review.createdBy).catch(() => {}),
+      const reviews = await Promise.all(
+        doctor?.reviews?.map(async (review) => ({
+          ...review,
+          // TODO
+          // user: await getUser(review.createdBy).catch(() => {}),
         })) ?? []
       );
 
@@ -348,8 +340,8 @@ export const db = router({
               name: true,
             },
           },
-          productName: true,
-          productType: true,
+          product: true,
+          productId: true,
           totalAmount: true,
           transactionCount: true,
         },
@@ -457,26 +449,19 @@ export const db = router({
     )
     .query(async ({ ctx: { prisma }, input: {id, year}}) => {
       const product = await prisma.product.findFirst({
-        where: {
-          id,
-          // payments: {
-          //   every: {
-          //     year: year ?? "ALL"
-          //   }
-          // }
-        },
+        where: { id },
         select: {
           ...defaultProductSelect,
           payments: {
             include: {
               doctor: true,
-              manufacturer: true 
+              manufacturer: true,
             },
-            take: 10
-          }
-
-        }
-      })
+            where: year ? { year } : undefined,
+            take: 50,
+          },
+        },
+      });
 
       // check for no result -- uncomment once there is data to display
       // if(!product){
@@ -529,4 +514,4 @@ export type DoctorResponse = RouterOutput["db"]["doctor"];
 export type ManufacturerResponse = RouterOutput["db"]["manufacturer"];
 export type StateResponse = RouterOutput["db"]["state"];
 export type AllStatesResponse = RouterOutput["db"]["allStates"];
-export type ProductResponse = RouterOutput["db"]["product"]
+export type ProductResponse = RouterOutput["db"]["product"];
