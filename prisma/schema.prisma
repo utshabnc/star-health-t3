@@ -70,11 +70,11 @@ model StateItem {
   year             String
   totalAmount      Float
   transactionCount Int
-  productName      String?
-  productType      String?
   drugType         String
+  productId        String?
   manufacturer     Manufacturer @relation(fields: [manufacturerId], references: [id])
   state            State        @relation(fields: [stateId], references: [id])
+  product          Product?     @relation(fields: [productId], references: [id])
 }
 
 model StateDoctor {
@@ -192,14 +192,20 @@ model Payment {
   doctor           Doctor       @relation(fields: [doctorId], references: [id])
   manufacturer     Manufacturer @relation(fields: [manufacturerId], references: [id])
   product          Product      @relation(fields: [productId], references: [id])
+
+  @@index([year], name: "payment_year_index")
+  @@index([doctorId], name: "payment_doctor_index")
+  @@index([manufacturerId], name: "payment_manufacturer_index")
+  @@index([productId], name: "payment_product_index")
 }
 
 model Product {
-  id       String    @id @default(uuid())
-  name     String?
-  type     String?
-  category String?
-  payments Payment[]
+  id        String      @id @default(uuid())
+  name      String?
+  type      String?
+  category  String?
+  payments  Payment[]
+  StateItem StateItem[]
 }
 
 // Necessary for Next auth
