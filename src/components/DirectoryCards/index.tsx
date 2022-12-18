@@ -152,7 +152,7 @@ export default function DirectoryCards({data, filterParams}) {
                     <div className="flex flex-row justify-between text-sm">
                         <p className="mb-1 text-xs text-gray-700">
                             {/* Category: {item.category.charAt(0).toUpperCase() + item.category.slice(1, item.category.length).toLowerCase()}  */}
-                            Made by: {item.manufacturerName}
+                            Manufacturer: {item.manufacturerName}
                         </p>
 
                     <div className="border-gray-300 text-gray-600"></div>

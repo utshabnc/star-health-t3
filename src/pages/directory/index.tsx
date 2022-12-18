@@ -8,6 +8,11 @@ import Link from 'next/link';
 import DirectoryCards from '../../components/DirectoryCards';
 import { debounce } from 'lodash';
 
+interface DoctorName {
+  first: string,
+  last: string
+}
+
 interface FilterParams {
     subject: string,
     state: string,
@@ -16,15 +21,36 @@ interface FilterParams {
     specialty: string,
     type: string,
     category: string,
-    doctorFilter: string,
+    doctorFilter: DoctorName,
     manufacturerFilter: string,
     productFilter: string
 }
 
 export default function Directory() {
     const navigate = useRouter();
-    const [filterParams, setFilterParams] = useState<FilterParams>({subject: '', state: '', city: '', zipCode: '', specialty: '', type: '', category: '', doctorFilter: "", manufacturerFilter: '', productFilter: ''})
-    const {data, error, isLoading} = trpc.db.directory.useQuery({subject: filterParams.subject, state: filterParams.state, city: filterParams.city, zipCode: filterParams.zipCode, specialty: filterParams.specialty, type: filterParams.type, category: filterParams.category, doctorFilter: filterParams.doctorFilter, manufacturerFilter: filterParams.manufacturerFilter, productFilter: filterParams.productFilter});
+    const [filterParams, setFilterParams] = useState<FilterParams>({
+      subject: '', 
+      state: '', 
+      city: '', 
+      zipCode: '', 
+      specialty: '', 
+      type: '', 
+      category: '', 
+      doctorFilter: {first: '', last: ''}, 
+      manufacturerFilter: '', 
+      productFilter: ''})
+    const {data, error, isLoading} = trpc.db.directory.useQuery({
+      subject: filterParams.subject, 
+      state: filterParams.state, 
+      city: filterParams.city, 
+      zipCode: filterParams.zipCode, 
+      specialty: filterParams.specialty, 
+      type: filterParams.type, 
+      category: filterParams.category, 
+      doctorFilter: filterParams.doctorFilter, 
+      manufacturerFilter: filterParams.manufacturerFilter, 
+      productFilter: filterParams.productFilter
+    });
     // const [searchData, setSearchData] = useState([])
     // console.log("search", searchData);
     // const [cities, setCities] = useState([])

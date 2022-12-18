@@ -61,6 +61,10 @@ const filterDuplicates = (arr) => {
   return finalArr
 }
 
+const filterDuplicateObjArr = (objArr, key) => {
+  return [...new Map(objArr.map(item => [item[key], item])).values()]
+}
+
 const formatName = (text: string) =>
   _.map(text.split(' '), _.capitalize).join(' ');
 
@@ -84,5 +88,6 @@ export {
   formatProductName,
   drugTypes,
   allStates,
-  filterDuplicates
+  filterDuplicates,
+  filterDuplicateObjArr
 };

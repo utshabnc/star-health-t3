@@ -4,7 +4,7 @@ import _ from "lodash";
 import type { inferRouterOutputs } from "@trpc/server";
 import type { AppRouter } from "./_app";
 import { Prisma } from "@prisma/client";
-import { filterDuplicates } from "../../../utils";
+import { filterDuplicateObjArr, filterDuplicates } from "../../../utils";
 
 const directoryInput = z.object({
   subject: z.string(),
@@ -14,7 +14,10 @@ const directoryInput = z.object({
   zipCode: z.string().optional(), 
   type: z.string().optional(), 
   category: z.string().optional(),
-  doctorFilter: z.string().optional(),
+  doctorFilter: z.object({
+    first: z.string().optional(),
+    last: z.string().optional()
+  }),
   manufacturerFilter: z.string().optional(),
   productFilter: z.string().optional()
 
@@ -626,17 +629,19 @@ export const db = router({
       }
 
       if(input.subject === "payment"){
-        console.log(input.doctorFilter);
+        console.log(input.doctorFilter.first);
+        
+        // continue -- in progress of refactoring doctorfilter into and obj -- filter for name worked before but now is not
         
         const payments = await prisma.payment.findMany({
           where: {
             AND: [
               {
                 doctor: {
-                  firstName: input.doctorFilter ? input.doctorFilter.split(" ")[0] : {not: ""},
-                  lastName: input.doctorFilter ? input.doctorFilter.split(" ")[1] : {not: ""}
+                  firstName: input.doctorFilter ? input.doctorFilter.first : {not: ""},
+                  // lastName: input.doctorFilter ? input.doctorFilter.last : {not: ""}
                 }
-              },
+              }
             ]
           },
           include: {
@@ -681,7 +686,11 @@ export const db = router({
         // }
         
         const doctorNames = payments.map(item => {
-          return `${item.doctor.firstName} ${item.doctor.lastName}`
+          // return `${item.doctor.firstName} ${item.doctor.lastName}`
+          return {
+            first: item.doctor.firstName,
+            last: item.doctor.lastName
+          }
         })
 
         const manufacturerNames = payments.map(item => {
@@ -694,7 +703,7 @@ export const db = router({
 
 
 
-        return {payments, manufacturerList: filterDuplicates(manufacturerNames), doctorList: filterDuplicates(doctorNames), productNameList: filterDuplicates(productNameList)}
+        return {payments, manufacturerList: filterDuplicates(manufacturerNames), doctorList: filterDuplicateObjArr(doctorNames, "first"), productNameList: filterDuplicates(productNameList)}
 
       }
 
