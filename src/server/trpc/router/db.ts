@@ -162,9 +162,6 @@ export const db = router({
           },
 
         },
-        include: {
-          payments: true
-        },
         take: 10,
       
       }) 
@@ -629,25 +626,10 @@ export const db = router({
       }
 
       if(input.subject === "payment"){
-        // const names = input.doctorFilter?.split(" ")
-        // console.log(names);
+        const names = input.doctorFilter?.split(" ")
+        console.log(names);
         
-        let payments = await prisma.payment.findMany({
-          // where: {
-          //   AND: [
-          //     {
-          //       doctor: {
-          //         firstName: {
-          //           contains: names[0] ?? "",
-          //           mode: "insensitive"
-          //         }
-          //       }
-          //     },
-          //     {
-          //       manufacturerName: input.manufacturerFilter ? input.manufacturerFilter : {not: ""}
-          //     }
-          //   ]            
-          // },
+        const payments = await prisma.payment.findMany({
           include: {
             // doctor: input.doctorInfo ? true : false ,
             // manufacturer: {
@@ -664,29 +646,30 @@ export const db = router({
             doctor: true,
             product: true
           },
-          take: 2000,
+          take: 10000,
+          
         })
 
         
         // found to be much faster than filtering using the 'where' in the prisma call even though it queries all data first ?
-        if(input.doctorFilter){
-          payments = payments.filter(item => {
-            return input.doctorFilter?.includes(item.doctor.firstName)
-          })  
+        // if(input.doctorFilter){
+        //   payments = payments.filter(item => {
+        //     return input.doctorFilter?.includes(item.doctor.firstName)
+        //   })  
           
-        }
+        // }
         
-        if(input.manufacturerFilter){          
-          payments = payments.filter(item => {
-            return item.manufacturerName === input.manufacturerFilter
-          })          
-        }
+        // if(input.manufacturerFilter){          
+        //   payments = payments.filter(item => {
+        //     return item.manufacturerName === input.manufacturerFilter
+        //   })          
+        // }
 
-        if(input.productFilter){
-          payments = payments.filter(item => {
-            return item.product.name === input.productFilter
-          }) 
-        }
+        // if(input.productFilter){
+        //   payments = payments.filter(item => {
+        //     return item.product.name === input.productFilter
+        //   }) 
+        // }
         
         const doctorNames = payments.map(item => {
           return `${item.doctor.firstName} ${item.doctor.lastName}`
@@ -706,30 +689,45 @@ export const db = router({
 
       }
 
-      const summary = await prisma.stateSummary.findMany({
-        include: {
-          state: {
-            include: {
-              doctors: {
-                select:{
-                  doctor: true,
-                  totalAmount: true,
-                  transactionCount: true
-                }
-              }
+      if(input.subject.toLowerCase() === "top-manufacturer"){
+        const summary = await prisma.manufacturerSummary.findMany({
+          where: {
+            manufacturer: {
+              state: input.state ? input.state : {not: ""}
             }
           },
+          include: {
+            manufacturer: {
+              select: {
+                name: true,
+                state: true,
+                ManufacturerTopPayment: true
+              }
+            },
 
+          },
+          orderBy: {
+            totalAmount: "desc",
+          },
+          take: 25
+        })
+
+        summary.forEach(item => {
+          return item.manufacturer.ManufacturerTopPayment.sort((a,b) => b.amount - a.amount)
+        })
+  
+        return {summary}
+      }
+
+      const stateSummary = await prisma.stateDoctor.findMany({
+        include: {
+          doctor: true
         },
-        take: 200
+        take: 500
       })
-
-      // const manuSummary = await prisma.manufacturerState.findMany({
-      //   take: 5000
-      // })
-
+      
       // else
-      return {summary}
+      return {stateSummary}
 
       
     })

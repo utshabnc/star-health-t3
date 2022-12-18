@@ -23,7 +23,7 @@ interface FilterParams {
 
 export default function Directory() {
     const navigate = useRouter();
-    const [filterParams, setFilterParams] = useState<FilterParams>({subject: 'payment', state: '', city: '', zipCode: '', specialty: '', type: '', category: '', doctorFilter: "", manufacturerFilter: '', productFilter: ''})
+    const [filterParams, setFilterParams] = useState<FilterParams>({subject: '', state: '', city: '', zipCode: '', specialty: '', type: '', category: '', doctorFilter: "", manufacturerFilter: '', productFilter: ''})
     const {data, error, isLoading} = trpc.db.directory.useQuery({subject: filterParams.subject, state: filterParams.state, city: filterParams.city, zipCode: filterParams.zipCode, specialty: filterParams.specialty, type: filterParams.type, category: filterParams.category, doctorFilter: filterParams.doctorFilter, manufacturerFilter: filterParams.manufacturerFilter, productFilter: filterParams.productFilter});
     // const [searchData, setSearchData] = useState([])
     // console.log("search", searchData);
@@ -135,7 +135,7 @@ export default function Directory() {
             </div>
             <div className="flex w-full h-[70%] xl:h-[70%] justify-center">
                 <div className='flex max-h-[100%] flex-col overflow-scroll sm:w-1/2 p-1'>
-                    <DirectoryCards data={data} />
+                    <DirectoryCards filterParams={filterParams} data={data} />
                     
                 </div>
                 <Filters data={data} filterParams={filterParams} setFilterParams={setFilterParams} />

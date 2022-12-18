@@ -19,6 +19,7 @@ export default function Filters({data, filterParams, setFilterParams}) {
                     }
                 })} name="search" id="search-subject" className='bg-violet-500 w-full p-2 rounded-lg cursor-pointer text-white'>
                     <option value="">Search for...</option>
+                    <option value="top-manufacturer">Top 25 Manufacturers by earnings</option>
                     <option value="payment">Transactions</option>
                     <option value="doctor">Doctors</option>
                     <option value="manufacturer">Manufacturers</option>
@@ -33,11 +34,13 @@ export default function Filters({data, filterParams, setFilterParams}) {
                     <hr />
                 </div>
                 <div className="wrap-filters py-2">
-                    {data && (data?.doctors || data?.manufacturers) && <select onChange={(e) => {
+                    {data && (data?.doctors || data?.manufacturers || data?.summary) && <select onChange={(e) => {
                         setFilterParams(prev => {
                             return {
                                 ...prev,
-                                state: e.target.value
+                                state: e.target.value,
+                                city: '',
+                                zipCode: '',
                             }
                         })
                     }} value={filterParams.state} className='bg-violet-500 my-2 text-white px-4 py-2 rounded-full mx-1 hover:bg-violet-400 hover:text-violet-900 cursor-pointer' name="state-filter" id="state-filter">
@@ -115,8 +118,8 @@ export default function Filters({data, filterParams, setFilterParams}) {
                         })
                     }} value={filterParams.doctorFilter} className='bg-violet-500 my-2 text-white px-4 py-2 rounded-full mx-1 hover:bg-violet-400 hover:text-violet-900 cursor-pointer w-full' name="state-filter" id="state-filter">
                         <option value="">{filterParams.category == "" ? "Doctor" : "Reset"}</option>
-                        {data?.doctorList.map((item, index) => (
-                            <option key={index} value={item}>{item}</option>
+                        {data?.payments.map((item, index) => (
+                            <option key={index} value={item.doctor.firstName}>{item.doctor.firstName} {item.doctor.lastName}</option>
                         ))}
                     </select>}
                     {data && data?.payments && <select onChange={(e) => {
