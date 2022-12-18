@@ -16,7 +16,8 @@ const directoryInput = z.object({
   category: z.string().optional(),
   doctorFilter: z.string().optional(),
   manufacturerFilter: z.string().optional(),
-  productFilter: z.string().optional()
+  productFilter: z.string().optional(),
+  cursor: z.string().optional()
 
 })
 
@@ -611,7 +612,10 @@ export const db = router({
               },
             ]
           },
-          take: 100
+          cursor: {
+            id: input.cursor ? input.cursor : {not: ""}
+          },
+          take: 5
         });
 
         const productTypes = products.map(item => {
@@ -645,20 +649,17 @@ export const db = router({
             ]
           },
           include: {
-            // doctor: input.doctorInfo ? true : false ,
-            // manufacturer: {
-            //   include: {
-            //     ManufacturerState: true,
-            //     ManufacturerTopPayment: {
-            //       include: {
-            //         doctor: true
-            //       }
-            //     }
-            //   }
-            // },
             manufacturer: true,
             doctor: true,
-            product: true
+            product: {
+              select: {
+                name: true,
+                type: true
+              } 
+            }
+          },
+          cursor: {
+            id: input.cursor
           },
           take: 2000,
           
@@ -691,7 +692,7 @@ export const db = router({
       }
 
       if(input.subject.toLowerCase() === "top-manufacturer"){
-        const summary = await prisma.manufacturerSummary.findMany({
+        const manufacturerSummary = await prisma.manufacturerSummary.findMany({
           where: {
             manufacturer: {
               state: input.state ? input.state : {not: ""}
@@ -713,19 +714,31 @@ export const db = router({
           take: 25
         })
 
-        summary.forEach(item => {
+        manufacturerSummary.forEach(item => {
           return item.manufacturer.ManufacturerTopPayment.sort((a,b) => b.amount - a.amount)
         })
   
-        return {summary}
+        return {manufacturerSummary}
       }
 
-      const stateSummary = await prisma.stateDoctor.findMany({
+      const stateSummary = await prisma.payment.findMany({
         include: {
           doctor: true
         },
-        take: 500
+        
+        take: 50
       })
+
+      // const paymentSummary = await prisma.payment.groupBy({
+      //   by: ["doctorId", "amount"],
+      //   _sum: {
+      //     amount: true
+      //   },
+      //   take: 1000,
+      //   orderBy: {
+      //     amount: "desc"
+      //   }
+      // })
       
       // else
       return {stateSummary}

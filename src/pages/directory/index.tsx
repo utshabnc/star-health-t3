@@ -6,7 +6,7 @@ import { filterDuplicates } from '../../utils';
 import Filters from '../../components/Filters';
 import Link from 'next/link';
 import DirectoryCards from '../../components/DirectoryCards';
-import { debounce } from 'lodash';
+import { debounce, filter } from 'lodash';
 
 interface FilterParams {
     subject: string,
@@ -18,7 +18,8 @@ interface FilterParams {
     category: string,
     doctorFilter: string,
     manufacturerFilter: string,
-    productFilter: string
+    productFilter: string,
+    cursor: string
 }
 
 export default function Directory() {
@@ -33,7 +34,9 @@ export default function Directory() {
       category: '', 
       doctorFilter: "", 
       manufacturerFilter: '', 
-      productFilter: ''})
+      productFilter: '',
+      cursor: ''
+    })
     const {data, error, isLoading} = trpc.db.directory.useQuery({
       subject: filterParams.subject, 
       state: filterParams.state, 
@@ -44,8 +47,28 @@ export default function Directory() {
       category: filterParams.category, 
       doctorFilter: filterParams.doctorFilter, 
       manufacturerFilter: filterParams.manufacturerFilter, 
-      productFilter: filterParams.productFilter
+      productFilter: filterParams.productFilter,
+      cursor: filterParams.cursor
     });
+
+    //helpers to set last index to filter param when user requests to see more data
+    const setLastIndex = (arr) => {
+      setFilterParams(prev => {
+        return {
+          ...prev,
+          cursor: arr[arr.length - 1].id
+        }
+      })
+    }
+
+    const currDataAssignedToLastIndex = () => {
+      if(data?.doctors) setLastIndex(data?.doctors)
+      if(data?.manufacturers) setLastIndex(data?.manufacturers)
+      if(data?.products) setLastIndex(data?.products)
+      if(data?.payments) setLastIndex(data?.payments)
+      if(data?.manufacturerSummary) setLastIndex(data?.manufacturerSummary)
+
+    }
 
     if (isLoading || !data) {
         return (
@@ -156,6 +179,17 @@ export default function Directory() {
                     
                 </div>
                 <Filters data={data} filterParams={filterParams} setFilterParams={setFilterParams} />
+            </div>
+            <div className="more-btn my-2 flex justify-center lg:w-[70%] md:w-[60%] w-[50%]">
+              <button 
+              className='bg-violet-600 px-3 py-1 rounded-lg text-slate-50'
+              onClick={() => {
+                currDataAssignedToLastIndex()
+              }}
+              >
+                See More
+              </button>
+
             </div>
         </div>
     </>
