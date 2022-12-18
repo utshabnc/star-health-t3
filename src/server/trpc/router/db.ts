@@ -626,10 +626,19 @@ export const db = router({
       }
 
       if(input.subject === "payment"){
-        const names = input.doctorFilter?.split(" ")
-        console.log(names);
+        console.log(input.doctorFilter);
         
         const payments = await prisma.payment.findMany({
+          where: {
+            AND: [
+              {
+                doctor: {
+                  firstName: input.doctorFilter ? input.doctorFilter.split(" ")[0] : {not: ""},
+                  lastName: input.doctorFilter ? input.doctorFilter.split(" ")[1] : {not: ""}
+                }
+              },
+            ]
+          },
           include: {
             // doctor: input.doctorInfo ? true : false ,
             // manufacturer: {
@@ -646,7 +655,7 @@ export const db = router({
             doctor: true,
             product: true
           },
-          take: 10000,
+          take: 2000,
           
         })
 
