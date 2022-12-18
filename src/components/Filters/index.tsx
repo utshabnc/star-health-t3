@@ -4,6 +4,8 @@ import { allStates } from '../../utils'
 
 export default function Filters({data, filterParams, setFilterParams}) {    
 
+    // add in year filter
+
   return (
     <>
         <div className='w-80 mx-2'>

@@ -17,7 +17,8 @@ const directoryInput = z.object({
   doctorFilter: z.string().optional(),
   manufacturerFilter: z.string().optional(),
   productFilter: z.string().optional(),
-  cursor: z.string().optional()
+  cursor: z.string().optional(),
+  year: z.string().optional()
 
 })
 
@@ -596,10 +597,17 @@ export const db = router({
           where: {
             state: input.state !== "" ? input.state : {not: ""}
           },
+          include: {
+            ManufacturerSummary: {
+              where: {
+                year: input.year ? input.year : "ALL"
+              }
+            }
+          },
           cursor: {
             id: input.cursor ? input.cursor : "100000000103"
           },
-          take: 100
+          take: 50
         });
 
         return {manufacturers}
