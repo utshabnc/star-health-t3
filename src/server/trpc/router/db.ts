@@ -17,7 +17,7 @@ const directoryInput = z.object({
   doctorFilter: z.object({
     first: z.string().optional(),
     last: z.string().optional()
-  }),
+  }).optional(),
   manufacturerFilter: z.string().optional(),
   productFilter: z.string().optional()
 
@@ -638,8 +638,8 @@ export const db = router({
             AND: [
               {
                 doctor: {
-                  firstName: input.doctorFilter ? input.doctorFilter.first : {not: ""},
-                  // lastName: input.doctorFilter ? input.doctorFilter.last : {not: ""}
+                  firstName: input.doctorFilter.first !== "" ? input.doctorFilter.first : {not: ""},
+                  lastName: input.doctorFilter.last !== "" ? input.doctorFilter.last : {not: ""}
                 }
               }
             ]
