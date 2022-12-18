@@ -2,11 +2,7 @@ import { Doctor } from '@prisma/client'
 import React from 'react'
 import { allStates } from '../../utils'
 
-export default function Filters({data, filterParams, setFilterParams}) {
-    console.log("data", data?.cities);
-    
-    console.log("filters", filterParams.doctorFilter);
-    
+export default function Filters({data, filterParams, setFilterParams}) {    
 
   return (
     <>
@@ -112,7 +108,7 @@ export default function Filters({data, filterParams, setFilterParams}) {
                     </select>}
                     {/* fix bug of e.target.value console logging out as [onject Object] rather than its actual value*/}
                     {data && data?.payments && <select onChange={(e) => {
-                        console.log("val", JSON.stringify(e.target.value));
+                        console.log("val", e.target.value);
                         
                         setFilterParams(prev => {
                             return {
@@ -121,9 +117,9 @@ export default function Filters({data, filterParams, setFilterParams}) {
                             }
                         })
                     }} value={filterParams.doctorFilter} className='bg-violet-500 my-2 text-white px-4 py-2 rounded-full mx-1 hover:bg-violet-400 hover:text-violet-900 cursor-pointer w-full' name="state-filter" id="state-filter">
-                        <option value={{first: '', last: ""}}>{filterParams.doctorFilter.first == "" ? "Doctor" : "Reset"}</option>
+                        <option value={""}>{filterParams.doctorFilter == "" ? "Doctor" : "Reset"}</option>
                         {data?.doctorList.sort().map((item, index) => (
-                            <option key={index} value={{first: item.first, last: item.last}}>{item.first.split(" ").map(li => `${li.charAt(0).toUpperCase()}${li.slice(1, li.length).toLowerCase()}`).join(" ")} {item.last.charAt(0).toUpperCase() + item.last.slice(1, item.length).toLowerCase()}</option>
+                            <option key={index} value={item.id}>{item.name.split(" ").map(li => `${li.charAt(0).toUpperCase()}${li.slice(1, li.length).toLowerCase()}`).join(" ")}</option>
                         ))}
                     </select>}
                     {data && data?.payments && <select onChange={(e) => {
@@ -149,7 +145,7 @@ export default function Filters({data, filterParams, setFilterParams}) {
                     }} value={filterParams.productFilter} className='bg-violet-500 my-2 text-white px-4 py-2 rounded-full mx-1 hover:bg-violet-400 hover:text-violet-900 cursor-pointer w-full' name="state-filter" id="state-filter">
                         <option value="">{filterParams.productFilter == "" ? "Product" : "Reset"}</option>
                         {data?.productNameList.map((item, index) => (
-                            <option key={index} value={item}>{item}</option>
+                            <option key={index} value={item.id}>{item.name}</option>
                         ))}
                     </select>}
                     

@@ -8,11 +8,6 @@ import Link from 'next/link';
 import DirectoryCards from '../../components/DirectoryCards';
 import { debounce } from 'lodash';
 
-interface DoctorName {
-  first: string,
-  last: string
-}
-
 interface FilterParams {
     subject: string,
     state: string,
@@ -21,7 +16,7 @@ interface FilterParams {
     specialty: string,
     type: string,
     category: string,
-    doctorFilter: DoctorName,
+    doctorFilter: string,
     manufacturerFilter: string,
     productFilter: string
 }
@@ -36,7 +31,7 @@ export default function Directory() {
       specialty: '', 
       type: '', 
       category: '', 
-      doctorFilter: {first: '', last: ''}, 
+      doctorFilter: "", 
       manufacturerFilter: '', 
       productFilter: ''})
     const {data, error, isLoading} = trpc.db.directory.useQuery({
@@ -51,10 +46,6 @@ export default function Directory() {
       manufacturerFilter: filterParams.manufacturerFilter, 
       productFilter: filterParams.productFilter
     });
-    // const [searchData, setSearchData] = useState([])
-    // console.log("search", searchData);
-    // const [cities, setCities] = useState([])
-  
 
     if (isLoading || !data) {
         return (

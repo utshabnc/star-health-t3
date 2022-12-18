@@ -14,10 +14,7 @@ const directoryInput = z.object({
   zipCode: z.string().optional(), 
   type: z.string().optional(), 
   category: z.string().optional(),
-  doctorFilter: z.object({
-    first: z.string().optional(),
-    last: z.string().optional()
-  }).optional(),
+  doctorFilter: z.string().optional(),
   manufacturerFilter: z.string().optional(),
   productFilter: z.string().optional()
 
@@ -637,10 +634,13 @@ export const db = router({
           where: {
             AND: [
               {
-                doctor: {
-                  firstName: input.doctorFilter.first !== "" ? input.doctorFilter.first : {not: ""},
-                  lastName: input.doctorFilter.last !== "" ? input.doctorFilter.last : {not: ""}
-                }
+                doctorId: input.doctorFilter ? input.doctorFilter : {not: ""}
+              },
+              {
+                manufacturerName: input.manufacturerFilter ? input.manufacturerFilter : {not: ''}
+              },
+              {
+                productId: input.productFilter ? input.productFilter : {not: ""}
               }
             ]
           },
@@ -665,31 +665,11 @@ export const db = router({
         })
 
         
-        // found to be much faster than filtering using the 'where' in the prisma call even though it queries all data first ?
-        // if(input.doctorFilter){
-        //   payments = payments.filter(item => {
-        //     return input.doctorFilter?.includes(item.doctor.firstName)
-        //   })  
-          
-        // }
-        
-        // if(input.manufacturerFilter){          
-        //   payments = payments.filter(item => {
-        //     return item.manufacturerName === input.manufacturerFilter
-        //   })          
-        // }
-
-        // if(input.productFilter){
-        //   payments = payments.filter(item => {
-        //     return item.product.name === input.productFilter
-        //   }) 
-        // }
         
         const doctorNames = payments.map(item => {
-          // return `${item.doctor.firstName} ${item.doctor.lastName}`
           return {
-            first: item.doctor.firstName,
-            last: item.doctor.lastName
+            id: item.doctorId,
+            name: `${item.doctor.firstName} ${item.doctor.lastName}`
           }
         })
 
@@ -698,12 +678,15 @@ export const db = router({
         })
 
         const productNameList = payments.map(item => {
-          return item.product.name
+          return {
+            id: item.productId,
+            name: item.product.name
+          }
         })
 
 
 
-        return {payments, manufacturerList: filterDuplicates(manufacturerNames), doctorList: filterDuplicateObjArr(doctorNames, "first"), productNameList: filterDuplicates(productNameList)}
+        return {payments, manufacturerList: filterDuplicates(manufacturerNames), doctorList: filterDuplicateObjArr(doctorNames, "id"), productNameList: filterDuplicateObjArr(productNameList, "id")}
 
       }
 
