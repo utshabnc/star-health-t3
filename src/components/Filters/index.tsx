@@ -3,22 +3,27 @@ import React from 'react'
 import { DirectoryResponse } from '../../server/trpc/router/db'
 import { allStates } from '../../utils'
 
-export default function Filters({data, filterParams, setFilterParams}: {data: DirectoryResponse, filterParams: any, setFilterParams: any}) {    
+export default function Filters({data, filterParams, setFilterParams, setBtnDisable}: {data: DirectoryResponse, filterParams: any, setFilterParams: any, setBtnDisable: any}) {    
 
-    // add in year filter
+    const allYears = ["ALL", "2021", "2020", "2019", "2018", "2017","2016"]
 
   return (
     <>
         <div className='w-80 mx-2'>
             <div>
                 <div className="wrap-top-top flex gap-2">
-                    <select value={filterParams.subject} onChange={(e) => setFilterParams((prev: any) => {
-                        return {
-                            ...prev,
-                            subject: e.target.value,
-                            cursor: ''
-                        }
-                    })} name="search" id="search-subject" className='bg-violet-500 w-3/4 p-2 rounded-lg cursor-pointer text-white'>
+                    <select value={filterParams.subject} onChange={(e) => {
+                        setFilterParams((prev: any) => {
+                            return {
+                                ...prev,
+                                subject: e.target.value,
+                                cursor: '',
+                                
+                            }
+                        })
+                        setBtnDisable(false)
+                    }} 
+                    name="search" id="search-subject" className='bg-violet-500 w-3/4 p-2 rounded-lg cursor-pointer text-white'>
                         <option value="">Search for...</option>
                         <option value="top-manufacturer">Top 25 Manufacturers by earnings</option>
                         <option value="payment">Transactions</option>
@@ -65,7 +70,7 @@ export default function Filters({data, filterParams, setFilterParams}: {data: Di
                                 zipCode: '',
                             }
                         })
-                    }} value={filterParams.state} className='bg-violet-500 my-2 text-white px-4 py-2 rounded-lg mx-1 hover:bg-violet-400 hover:text-violet-900 cursor-pointer' name="state-filter" id="state-filter">
+                    }} value={filterParams.state} className='bg-violet-500 w-[45%] my-2 text-white px-4 py-2 rounded-lg mx-1 hover:bg-violet-400 hover:text-violet-900 cursor-pointer' name="state-filter" id="state-filter">
                         <option value={""}>State</option>
                         {allStates.map((item, index) => (
                             <option key={index} value={item}>{item}</option>
@@ -76,7 +81,7 @@ export default function Filters({data, filterParams, setFilterParams}: {data: Di
                             ...prev,
                             city: e.target.value
                         }
-                    })}} name="city-opt" id="city-opt" className='bg-violet-500 my-2 text-white px-4 py-2 rounded-lg mx-1 hover:bg-violet-400 hover:text-violet-900 cursor-pointer w-40'>
+                    })}} name="city-opt" id="city-opt" className='bg-violet-500 w-[45%] my-2 text-white px-4 py-2 rounded-lg mx-1 hover:bg-violet-400 hover:text-violet-900 cursor-pointer'>
                         <option value="">{filterParams.city == "" ? "City" : "Reset"}</option>
                         {data?.cities.sort().map((item, index) => (
                             <option key={index} value={item}>{item.charAt(0).toUpperCase() + item.slice(1, item.length).toLowerCase()}</option>
@@ -88,7 +93,7 @@ export default function Filters({data, filterParams, setFilterParams}: {data: Di
                             ...prev,
                             zipCode: e.target.value
                         }
-                    })}} name="city-opt" id="city-opt" className='bg-violet-500 my-2 text-white px-4 py-2 rounded-lg mx-1 hover:bg-violet-400 hover:text-violet-900 cursor-pointer w-28'>
+                    })}} name="city-opt" id="city-opt" className='bg-violet-500 my-2 text-white px-4 py-2 rounded-lg mx-1 hover:bg-violet-400 hover:text-violet-900 cursor-pointer w-[45%]'>
                         <option value="">{filterParams.zipCode == "" ? "Zipcode" : "Reset"}</option>
                         {data?.zipCodes.map((item, index) => (
                             <option key={index} value={item}>{item.charAt(0).toUpperCase() + item.slice(1, item.length).toLowerCase()}</option>
@@ -99,7 +104,7 @@ export default function Filters({data, filterParams, setFilterParams}: {data: Di
                             ...prev,
                             specialty: e.target.value
                         }
-                    })}} name="city-opt" id="city-opt" className='bg-violet-500 my-2 text-white px-4 py-2 rounded-lg mx-1 hover:bg-violet-400 hover:text-violet-900 cursor-pointer w-40'>
+                    })}} name="city-opt" id="city-opt" className='bg-violet-500 w-[45%] my-2 text-white px-4 py-2 rounded-lg mx-1 hover:bg-violet-400 hover:text-violet-900 cursor-pointer'>
                         <option value="">{filterParams.specialty == "" ? "Specialty" : "Reset"}</option>
                         {data?.specialties.sort().map((item, index) => (
                             <option key={index} value={item}>{item.charAt(0).toUpperCase() + item.slice(1, item.length).toLowerCase()}</option>
@@ -112,9 +117,9 @@ export default function Filters({data, filterParams, setFilterParams}: {data: Di
                                 type: e.target.value
                             }
                         })
-                    }} value={filterParams.type} className='bg-violet-500 my-2 text-white px-4 py-2 rounded-lg mx-1 hover:bg-violet-400 hover:text-violet-900 cursor-pointer w-full' name="state-filter" id="state-filter">
+                    }} value={filterParams.type} className='bg-violet-500 my-2 text-white px-4 py-2 rounded-lg mx-1 hover:bg-violet-400 hover:text-violet-900 cursor-pointer w-[45%]' name="state-filter" id="state-filter">
                         <option value="">{filterParams.type == "" ? "Type" : "Reset"}</option>
-                        {data?.productTypes.map((item, index) => (
+                        {data?.productTypes.map((item , index) => (
                             <option key={index} value={item.type}>{item.type === "NULL" ? "Misc" : item.type}</option>
                         ))}
                     </select>}
@@ -125,7 +130,7 @@ export default function Filters({data, filterParams, setFilterParams}: {data: Di
                                 category: e.target.value
                             }
                         })
-                    }} value={filterParams.category} className='bg-violet-500 my-2 text-white px-4 py-2 rounded-lg mx-1 hover:bg-violet-400 hover:text-violet-900 cursor-pointer w-full' name="state-filter" id="state-filter">
+                    }} value={filterParams.category} className='bg-violet-500 my-2 text-white px-4 py-2 rounded-lg mx-1 hover:bg-violet-400 hover:text-violet-900 cursor-pointer w-[45%]' name="state-filter" id="state-filter">
                         <option value="">{filterParams.category == "" ? "Category" : "Reset"}</option>
                         {data?.productTypes.map((item, index) => (
                             <option key={index} value={item.category}>{item === "NULL" ? "Misc" : item.category}</option>
@@ -173,16 +178,16 @@ export default function Filters({data, filterParams, setFilterParams}: {data: Di
                             <option key={index} value={item.id}>{item.name}</option>
                         ))}
                     </select>}
-                    {data?.manufacturers && <select onChange={(e) => {
+                    {(data?.manufacturers || data?.products) && <select onChange={(e) => {
                         setFilterParams((prev: any) => {
                             return {
                                 ...prev,
                                 year: e.target.value, 
                             }
                         })
-                    }} value={filterParams.year} className='bg-violet-500 my-2 text-white px-4 py-2 rounded-lg mx-1 hover:bg-violet-400 hover:text-violet-900 cursor-pointer' name="state-filter" id="state-filter">
+                    }} value={filterParams.year} className='bg-violet-500 my-2 text-white px-4 py-2 rounded-lg mx-1 hover:bg-violet-400 hover:text-violet-900 cursor-pointer w-[45%]' name="state-filter" id="state-filter">
                         <option value={"ALL"}>Year</option>
-                        {data?.allYears.map((item, index) => (
+                        {allYears.map((item, index) => (
                             <option key={index} value={item}>{item}</option>
                         ))}
                     </select>}

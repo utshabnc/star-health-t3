@@ -26,6 +26,7 @@ interface FilterParams {
 
 export default function Directory() {
     const navigate = useRouter();
+    const [btnDisable, setBtnDisable] = useState<boolean>(false)
     const [filterParams, setFilterParams] = useState<FilterParams>({
       subject: '', 
       state: '', 
@@ -38,7 +39,7 @@ export default function Directory() {
       manufacturerFilter: '', 
       productFilter: '',
       cursor: '',
-      year: '',
+      year: 'ALL',
       rank: false
     })
     const {data, error, isLoading} = trpc.db.directory.useQuery({
@@ -59,6 +60,9 @@ export default function Directory() {
 
     //helpers to set last index to filter param when user requests to see more data
     const setLastIndex = (arr: {id: string}[]) => {
+      if(arr[arr.length -1]?.id === filterParams.cursor){
+        return setBtnDisable(true)
+      }
       setFilterParams(prev => {
         return {
           ...prev,
@@ -73,7 +77,6 @@ export default function Directory() {
       if(data?.products) setLastIndex(data?.products)
       if(data?.payments) setLastIndex(data?.payments)
       if(data?.manufacturerSummary) setLastIndex(data?.manufacturerSummary)
-
     }
 
     if (isLoading || !data) {
@@ -184,14 +187,15 @@ export default function Directory() {
                     <DirectoryCards filterParams={filterParams} data={data} />
                     
                 </div>
-                <Filters data={data} filterParams={filterParams} setFilterParams={setFilterParams} />
+                <Filters data={data} filterParams={filterParams} setFilterParams={setFilterParams} setBtnDisable={setBtnDisable} />
             </div>
             <div className="more-btn my-2 flex justify-center lg:w-[70%] md:w-[60%] w-[100%]">
-              {(data?.doctors || data?.manufacturers || data?.products || data?.payments) && <button 
-              className='bg-violet-600 px-3 py-1 rounded-lg text-slate-50'
+              {(data?.doctors || data?.manufacturers || data?.products || data?.payments) && !btnDisable && <button 
+              className={`bg-violet-600 px-3 py-1 rounded-lg text-slate-50`}
               onClick={() => {
                 currDataAssignedToLastIndex()
               }}
+              disabled={btnDisable ? true : false}
               >
                 See More
               </button>}

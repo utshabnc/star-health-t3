@@ -614,13 +614,13 @@ export const db = router({
           take: 50
         });
 
-        const allYears = ["ALL", "2021", "2020", "2019", "2018", "2017","2016"]
+        
 
         if(input.rank){
           manufacturers.sort((a,b) => b.ManufacturerSummary[0]?.totalAmount - a.ManufacturerSummary[0]?.totalAmount)
         }
 
-        return {manufacturers, allYears}
+        return {manufacturers}
       }
 
       if(input.subject.toLowerCase() === "product"){
@@ -638,7 +638,11 @@ export const db = router({
           include: {
             StateItem: {
               where: {
-                year: "ALL"
+                year: input.year
+              },
+              select: {
+                totalAmount: true,
+                transactionCount: true
               }
             }
             
@@ -649,13 +653,18 @@ export const db = router({
           take: 100
         });
 
-        // const productNames = products.map(item => {
-        //   return item.name
-        // })
+        //temp aggregation
+        products.forEach(item => {
+          let sum = 0;
+          let transactionSum = 0;
+          item.StateItem.forEach(stateItem => {
+            sum += stateItem.totalAmount
+            transactionSum += stateItem.transactionCount
+          })
 
-        // const categories = products.map(item => {
-        //   return item.category
-        // })
+          item.sumTotal = {sum, transactionSum}
+        })
+
 
         return {products, productTypes: filterDuplicateObjArr(globalProdTypesList, "type")}
       }
@@ -689,7 +698,7 @@ export const db = router({
           cursor: {
             id: input.cursor ? input.cursor : "345881410"
           },
-          take: 100,
+          take: 100
           
         })
 
@@ -747,13 +756,13 @@ export const db = router({
         return {manufacturerSummary}
       }
 
-      const stateSummary = await prisma.payment.findMany({
-        include: {
-          doctor: true
-        },
+      // const stateSummary = await prisma.payment.findMany({
+      //   include: {
+      //     doctor: true
+      //   },
         
-        take: 50
-      })
+      //   take: 50
+      // })
 
       // const paymentSummary = await prisma.payment.groupBy({
       //   by: ["doctorId", "amount"],
@@ -767,7 +776,7 @@ export const db = router({
       // })
       
       // else
-      return {stateSummary}
+      return {}
 
       
     })
