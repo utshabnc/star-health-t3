@@ -41,17 +41,17 @@ const DoctorReviews = (props: Props) => {
       return;
     }
     if (reviewStars > 5) {
-      addReview({
-        doctorId,
-        text: reviewText,
-        rating: 5,
-      }).then(thing => refetchDoctor);
+      // addReview({
+      //   doctorId,
+      //   text: reviewText,
+      //   rating: 5,
+      // }).then(thing => refetchDoctor);
     } else {
-      addReview({
-        doctorId,
-        text: reviewText,
-        rating: reviewStars,
-      }).then(refetchDoctor);
+      // addReview({
+      //   doctorId,
+      //   text: reviewText,
+      //   rating: reviewStars,
+      // }).then(refetchDoctor);
     }
   };
 
