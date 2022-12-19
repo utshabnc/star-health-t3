@@ -1,8 +1,24 @@
 import Link from 'next/link'
 import React from 'react'
 import { formatMoney } from '../../utils'
+import type { DirectoryResponse } from '../../server/trpc/router/db'
 
-export default function DirectoryCards({data, filterParams}) {
+type FilterParams = {
+    subject: string
+    state: string
+    city: string
+    zipCode: string
+    specialty: string
+    type: string
+    category: string
+    doctorFilter: string
+    manufacturerFilter: string
+    productFilter: string
+    cursor: string
+    year: string
+}
+
+export default function DirectoryCards({data, filterParams}: {data: DirectoryResponse, filterParams: FilterParams}) {
 
   if(data?.doctors){
     return (
@@ -74,7 +90,7 @@ export default function DirectoryCards({data, filterParams}) {
                             {item.country} 
                             </p>
 
-                            {item.ManufacturerSummary.length > 0 && <p className='text-sm r'>{filterParams.year == "" || filterParams.year === "ALL" ? "Overall" : `${filterParams.year}`} earnings: {formatMoney(item.ManufacturerSummary[0].totalAmount)}</p>}
+                            {item.ManufacturerSummary.length > 0 && <p className='text-sm r'>{filterParams.year == "" || filterParams.year === "ALL" ? "Overall" : `${filterParams.year}`} earnings: {}</p>}
 
                         {/* <div className="border-gray-300 text-gray-600"></div> */}
 
@@ -121,12 +137,31 @@ export default function DirectoryCards({data, filterParams}) {
 
                         <div className="border-gray-300 text-gray-600"></div>
                     </div>
+      
                 </div>
+                <div className="flex flex-row justify-between">
+                  <h5 className="text-md mb-2 text-gray-900">
+                    Product: {item.type}
+                  </h5>
+                  <p className="mb-1 text-base text-gray-700"> </p>
                 </div>
-            
-        ))}
-        </>
-    )
+                <div className="flex flex-row justify-between text-sm">
+                  <p className="mb-1 text-xs text-gray-700">
+                    Category:{" "}
+                    {item.category &&
+                      item.category.charAt(0).toUpperCase() +
+                        item.category
+                          .slice(1, item.category.length)
+                          .toLowerCase()}
+                  </p>
+
+                  <div className="border-gray-300 text-gray-600"></div>
+                </div>
+              </div>
+            </div>
+          ))}
+      </>
+    );
   }
 
   if(data?.payments){
@@ -151,7 +186,7 @@ export default function DirectoryCards({data, filterParams}) {
                     <div className="flex flex-row justify-between">
                         <h5 className="text-md mb-2 text-gray-900">
                         {/* Product: {item.type} */}
-                        Doctor: {item.doctor.firstName.charAt(0).toUpperCase() + item.doctor.firstName.slice(1, item.length).toLowerCase()} {item.doctor.lastName.charAt(0).toUpperCase() + item.doctor.lastName.slice(1, item.length).toLowerCase()}
+                        Doctor: {item.doctor.firstName.charAt(0).toUpperCase() + item.doctor.firstName.slice(1, item.doctor.firstName.length).toLowerCase()} {item.doctor.lastName.charAt(0).toUpperCase() + item.doctor.lastName.slice(1, item.doctor.lastName.length).toLowerCase()}
                         </h5>
                         <p className="mb-1 text-base text-gray-700"> </p>
                     </div>
@@ -196,7 +231,7 @@ export default function DirectoryCards({data, filterParams}) {
                     </div>
                     <div className="flex flex-row justify-between text-sm">
                         <p className="mb-1 text-xs text-gray-700">
-                            Largest payment: {formatMoney(item.manufacturer.ManufacturerTopPayment[0].amount)}
+                            Largest payment: {formatMoney(item.manufacturer.ManufacturerTopPayment[0]?.amount ?? 0)}
                         </p>
 
                     <div className="border-gray-300 text-gray-600"></div>

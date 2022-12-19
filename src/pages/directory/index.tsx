@@ -58,11 +58,11 @@ export default function Directory() {
     });
 
     //helpers to set last index to filter param when user requests to see more data
-    const setLastIndex = (arr) => {
+    const setLastIndex = (arr: {id: string}[]) => {
       setFilterParams(prev => {
         return {
           ...prev,
-          cursor: arr[arr.length - 1].id
+          cursor: arr[-1]?.id ?? ""
         }
       })
     }
