@@ -24,7 +24,6 @@ function NavBar() {
   const navigate = useRouter();
   const session = useSession();
   const [width, setWidth] = useState<number>(typeof window != "undefined" ? window?.innerWidth : 0)
-  console.log(navigate);
   
   const onSearch = () => {
     navigate.push(`/?search=${search}`);
@@ -77,6 +76,7 @@ function NavBar() {
                 Signed in as {session?.data?.user?.email}
               </p>
             )}
+            {navigate.asPath !== "/directory" && <Link href={"/directory"} className='w-32 lg:w-22 bg-emerald-400 hover:bg-emerald-500 active:bg-emerald-600 rounded px-3 py-1'>Data Directory</Link>}
             {session?.data?.user ? (
               <button
                 className='w-24 lg:w-22 bg-rose-400 hover:bg-rose-500 active:bg-rose-600 rounded px-3 py-1'

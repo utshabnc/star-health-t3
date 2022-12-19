@@ -49,6 +49,22 @@ const drugTypes = [
   'receptor antagonist',
 ];
 
+const allStates = [
+  'AL', 'AK', 'AS', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DE', 'DC', 'FM', 'FL', 'GA', 'GU', 'HI', 'ID', 'IL', 'IN', 'IA', 'KS', 'KY', 'LA', 'ME', 'MH', 'MD', 'MA', 'MI', 'MN', 'MS', 'MO', 'MT', 'NE', 'NV', 'NH', 'NJ', 'NM', 'NY', 'NC', 'ND', 'MP', 'OH', 'OK', 'OR', 'PW', 'PA', 'PR', 'RI', 'SC', 'SD', 'TN', 'TX', 'UT', 'VT', 'VI', 'VA', 'WA', 'WV', 'WI', 'WY'
+]
+
+const filterDuplicates = (arr) => {
+  const finalArr = arr.filter((ele, index) => {
+      return arr.indexOf(ele) === index
+  })
+
+  return finalArr
+}
+
+const filterDuplicateObjArr = (objArr, key) => {
+  return [...new Map(objArr.map(item => [item[key], item])).values()]
+}
+
 const formatName = (text: string) =>
   _.map(text.split(' '), _.capitalize).join(' ');
 
@@ -71,4 +87,7 @@ export {
   formatProductType,
   formatProductName,
   drugTypes,
+  allStates,
+  filterDuplicates,
+  filterDuplicateObjArr
 };
