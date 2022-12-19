@@ -74,7 +74,7 @@ export default function DirectoryCards({data, filterParams}) {
                             {item.country} 
                             </p>
 
-                            <p className='text-sm r'>Overall earnings: {formatMoney(item.ManufacturerSummary[0].totalAmount)}</p>
+                            {item.ManufacturerSummary.length > 0 && <p className='text-sm r'>{filterParams.year == "" || filterParams.year === "ALL" ? "Overall" : `${filterParams.year}`} earnings: {formatMoney(item.ManufacturerSummary[0].totalAmount)}</p>}
 
                         {/* <div className="border-gray-300 text-gray-600"></div> */}
 
@@ -160,7 +160,7 @@ export default function DirectoryCards({data, filterParams}) {
                             Manufacturer: {item.manufacturerName}
                         </p>
 
-                        <p>{item.date.toDateString()}</p>
+                        <p className='text-gray-600 text-sm'>{item.date.toDateString()}</p>
 
                     </div>
                 </div>

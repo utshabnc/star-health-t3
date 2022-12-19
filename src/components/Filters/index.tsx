@@ -170,6 +170,19 @@ export default function Filters({data, filterParams, setFilterParams}) {
                             <option key={index} value={item.id}>{item.name}</option>
                         ))}
                     </select>}
+                    {data?.manufacturers && <select onChange={(e) => {
+                        setFilterParams(prev => {
+                            return {
+                                ...prev,
+                                year: e.target.value, 
+                            }
+                        })
+                    }} value={filterParams.year} className='bg-violet-500 my-2 text-white px-4 py-2 rounded-lg mx-1 hover:bg-violet-400 hover:text-violet-900 cursor-pointer' name="state-filter" id="state-filter">
+                        <option value={"ALL"}>Year</option>
+                        {data?.allYears.map((item, index) => (
+                            <option key={index} value={item}>{item}</option>
+                        ))}
+                    </select>}
                     
                 </div>
                 

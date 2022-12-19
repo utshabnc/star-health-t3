@@ -610,7 +610,10 @@ export const db = router({
           take: 50
         });
 
-        return {manufacturers}
+        const allYears = ["ALL", "2021", "2020", "2019", "2018", "2017","2016"]
+
+
+        return {manufacturers, allYears}
       }
 
       if(input.subject.toLowerCase() === "product"){
