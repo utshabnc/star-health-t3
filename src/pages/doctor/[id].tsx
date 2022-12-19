@@ -1,13 +1,6 @@
 import {
-  JSXElementConstructor,
-  ReactElement,
-  ReactFragment,
-  ReactPortal,
   useState,
 } from "react";
-// import { useUser } from '../../hooks';
-// import { useAddReviewMutation, useDoctorQuery } from '../../api';
-// import "./index.css";
 import { DocDets } from "../../components/DocDets";
 import ReviewForm from "../../components/ReviewForm";
 // import Reviews from '../../components/Reviews';
@@ -19,40 +12,25 @@ import {
 } from "../../utils";
 import Transaction from "../../components/DocDets/Transaction";
 import BarChart from "../../components/charts/bar";
-import DoctorReviews from "../DoctorReviews";
+// import DoctorReviews from "../DoctorReviews";
 import { useRouter } from "next/router";
 import { trpc } from "../../utils/trpc";
 
-// .bgColor {
-//   background-color: #f6f6f6;
-// }
 
 const DoctorDetails = () => {
   const navigate = useRouter();
   const id = navigate.query.id as string;
-  // const [user] = useUser();
-
   const [year, setYear] = useState<string>();
-
-  const { data: doctor, isLoading } = trpc.db.doctor.useQuery({ id, year });
+  const { data: doctor, isLoading: isDoctorLoading, refetch: doctorRefetch } = trpc.db.doctor.useQuery({ id, year: (year? year + '' : '') }, {
+    keepPreviousData: true,
+  });
 
   // const addReview = useAddReviewMutation();
 
   // const [reviewText, setReviewText] = useState('');
   // const [reviewStars, setReviewStars] = useState(5);
 
-  // const formatter = new Intl.NumberFormat('en-US', {
-  //   style: 'currency',
-  //   currency: 'USD',
-  // });
-
-  // const payment = [
-  //   { title: 'Top Payments Made' },
-  //   { title: 'Top Products' },
-  //   { title: 'Top Manufacturers' },
-  // ];
-
-  if (!doctor || isLoading) {
+  if (!doctor || isDoctorLoading) {
     return (
       <>
         <div className="bgColor">
@@ -119,7 +97,7 @@ const DoctorDetails = () => {
     );
   }
 
-  const specialtyParse = (doctor.specialty ?? "").replace("|", " | ");
+  console.log(doctor);
 
   const topManufacturers = doctor.topManufacturers
     .sort((a, b) => b.count - a.count)
@@ -154,18 +132,11 @@ const DoctorDetails = () => {
 
         <DocDets
           doctor={doctor}
-          firstName={doctor.firstName ?? ""}
-          lastName={doctor.lastName ?? ""}
-          addressLine1={doctor.addressLine1 ?? ""}
-          city={doctor.city ?? ""}
-          state={doctor.state ?? ""}
-          specialty={specialtyParse}
-          totalAmount={formatMoney(doctor.totalAmount ?? 0)}
           onChangeYear={(year) =>
             setYear((oldYear) => {
+              console.log(year)
               if (!year) return undefined;
               if (oldYear === String(year)) return;
-
               return String(year);
             })
           }
@@ -181,14 +152,14 @@ const DoctorDetails = () => {
                 {doctor.topProducts
                   .sort((a, b) => b.amount - a.amount)
                   .slice(0, 4)
-                  .map((product, idx) => {
+                  .map((payment, idx) => {
                     return (
                       <li
-                        key={`${product.productName}-${idx}`}
+                        key={`${payment.productName}-${idx}`}
                         className="text-center text-sm sm:text-base "
                       >
-                        {formatProductName(product.productName)}:{" "}
-                        {formatMoney(product.amount)}
+                        {formatProductName(payment.productName)}:{" "}
+                        {formatMoney(payment.amount)}
                       </li>
                     );
                   })}
@@ -202,15 +173,14 @@ const DoctorDetails = () => {
                 {doctor.payments
                   .sort((a, b) => b.amount - a.amount)
                   .slice(0, 4)
-                  .map((product) => {
+                  .map(({ amount, product: { id, name } }) => {
                     return (
                       <li
-                        key={product.id}
+                        key={id}
                         className="text-center text-sm sm:text-base "
                       >
                         {typeof window != 'undefined' && window.screen.width > 1000 &&
-                          `${formatProductName(product.productName)}:`}
-                        {formatMoney(product.amount)}
+                          `${formatProductName(name)}: ${formatMoney(amount)}`}
                       </li>
                     );
                   })}
@@ -223,16 +193,14 @@ const DoctorDetails = () => {
               <ul className="flex flex-col items-center">
                 {doctor.topProducts
                   .sort((a, b) => b.count - a.count)
-                  .slice(0, 5)
+                  .slice(0, 4)
                   .map((product, idx) => {
                     return (
                       <li
                         key={`${product.productName}-${idx}`}
                         className="text-center text-sm sm:text-base "
                       >
-                        {formatProductType(product.type)}:{" "}
-                        {formatProductName(product.productName)} (
-                        {product.count})
+                        {`${formatProductType(product.type)}: ${formatProductName(product.productName)} (${product.count})`}
                       </li>
                     );
                   })}
@@ -283,7 +251,7 @@ const DoctorDetails = () => {
           </div>
 
           <div className="mt-8">
-            <DoctorReviews doctorId={doctor.id} />
+            {/* <DoctorReviews doctorId={doctor.id} /> */}
           </div>
         </div>
       </div>

@@ -12,7 +12,7 @@ interface ResultSchema {
   id: string;
   name: string;
   location: string;
-  type: "doctor" | "manufacturer";
+  type: "doctor" | "manufacturer" | "drug";
 }
 
 const tableHeaders =

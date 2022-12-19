@@ -28,6 +28,10 @@ const formatNumber = (amount: number, decimals = 2) => {
   return formatter.format(amount);
 };
 
+const formatLocation = (country: string, state: string | null) => {
+  return state ? state + ", " + formatName(country) : formatName(country)
+}
+
 const drugTypes = [
   'antibiotic',
   'antidiabetic',
@@ -44,6 +48,22 @@ const drugTypes = [
   'other',
   'receptor antagonist',
 ];
+
+const allStates = [
+  'AL', 'AK', 'AS', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DE', 'DC', 'FM', 'FL', 'GA', 'GU', 'HI', 'ID', 'IL', 'IN', 'IA', 'KS', 'KY', 'LA', 'ME', 'MH', 'MD', 'MA', 'MI', 'MN', 'MS', 'MO', 'MT', 'NE', 'NV', 'NH', 'NJ', 'NM', 'NY', 'NC', 'ND', 'MP', 'OH', 'OK', 'OR', 'PW', 'PA', 'PR', 'RI', 'SC', 'SD', 'TN', 'TX', 'UT', 'VT', 'VI', 'VA', 'WA', 'WV', 'WI', 'WY'
+]
+
+const filterDuplicates = (arr: any[]) => {
+  const finalArr = arr.filter((ele, index) => {
+      return arr.indexOf(ele) === index
+  })
+
+  return finalArr
+}
+
+const filterDuplicateObjArr = (objArr: any[], key: string) => {
+  return [...new Map(objArr.map(item => [item[key], item])).values()]
+}
 
 const formatName = (text: string) =>
   _.map(text.split(' '), _.capitalize).join(' ');
@@ -63,7 +83,11 @@ export {
   formatMoney,
   formatNumber,
   formatName,
+  formatLocation,
   formatProductType,
   formatProductName,
   drugTypes,
+  allStates,
+  filterDuplicates,
+  filterDuplicateObjArr
 };

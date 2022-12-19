@@ -4,88 +4,81 @@ import { ChevronDownIcon } from '@heroicons/react/solid';
 import { Fragment, SetStateAction, useEffect, useState } from 'react';
 import { availableYears, formatName, formatNumber } from '../../utils';
 import _ from 'lodash';
-// import { Link } from 'react-router-dom';
+import type { ProductResponse } from '../../server/trpc/router/db';
 
 
 interface DrugSchema {
-  name: string;
+  drug: ProductResponse;
+  onClick?: React.MouseEventHandler<HTMLButtonElement>;
+  onChangeYear: (year?: number) => void;
 }
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ');
 }
 
-export const DrugDets = (schema: DrugSchema) => {
-  const d = new Date();
+export const DrugDets = ({ drug, onChangeYear }: DrugSchema) => {
   const [year, setYear] = useState(0);
 
-  // useEffect(() => {
-  //   schema.onChangeYear(year == 0 ? undefined : year);
-  // }, [year]);
-
-  // const numStars = _.mean(
-  //   schema.doctor.reviews?.map((review) => review.rating)
-  // );
-
-  // console.log({ numStars });
-
-  // const numReviews = schema.doctor.reviews?.length ?? 0;
+  useEffect(() => {
+    onChangeYear(year == 0 ? undefined : year);
+  }, [year]);
 
   return (
     <>
-      <div className='flex flex-col justify-end lg:px-28 sm:px-2'>
-        <p className='text-violet-700 text-2xl font-semibold'>
-          {formatName(schema.name)}
+      <div className="flex flex-col justify-end sm:px-2 lg:px-28">
+        <p className="text-2xl font-semibold text-violet-700">
+          {formatName(drug.name || "Unknown")}
         </p>
-        
-        <div className='my-1'>
+
+        <div className="my-1">
           <hr />
         </div>
-        <div className='flex flex-col sm:flex-row sm:h-[60px] justify-around items-center'>
-          <div className='flex'>
-            <p className='flex flex-row text-lg font-semibold'>
+        <div className="flex flex-col items-center justify-around sm:h-[60px] sm:flex-row">
+          <div className="flex">
+            <div className="flex flex-row text-lg font-semibold">
               Payments for:&nbsp;
-              <p className='text-violet-700'>
-                {year === 0 ? 'All Years' : year}
-              </p>
-            </p>
-            <Menu as='div' className='relative text-left'>
+              <div className="text-violet-700">
+                {year || "All Years"}
+              </div>
+            </div>
+            <Menu as="div" className="relative text-left">
               <div>
-                <Menu.Button className='inline-flex w-full justify-center bg-white text-sm font-medium text-gray-700'>
+                <Menu.Button className="inline-flex w-full justify-center bg-white text-sm font-medium text-gray-700">
                   <ChevronDownIcon
-                    className='ml-1 mt-1 h-5 w-5'
-                    aria-hidden='true'
+                    className="ml-1 mt-1 h-5 w-5"
+                    aria-hidden="true"
                   />
                 </Menu.Button>
               </div>
 
               <Transition
                 as={Fragment}
-                enter='transition ease-out duration-100'
-                enterFrom='transform opacity-0 scale-95'
-                enterTo='transform opacity-100 scale-100'
-                leave='transition ease-in duration-75'
-                leaveFrom='transform opacity-100 scale-100'
-                leaveTo='transform opacity-0 scale-95'
+                enter="transition ease-out duration-100"
+                enterFrom="transform opacity-0 scale-95"
+                enterTo="transform opacity-100 scale-100"
+                leave="transition ease-in duration-75"
+                leaveFrom="transform opacity-100 scale-100"
+                leaveTo="transform opacity-0 scale-95"
               >
-                <Menu.Items className='overflow-y-auto absolute right-0 mt-2 h-56 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none'>
+                <Menu.Items className="absolute right-0 mt-2 h-56 w-56 origin-top-right divide-y divide-gray-100 overflow-y-auto rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
                   <Menu.Item>
                     {({ active }) => (
                       <button
                         value={0}
                         className={classNames(
                           active
-                            ? 'bg-gray-100 text-gray-900'
-                            : 'text-gray-700',
-                          'block px-4 py-2 text-sm w-full overflow-y-auto '
+                            ? "bg-gray-100 text-gray-900"
+                            : "text-gray-700",
+                          "block w-full overflow-y-auto px-4 py-2 text-sm "
                         )}
                         onClick={() => setYear(0)}
                       >
-                        {'All Years'}
+                        {"All Years"}
                       </button>
                     )}
                   </Menu.Item>
-                  {/* {availableYears.map((year) => (
+                  {availableYears.map((year) => (
                     <div key={year} className='py-1 flex justify-center'>
                       <Menu.Item>
                         {({ active }) => (
@@ -104,15 +97,15 @@ export const DrugDets = (schema: DrugSchema) => {
                         )}
                       </Menu.Item>
                     </div>
-                  ))} */}
+                  ))}
                 </Menu.Items>
               </Transition>
             </Menu>
           </div>
-          <div className='flex'>
-            <p className='text-gray-800 text-lg font-semibold flex'>
+          <div className="flex">
+            <p className="flex text-lg font-semibold text-gray-800">
               Total transaction sum:&nbsp;
-              <p className='text-violet-700'>$1250.00</p>
+              <p className="text-violet-700">{}</p>
             </p>
           </div>
         </div>

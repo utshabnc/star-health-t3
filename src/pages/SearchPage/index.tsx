@@ -8,17 +8,11 @@ import {
 } from "react";
 import { debounce } from "lodash";
 import DetailsTable from "../../components/DetailsTable";
-import { formatName } from "../../utils";
+import { formatName, formatLocation } from "../../utils";
 import Search from "../../components/Search";
 import { Popover } from "react-tiny-popover";
 import { useRouter } from "next/router";
 import { trpc } from "../../utils/trpc";
-// import './index.css';
-
-// from index.css
-// .MainBG {
-//   background-color: #f6f6f6;
-// }
 
 type Props = {
   buttonStyle?: string;
@@ -32,9 +26,9 @@ const SearchPage = ({ buttonPlaceholder, buttonSmall }: Props) => {
   const { data: searchResults, refetch: fetchSearchResults } =
     trpc.db.search.useQuery(search ?? "", { enabled: false });
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
+  console.log(searchResults);
 
   useEffect(() => {
-    // const params = new URLSearchParams(querySearch);
     const searchParam = querySearch["search"] as string;
     if (searchParam) {
       setSearch(searchParam);
@@ -51,14 +45,15 @@ const SearchPage = ({ buttonPlaceholder, buttonSmall }: Props) => {
   );
 
   useEffect(() => {
-    debouncedSearch(search ?? "")
+    debouncedSearch(search ?? "");
   }, [search]);
 
   const SearchResults = () => {
     if (!searchResults) return null;
     if (
       searchResults?.doctors?.length === 0 &&
-      searchResults?.manufacturers?.length === 0
+      searchResults?.manufacturers?.length === 0 &&
+      searchResults?.products?.length === 0
     ) {
       return null;
     }
@@ -80,22 +75,33 @@ const SearchPage = ({ buttonPlaceholder, buttonSmall }: Props) => {
         </div>
         <DetailsTable
           rows={[
+            // doctors
             ...searchResults?.doctors.map(
               ({ id, firstName, lastName, city, state }) => ({
                 id,
                 name: `${firstName} ${lastName}`,
-                location: `${formatName(city)}, ${state}`,
+                location: formatLocation(city, state),
                 type: "doctor" as const,
               })
             ),
+            // manufacturers
             ...searchResults?.manufacturers.map(
               ({ id, name, state, country }) => ({
                 id,
                 name,
-                location: `${state}, ${country}`,
+                location: formatLocation(country, state),
                 type: "manufacturer" as const,
               })
             ),
+            // products
+            ...searchResults?.products
+              .filter((product) => product.type && product.type.toLowerCase() === "drug") // TODO - enable other products when we have somewhere to display them
+              .map(({ id, name }) => ({
+                id: id,
+                name: name ?? '',
+                location: '',
+                type: "drug" as const,
+              })),
           ]}
         />
       </div>

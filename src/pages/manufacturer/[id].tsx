@@ -192,7 +192,7 @@ const ManufacturerDetails = () => {
                 />
               </div>
               <div className='flex justify-center sm:w-[50%]'>
-                {/* <PieChart
+                <PieChart
                   title='Top Payments By Item'
                   data={{
                     labels: topItems.map(
@@ -213,7 +213,7 @@ const ManufacturerDetails = () => {
                       },
                     ],
                   }}
-                /> */}
+                />
               </div>
             </div>
           </div>

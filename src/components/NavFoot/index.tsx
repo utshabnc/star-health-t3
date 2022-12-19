@@ -16,7 +16,7 @@ export const NavFoot = ({ children }: Props) => {
   return (
     <>
       <NavBar />
-      <div className="bgColor">{children}</div>
+        <div className="bg-[#f6f6f6] min-h-screen">{children}</div>
       <Footer />
     </>
   );

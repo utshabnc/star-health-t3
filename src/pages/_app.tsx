@@ -5,6 +5,7 @@ import { SessionProvider } from "next-auth/react";
 import { trpc } from "../utils/trpc";
 
 import "../styles/globals.css";
+import { NavFoot } from "../components/NavFoot";
 
 
 {/* <React.StrictMode>
@@ -28,7 +29,9 @@ const MyApp: AppType<{ session: Session | null }> = ({
 }) => {
   return (
     <SessionProvider session={session}>
-      <Component {...pageProps} />
+      <NavFoot>
+        <Component {...pageProps} />
+      </NavFoot>
 
     </SessionProvider>
   );

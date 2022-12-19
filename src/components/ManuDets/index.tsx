@@ -12,7 +12,7 @@ import {
 import Link from 'next/link';
 import type { ManufacturerResponse } from '../../server/trpc/router/db';
 
-interface ManuSchema {
+interface MenuSchema {
   name: string;
   state: string;
   country: string;
@@ -27,13 +27,7 @@ function classNames(...classes: string[]) {
 
 const NUM_MANUFACTURERS = 2471;
 
-const payment = [
-  { title: 'Top Paid Doctors' },
-  { title: 'Largest Payments' },
-  { title: 'Most Common Items' },
-];
-
-export const ManuDets = (schema: ManuSchema) => {
+export const ManuDets = (schema: MenuSchema) => {
   const d = new Date();
   const [year, setYear] = useState<number>(0);
 
@@ -62,12 +56,12 @@ export const ManuDets = (schema: ManuSchema) => {
         <div className='flex flex-col sm:flex-row sm:h-[60px] justify-around items-center'>
           <div className='flex'>
             <div className='flex flex-row'>
-              <p className='flex flex-row text-lg font-semibold'>
+              <div className='flex flex-row text-lg font-semibold'>
                 Payments for:&nbsp;
-                <p className='text-violet-700'>
+                <div className='text-violet-700'>
                   {year === 0 ? 'All Years' : year}
-                </p>
-              </p>
+                </div>
+              </div>
               <Menu as='div' className='relative text-left'>
                 <div>
                   <Menu.Button className='inline-flex w-full justify-center bg-white text-sm font-medium text-gray-700'>

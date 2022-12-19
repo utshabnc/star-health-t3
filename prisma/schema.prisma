@@ -38,11 +38,13 @@ model State {
   items         StateItem[]
   doctors       StateDoctor[]
   manufacturers StateManufacturer[]
+  stateCounty   StateCounty[]
 }
 
 model StateCounty {
   id          String @id
   stateId     String
+  state       State  @relation(fields: [stateId], references: [id])
   name        String
   fips        String
   totalAmount Float
@@ -65,14 +67,14 @@ model StateItem {
   id               String       @id @default(uuid())
   stateId          String
   manufacturerId   String
-  productName      String?
-  productType      String?
   year             String
   totalAmount      Float
   transactionCount Int
   drugType         String
+  productId        String?
   manufacturer     Manufacturer @relation(fields: [manufacturerId], references: [id])
   state            State        @relation(fields: [stateId], references: [id])
+  product          Product?     @relation(fields: [productId], references: [id])
 }
 
 model StateDoctor {
@@ -161,25 +163,23 @@ model ManufacturerTopPayment {
   year           String
   doctorId       String
   amount         Float
-  manufacturer   Manufacturer @relation(fields: [manufacturerId], references: [id])
   doctor         Doctor       @relation(fields: [doctorId], references: [id])
+  manufacturer   Manufacturer @relation(fields: [manufacturerId], references: [id])
 }
 
 model Review {
   id        String   @id @default(uuid())
-  doctor    Doctor   @relation(fields: [doctorId], references: [id])
   doctorId  String
   rating    Int
   text      String
   createdAt DateTime @default(now())
   createdBy String
+  doctor    Doctor   @relation(fields: [doctorId], references: [id])
 }
 
 model Payment {
   id               String       @id
-  doctor           Doctor       @relation(fields: [doctorId], references: [id])
   doctorId         String
-  manufacturer     Manufacturer @relation(fields: [manufacturerId], references: [id])
   manufacturerName String
   manufacturerId   String
   amount           Float
@@ -187,10 +187,25 @@ model Payment {
   year             String
   paymentType      String?
   paymentNature    String?
-  productType      String?
-  productCategory  String?
-  productName      String?
+  productId        String
   contextualInfo   String?
+  doctor           Doctor       @relation(fields: [doctorId], references: [id])
+  manufacturer     Manufacturer @relation(fields: [manufacturerId], references: [id])
+  product          Product      @relation(fields: [productId], references: [id])
+
+  @@index([year], name: "payment_year_index")
+  @@index([doctorId], name: "payment_doctor_index")
+  @@index([manufacturerId], name: "payment_manufacturer_index")
+  @@index([productId], name: "payment_product_index")
+}
+
+model Product {
+  id        String      @id @default(uuid())
+  name      String?
+  type      String?
+  category  String?
+  payments  Payment[]
+  StateItem StateItem[]
 }
 
 // Necessary for Next auth
