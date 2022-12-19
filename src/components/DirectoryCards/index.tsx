@@ -158,7 +158,6 @@ export default function DirectoryCards({data, filterParams}: {data: DirectoryRes
                   <div className="border-gray-300 text-gray-600"></div>
                 </div>
               </div>
-            </div>
           ))}
       </>
     );

@@ -636,9 +636,7 @@ export const db = router({
             ]
           },
           include: {
-            
-            
-
+            StateItem: true
             
           },
           cursor: {
@@ -779,4 +777,3 @@ export type ManufacturerResponse = RouterOutput["db"]["manufacturer"];
 export type StateResponse = RouterOutput["db"]["state"];
 export type AllStatesResponse = RouterOutput["db"]["allStates"];
 export type ProductResponse = RouterOutput["db"]["product"];
-export type DirectoryResponse = RouterOutput["db"]["directory"];
