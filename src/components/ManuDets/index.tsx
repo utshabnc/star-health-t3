@@ -27,12 +27,6 @@ function classNames(...classes: string[]) {
 
 const NUM_MANUFACTURERS = 2471;
 
-const payment = [
-  { title: 'Top Paid Doctors' },
-  { title: 'Largest Payments' },
-  { title: 'Most Common Items' },
-];
-
 export const ManuDets = (schema: MenuSchema) => {
   const d = new Date();
   const [year, setYear] = useState<number>(0);

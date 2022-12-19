@@ -1,6 +1,9 @@
+import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { trpc } from '../../utils/trpc';
+
+
 // import { Link, Navigate, useNavigate, useParams } from 'react-router-dom';
 // import { useAddReviewMutation, useDoctorQuery } from '../../api';
 // import Modal from '../../components/ReviewLoginModal';
@@ -15,14 +18,16 @@ type Props = {
 const DoctorReviews = (props: Props) => {
   const navigate = useRouter();
   const id = navigate.query.id as string
+  const {data: session, status} =  useSession()
+  console.log(session)
+  
+  // const user = trpc.db.user.useQuery({});
   // const [user] = useUser();
   const doctorId = props.doctorId ?? id;
   const { data: doctor, refetch: refetchDoctor } = trpc.db.doctor.useQuery({
     id: doctorId,
   });
   const [showModal, setShowModal] = useState(false);
-
-  // const addReview = useAddReviewMutation();
 
   const [reviewText, setReviewText] = useState('');
   const [reviewStars, setReviewStars] = useState(0);
@@ -31,23 +36,23 @@ const DoctorReviews = (props: Props) => {
     if (!doctorId) {
       return;
     }
-    // if (user == null) {
-    //   setShowModal(true);
-    //   return;
-    // }
-  //   if (reviewStars > 5) {
-  //     addReview({
-  //       doctorId,
-  //       text: reviewText,
-  //       rating: 5,
-  //     }).then(refetchDoctor);
-  //   } else {
-  //     addReview({
-  //       doctorId,
-  //       text: reviewText,
-  //       rating: reviewStars,
-  //     }).then(refetchDoctor);
-  //   }
+    if (session == null) {
+      setShowModal(true);
+      return;
+    }
+    if (reviewStars > 5) {
+      addReview({
+        doctorId,
+        text: reviewText,
+        rating: 5,
+      }).then(thing => refetchDoctor);
+    } else {
+      addReview({
+        doctorId,
+        text: reviewText,
+        rating: reviewStars,
+      }).then(refetchDoctor);
+    }
   };
 
   if (!doctor) {

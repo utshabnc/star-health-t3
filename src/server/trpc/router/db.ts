@@ -474,7 +474,7 @@ export const db = router({
       const totalAmount = _.round(_.sum(payments.map((p) => p.amount)), 2);
 
       const topDoctors = _(payments)
-        .groupBy("doctor.firstName")
+        .groupBy("doctor.lastName")
         .map((pmts, doctorName) => ({
           doctorName,
           amount: _.round(_.sumBy(pmts, "amount"), 2),

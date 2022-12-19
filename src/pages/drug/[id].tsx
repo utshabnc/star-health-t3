@@ -28,48 +28,32 @@ import Transaction from "../../components/DrugDets/Transaction";
 /*
  * This page is a work in progress. It was initially copied from the Doctor page.
  * The purpose of the drug page is to display transaction data by drug
- * rather than by doctor or manufacturer, as well as providing other information/history pertaining to the drug.
+ * (rather than by doctor or manufacturer), any other information/history pertaining to the drug.
  *
  * This initial implementation contains:
  * - A detail section containing:
  *   - Top Doctors By Payment (doctors with the largest total payments for the drug)
  *   - Largest Payments (largest single payments for the drug)
  *   - Top Transaction Doctors (payment count per doctor for payments for the drug)
- * - A map of the United States to show geographical patterns in transaction count, cost, or other variables relating to the drug (to be titled + included with a dropdown)
+ * - A map of the United States to show geographical patterns in transaction 
+ *   count, cost, or other variables relating to the drug (to be titled + included with a dropdown)
  * - A list of transactions for the drug
  */
 
 const DoctorDetails = () => {
   const navigate = useRouter();
   const id = navigate.query.id as string;
-  console.log(id);
   
-  // const [user] = useUser();
   const [drugType, setDrugType] = useState<string>("Antibiotic");
-
   const [year, setYear] = useState<string>();
+  const {
+    data: drug,
+    isLoading: isDrugLoading,
+  } = trpc.db.product.useQuery({ id, year }, {
+    keepPreviousData: true,
+  });
 
-  // TODO - implement drug query and types, something like this:
-  // const { data: drug, refetch: refetchDrug } = useDrugQuery({ id, year });
-  const {data, isLoading, isError} = trpc.db.product.useQuery({id: id ?? "", year})
-  console.log(data)
-  // const addReview = useAddReviewMutation();
-
-  // const [reviewText, setReviewText] = useState("");
-  // const [reviewStars, setReviewStars] = useState(5);
-
-  // var formatter = new Intl.NumberFormat("en-US", {
-  //   style: "currency",
-  //   currency: "USD",
-  // });
-
-  // const payment = [
-  //   { title: "Top Payments Made" },
-  //   { title: "Top Products" },
-  //   { title: "Top Manufacturers" },
-  // ];
-
-  if (!data) {
+  if (!drug || isDrugLoading) {
     return (
       <>
         <div className="bgColor">
@@ -125,7 +109,7 @@ const DoctorDetails = () => {
                     </svg>
                   </div>
                   <p className="flex font-semibold text-violet-700 justify-center text-lg sm:text-2xl pt-2">
-                    Loading StarHealth Data...
+                    Loading StarHealth drug...
                   </p>
                 </div>
               </div>
@@ -138,12 +122,12 @@ const DoctorDetails = () => {
 
   return (
     <div className="bgColor">
-      <div className="p-5 rounded bg-white">
+      <div className="rounded bg-white p-5">
         <div className="flex flex-row">
           <div>
             <button
               onClick={navigate.back}
-              className="border border-violet-700 bg-violet-700 text-white rounded-md px-4 py-2 transition duration-500 ease select-none hover:bg-violet-900 focus:outline-none focus:shadow-outline"
+              className="ease focus:shadow-outline select-none rounded-md border border-violet-700 bg-violet-700 px-4 py-2 text-white transition duration-500 hover:bg-violet-900 focus:outline-none"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -151,7 +135,7 @@ const DoctorDetails = () => {
                 viewBox="0 0 24 24"
                 strokeWidth={1.5}
                 stroke="currentColor"
-                className="w-6 h-6 "
+                className="h-6 w-6 "
               >
                 <path
                   strokeLinecap="round"
@@ -163,94 +147,131 @@ const DoctorDetails = () => {
           </div>
         </div>
 
-        <DrugDets name={formatName(data.name ?? '?')} />
+        <DrugDets
+          drug={drug}
+          onChangeYear={(year) =>
+            setYear((oldYear) => {
+              console.log(year)
+              if (!year) return undefined;
+              if (oldYear === String(year)) return;
+              return String(year);
+            })
+          }
+        />
 
         <div className="grid grid-cols-1">
-          <div className="mx-1 p-2 border-2 border-violet-400 rounded-lg grid grid-cols-3">
+          <div className="mx-1 grid grid-cols-3 rounded-lg border-2 border-violet-400 p-2">
             <div className="flex flex-col ">
-              <p className="flex text-sm sm:text-base text-center justify-center underline font font-semibold">
+              <p className="font flex justify-center text-center text-sm font-semibold underline sm:text-base">
                 Top Doctors By Payment
               </p>
               <ul className="flex flex-col items-center">
-                <li className="text-sm text-center sm:text-base ">
-                  {/* TODO replace the following with real data */}
-                  {"John Doe"}: {"$1000.00"}
-                </li>
-                <li className="text-sm text-center sm:text-base ">
-                  {/* TODO replace the following with real data */}
-                  {"Jane Doe"}: {"$250.00"}
-                </li>
+                {drug.topDoctors
+                  .sort((a, b) => b.amount - a.amount)
+                  .slice(0, 4)
+                  .map((payment, idx) => {
+                    return (
+                      <li
+                        key={`${payment.doctorName}-${idx}`}
+                        className="text-center text-sm sm:text-base "
+                      >
+                        {formatProductName(payment.doctorName)}:{" "}
+                        {formatMoney(payment.amount)}
+                      </li>
+                    );
+                  })}
               </ul>
             </div>
             <div className="flex flex-col ">
-              <p className="flex text-sm sm:text-base text-center justify-center underline font font-semibold">
+              <p className="font flex justify-center text-center text-sm font-semibold underline sm:text-base">
                 Largest Payments
               </p>
               <ul className="flex flex-col items-center">
-                <li className="text-sm text-center sm:text-base ">
-                  {/* TODO replace the following with real data */}
-                  {typeof window != "undefined" && window.screen.width > 1000 && `John Doe: `}
-                  {"$500.00"}
-                </li>
-                <li className="text-sm text-center sm:text-base ">
-                  {/* TODO replace the following with real data */}
-                  {typeof window != 'undefined' && window.screen.width > 1000 && `Jane Doe: `}
-                  {"$250.00"}
-                </li>
+                {drug.payments
+                  .sort((a, b) => b.amount - a.amount)
+                  .slice(0, 4)
+                  .map(({ amount, doctor: { id, firstName, lastName } }) => {
+                    return (
+                      <li
+                        key={id}
+                        className="text-center text-sm sm:text-base "
+                      >
+                        {typeof window != "undefined" &&
+                          window.screen.width > 1000 &&
+                          `${formatProductName(
+                            firstName + " " + lastName
+                          )}: ${formatMoney(amount)}`}
+                      </li>
+                    );
+                  })}
               </ul>
             </div>
             <div className="flex flex-col ">
-              <p className="flex text-sm sm:text-base text-center justify-center underline font font-semibold">
+              <p className="font flex justify-center text-center text-sm font-semibold underline sm:text-base">
                 Top Transaction Doctors
               </p>
               <ul className="flex flex-col items-center">
-                <li className="text-sm text-center sm:text-base ">
-                  {/* TODO replace the following with real data */}
-                  John Doe (2)
-                </li>
-                <li className="text-sm text-center sm:text-base ">
-                  {/* TODO replace the following with real data */}
-                  Jane Doe (1)
-                </li>
+                {drug.topDoctors
+                  .sort((a, b) => b.count - a.count)
+                  .slice(0, 4)
+                  .map((payment, idx) => {
+                    return (
+                      <li
+                        key={`${payment.doctorName}-${idx}`}
+                        className="text-center text-sm sm:text-base "
+                      >
+                        {`${formatProductName(payment.doctorName)} (${
+                          payment.count
+                        })`}
+                      </li>
+                    );
+                  })}
               </ul>
             </div>
           </div>
 
-          <div className="flex flex-col sm:flex-row  max-h-[350px]">
+          <div className="flex max-h-[350px] flex-col  sm:flex-row">
             <div className="sm:w-1/2">
-              {/* TODO replace the following with real data */}
-              <UnitedStatesHeatmap data={
-                geo.map(({stateId, totalAmount}) => ({
-                  state: stateId,
-                  value: totalAmount
-                }))
-              } />
+            <BarChart
+                title="Transaction "
+                data={{
+                  labels: drug.topDoctors.slice(0, 10).map((rec) => rec.doctorName),
+                  datasets: [
+                    {
+                      label: "Number of Transactions",
+                      backgroundColor: "#8D47FC",
+                      borderWidth: 0,
+                      data: drug.topDoctors.slice(0, 10).map((rec) => rec.amount),
+                    },
+                  ],
+                }}
+              />
             </div>
             <div
               style={{
                 maxHeight:
-                  (typeof window != "undefined" && window.screen.width > 640)
+                  typeof window != "undefined" && window.screen.width > 640
                     ? Math.ceil(window.screen.width * 0.24)
                     : undefined,
               }}
-              className="flex flex-col sm:w-1/2 overflow-scroll max-h-[100%]"
+              className="flex max-h-[100%] flex-col overflow-scroll sm:w-1/2"
             >
-              <p className="flex justify-center mt-2 text-base font-semibold">
+              <p className="mt-2 flex justify-center text-base font-semibold">
                 All Transaction Summaries
               </p>
-              <div className="flex gap-2 flex-col">
-                {data.payments && data.payments
-                  .sort(
-                    (a, b) =>
-                      new Date(b.date).getTime() - new Date(a.date).getTime()
-                  )
-                  .map((payment) => (
-                    <Transaction key={payment.id} transaction={payment}/>
-                  ))}
+              <div className="flex flex-col gap-2">
+                {drug.payments &&
+                  drug.payments
+                    .sort(
+                      (a, b) =>
+                        new Date(b.date).getTime() - new Date(a.date).getTime()
+                    )
+                    .map((payment) => (
+                      <Transaction key={payment.id} transaction={payment} />
+                    ))}
               </div>
             </div>
           </div>
-
         </div>
       </div>
     </div>

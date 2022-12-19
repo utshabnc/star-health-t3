@@ -181,8 +181,8 @@ const StateDetails = () => {
                   title='Top Payments By Item'
                   data={{
                     labels: topItems.map(
-                      (rec: { productName: any }) =>
-                        rec.productName ?? 'Unknown'
+                      (rec) =>
+                      rec.product?.name ?? "UNKNOWN"
                     ),
                     datasets: [
                       {
