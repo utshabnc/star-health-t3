@@ -160,9 +160,10 @@ export default function DirectoryCards({data, filterParams}) {
                             Manufacturer: {item.manufacturerName}
                         </p>
 
-                    <div className="border-gray-300 text-gray-600"></div>
+                        <p>{item.date.toDateString()}</p>
+
+                    </div>
                 </div>
-            </div>
             </div>
         
     ))}

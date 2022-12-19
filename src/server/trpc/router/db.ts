@@ -643,10 +643,7 @@ export const db = router({
       }
 
       if(input.subject === "payment"){
-        console.log(input.doctorFilter.first);
-        
-        // continue -- in progress of refactoring doctorfilter into and obj -- filter for name worked before but now is not
-        
+                
         const payments = await prisma.payment.findMany({
           where: {
             AND: [
