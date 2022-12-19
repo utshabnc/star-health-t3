@@ -97,8 +97,6 @@ const DoctorDetails = () => {
     );
   }
 
-  console.log(doctor);
-
   const topManufacturers = doctor.topManufacturers
     .sort((a, b) => b.count - a.count)
     .slice(0, 9);

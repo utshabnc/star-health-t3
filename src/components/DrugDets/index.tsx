@@ -2,7 +2,7 @@ import { Menu, Transition } from '@headlessui/react';
 import { ChevronDownIcon } from '@heroicons/react/solid';
 // import ReactStars from 'react-rating-stars-component';
 import { Fragment, SetStateAction, useEffect, useState } from 'react';
-import { availableYears, formatName, formatNumber } from '../../utils';
+import { availableYears, formatMoney, formatName, formatNumber } from '../../utils';
 import _ from 'lodash';
 import type { ProductResponse } from '../../server/trpc/router/db';
 
@@ -104,8 +104,8 @@ export const DrugDets = ({ drug, onChangeYear }: DrugSchema) => {
           </div>
           <div className="flex">
             <p className="flex text-lg font-semibold text-gray-800">
-              Total transaction sum:&nbsp;
-              <p className="text-violet-700">{}</p>
+              Pay from Manufacturers:&nbsp;
+              <p className="text-violet-700">{formatMoney(drug.totalAmount)}</p>
             </p>
           </div>
         </div>
