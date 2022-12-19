@@ -636,7 +636,11 @@ export const db = router({
             ]
           },
           include: {
-            StateItem: true
+            StateItem: {
+              where: {
+                year: "ALL"
+              }
+            }
             
           },
           cursor: {

@@ -62,7 +62,7 @@ export default function Directory() {
       setFilterParams(prev => {
         return {
           ...prev,
-          cursor: arr[-1]?.id ?? ""
+          cursor: arr[arr.length -1]?.id ?? ""
         }
       })
     }
