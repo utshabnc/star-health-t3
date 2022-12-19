@@ -43,19 +43,20 @@ const Transaction = ({
         </div>
         <div className="flex flex-row justify-between">
           <h5 className="text-md mb-2 text-gray-900">
-            {formatProductType(product.type)}: 
-            {product.type?.toLowerCase() == 'drug' ? 
-              <Link href={`/drug/${product.id}`}>{formatProductName(product.name)}</Link> : 
-              <>{formatProductName(product.name)}</>  
-          }
-            {/* <Link href={`/${product.type}`}></Link> */}
-            {/* {formatProductName(product.name)} */}
+            {formatProductType(product.type)}{": "}
+            {product.type?.toLowerCase() == "drug" ? (
+              <Link href={`/drug/${product.id}`}>
+                {formatProductName(product.name)}
+              </Link>
+            ) : (
+              <>{formatProductName(product.name)}</>
+            )}
           </h5>
           <p className="mb-1 text-base text-gray-700"> {formatMoney(amount)}</p>
         </div>
         <div className="flex flex-row justify-between text-sm">
           <p className="mb-1 text-base text-gray-700">
-            Context: {paymentNature}
+            Context: {paymentNature ?? "N/A"}
           </p>
 
           <div className="border-gray-300 text-gray-600"></div>
