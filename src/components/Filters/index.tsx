@@ -16,6 +16,7 @@ export default function Filters({data, filterParams, setFilterParams}: {data: Di
                         return {
                             ...prev,
                             subject: e.target.value,
+                            cursor: ''
                         }
                     })} name="search" id="search-subject" className='bg-violet-500 w-3/4 p-2 rounded-lg cursor-pointer text-white'>
                         <option value="">Search for...</option>
@@ -38,7 +39,8 @@ export default function Filters({data, filterParams, setFilterParams}: {data: Di
                             category: '', 
                             doctorFilter: "", 
                             manufacturerFilter: '', 
-                            productFilter: ''
+                            productFilter: '',
+                            cursor: ''
                         })
                     }}
                     >
@@ -113,7 +115,7 @@ export default function Filters({data, filterParams, setFilterParams}: {data: Di
                     }} value={filterParams.type} className='bg-violet-500 my-2 text-white px-4 py-2 rounded-lg mx-1 hover:bg-violet-400 hover:text-violet-900 cursor-pointer w-full' name="state-filter" id="state-filter">
                         <option value="">{filterParams.type == "" ? "Type" : "Reset"}</option>
                         {data?.productTypes.map((item, index) => (
-                            <option key={index} value={item}>{item === "NULL" ? "Misc" : item}</option>
+                            <option key={index} value={item.type}>{item.type === "NULL" ? "Misc" : item.type}</option>
                         ))}
                     </select>}
                     {data && data?.products && <select onChange={(e) => {
@@ -125,8 +127,8 @@ export default function Filters({data, filterParams, setFilterParams}: {data: Di
                         })
                     }} value={filterParams.category} className='bg-violet-500 my-2 text-white px-4 py-2 rounded-lg mx-1 hover:bg-violet-400 hover:text-violet-900 cursor-pointer w-full' name="state-filter" id="state-filter">
                         <option value="">{filterParams.category == "" ? "Category" : "Reset"}</option>
-                        {data?.categories.map((item, index) => (
-                            <option key={index} value={item}>{item === "NULL" ? "Misc" : item}</option>
+                        {data?.productTypes.map((item, index) => (
+                            <option key={index} value={item.category}>{item === "NULL" ? "Misc" : item.category}</option>
                         ))}
                     </select>}
                     {/* fix bug of e.target.value console logging out as [onject Object] rather than its actual value*/}
@@ -167,7 +169,7 @@ export default function Filters({data, filterParams, setFilterParams}: {data: Di
                         })
                     }} value={filterParams.productFilter} className='bg-violet-500 my-2 text-white px-4 py-2 rounded-lg mx-1 hover:bg-violet-400 hover:text-violet-900 cursor-pointer w-full' name="state-filter" id="state-filter">
                         <option value="">{filterParams.productFilter == "" ? "Product" : "Reset"}</option>
-                        {data?.productNameList.map((item, index) => (
+                        {data?.productNameItems.map((item, index) => (
                             <option key={index} value={item.id}>{item.name}</option>
                         ))}
                     </select>}
