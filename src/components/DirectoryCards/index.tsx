@@ -97,9 +97,10 @@ export default function DirectoryCards({data, filterParams}) {
                     <div className=" p-2">
                         <div className="flex flex-row justify-between">
                             <h5 className="text-md mb-2 font-medium text-gray-900 underline">
-                            <Link href={`/drug/${item.id}`}>
+                            {/* <Link href={`/drug/${item.id}`}>
                                 {item.name}
-                            </Link>
+                            </Link> */}
+                            {item.name}
                             
                             </h5>
                             <p className="mb-1 text-gray-600 text-xs">

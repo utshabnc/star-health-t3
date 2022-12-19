@@ -18,7 +18,8 @@ const directoryInput = z.object({
   manufacturerFilter: z.string().optional(),
   productFilter: z.string().optional(),
   cursor: z.string().optional(),
-  year: z.string().optional()
+  year: z.string().optional(),
+  rank: z.boolean().optional()
 
 })
 
@@ -535,8 +536,26 @@ export const db = router({
     .input(directoryInput)
     .query(async ({ctx: {prisma}, input}) => {
       console.log(input);
-      
 
+      const productArr = await prisma.product.findMany({
+        take: 10000
+      })
+
+
+      const productNameItems = productArr.map(item => {
+        return {
+          id: item.id,
+          name: item.name
+        }
+      }) 
+      
+      const globalProdTypesList = productArr.map(item => {
+        return {
+          type: item.type,
+          category: item.category
+        }
+      })
+      
       if(input.subject.toLowerCase().trim() === "doctor"){
         const doctors = await prisma.doctor.findMany({
           where: {
@@ -597,6 +616,9 @@ export const db = router({
 
         const allYears = ["ALL", "2021", "2020", "2019", "2018", "2017","2016"]
 
+        if(input.rank){
+          manufacturers.sort((a,b) => b.ManufacturerSummary[0]?.totalAmount - a.ManufacturerSummary[0]?.totalAmount)
+        }
 
         return {manufacturers, allYears}
       }
@@ -613,21 +635,27 @@ export const db = router({
               },
             ]
           },
-          // cursor: {
-          //   id: input.cursor ? input.cursor : 
-          // },
-          take: 5
+          include: {
+            
+            
+
+            
+          },
+          cursor: {
+            id: input.cursor ? input.cursor : "0000ad10-c8ad-4065-9fb9-fca779833fe2"
+          },
+          take: 100
         });
 
-        const productTypes = products.map(item => {
-          return item.type
-        })
+        // const productNames = products.map(item => {
+        //   return item.name
+        // })
 
-        const categories = products.map(item => {
-          return item.category
-        })
+        // const categories = products.map(item => {
+        //   return item.category
+        // })
 
-        return {products, productTypes: filterDuplicates(productTypes), categories: filterDuplicates(categories)}
+        return {products, productTypes: filterDuplicateObjArr(globalProdTypesList, "type")}
       }
 
       if(input.subject === "payment"){
@@ -663,8 +691,6 @@ export const db = router({
           
         })
 
-        
-        
         const doctorNames = payments.map(item => {
           return {
             id: item.doctorId,
@@ -676,16 +702,16 @@ export const db = router({
           return item.manufacturerName
         })
 
-        const productNameList = payments.map(item => {
-          return {
-            id: item.productId,
-            name: item.product.name
-          }
-        })
+        // const productNameList = payments.map(item => {
+        //   return {
+        //     id: item.productId,
+        //     name: item.product.name
+        //   }
+        // })
 
 
 
-        return {payments, manufacturerList: filterDuplicates(manufacturerNames), doctorList: filterDuplicateObjArr(doctorNames, "id"), productNameList: filterDuplicateObjArr(productNameList, "id")}
+        return {payments, manufacturerList: filterDuplicates(manufacturerNames), doctorList: filterDuplicateObjArr(doctorNames, "id"), productNameItems: filterDuplicateObjArr(productNameItems, "id")}
 
       }
 

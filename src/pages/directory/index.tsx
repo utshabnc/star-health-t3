@@ -20,7 +20,8 @@ interface FilterParams {
     manufacturerFilter: string,
     productFilter: string,
     cursor: string,
-    year: string
+    year: string,
+    rank: boolean
 }
 
 export default function Directory() {
@@ -37,7 +38,8 @@ export default function Directory() {
       manufacturerFilter: '', 
       productFilter: '',
       cursor: '',
-      year: ''
+      year: '',
+      rank: false
     })
     const {data, error, isLoading} = trpc.db.directory.useQuery({
       subject: filterParams.subject, 
@@ -51,7 +53,8 @@ export default function Directory() {
       manufacturerFilter: filterParams.manufacturerFilter, 
       productFilter: filterParams.productFilter,
       cursor: filterParams.cursor,
-      year: filterParams.year
+      year: filterParams.year,
+      rank: filterParams.rank
     });
 
     //helpers to set last index to filter param when user requests to see more data
@@ -176,14 +179,14 @@ export default function Directory() {
                 <hr />
                 </div>
             </div>
-            <div className="flex w-full h-[70%] xl:h-[70%] justify-center">
-                <div className='flex max-h-[100%] flex-col overflow-scroll sm:w-1/2 p-1'>
+            <div className="flex max-sm:flex-col w-full h-[70%] xl:h-[70%] justify-center">
+                <div className='flex max-sm:order-2 max-h-[100%] flex-col overflow-scroll sm:w-1/2 p-1'>
                     <DirectoryCards filterParams={filterParams} data={data} />
                     
                 </div>
                 <Filters data={data} filterParams={filterParams} setFilterParams={setFilterParams} />
             </div>
-            <div className="more-btn my-2 flex justify-center lg:w-[70%] md:w-[60%] w-[50%]">
+            <div className="more-btn my-2 flex justify-center lg:w-[70%] md:w-[60%] w-[100%]">
               {(data?.doctors || data?.manufacturers || data?.products || data?.payments) && <button 
               className='bg-violet-600 px-3 py-1 rounded-lg text-slate-50'
               onClick={() => {
