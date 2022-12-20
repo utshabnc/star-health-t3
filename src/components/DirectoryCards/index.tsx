@@ -107,7 +107,7 @@ export default function DirectoryCards({data, filterParams}: {data: DirectoryRes
   if(data?.products){
     return (
         <>
-            {data && data?.products && data?.products.map((item, index) => (
+            {data && data?.products && data?.products.sort((a, b) => b.sumTotal.sum - a.sumTotal.sum).map((item, index) => (
             
                 <div key={index} className="w-[100%] rounded-lg bg-white text-center shadow-lg mb-2">
                     <div className=" p-2">
@@ -138,7 +138,6 @@ export default function DirectoryCards({data, filterParams}: {data: DirectoryRes
                                 </p>
                             </div>
 
-                            {/* <div className="border-gray-300 text-gray-600"></div> */}
                         </div>
       
                     </div>
