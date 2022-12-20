@@ -128,16 +128,22 @@ export default function DirectoryCards({data, filterParams}: {data: DirectoryRes
                             <p className="mb-1 text-base text-gray-700"> </p>
                         </div>
                         <div className="flex flex-row justify-between text-sm">
-                            <p className="mb-1 text-xs text-gray-700">
+                            {item.category && <p className="mb-1 text-xs text-gray-700">
                                 Category: {item.category.charAt(0).toUpperCase() + item.category.slice(1, item.category.length).toLowerCase()} 
-                            </p>
+                            </p>}
 
-                        <div className="border-gray-300 text-gray-600"></div>
-                    </div>
+                            <div>
+                                <p>
+                                    Total transactions: {item.sumTotal.transactionSum}
+                                </p>
+                            </div>
+
+                            {/* <div className="border-gray-300 text-gray-600"></div> */}
+                        </div>
       
-                </div>
+                    </div>
                 
-              </div>
+                </div>
           ))}
       </>
     );

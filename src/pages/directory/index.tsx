@@ -6,9 +6,8 @@ import { filterDuplicates } from '../../utils';
 import Filters from '../../components/Filters';
 import Link from 'next/link';
 import DirectoryCards from '../../components/DirectoryCards';
-import { debounce, filter } from 'lodash';
 
-interface FilterParams {
+export interface FilterParams {
     subject: string,
     state: string,
     city: string,
@@ -179,7 +178,7 @@ export default function Directory() {
                     </button>
                 </div>
             </div>
-            <div className='flex flex-col justify-end lg:px-28 sm:px-2 py-10'>
+            <div className='flex flex-col justify-end lg:px-28 sm:px-2 pt-5'>
                 <div className="wrap-opt flex justify-between">
                   <div>
                     <p className='text-violet-700 text-2xl font-semibold'>
@@ -188,7 +187,7 @@ export default function Directory() {
 
                   </div>
                   <div className='flex gap-2'>
-                    <button onClick={(e) => {
+                    <button onClick={() => {
                       setFilterParams(prev => {
                         return {
                           ...prev,
@@ -202,7 +201,7 @@ export default function Directory() {
                     className={`border-b-2 hover:border-zinc-500 ${data?.payments ? "border-violet-600" : "border-zinc-200"}`}>
                       Transactions
                     </button>
-                    <button onClick={(e) => {
+                    <button onClick={() => {
                       setFilterParams(prev => {
                         return {
                           ...prev,
@@ -215,7 +214,7 @@ export default function Directory() {
                     }} className={`border-b-2 hover:border-zinc-500 ${data?.manufacturers ? "border-violet-600" : "border-zinc-200"}`}>
                       Manufacturers
                     </button>
-                    <button onClick={(e) => {
+                    <button onClick={() => {
                       setFilterParams(prev => {
                         return {
                           ...prev,
@@ -229,7 +228,7 @@ export default function Directory() {
                     }} className={`border-b-2 hover:border-zinc-500 ${data?.doctors ? "border-violet-600" : "border-zinc-200"}`}>
                       Doctors
                     </button>
-                    <button onClick={(e) => {
+                    <button onClick={() => {
                       setFilterParams(prev => {
                         return {
                           ...prev,
@@ -253,7 +252,7 @@ export default function Directory() {
                 </div>
                 <Filters data={data} filterParams={filterParams} setFilterParams={setFilterParams} setBtnDisable={setBtnDisable} />
             </div>
-            <div className="flex max-sm:flex-col w-full h-[70%] xl:h-[70%] justify-center">
+            <div className="flex max-sm:flex-col w-full h-[80%] xl:h-[70%] justify-center">
                 <div className='flex max-sm:order-2 max-h-[100%] flex-col overflow-scroll sm:w-[85%] p-1'>
                     <DirectoryCards filterParams={filterParams} data={data} />
                     

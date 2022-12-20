@@ -671,6 +671,8 @@ export const db = router({
           take: 100
         });
 
+        
+
         //temp aggregation
         products.forEach(item => {
           let sum = 0;
@@ -716,7 +718,7 @@ export const db = router({
           cursor: {
             id: input.cursor !== "" ? input.cursor : "345881410"
           },
-          take: 5
+          take: 50
           
         })
 
@@ -804,6 +806,7 @@ export const db = router({
 type RouterOutput = inferRouterOutputs<AppRouter>;
 export type SearchResponse = RouterOutput["db"]["search"];
 export type DoctorResponse = RouterOutput["db"]["doctor"];
+export type DirectoryResponse = RouterOutput["db"]["directory"];
 export type ManufacturerResponse = RouterOutput["db"]["manufacturer"];
 export type StateResponse = RouterOutput["db"]["state"];
 export type AllStatesResponse = RouterOutput["db"]["allStates"];
