@@ -90,7 +90,7 @@ export default function DirectoryCards({data, filterParams}: {data: DirectoryRes
                             {item.country} 
                             </p>
 
-                            {item.ManufacturerSummary.length > 0 && <p className='text-sm r'>{filterParams.year == "" || filterParams.year === "ALL" ? "Overall" : `${filterParams.year}`} earnings: {}</p>}
+                            {item.ManufacturerSummary.length > 0 && <p className='text-sm r'>{filterParams.year == "" || filterParams.year === "ALL" ? "Overall" : `${filterParams.year}`} earnings: {formatMoney(item.ManufacturerSummary[0].totalAmount)}</p>}
 
                         {/* <div className="border-gray-300 text-gray-600"></div> */}
 

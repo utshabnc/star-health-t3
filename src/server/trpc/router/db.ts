@@ -541,6 +541,24 @@ export const db = router({
         take: 10000
       })
 
+      const allDocs = await prisma.doctor.findMany({
+        take: 10000
+      })
+
+      const allManus = await prisma.manufacturer.findMany({
+        take: 10000
+      })
+
+      const globalDocList = allDocs.map(item => {
+        return {
+          id: item.id,
+          fullName: `${item.firstName} ${item.lastName}`
+        }
+      })
+
+      const globalManufacturerList = allManus.map(item => {
+        return item.name
+      })
 
       const productNameItems = productArr.map(item => {
         return {
@@ -575,7 +593,7 @@ export const db = router({
             ]  
           },
           cursor: {
-            id: input.cursor ? input.cursor : "1"
+            id: input.cursor !== "" ? input.cursor : "1"
           },
           take: 100
         });
@@ -609,9 +627,9 @@ export const db = router({
             }
           },
           cursor: {
-            id: input.cursor ? input.cursor : "100000000103"
+            id: input.cursor !== "" ? input.cursor : "100000000103"
           },
-          take: 50
+          take: 25
         });
 
         
@@ -648,7 +666,7 @@ export const db = router({
             
           },
           cursor: {
-            id: input.cursor ? input.cursor : "0000ad10-c8ad-4065-9fb9-fca779833fe2"
+            id: input.cursor !== "" ? input.cursor : "0000ad10-c8ad-4065-9fb9-fca779833fe2"
           },
           take: 100
         });
@@ -696,22 +714,22 @@ export const db = router({
             }
           },
           cursor: {
-            id: input.cursor ? input.cursor : "345881410"
+            id: input.cursor !== "" ? input.cursor : "345881410"
           },
-          take: 100
+          take: 5
           
         })
 
-        const doctorNames = payments.map(item => {
-          return {
-            id: item.doctorId,
-            name: `${item.doctor.firstName} ${item.doctor.lastName}`
-          }
-        })
+        // const doctorNames = payments.map(item => {
+        //   return {
+        //     id: item.doctorId,
+        //     name: `${item.doctor.firstName} ${item.doctor.lastName}`
+        //   }
+        // })
 
-        const manufacturerNames = payments.map(item => {
-          return item.manufacturerName
-        })
+        // const manufacturerNames = payments.map(item => {
+        //   return item.manufacturerName
+        // })
 
         // const productNameList = payments.map(item => {
         //   return {
@@ -722,7 +740,7 @@ export const db = router({
 
 
 
-        return {payments, manufacturerList: filterDuplicates(manufacturerNames), doctorList: filterDuplicateObjArr(doctorNames, "id"), productNameItems: filterDuplicateObjArr(productNameItems, "id")}
+        return {payments, manufacturerList: globalManufacturerList, doctorList: globalDocList, productNameItems: filterDuplicateObjArr(productNameItems, "id")}
 
       }
 
