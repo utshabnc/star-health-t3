@@ -7,6 +7,19 @@ Star Health is a public data analytics platform focused on healthcare. It strive
 ![screenshot](public/images/ScreenGrabHomepage.png)
 
 
+## Sections
+Jump to:
+- [Architecture](#architecture)
+- [App](#app)
+- [Quick Start](#quick-start)
+- [Development](#development)
+    - [File Structure](#file-structure)
+    - [Rough Developer Workflow](#rough-developer-workflow)
+- [Migration from GCP](#migration-from-gcp)
+    - [Legacy Architecture](#legacy-architecture)
+    - [Current Architecture](#current-architecture)
+- [Data Migration](#repeatable-steps-for-migrating-data---the-manual-way)
+- [Additional Resources](#additional-resources)
 
 ## Architecture
 
