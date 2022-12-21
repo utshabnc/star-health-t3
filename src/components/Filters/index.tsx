@@ -10,6 +10,13 @@ export default function Filters({data, filterParams, setFilterParams}: {data: Di
 
     const [showFilters, setShowFilters] = useState<boolean>(false)
 
+    const formatSpecialties = (str) => {
+        const lastIndex = str.lastIndexOf("|");
+        const finalString = str.slice(lastIndex + 1).trim()
+
+        return finalString
+    }
+
   return (
     <>
         <div className='w-full'>
@@ -69,7 +76,7 @@ export default function Filters({data, filterParams, setFilterParams}: {data: Di
                         })}} name="city-opt" id="city-opt" className='bg-violet-500 w-[20%] my-2 text-white p-1 rounded-lg mx-1 hover:bg-violet-400 hover:text-violet-900 cursor-pointer'>
                             <option value="">{filterParams.specialty == "" ? "Specialty" : "Reset"}</option>
                             {data?.specialties.sort().map((item: string, index: number) => (
-                                <option key={index} value={item}>{item.charAt(0).toUpperCase() + item.slice(1, item.length).toLowerCase()}</option>
+                                <option key={index} value={item}>{formatSpecialties(item)}</option>
                             ))}
                         </select>}
                         {data && data?.products && <select onChange={(e) => {
