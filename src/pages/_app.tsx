@@ -5,8 +5,7 @@ import { SessionProvider } from "next-auth/react";
 import { trpc } from "../utils/trpc";
 
 import "../styles/globals.css";
-import { NavFoot } from "../components/NavFoot";
-
+import { NavFoot } from "../components/NavFoot"; 
 
 {/* <React.StrictMode>
     <BrowserRouter>

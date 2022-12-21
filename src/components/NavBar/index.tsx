@@ -38,11 +38,11 @@ function NavBar() {
   return (
     <>
       <nav className={`bg-nav bg-[#010139] ${navigate.asPath === "/" ? "p-1" : "p-7"} relative`}>
-        <div className='flex-1 flex justify-center  items-center'>
+        <div className='flex-1 flex items-center'>
           {navigate.asPath === '/' && (
             <div className={``}>
               <Link href={'/'}>
-                <Image src={'/images/Logo.png'} alt='logo' className=' h-12' width={175} height={10} />
+                <Image src={'/images/Logo.png'} alt='logo' className='h-12' width={175} height={10} />
               </Link>
             </div>
           )}
@@ -76,10 +76,21 @@ function NavBar() {
                 Signed in as {session?.data?.user?.email}
               </p>
             )}
-            {navigate.asPath !== "/directory" && <Link href={"/directory"} className='w-32 lg:w-22 bg-emerald-400 hover:bg-emerald-500 active:bg-emerald-600 rounded px-3 py-1'>Data Directory</Link>}
-            {session?.data?.user ? (
+
+						<Link href='/' className='w-30 lg:w-22 text-white font-custom font-medium hover:text-blue-600 rounded px-3 py-1'>Features</Link>
+						<Link href='/' className='w-30 lg:w-22 text-white font-custom font-medium hover:text-blue-600 rounded px-3 py-1'>How It Works</Link>
+						<Link href='/' className='w-30 lg:w-22 text-white font-custom font-medium hover:text-blue-600 rounded px-3 py-1'>Clients</Link>
+
+            {navigate.asPath !== "/directory" && 
+							<Link href={"/directory"} className='w-30 lg:w-22 text-white font-custom font-medium hover:text-blue-300 
+							 rounded px-3 py-1'>
+								Data Directory
+							</Link>}
+						<Link href='/' className='w-30 lg:w-22 text-white font-custom font-medium hover:text-blue-600 rounded px-3 py-1'>Contact</Link>
+
+						{session?.data?.user ? (
               <button
-                className='w-24 lg:w-22 bg-rose-400 hover:bg-rose-500 active:bg-rose-600 rounded px-3 py-1'
+                className='w-30 lg:w-22 font-custom font-medium bg-emerald-400 hover:bg-emerald-500 active:bg-emerald-600  rounded px-3 py-1'
                 type='button'
                 onClick={() => signOut()}
               >
@@ -87,12 +98,13 @@ function NavBar() {
               </button>
             ) : (
               <button
-                className='w-24 lg:w-22 bg-emerald-400 hover:bg-emerald-500 active:bg-emerald-600 rounded px-3 py-1'
+                className='w-30 lg:w-22 font-custom font-medium bg-emerald-400 hover:bg-emerald-500 active:bg-emerald-600 rounded px-3 py-1'
                 onClick={() => signIn("google")}
               >
                 Sign In
               </button>
             )}
+
           </div>
         </div>
       </nav>

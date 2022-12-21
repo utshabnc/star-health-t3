@@ -51,7 +51,7 @@ const InfoSection = ({
   return (
     <div
       className={`flex flex-col ${
-        boxStyle == null ? "bg-gray-300 py-4" : boxStyle
+        boxStyle == null ? "bg-gray-300 h-96 py-16" : boxStyle
       }`}
     >
       {header && (
@@ -66,7 +66,7 @@ const InfoSection = ({
       <div className="mx-2 flex flex-row justify-around sm:mx-20">
         {items.map((item, i) => (
           <div
-            className={`flex flex-col items-center ${
+            className={`flex flex-col items-center border-bordercolor border-[1px] rounded-[6px] ${
               boxStyle ? "" : "rounded-lg bg-gray-50 shadow-md"
             }   w-[25%] p-1 sm:w-[20%] sm:p-4`}
             key={i}
@@ -84,6 +84,7 @@ const InfoSection = ({
                   <Image
                     src={item.img}
                     alt={item.label}
+										className="z-10"
                     style={{ height: 125, width: 125 }}
                   />
                 )}
@@ -128,74 +129,116 @@ export default function Home() {
   const { data: allStates } = trpc.db.allStates.useQuery({ drugType })
 
   const FirstSection = () => (
-    <div className='flex flex-col sm:flex-row mt-2 sm:mt-8 justify-between'>
-      <div className='flex flex-col sm:w-[50%] ml-2 sm:ml-8'>
-        <h3 className='flex sm:w-[60%] text-3xl sm:text-6xl text-left font-bold justify-center text-violet-700 my-2 mb-4'>
-          Passion for Better Healthcare
-        </h3>
-        <SearchPage />
-      </div>
-      <div className='sm:w-[50%] flex flex-col'>
-        <h3 className='flex text-md sm:text-xl text-center font-semibold justify-center text-violet-700 mb-4 mt-4 sm:mt-4'>
-          Heatmap of Company Payments to Doctors
-        </h3>
-        <Dropdown
-          items={drugTypes.map((type) => ({
-            value: type,
-            label: _.capitalize(type),
-          }))}
-          label={'Drug Type'}
-          value={drugType}
-          placeholder={'All'}
-          onChange={setDrugType}
-        />
-        <div className='w-[75%] h-[75%] self-center'>
-          <UnitedStatesHeatmap
-            data={
-              allStates
-                ?.sort((a, b) => b.totalAmount - a.totalAmount)
-                .slice(0, 50)
-                .map((rec: { stateId: any; totalAmount: any }) => ({
-                  state: rec.stateId,
-                  value: rec.totalAmount,
-                })) ?? []
-            }
-          />
-        </div>
-      </div>
+		<div className='mb-20'>
+				<h3 className='flex text-6xl font-bold justify-center font-custom text-white py-10 '>
+						Passion for Better Healthcare
+				</h3>
+
+			<div className='flex flex-col sm:flex-row mt-2 sm:mt-8 justify-between'>
+        <div className='flex flex-col sm:w-[45%]'>
+					{/* <div className='w-[100%] h-[100%]'> */}
+							<h3 className='flex text-md sm:text-xl text-center font-semibold justify-center font-custom text-white mb-6 sm:mt-4'>
+										Heatmap of Company Payments to Doctors
+							</h3>
+							<div className='mb-4'>
+							<Dropdown
+									items={drugTypes.map((type) => ({
+										value: type,
+										label: _.capitalize(type),
+									}))}
+									label={'Filter Map By Drug Type'}
+									value={drugType}
+									placeholder={'All'}
+									onChange={setDrugType}
+							/>
+							</div>
+						 <div className='w-[85%] h-[85%] self-center bg-white rounded-3xl'>
+								<UnitedStatesHeatmap
+									data={
+										allStates
+											?.sort((a, b) => b.totalAmount - a.totalAmount)
+											.slice(0, 50)
+											.map((rec: { stateId: any; totalAmount: any }) => ({
+												state: rec.stateId,
+												value: rec.totalAmount,
+											})) ?? []
+									}
+								/>
+							</div>
+					{/* </div> */}
+				
+				</div>
+			<div className='sm:w-[55%] flex flex-col my-10'>
+					<div className='flex justify-center'>
+						{/* <SearchPage />	 */}
+						<input className='w-[500px] h-14 mx-2 px-4 rounded-full' type="text" placeholder="Search for Doctor, Company, or Drug Data" id="search" name="search" required />
+					</div>
+					<div>
+						<p className='flex mx-4 px-4 text-white font-custom my-10 text-xl'>
+							About our company yadaya dayada.....yadayadayada yadayadayad ayadayadayadayada yadayadayadayad ayada yadayadayada yadayada yadayadayadayaday adayadayadayadayadaya dayada yadaya daya dayadayada.
+						</p>
+					</div>
+					<div className='flex justify-center '>
+						<form action="/" method="post">
+							<div>
+								<input className='w-44 h-14 mx-2 px-4 rounded-full' type="text" placeholder="Your Name" id="name" name="name" required />
+								<input className='w-96 h-14 mx-2 px-4 rounded-full' type="text" placeholder="Your Email" id="email" name="email" required />
+								<button type="submit" className='h-12 bg-blue-500 hover:bg-blue-700 text-white font-custom py-2 px-4 rounded-full'>
+									Join Waitlist
+								</button>
+							</div>
+
+						</form>
+					</div>
+
+				
+			</div>
+
+
+
+	
+   
+
+
     </div>
+		</div>
+    
   );
+
 
   const Divider = () => <div className=''></div>;
   return (
     <div
-      className='bg-white
-     '
+      className='bg-[#0e1936] z-0'
     >
       <FirstSection />
-      <InfoSection items={info} />
+      <InfoSection 
+				items={info} 
+				boxStyle='bg-[#0e1936] h-96 py-16'
+				textColor='white font-custom'
+			/>
       <Divider />
       <InfoSection
         items={data}
         header='StarHealth Data Directory'
-        boxStyle='bg-[#6931f4]'
-        textColor='white'
+        boxStyle='bg-[#0e1936] '
+        textColor='white font-custom'
         itemTextSpacing={true}
       />
       <Divider />
       <InfoSection
         items={partners}
         header='Our Partners'
-        boxStyle='bg-[#8345fe]'
-        textColor='white'
+        boxStyle='bg-[#0e1936] '
+        textColor='white font-custom'
       />
 
       <Divider />
       <InfoSection
         items={understand}
         header='Understand Healthcare through Data'
-        boxStyle='bg-[#8d47fc]'
-        textColor='white'
+        boxStyle='bg-[#0e1936] pb-16'
+        textColor='white font-custom'
       />
     </div>
   );
