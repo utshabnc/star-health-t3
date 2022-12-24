@@ -68,7 +68,7 @@ export default function Directory() {
         })
         // return setBtnDisable(true)
       }
-      setFilterParams(prev => {
+      setFilterParams((prev: FilterParams) => {
         return {
           ...prev,
           cursor: arr[arr.length -1]?.id ?? ""
@@ -250,7 +250,7 @@ export default function Directory() {
                 <div className='my-1'>
                 <hr />
                 </div>
-                <Filters data={data} filterParams={filterParams} setFilterParams={setFilterParams} setBtnDisable={setBtnDisable} />
+                <Filters data={data} filterParams={filterParams} setFilterParams={setFilterParams} />
             </div>
             <div className="flex max-sm:flex-col w-full h-[80%] xl:h-[70%] justify-center">
                 <div className='flex max-sm:order-2 max-h-[100%] flex-col overflow-scroll sm:w-[85%] p-1'>

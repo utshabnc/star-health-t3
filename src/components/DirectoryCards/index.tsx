@@ -1,22 +1,24 @@
 import Link from 'next/link'
 import React from 'react'
-import { formatMoney } from '../../utils'
+import { formatMoney, getProductTotals, getProductTransCount } from '../../utils'
 import type { DirectoryResponse } from '../../server/trpc/router/db'
+import { type FilterParams } from '../../pages/directory'
 
-type FilterParams = {
-    subject: string
-    state: string
-    city: string
-    zipCode: string
-    specialty: string
-    type: string
-    category: string
-    doctorFilter: string
-    manufacturerFilter: string
-    productFilter: string
-    cursor: string
-    year: string
-}
+// export type FilterParams = {
+//     subject: string
+//     state: string
+//     city: string
+//     zipCode: string
+//     specialty: string
+//     type: string
+//     category: string
+//     doctorFilter: string
+//     manufacturerFilter: string
+//     productFilter: string
+//     cursor: string
+//     year: string,
+//     rank: boolean
+// }
 
 export default function DirectoryCards({data, filterParams}: {data: DirectoryResponse, filterParams: FilterParams}) {
 
@@ -90,7 +92,7 @@ export default function DirectoryCards({data, filterParams}: {data: DirectoryRes
                             {item.country} 
                             </p>
 
-                            {item.ManufacturerSummary.length > 0 && <p className='text-sm r'>{filterParams.year == "" || filterParams.year === "ALL" ? "Overall" : `${filterParams.year}`} earnings: {formatMoney(item.ManufacturerSummary[0].totalAmount)}</p>}
+                            {item.ManufacturerSummary.length > 0 && item.ManufacturerSummary[0] && <p className='text-sm r'>{filterParams.year == "" || filterParams.year === "ALL" ? "Overall" : `${filterParams.year}`} earnings: {formatMoney(item.ManufacturerSummary[0].totalAmount)}</p>}
 
                         {/* <div className="border-gray-300 text-gray-600"></div> */}
 
@@ -107,17 +109,20 @@ export default function DirectoryCards({data, filterParams}: {data: DirectoryRes
   if(data?.products){
     return (
         <>
-            {data && data?.products && data?.products.sort((a, b) => b.sumTotal.sum - a.sumTotal.sum).map((item, index) => (
+            {data && data?.products && data?.products.map((item, index) => (
             
                 <div key={index} className="w-[100%] rounded-lg bg-white text-center shadow-lg mb-2">
                     <div className=" p-2">
                         <div className="flex flex-row justify-between">
-                            <h5 className="text-md mb-2 font-medium text-gray-900 underline">
-                            {item.name}
+                            <Link href={`/drug/${item.id}`}>
+                                <h5 className="text-md mb-2 font-medium text-gray-900 underline">
+                                {item.name}
+                                
+                                </h5>
                             
-                            </h5>
+                            </Link>
                             <p className="mb-1 text-gray-600 text-xs">
-                                {filterParams.year === "ALL" ? "Overall" : filterParams.year} earnings: {formatMoney(item.sumTotal.sum)}
+                                {filterParams.year === "ALL" ? "Overall" : filterParams.year} earnings: {formatMoney(getProductTotals(item))}
                             
                             </p>
                         </div>
@@ -134,7 +139,7 @@ export default function DirectoryCards({data, filterParams}: {data: DirectoryRes
 
                             <div>
                                 <p>
-                                    Total transactions: {item.sumTotal.transactionSum}
+                                    Total transactions: {getProductTransCount(item)}
                                 </p>
                             </div>
 
@@ -157,7 +162,6 @@ export default function DirectoryCards({data, filterParams}: {data: DirectoryRes
                 <div className=" p-2">
                     <div className="flex flex-row justify-between">
                         <h5 className="text-md mb-2 font-medium text-gray-900">
-                        {/* Sold By: {item.manufacturerName} */}
                         Item: {item.product.name !== "UNKNOWN" ? item.product.name : "N/A"} <span className='text-sm text-slate-400'>{`(${item.product.type})`}</span>
                         
                         </h5>

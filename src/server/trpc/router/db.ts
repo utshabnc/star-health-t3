@@ -632,11 +632,6 @@ export const db = router({
           take: 25
         });
 
-        
-
-        if(input.rank){
-          manufacturers.sort((a,b) => b.ManufacturerSummary[0]?.totalAmount - a.ManufacturerSummary[0]?.totalAmount)
-        }
 
         return {manufacturers}
       }
@@ -670,20 +665,6 @@ export const db = router({
           },
           take: 100
         });
-
-        
-
-        //temp aggregation
-        products.forEach(item => {
-          let sum = 0;
-          let transactionSum = 0;
-          item.StateItem.forEach(stateItem => {
-            sum += stateItem.totalAmount
-            transactionSum += stateItem.transactionCount
-          })
-
-          item.sumTotal = {sum, transactionSum}
-        })
 
 
         return {products, productTypes: filterDuplicateObjArr(globalProdTypesList, "type")}

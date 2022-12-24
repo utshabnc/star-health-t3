@@ -10,7 +10,7 @@ export default function Filters({data, filterParams, setFilterParams}: {data: Di
 
     const [showFilters, setShowFilters] = useState<boolean>(false)
 
-    const formatSpecialties = (str) => {
+    const formatSpecialties = (str: string) => {
         const lastIndex = str.lastIndexOf("|");
         const finalString = str.slice(lastIndex + 1).trim()
 
@@ -24,7 +24,7 @@ export default function Filters({data, filterParams, setFilterParams}: {data: Di
 
                 {<div className="filters flex w-full items-center">
 
-                    <p className='text-violet-700 text-lg w-[10%]'>
+                    <p className='text-violet-700 text-lg w-[10%] max-sm:w-[20%]'>
                         Filter By
                     </p>
                 

@@ -65,6 +65,25 @@ const filterDuplicateObjArr = (objArr: any[], key: string) => {
   return [...new Map(objArr.map(item => [item[key], item])).values()]
 }
 
+const getProductTotals = (obj: any) => {
+  let sum = 0;
+  obj.StateItem.forEach((stateItem: any) => {
+    sum += stateItem.totalAmount
+  })
+
+  return sum
+}
+
+const getProductTransCount = (obj: any) => {
+  let transactionSum = 0;
+  obj.StateItem.forEach((stateItem: any) => {
+    transactionSum += stateItem.transactionCount
+  })
+
+  return transactionSum
+
+}
+
 const formatName = (text: string) =>
   _.map(text.split(' '), _.capitalize).join(' ');
 
@@ -89,5 +108,7 @@ export {
   drugTypes,
   allStates,
   filterDuplicates,
-  filterDuplicateObjArr
+  filterDuplicateObjArr,
+  getProductTotals,
+  getProductTransCount
 };
