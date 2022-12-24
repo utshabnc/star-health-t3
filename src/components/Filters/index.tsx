@@ -1,7 +1,7 @@
 import { Doctor } from '@prisma/client'
 import React, {useState} from 'react'
-import { type FilterParams } from '../../pages/directory'
-import { type DirectoryResponse } from '../../server/trpc/router/db'
+import type {  FilterParams } from '../../pages/directory'
+import type {  DirectoryResponse } from '../../server/trpc/router/db'
 import { allStates } from '../../utils'
 
 export default function Filters({data, filterParams, setFilterParams}: {data: DirectoryResponse, filterParams: FilterParams, setFilterParams: React.Dispatch<React.SetStateAction<FilterParams>>}) {    
@@ -22,7 +22,7 @@ export default function Filters({data, filterParams, setFilterParams}: {data: Di
         <div className='w-full'>
             <div>
 
-                {<div className="filters flex w-full items-center">
+                <div className="filters flex w-full items-center">
 
                     <p className='text-violet-700 text-lg w-[10%] max-sm:w-[20%]'>
                         Filter By
@@ -163,7 +163,7 @@ export default function Filters({data, filterParams, setFilterParams}: {data: Di
                         </select>}
                         
                     </div>
-                </div>}
+                </div>
                 <div className='my-1 w-full'>
                     <hr />
                 </div>

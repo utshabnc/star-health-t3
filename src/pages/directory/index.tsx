@@ -155,105 +155,105 @@ export default function Directory() {
   return (
     <>
         <div className="p-5 rounded bg-white h-screen mb-36">
-            <div className="flex flex-row">
-                <div>
-                    <button
-                    onClick={navigate.back}
-                    className="border border-violet-700 bg-violet-700 text-white rounded-md px-4 py-2 transition duration-500 ease select-none hover:bg-violet-900 focus:outline-none focus:shadow-outline"
-                    >
-                    <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        strokeWidth={1.5}
-                        stroke="currentColor"
-                        className="w-6 h-6 "
-                    >
-                        <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18"
-                        />
-                    </svg>
-                    </button>
-                </div>
-            </div>
-            <div className='flex flex-col justify-end lg:px-28 sm:px-2 pt-5'>
-                <div className="wrap-opt flex justify-between">
-                  <div>
-                    <p className='text-violet-700 text-2xl font-semibold'>
-                        Directory
-                    </p>
+            <div className="flex flex-row gap-9">
+              <div>
+                <button
+                onClick={navigate.back}
+                className="border border-violet-700 bg-violet-700 text-white rounded-md px-4 py-2 transition duration-500 ease select-none hover:bg-violet-900 focus:outline-none focus:shadow-outline"
+                >
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={1.5}
+                    stroke="currentColor"
+                    className="w-6 h-6 "
+                >
+                    <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18"
+                    />
+                </svg>
+                </button>
+              </div>
+              <div className='flex flex-col justify-end sm:px-2 w-[90%]'>
+                  <div className="wrap-opt flex justify-between">
+                    <div>
+                      <p className='text-violet-700 text-2xl font-semibold'>
+                          Directory
+                      </p>
+
+                    </div>
+                    <div className='flex gap-2'>
+                      <button onClick={() => {
+                        setFilterParams(prev => {
+                          return {
+                            ...prev,
+                            subject: "payment",
+                            cursor: ""
+                            
+                          }
+                        })
+                        setBtnDisable(false)
+                      }} 
+                      className={`border-b-2 hover:border-zinc-500 ${data?.payments ? "border-violet-600" : "border-zinc-200"}`}>
+                        Transactions
+                      </button>
+                      <button onClick={() => {
+                        setFilterParams(prev => {
+                          return {
+                            ...prev,
+                            subject: "manufacturer",
+                            cursor: ""
+
+                          }
+                        })
+                        setBtnDisable(false)
+                      }} className={`border-b-2 hover:border-zinc-500 ${data?.manufacturers ? "border-violet-600" : "border-zinc-200"}`}>
+                        Manufacturers
+                      </button>
+                      <button onClick={() => {
+                        setFilterParams(prev => {
+                          return {
+                            ...prev,
+                            subject: "doctor",
+                            cursor: ""
+
+
+                          }
+                        })
+                        setBtnDisable(false)
+                      }} className={`border-b-2 hover:border-zinc-500 ${data?.doctors ? "border-violet-600" : "border-zinc-200"}`}>
+                        Doctors
+                      </button>
+                      <button onClick={() => {
+                        setFilterParams(prev => {
+                          return {
+                            ...prev,
+                            subject: "product",
+                            cursor: ""
+
+
+                          }
+                        })
+                        setBtnDisable(false)
+                      }} className={`border-b-2 hover:border-zinc-500 ${data?.products ? "border-violet-600" : "border-zinc-200"}`}>
+                        Products
+                      </button>
+
+                    </div>
 
                   </div>
-                  <div className='flex gap-2'>
-                    <button onClick={() => {
-                      setFilterParams(prev => {
-                        return {
-                          ...prev,
-                          subject: "payment",
-                          cursor: ""
-                          
-                        }
-                      })
-                      setBtnDisable(false)
-                    }} 
-                    className={`border-b-2 hover:border-zinc-500 ${data?.payments ? "border-violet-600" : "border-zinc-200"}`}>
-                      Transactions
-                    </button>
-                    <button onClick={() => {
-                      setFilterParams(prev => {
-                        return {
-                          ...prev,
-                          subject: "manufacturer",
-                          cursor: ""
-
-                        }
-                      })
-                      setBtnDisable(false)
-                    }} className={`border-b-2 hover:border-zinc-500 ${data?.manufacturers ? "border-violet-600" : "border-zinc-200"}`}>
-                      Manufacturers
-                    </button>
-                    <button onClick={() => {
-                      setFilterParams(prev => {
-                        return {
-                          ...prev,
-                          subject: "doctor",
-                          cursor: ""
-
-
-                        }
-                      })
-                      setBtnDisable(false)
-                    }} className={`border-b-2 hover:border-zinc-500 ${data?.doctors ? "border-violet-600" : "border-zinc-200"}`}>
-                      Doctors
-                    </button>
-                    <button onClick={() => {
-                      setFilterParams(prev => {
-                        return {
-                          ...prev,
-                          subject: "product",
-                          cursor: ""
-
-
-                        }
-                      })
-                      setBtnDisable(false)
-                    }} className={`border-b-2 hover:border-zinc-500 ${data?.products ? "border-violet-600" : "border-zinc-200"}`}>
-                      Products
-                    </button>
-
+                  
+                  <div className='my-1'>
+                  <hr />
                   </div>
-
-                </div>
-                
-                <div className='my-1'>
-                <hr />
-                </div>
-                <Filters data={data} filterParams={filterParams} setFilterParams={setFilterParams} />
+                  <Filters data={data} filterParams={filterParams} setFilterParams={setFilterParams} />
+              </div>
             </div>
-            <div className="flex max-sm:flex-col w-full h-[80%] xl:h-[70%] justify-center">
-                <div className='flex max-sm:order-2 max-h-[100%] flex-col overflow-scroll sm:w-[85%] p-1'>
+            <div className="flex max-sm:flex-col w-[100%] h-[90%] xl:h-[90%] justify-center">
+                <div className='flex max-sm:order-2 max-h-[100%] flex-col overflow-scroll w-[92%] ml-5 p-1'>
                     <DirectoryCards filterParams={filterParams} data={data} />
                     
                 </div>

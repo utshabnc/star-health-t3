@@ -2,7 +2,7 @@ import Link from 'next/link'
 import React from 'react'
 import { formatMoney, getProductTotals, getProductTransCount } from '../../utils'
 import type { DirectoryResponse } from '../../server/trpc/router/db'
-import { type FilterParams } from '../../pages/directory'
+import type { FilterParams } from '../../pages/directory'
 
 // export type FilterParams = {
 //     subject: string
