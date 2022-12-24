@@ -24,9 +24,15 @@ import state from '../assets/state.png';
 import goodRx from '../assets/GoodRx_logo.svg';
 import fda from '../assets/fda.svg';
 import cms from '../assets/cms.svg';
+import { HiOutlineSearch  } from 'react-icons/hi'
 import type { StaticImageData } from "next/image";
 import Image from "next/image";
 import { trpc } from '../utils/trpc';
+import { IoIosArrowDroprightCircle, IoIosArrowDropright } from 'react-icons/io';
+import { FaPencilRuler, FaPaintBrush } from 'react-icons/fa';
+import { MdPedalBike, MdOutlineAirplanemodeActive } from 'react-icons/md';
+import { TbLayoutGridAdd } from 'react-icons/tb';
+import { BsCheck2 } from 'react-icons/bs';
 
 
 const info = [
@@ -50,28 +56,33 @@ const InfoSection = ({
 }) => {
   return (
     <div
-      className={`flex flex-col ${
-        boxStyle == null ? "bg-gray-300 h-96 py-16" : boxStyle
+      className={`flex flex-col py-4 pb-24 ${
+        boxStyle == null ? "bg-[#0e1936]" : boxStyle
       }`}
     >
       {header && (
         <p
-          className={`text-md flex justify-center text-center font-semibold sm:text-2xl ${
+          className={`text-md flex justify-center text-center font-semibold sm:text-5xl pb-20 ${
             "text-" + textColor ?? "text-violet-700"
           } my-2 mt-8 mb-4`}
         >
           {header}
         </p>
       )}
+
+
+
       <div className="mx-2 flex flex-row justify-around sm:mx-20">
         {items.map((item, i) => (
-          <div
-            className={`flex flex-col items-center border-bordercolor border-[1px] rounded-[6px] ${
-              boxStyle ? "" : "rounded-lg bg-gray-50 shadow-md"
-            }   w-[25%] p-1 sm:w-[20%] sm:p-4`}
-            key={i}
-          >
-            {item.img && (
+
+						// <div key={i} className='relative w-full gap-4 rounded-md bg-white px-6 py-12'>
+						<div
+							className={`flex flex-col items-center border-bordercolor border-[1.5px] rounded-[6px] shadow-md relative w-full gap-4 rounded-md bg-white px-6 py-12  ${
+								boxStyle ? "" : "rounded-lg bg-[#0e1936] "
+							}   w-[25%] p-1 sm:w-[20%] sm:p-4`}
+							key={i}
+						>
+						{item.img && (
               <>
                 {typeof window != "undefined" && window.screen.width > 640 ? (
                   <Image
@@ -90,19 +101,30 @@ const InfoSection = ({
                 )}
               </>
             )}
+						<div className='group absolute bottom-0 translate-y-[2rem]'>
+							{boxStyle ? (<IoIosArrowDroprightCircle color='#2563EB' size={60}/>) : (<IoIosArrowDropright color='white' size={60} />)}
+						</div>
             <p
-              className={`justify-center text-center text-xs  font-semibold lg:text-lg ${
+              className={`justify-center text-xs  font-semibold lg:text-lg ${
                 "text-" + textColor ?? "text-violet-700"
-              }          ${itemTextSpacing && "mt-6"}`}
+              }          ${itemTextSpacing && "mt-2 mb-6"}`}
             >
               {item.label}
             </p>
-          </div>
+					</div>
+
         ))}
       </div>
     </div>
   );
 };
+
+const features = [
+  { label: 'Analytics', img: doctor },
+  { label: 'Gaming', img: officeBuilding },
+  { label: 'NFTs', img: money },
+	
+];
 
 const data = [
   { label: '1M+ Doctors', img: doctor },
@@ -130,77 +152,74 @@ export default function Home() {
 
   const FirstSection = () => (
 		<div className='mb-20'>
-				<h3 className='flex text-6xl font-bold justify-center font-custom text-white py-10 '>
-						Passion for Better Healthcare
-				</h3>
 
-			<div className='flex flex-col sm:flex-row mt-2 sm:mt-8 justify-between'>
-        <div className='flex flex-col sm:w-[45%]'>
-					{/* <div className='w-[100%] h-[100%]'> */}
-							<h3 className='flex text-md sm:text-xl text-center font-semibold justify-center font-custom text-white mb-6 sm:mt-4'>
-										Heatmap of Company Payments to Doctors
-							</h3>
-							<div className='mb-4'>
-							<Dropdown
-									items={drugTypes.map((type) => ({
-										value: type,
-										label: _.capitalize(type),
-									}))}
-									label={'Filter Map By Drug Type'}
-									value={drugType}
-									placeholder={'All'}
-									onChange={setDrugType}
-							/>
+			<div className='flex flex-col sm:flex-row justify-between mx-10 pt-10'>
+        <div className='flex flex-col sm:w-[50%]'>
+						<h2 className='flex text-center sm:text-5xl md:text-xl xl:text-8xl leading-tight font-bold justify-center font-custom text-white mt-10 mb-5 '>
+								The Future of Healthcare
+						</h2>
+						<p className='text-white text-center text-xl md:text-4xl'>
+							Data - Care - Web3
+						</p>
+						<div>
+							<p className='text-center px-4 text-white font-custom my-6 text-xl'>
+								Improving Quality of Care.
+							</p>
+						</div>
+						<div className='container-for-form mt-12 mb-11'>
+							<form action="/" method="post">
+								<div className='relative flex items-center justify-center'>
+									<input className='w-44 h-14 mx-2 px-4 rounded-full' type="text" placeholder="Your Name" id="name" name="name" required />
+									<input className='w-[24rem] h-14 mx-2 px-4 rounded-full' type="text" placeholder="Your Email" id="email" name="email" required />
+									<button type="submit" className='absolute h-[3.15rem] ml-[26.3rem] bg-blue-500 hover:bg-blue-700 text-white font-custom py-2 px-4 rounded-full'>
+										Create Account
+									</button>
+								</div>
+							</form>
+						</div>
+						<div className='flex relative justify-center items-center'>
+							{/* <SearchPage />	 */}
+							<div className='absolute mr-[28rem]' >
+								<HiOutlineSearch size={26} />
 							</div>
-						 <div className='w-[85%] h-[85%] self-center bg-white rounded-3xl'>
-								<UnitedStatesHeatmap
-									data={
-										allStates
-											?.sort((a, b) => b.totalAmount - a.totalAmount)
-											.slice(0, 50)
-											.map((rec: { stateId: any; totalAmount: any }) => ({
-												state: rec.stateId,
-												value: rec.totalAmount,
-											})) ?? []
-									}
-								/>
-							</div>
-					{/* </div> */}
+							<input className='w-[500px] h-14 mx-2 px-[3rem] rounded-full' type="text" placeholder="Search for Doctor, Company, or Drug Data" id="search" name="search" required />
+						</div>
+				</div>
+				<div className='sm:w-[50%] flex flex-col my-10'>
+						
+						<div className='w-[100%] h-[100%]'>
+								<h3 className='flex text-md sm:text-xl text-center font-semibold justify-center font-custom text-white mb-6 sm:mt-4'>
+											Heatmap of Company Payments to Doctors
+								</h3>
+								<div className='mb-4'>
+									<Dropdown
+											items={drugTypes.map((type) => ({
+												value: type,
+												label: _.capitalize(type),
+											}))}
+											label={'Filter Map By Drug Type'}
+											value={drugType}
+											placeholder={'All'}
+											onChange={setDrugType}
+									/>
+								</div>
+								<div className='w-[80%] h-[80%] ml-20'>
+										<UnitedStatesHeatmap
+											data={
+												allStates
+													?.sort((a, b) => b.totalAmount - a.totalAmount)
+													.slice(0, 50)
+													.map((rec: { stateId: any; totalAmount: any }) => ({
+														state: rec.stateId,
+														value: rec.totalAmount,
+													})) ?? []
+											}
+										/>
+								</div>
+						</div>
 				
 				</div>
-			<div className='sm:w-[55%] flex flex-col my-10'>
-					<div className='flex justify-center'>
-						{/* <SearchPage />	 */}
-						<input className='w-[500px] h-14 mx-2 px-4 rounded-full' type="text" placeholder="Search for Doctor, Company, or Drug Data" id="search" name="search" required />
-					</div>
-					<div>
-						<p className='flex mx-4 px-4 text-white font-custom my-10 text-xl'>
-							About our company yadaya dayada.....yadayadayada yadayadayad ayadayadayadayada yadayadayadayad ayada yadayadayada yadayada yadayadayadayaday adayadayadayadayadaya dayada yadaya daya dayadayada.
-						</p>
-					</div>
-					<div className='flex justify-center '>
-						<form action="/" method="post">
-							<div>
-								<input className='w-44 h-14 mx-2 px-4 rounded-full' type="text" placeholder="Your Name" id="name" name="name" required />
-								<input className='w-96 h-14 mx-2 px-4 rounded-full' type="text" placeholder="Your Email" id="email" name="email" required />
-								<button type="submit" className='h-12 bg-blue-500 hover:bg-blue-700 text-white font-custom py-2 px-4 rounded-full'>
-									Join Waitlist
-								</button>
-							</div>
-
-						</form>
-					</div>
-
-				
 			</div>
-
-
-
-	
-   
-
-
-    </div>
 		</div>
     
   );
@@ -212,34 +231,139 @@ export default function Home() {
       className='bg-[#0e1936] z-0'
     >
       <FirstSection />
+			<InfoSection 
+				items={features} 
+				header='Features'
+				boxStyle='bg-white'
+				textColor='font-custom'
+				itemTextSpacing={true}
+			/>
+			<Divider />
       <InfoSection 
 				items={info} 
-				boxStyle='bg-[#0e1936] h-96 py-16'
-				textColor='white font-custom'
+				textColor='font-custom'
+				boxStyle='bg-white'
+				itemTextSpacing={true}
 			/>
       <Divider />
       <InfoSection
         items={data}
         header='StarHealth Data Directory'
-        boxStyle='bg-[#0e1936] '
         textColor='white font-custom'
         itemTextSpacing={true}
       />
       <Divider />
-      <InfoSection
-        items={partners}
-        header='Our Partners'
-        boxStyle='bg-[#0e1936] '
-        textColor='white font-custom'
-      />
-
-      <Divider />
-      <InfoSection
+			<InfoSection
         items={understand}
         header='Understand Healthcare through Data'
-        boxStyle='bg-[#0e1936] pb-16'
         textColor='white font-custom'
+				itemTextSpacing={true}
       />
+			<Divider />
+      <InfoSection
+        items={partners}
+        header='Data Partners'
+        textColor='white font-custom'
+				itemTextSpacing={true}
+      />
+			<Divider />
+			<div id='Features' className='section l4 wf-section text-customgrey [rgba(255, 255, 255, 0.65)] font-custom px-[80px] pt-[40px] pb-[150px]'>
+				<div className='container max-w-[1040px] flex mx-auto flex-col justify-center items-center'>
+					<div className='flex max-w-[900px] text-white title-wrapper flex-col mb-[40px] text-center'>
+						<h2 className='h2-title my-0 pt-[40px] bg-transparent pl-0 text-[4vw] tracking-[-0.0375em] leading-[1.1] font-[700]'>
+							High-Powered Tools
+						</h2>
+						<p className='max-w-[640px] my-0 px-[25px] text-[18px]'>
+								Built to help you command research data - whether you’re part of a small research team or a large organization
+						</p>
+					</div>
+					<div className='features-grid grid w-[100%] items-stretch auto-cols-custom gap-x-[40px] gap-y-[40px] grid-cols-custom3 grid-rows-custom2'>
+						<div className='node p-[35px] col-start-1 row-start-1 row-end-3 border-solid border border-bordercolor rounded-[6px] features-card'>
+							<div className='text-blue-500 flex mb-[25px] flex-col items-start features-row '>
+								<FaPencilRuler size={27} className='mb-[25px]' />
+								<div className='font-[700] text-white text-[18px] leading-[1.25] fontfeatures-card-title'>
+									Ready to go
+								</div>
+							</div>
+							<div className='mb-[40px] text-[16px] leading-[1.6] feature-card-text bottom-margin'>
+								The worlds largest database of clinical trials made available through a simple API.
+							</div>
+							<div className='mb-[40px] text-[16px] leading-[1.6] feature-card-text bottom-margin'>
+								The worlds medical knowledge plugged into your analysis.
+							</div>
+							<div className='mb-[40px] text-[16px] leading-[1.6] feature-card-text bottom-margin'>
+								The Medical Board is...
+							</div>
+							<div className='text-white flex mb-[20px] flex-row items-center check-row'>
+								<BsCheck2 size={30} color='#7CFC00' className='mr-2 ' />
+								<div className='check-text'>
+									Affordable
+								</div>
+							</div>
+							<div className='text-white flex mb-[20px] flex-row items-center check-row'>
+								<BsCheck2 size={30} color='#7CFC00' className='mr-2 ' />
+								<div className='check-text'>
+										Fast and Scalable
+								</div>
+							</div>
+							<div className='text-white flex mb-[20px] flex-row items-center check-row'>
+								<BsCheck2 size={30} color='#7CFC00' className='mr-2 ' />
+								<div className='check-text'>
+										Real Time
+								</div>
+							</div>
+						</div>
+						<div className='node p-[35px] col-start-2 row-start-1 row-end-1 border-solid border border-bordercolor rounded-[6px] features-card'>
+							<div className='text-blue-500 flex mb-[25px] flex-col items-start features-row '>
+								<FaPaintBrush size={27} className='mb-[25px]' />
+								<div className='font-[700] text-white text-[18px] leading-[1.25] fontfeatures-card-title'>
+									Customizable
+								</div>
+							</div>
+							<div className='mb-[40px] text-[16px] leading-[1.6] feature-card-text bottom-margin'>
+								Mix and match the data points according to your search query to generate new results.
+							</div>
+						</div>
+						<div className='node p-[35px] col-start-3 row-start-1 row-end-1 border-solid border border-bordercolor rounded-[6px] features-card'>
+							<div className='text-blue-500 flex mb-[25px] flex-col items-start features-row '>
+								<MdPedalBike size={27} className='mb-[25px]' />
+								<div className='font-[700] text-white text-[18px] leading-[1.25] fontfeatures-card-title'>
+									Timely
+								</div>
+							</div>
+							<div className='mb-[40px] text-[16px] leading-[1.6] feature-card-text bottom-margin'>
+								Our service aggregates and cleans large amounts of data in seconds.
+							</div>
+						</div>
+						<div className='node p-[35px] col-start-2 row-start-2 row-end-2 border-solid border border-bordercolor rounded-[6px] features-card'>
+							<div className='text-blue-500 flex mb-[25px] flex-col items-start features-row '>
+								<MdOutlineAirplanemodeActive size={27} className='mb-[25px]' />
+								<div className='font-[700] text-white text-[18px] leading-[1.25] fontfeatures-card-title'>
+									Accessible
+								</div>
+							</div>
+							<div className='mb-[40px] text-[16px] leading-[1.6] feature-card-text bottom-margin'>
+								Pricing that scales as you do. Individual researchers can use our platform for as little as $100/month.
+							</div>
+						</div>
+						<div className='node p-[35px] col-start-3 row-start-2 row-end-2 border-solid border border-bordercolor rounded-[6px] features-card'>
+							<div className='text-blue-500 flex mb-[25px] flex-col items-start features-row '>
+								<TbLayoutGridAdd size={27} className='mb-[25px]' />
+								<div className='font-[700] text-white text-[18px] leading-[1.25] fontfeatures-card-title'>
+									Current
+								</div>
+							</div>
+							<div className='mb-[40px] text-[16px] leading-[1.6] feature-card-text bottom-margin'>
+								Our platform pulls the latest research as soon as it is published so your query results update in real time.
+							</div>
+						</div>
+
+					</div>
+
+				</div>
+
+			</div>
+
     </div>
   );
 }
