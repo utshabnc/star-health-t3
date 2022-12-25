@@ -61,8 +61,8 @@ const filterDuplicates = (arr: any[]) => {
   return finalArr
 }
 
-const filterDuplicateObjArr = (objArr: any[], key: string) => {
-  return [...new Map(objArr.map(item => [item[key], item])).values()]
+const filterDuplicateObjArr = (objArr: any[] | undefined, key: string) => {
+  return [...new Map(objArr?.map(item => [item[key], item])).values()]
 }
 
 const getProductTotals = (obj: any) => {

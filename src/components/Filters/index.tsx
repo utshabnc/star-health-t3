@@ -1,14 +1,19 @@
-import { Doctor } from '@prisma/client'
-import React, {useState} from 'react'
+import { Doctor, Manufacturer, Payment } from '@prisma/client'
+import React, {useEffect, useState} from 'react'
 import type {  FilterParams } from '../../pages/directory'
 import type {  DirectoryResponse } from '../../server/trpc/router/db'
-import { allStates } from '../../utils'
+import { allStates, filterDuplicateObjArr } from '../../utils'
+
+interface DocManProd {
+    id: string,
+    name: string,
+}
 
 export default function Filters({data, filterParams, setFilterParams}: {data: DirectoryResponse, filterParams: FilterParams, setFilterParams: React.Dispatch<React.SetStateAction<FilterParams>>}) {    
 
     const allYears = ["ALL", "2021", "2020", "2019", "2018", "2017","2016"]
 
-    const [showFilters, setShowFilters] = useState<boolean>(false)
+    
 
     const formatSpecialties = (str: string) => {
         const lastIndex = str.lastIndexOf("|");
@@ -16,6 +21,8 @@ export default function Filters({data, filterParams, setFilterParams}: {data: Di
 
         return finalString
     }
+
+
 
   return (
     <>
@@ -111,14 +118,15 @@ export default function Filters({data, filterParams, setFilterParams}: {data: Di
                             setFilterParams((prev: FilterParams) => {
                                 return {
                                     ...prev,
-                                    doctorFilter: e.target.value
+                                    doctorFilter: e.target.value,
+                                    cursor: ""
                                 }
                             })
                         }} value={filterParams.doctorFilter} className='bg-violet-500 my-2 text-white p-1 rounded-lg mx-1 hover:bg-violet-400 hover:text-violet-900 cursor-pointer w-[20%]' name="state-filter" 
                         id="doc-filter">
                             <option value={""}>{filterParams.doctorFilter == "" ? "Doctor" : "Reset"}</option>
-                            {data?.doctorList.sort().map((item: {id: string, fullName: string}, index: number) => (
-                                <option key={index} value={item.id}>{item.fullName}</option>
+                            {data?.doctorNames.sort().map((item: DocManProd, index: number) => (
+                                <option key={index} value={item.id}>{item.name}</option>
                             ))}
                             
                         </select>}
@@ -126,13 +134,15 @@ export default function Filters({data, filterParams, setFilterParams}: {data: Di
                             setFilterParams((prev: FilterParams) => {
                                 return {
                                     ...prev,
-                                    manufacturerFilter: e.target.value
+                                    manufacturerFilter: e.target.value,
+                                    cursor: ""
                                 }
                             })
                         }} value={filterParams.manufacturerFilter} className='bg-violet-500 my-2 text-white p-1 rounded-lg mx-1 hover:bg-violet-400 hover:text-violet-900 cursor-pointer w-[20%]' name="state-filter" id="state-filter">
-                            <option value="">{filterParams.category == "" ? "Manufacturer" : "Reset"}</option>
-                            {data?.manufacturerList.map((item: string, index: number) => (
-                                <option key={index} value={item}>{item}</option>
+                            <option value="">{filterParams.manufacturerFilter == "" ? "Manufacturer" : "Reset"}</option>
+                            
+                            {data?.manufacturerNames.sort().map((item: DocManProd, index: number) => (
+                                <option key={index} value={item.id}>{item.name}</option>
                             ))}
                         </select>}
                         {data && data?.payments && <select onChange={(e) => {
@@ -144,7 +154,7 @@ export default function Filters({data, filterParams, setFilterParams}: {data: Di
                             })
                         }} value={filterParams.productFilter} className='bg-violet-500 my-2 text-white p-1 rounded-lg mx-1 hover:bg-violet-400 hover:text-violet-900 cursor-pointer w-[20%]' name="state-filter" id="state-filter">
                             <option value="">{filterParams.productFilter == "" ? "Product" : "Reset"}</option>
-                            {data?.productNameItems.map((item: {id: string, name: string}, index: number) => (
+                            {data?.productNameList.map((item: DocManProd, index: number) => (
                                 <option key={index} value={item.id}>{item.name}</option>
                             ))}
                         </select>}
