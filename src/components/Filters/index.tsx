@@ -1,42 +1,61 @@
 import { Doctor } from '@prisma/client'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { FilterParams } from '../../pages/directory'
-import type { DirectoryResponse } from '../../server/trpc/router/db'
+import type { DirectoryResponse, NameListResponse } from '../../server/trpc/router/db'
 import { allStates } from '../../utils'
+import { trpc } from '../../utils/trpc'
 
 
 
-export default function Filters({data, filterParams, setFilterParams}: {data: DirectoryResponse, filterParams: any, setFilterParams: any}) {    
+export default function Filters({data, filterParams, setFilterParams}: {data: DirectoryResponse, filterParams: any, setFilterParams: any}) {  
+    // const [nameList, setNameList] = useState<{
+    //     doctorNames: any[];
+    //     manufacturerNames: any[];
+    //     productNameList: any[];
+    // } | undefined>(undefined)  
+    const {data: listData, isLoading} = trpc.db.nameList.useQuery()
+    
+    const filterList = (arr: any[]) => {
+        if(arr){
+            if(filterParams.doctorFilter || filterParams.manufacturerFilter || filterParams.productFilter){
+                listData?.doctorNames.filter(item => {
+                    if(data?.doctorList){
+                        if(data?.doctorList.filter((doc: Doctor) => doc.id === item.id).length > 0){
+                            return true
+                        }else {
+                            return false
+                        }
+                        
+                    }
+                })
+            }
+            return arr
+        }
+        return arr
+    }
+
+    const filteredDocListToggle = () => {
+        if(filterParams.doctorFilter || filterParams.manufacturerFilter || filterParams.productFilter) {
+            return data?.doctorList
+        }
+        return listData?.doctorNames
+    }
+    const filteredManuListToggle = () => {
+        if(filterParams.doctorFilter || filterParams.manufacturerFilter || filterParams.productFilter) {
+            return data?.manufacturerList
+        }
+        return listData?.manufacturerNames
+    }
+    const filteredProdListToggle = () => {
+        if(filterParams.doctorFilter || filterParams.manufacturerFilter || filterParams.productFilter) {
+            return data?.productNameList
+        }
+        return listData?.productNameList
+    }
+    
+  
 
     // add in year filter
-
-    // let doctorNames = [];
-    // let manufacturerNames = [];
-    // let productNameList = [];
-    // if(data && data?.payments){
-    //     doctorNames = data?.payments.map(item => {
-    //         return {
-    //         id: item.doctorId,
-    //         name: `${item.doctor.firstName} ${item.doctor.lastName}`
-    //         }
-    //     })
-    
-    //     manufacturerNames = data?.payments.map(item => {
-    //         return {
-    //         id: item.manufacturer.id,
-    //         name: item.manufacturer.name
-    //         }
-    //     })
-    
-    //     productNameList = data?.payments.map(item => {
-    //         return {
-    //         id: item.productId,
-    //         name: item.product.name
-    //         }
-    //     })
-
-    // }
-
 
     const formatSpecialties = (str: string) => {
         const lastIndex = str.lastIndexOf("|");
@@ -140,7 +159,7 @@ export default function Filters({data, filterParams, setFilterParams}: {data: Di
                             ))}
                         </select>}
                         {/* fix bug of e.target.value console logging out as [onject Object] rather than its actual value*/}
-                        {data && data?.payments && data?.doctorList && <select onChange={(e) => {
+                        {data && data?.payments && listData?.doctorNames && <select onChange={(e) => {
                             console.log("val", e.target.value);
                             
                             setFilterParams((prev: FilterParams) => {
@@ -152,11 +171,11 @@ export default function Filters({data, filterParams, setFilterParams}: {data: Di
                             })
                         }} value={filterParams.doctorFilter} className='bg-violet-500 my-2 text-white w-[20%] p-1 rounded-lg mx-1 hover:bg-violet-400 hover:text-violet-900 cursor-pointer' name="state-filter" id="state-filter">
                             <option value={""}>{filterParams.doctorFilter == "" ? "Doctor" : "Reset"}</option>
-                            {data?.doctorList.sort().map((item, index) => (
+                            {filteredDocListToggle()?.sort().map((item, index) => (
                                 <option key={index} value={item.id}>{item.name.split(" ").map((li: string) => `${li.charAt(0).toUpperCase()}${li.slice(1, li.length).toLowerCase()}`).join(" ")}</option>
                             ))}
                         </select>}
-                        {data && data?.payments && data?.manufacturerList && <select onChange={(e) => {
+                        {data && data?.payments && listData?.manufacturerNames && <select onChange={(e) => {
                             setFilterParams((prev: FilterParams) => {
                                 return {
                                     ...prev,
@@ -166,11 +185,11 @@ export default function Filters({data, filterParams, setFilterParams}: {data: Di
                             })
                         }} value={filterParams.manufacturerFilter} className='bg-violet-500 my-2 text-white w-[20%] p-1 rounded-lg mx-1 hover:bg-violet-400 hover:text-violet-900 cursor-pointer' name="state-filter" id="state-filter">
                             <option value="">{filterParams.category == "" ? "Manufacturer" : "Reset"}</option>
-                            {data?.manufacturerList.map((item, index) => (
+                            {filteredManuListToggle()?.map((item, index) => (
                                 <option key={index} value={item.id}>{item.name}</option>
                             ))}
                         </select>}
-                        {data && data?.payments && data?.productNameList && <select onChange={(e) => {
+                        {data && data?.payments && listData?.productNameList && <select onChange={(e) => {
                             setFilterParams((prev: FilterParams) => {
                                 return {
                                     ...prev,
@@ -180,7 +199,7 @@ export default function Filters({data, filterParams, setFilterParams}: {data: Di
                             })
                         }} value={filterParams.productFilter} className='bg-violet-500 my-2 text-white w-[20%] p-1 rounded-lg mx-1 hover:bg-violet-400 hover:text-violet-900 cursor-pointer' name="state-filter" id="state-filter">
                             <option value="">{filterParams.productFilter == "" ? "Product" : "Reset"}</option>
-                            {data?.productNameList.map((item, index) => (
+                            {filteredProdListToggle()?.map((item, index) => (
                                 <option key={index} value={item.id}>{item.name}</option>
                             ))}
                         </select>}

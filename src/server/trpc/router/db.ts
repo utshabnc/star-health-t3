@@ -659,7 +659,7 @@ export const db = router({
           cursor: {
             id: input.cursor ? input.cursor : "345881410"
           },
-          take: 50,
+          take: 100,
           
         })
 
@@ -689,74 +689,74 @@ export const db = router({
         })
         
         
-        if(input.doctorFilter || input.manufacturerFilter || input.productFilter){
-          doctorNames = payments.map(item => {
-            return {
-              id: item.doctorId,
-              name: `${item.doctor.firstName} ${item.doctor.lastName}`
-            }
-          })
+        // if(input.doctorFilter || input.manufacturerFilter || input.productFilter){
+        //   doctorNames = payments.map(item => {
+        //     return {
+        //       id: item.doctorId,
+        //       name: `${item.doctor.firstName} ${item.doctor.lastName}`
+        //     }
+        //   })
   
-          manufacturerNames = payments.map(item => {
-            return {
-              id: item.manufacturer.id,
-              name: item.manufacturer.name
-            }
-          })
+        //   manufacturerNames = payments.map(item => {
+        //     return {
+        //       id: item.manufacturer.id,
+        //       name: item.manufacturer.name
+        //     }
+        //   })
   
-          productNameList = payments.map(item => {
-            return {
-              id: item.productId,
-              name: item.product.name
-            }
-          })
+        //   productNameList = payments.map(item => {
+        //     return {
+        //       id: item.productId,
+        //       name: item.product.name
+        //     }
+        //   })
           
-        } else {
-          const manufacturers = await prisma.manufacturer.findMany({
-            select: {
-              id: true,
-              name: true
-            },
-            take: 1000
-          })
-          const products = await prisma.product.findMany({
-            select: {
-              id: true,
-              name: true
-            },
-            take: 1000
-          })
-          const doctors = await prisma.doctor.findMany({
-            select: {
-              id: true,
-              firstName: true,
-              lastName: true
-            },
-            take: 1000
-          })
+        // } else {
+        //   const manufacturers = await prisma.manufacturer.findMany({
+        //     select: {
+        //       id: true,
+        //       name: true
+        //     },
+        //     take: 1000
+        //   })
+        //   const products = await prisma.product.findMany({
+        //     select: {
+        //       id: true,
+        //       name: true
+        //     },
+        //     take: 1000
+        //   })
+        //   const doctors = await prisma.doctor.findMany({
+        //     select: {
+        //       id: true,
+        //       firstName: true,
+        //       lastName: true
+        //     },
+        //     take: 1000
+        //   })
 
-          doctorNames = doctors.map(item => {
-            return {
-              id: item.id,
-              name: `${item.firstName} ${item.lastName}`
-            }
-          })
+        //   doctorNames = doctors.map(item => {
+        //     return {
+        //       id: item.id,
+        //       name: `${item.firstName} ${item.lastName}`
+        //     }
+        //   })
   
-          manufacturerNames = manufacturers.map(item => {
-            return {
-              id: item.id,
-              name: item.name
-            }
-          })
+        //   manufacturerNames = manufacturers.map(item => {
+        //     return {
+        //       id: item.id,
+        //       name: item.name
+        //     }
+        //   })
   
-          productNameList = products.map(item => {
-            return {
-              id: item.id,
-              name: item.name
-            }
-          })
+        //   productNameList = products.map(item => {
+        //     return {
+        //       id: item.id,
+        //       name: item.name
+        //     }
+        //   })
 
-        }
+        // }
 
 
 
@@ -818,6 +818,57 @@ export const db = router({
       return {stateSummary}
 
       
+    }),
+    nameList: publicProcedure.query(async ({ctx: {prisma}}) => {
+      let doctorNames = [];
+      let manufacturerNames = [];
+      let productNameList = [];
+      const manufacturers = await prisma.manufacturer.findMany({
+        select: {
+          id: true,
+          name: true
+        },
+        take: 1000
+      })
+      const products = await prisma.product.findMany({
+        select: {
+          id: true,
+          name: true
+        },
+        take: 1000
+      })
+      const doctors = await prisma.doctor.findMany({
+        select: {
+          id: true,
+          firstName: true,
+          lastName: true
+        },
+        take: 1000
+      })
+
+      doctorNames = doctors.map(item => {
+        return {
+          id: item.id,
+          name: `${item.firstName} ${item.lastName}`
+        }
+      })
+
+      manufacturerNames = manufacturers.map(item => {
+        return {
+          id: item.id,
+          name: item.name
+        }
+      })
+
+      productNameList = products.map(item => {
+        return {
+          id: item.id,
+          name: item.name
+        }
+      })
+        
+      return {doctorNames: filterDuplicateObjArr(doctorNames, "id"), manufacturerNames: filterDuplicateObjArr(manufacturerNames, "id"), productNameList: filterDuplicateObjArr(productNameList, "id")}
+     
     })
 });
 
@@ -830,3 +881,4 @@ export type StateResponse = RouterOutput["db"]["state"];
 export type AllStatesResponse = RouterOutput["db"]["allStates"];
 export type ProductResponse = RouterOutput["db"]["product"];
 export type DirectoryResponse = RouterOutput["db"]["directory"];
+export type NameListResponse = RouterOutput["db"]["nameList"];
