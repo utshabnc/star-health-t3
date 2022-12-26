@@ -8,7 +8,7 @@ import Link from 'next/link';
 import DirectoryCards from '../../components/DirectoryCards';
 import { debounce, filter } from 'lodash';
 
-interface FilterParams {
+export interface FilterParams {
     subject: string,
     state: string,
     city: string,

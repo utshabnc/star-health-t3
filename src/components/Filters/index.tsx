@@ -1,11 +1,23 @@
 import { Doctor } from '@prisma/client'
 import React from 'react'
+import { FilterParams } from '../../pages/directory'
 import type { DirectoryResponse } from '../../server/trpc/router/db'
 import { allStates } from '../../utils'
+
+
 
 export default function Filters({data, filterParams, setFilterParams}: {data: DirectoryResponse, filterParams: any, setFilterParams: any}) {    
 
     // add in year filter
+
+    const formatSpecialties = (str: string) => {
+        const lastIndex = str.lastIndexOf("|");
+        const finalString = str.slice(lastIndex + 1).trim()
+
+        return finalString
+    }
+
+    const allYears = ["ALL", "2021", "2020", "2019", "2018", "2017","2016"]
 
   return (
     <>
@@ -17,8 +29,8 @@ export default function Filters({data, filterParams, setFilterParams}: {data: Di
                     </p>
                     
                     <div className="wrap-filters flex w-full py-2">
-                        {data && (data?.doctors || data?.manufacturers || data?.stateSummary) && <select onChange={(e) => {
-                            setFilterParams((prev: any) => {
+                        {data && (data?.doctors || data?.manufacturers) && <select onChange={(e) => {
+                            setFilterParams((prev: FilterParams) => {
                                 return {
                                     ...prev,
                                     state: e.target.value,
@@ -32,7 +44,7 @@ export default function Filters({data, filterParams, setFilterParams}: {data: Di
                                 <option key={index} value={item}>{item}</option>
                             ))}
                         </select>}
-                        {data && data?.cities && <select value={filterParams.city} onChange={(e) => {setFilterParams((prev: any) => {
+                        {data && data?.cities && <select value={filterParams.city} onChange={(e) => {setFilterParams((prev: FilterParams) => {
                             return {
                                 ...prev,
                                 city: e.target.value
@@ -44,7 +56,7 @@ export default function Filters({data, filterParams, setFilterParams}: {data: Di
                             ))}
                         </select>}
                         
-                        {data && data?.zipCodes && <select value={filterParams.zipCode} onChange={(e) => {setFilterParams((prev: any) => {
+                        {data && data?.zipCodes && <select value={filterParams.zipCode} onChange={(e) => {setFilterParams((prev: FilterParams) => {
                             return {
                                 ...prev,
                                 zipCode: e.target.value
@@ -55,7 +67,7 @@ export default function Filters({data, filterParams, setFilterParams}: {data: Di
                                 <option key={index} value={item}>{item.charAt(0).toUpperCase() + item.slice(1, item.length).toLowerCase()}</option>
                             ))}
                         </select>}
-                        {data && data?.specialties && <select value={filterParams.specialty} onChange={(e) => {setFilterParams((prev: any) => {
+                        {data && data?.specialties && <select value={filterParams.specialty} onChange={(e) => {setFilterParams((prev: FilterParams) => {
                             return {
                                 ...prev,
                                 specialty: e.target.value
@@ -67,36 +79,36 @@ export default function Filters({data, filterParams, setFilterParams}: {data: Di
                             ))}
                         </select>}
                         {data && data?.products && <select onChange={(e) => {
-                            setFilterParams((prev: any) => {
+                            setFilterParams((prev: FilterParams) => {
                                 return {
                                     ...prev,
                                     type: e.target.value
                                 }
                             })
-                        }} value={filterParams.type} className='bg-violet-500 my-2 text-white w-[20%] p-1 rounded-lg mx-1 hover:bg-violet-400 hover:text-violet-900 cursor-pointer' name="state-filter" id="state-filter">
+                        }} value={filterParams.type} className='bg-violet-500 my-2 text-white p-1 rounded-lg mx-1 hover:bg-violet-400 hover:text-violet-900 cursor-pointer w-[20%]' name="state-filter" id="state-filter">
                             <option value="">{filterParams.type == "" ? "Type" : "Reset"}</option>
-                            {data?.productTypes.map((item, index) => (
-                                <option key={index} value={item}>{item === "NULL" ? "Misc" : item}</option>
+                            {data?.productTypes.map((item: {type: string, category: string} , index: number) => (
+                                <option key={index} value={item.type}>{item.type === "NULL" ? "Misc" : item.type}</option>
                             ))}
                         </select>}
                         {data && data?.products && <select onChange={(e) => {
-                            setFilterParams((prev: any) => {
+                            setFilterParams((prev: FilterParams) => {
                                 return {
                                     ...prev,
                                     category: e.target.value
                                 }
                             })
-                        }} value={filterParams.category} className='bg-violet-500 my-2 text-white w-[20%] p-1 rounded-lg mx-1 hover:bg-violet-400 hover:text-violet-900 cursor-pointer' name="state-filter" id="state-filter">
+                        }} value={filterParams.category} className='bg-violet-500 my-2 text-white p-1 rounded-lg mx-1 hover:bg-violet-400 hover:text-violet-900 cursor-pointer w-[20%]' name="state-filter" id="state-filter">
                             <option value="">{filterParams.category == "" ? "Category" : "Reset"}</option>
-                            {data?.categories.map((item, index) => (
-                                <option key={index} value={item}>{item === "NULL" ? "Misc" : item}</option>
+                            {data?.productTypes.map((item: {type: string, category: string} , index: number) => (
+                                <option key={index} value={item.category}>{item.category === "NULL" ? "Misc" : item.category}</option>
                             ))}
                         </select>}
                         {/* fix bug of e.target.value console logging out as [onject Object] rather than its actual value*/}
                         {data && data?.payments && <select onChange={(e) => {
                             console.log("val", e.target.value);
                             
-                            setFilterParams((prev: any) => {
+                            setFilterParams((prev: FilterParams) => {
                                 return {
                                     ...prev,
                                     doctorFilter: e.target.value
@@ -104,12 +116,12 @@ export default function Filters({data, filterParams, setFilterParams}: {data: Di
                             })
                         }} value={filterParams.doctorFilter} className='bg-violet-500 my-2 text-white w-[20%] p-1 rounded-lg mx-1 hover:bg-violet-400 hover:text-violet-900 cursor-pointer' name="state-filter" id="state-filter">
                             <option value={""}>{filterParams.doctorFilter == "" ? "Doctor" : "Reset"}</option>
-                            {data?.doctorList.sort().map((item, index) => (
+                            {data?.doctorNames.sort().map((item, index) => (
                                 <option key={index} value={item.id}>{item.name.split(" ").map((li: string) => `${li.charAt(0).toUpperCase()}${li.slice(1, li.length).toLowerCase()}`).join(" ")}</option>
                             ))}
                         </select>}
                         {data && data?.payments && <select onChange={(e) => {
-                            setFilterParams((prev: any) => {
+                            setFilterParams((prev: FilterParams) => {
                                 return {
                                     ...prev,
                                     manufacturerFilter: e.target.value
@@ -117,12 +129,12 @@ export default function Filters({data, filterParams, setFilterParams}: {data: Di
                             })
                         }} value={filterParams.manufacturerFilter} className='bg-violet-500 my-2 text-white w-[20%] p-1 rounded-lg mx-1 hover:bg-violet-400 hover:text-violet-900 cursor-pointer' name="state-filter" id="state-filter">
                             <option value="">{filterParams.category == "" ? "Manufacturer" : "Reset"}</option>
-                            {data?.manufacturerList.map((item, index) => (
-                                <option key={index} value={item}>{item}</option>
+                            {data?.manufacturerNames.map((item, index) => (
+                                <option key={index} value={item.id}>{item.name}</option>
                             ))}
                         </select>}
                         {data && data?.payments && <select onChange={(e) => {
-                            setFilterParams((prev: any) => {
+                            setFilterParams((prev: FilterParams) => {
                                 return {
                                     ...prev,
                                     productFilter: e.target.value
@@ -135,7 +147,7 @@ export default function Filters({data, filterParams, setFilterParams}: {data: Di
                             ))}
                         </select>}
                         {data?.manufacturers && <select onChange={(e) => {
-                            setFilterParams((prev: any) => {
+                            setFilterParams((prev: FilterParams) => {
                                 return {
                                     ...prev,
                                     year: e.target.value, 
@@ -143,7 +155,7 @@ export default function Filters({data, filterParams, setFilterParams}: {data: Di
                             })
                         }} value={filterParams.year} className='bg-violet-500 my-2 text-white w-[20%] p-1 rounded-lg mx-1 hover:bg-violet-400 hover:text-violet-900 cursor-pointer' name="state-filter" id="state-filter">
                             <option value={"ALL"}>Year</option>
-                            {data?.allYears.map((item, index) => (
+                            {allYears.map((item, index) => (
                                 <option key={index} value={item}>{item}</option>
                             ))}
                         </select>}
