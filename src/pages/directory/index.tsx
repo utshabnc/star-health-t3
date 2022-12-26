@@ -238,14 +238,14 @@ export default function Directory() {
                   <div className='my-1'>
                   <hr />
                   </div>
+                  <Filters data={data} filterParams={filterParams} setFilterParams={setFilterParams} />
               </div>
             </div>
             <div className="flex w-full h-[70%] xl:h-[70%] justify-center">
-                <div className='flex max-h-[100%] flex-col overflow-scroll sm:w-1/2 p-1'>
+                <div className='flex max-h-[100%] flex-col overflow-scroll w-full p-1'>
                     <DirectoryCards filterParams={filterParams} data={data} />
                     
                 </div>
-                <Filters data={data} filterParams={filterParams} setFilterParams={setFilterParams} />
             </div>
             <div className="more-btn my-2 flex justify-center lg:w-[70%] md:w-[60%] w-[50%]">
               {(data?.doctors || data?.manufacturers || data?.products || data?.payments) && <button 
