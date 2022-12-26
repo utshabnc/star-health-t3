@@ -663,43 +663,71 @@ export const db = router({
           
         })
 
-        const manufacturers = await prisma.manufacturer.findMany({
-          select: {
-            id: true,
-            name: true
-          },
-          take: 10000
-        })
-        const products = await prisma.product.findMany({
-          select: {
-            id: true,
-            name: true
-          },
-          take: 10000
-        })
-
+        let doctorNames;
+        let manufacturerNames;
+        let productNameList;
         
         
-        const doctorNames = payments.map(item => {
-          return {
-            id: item.doctorId,
-            name: `${item.doctor.firstName} ${item.doctor.lastName}`
-          }
-        })
+        if(input.doctorFilter || input.manufacturerFilter || input.productFilter){
+          doctorNames = payments.map(item => {
+            return {
+              id: item.doctorId,
+              name: `${item.doctor.firstName} ${item.doctor.lastName}`
+            }
+          })
+  
+          manufacturerNames = payments.map(item => {
+            return {
+              id: item.manufacturer.id,
+              name: item.manufacturer.name
+            }
+          })
+  
+          productNameList = payments.map(item => {
+            return {
+              id: item.productId,
+              name: item.product.name
+            }
+          })
+          
+        } else {
+          const manufacturers = await prisma.manufacturer.findMany({
+            select: {
+              id: true,
+              name: true
+            },
+            take: 10000
+          })
+          const products = await prisma.product.findMany({
+            select: {
+              id: true,
+              name: true
+            },
+            take: 10000
+          })
 
-        const manufacturerNames = manufacturers.map(item => {
-          return {
-            id: item.id,
-            name: item.name
-          }
-        })
+          doctorNames = payments.map(item => {
+            return {
+              id: item.doctorId,
+              name: `${item.doctor.firstName} ${item.doctor.lastName}`
+            }
+          })
+  
+          manufacturerNames = manufacturers.map(item => {
+            return {
+              id: item.id,
+              name: item.name
+            }
+          })
+  
+          productNameList = products.map(item => {
+            return {
+              id: item.id,
+              name: item.name
+            }
+          })
 
-        const productNameList = products.map(item => {
-          return {
-            id: item.id,
-            name: item.name
-          }
-        })
+        }
 
 
 
