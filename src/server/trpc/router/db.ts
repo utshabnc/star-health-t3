@@ -673,7 +673,10 @@ export const db = router({
         })
 
         const manufacturerNames = payments.map(item => {
-          return item.manufacturerName
+          return {
+            id: item.manufacturer.id,
+            name: item.manufacturer.name
+          }
         })
 
         const productNameList = payments.map(item => {
