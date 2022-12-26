@@ -620,14 +620,14 @@ export const db = router({
         });
 
         const productTypes = products.map(item => {
-          return item.type
+          return {
+            type: item.type,
+            category: item.category
+          }
         })
 
-        const categories = products.map(item => {
-          return item.category
-        })
 
-        return {products, productTypes: filterDuplicates(productTypes), categories: filterDuplicates(categories)}
+        return {products, productTypes: filterDuplicateObjArr(productTypes, "type")}
       }
 
       if(input.subject === "payment"){
@@ -688,7 +688,7 @@ export const db = router({
 
 
 
-        return {payments, manufacturerList: filterDuplicates(manufacturerNames), doctorList: filterDuplicateObjArr(doctorNames, "id"), productNameList: filterDuplicateObjArr(productNameList, "id")}
+        return {payments, manufacturerList: filterDuplicateObjArr(manufacturerNames, "id"), doctorList: filterDuplicateObjArr(doctorNames, "id"), productNameList: filterDuplicateObjArr(productNameList, "id")}
 
       }
 

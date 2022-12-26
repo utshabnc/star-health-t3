@@ -151,7 +151,7 @@ export default function Directory() {
 
   return (
     <>
-        <div className="p-5 rounded bg-white h-screen">
+        <div className="p-5 rounded bg-white h-screen pb-20">
             <div className="flex flex-row">
                 <div>
                     <button
@@ -255,7 +255,7 @@ export default function Directory() {
                     
                 </div>
             </div>
-            <div className="more-btn my-2 flex justify-center lg:w-[70%] md:w-[60%] w-[50%]">
+            <div className="more-btn my-2 flex justify-center w-full mt-5">
               {(data?.doctors || data?.manufacturers || data?.products || data?.payments) && <button 
               className='bg-violet-600 px-3 py-1 rounded-lg text-slate-50'
               onClick={() => {
