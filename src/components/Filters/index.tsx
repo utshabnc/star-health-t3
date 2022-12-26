@@ -1,6 +1,6 @@
 import { Doctor } from '@prisma/client'
 import React from 'react'
-import { DirectoryResponse } from '../../server/trpc/router/db'
+import type { DirectoryResponse } from '../../server/trpc/router/db'
 import { allStates } from '../../utils'
 
 export default function Filters({data, filterParams, setFilterParams}: {data: DirectoryResponse, filterParams: any, setFilterParams: any}) {    

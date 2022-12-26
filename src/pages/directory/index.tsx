@@ -26,7 +26,7 @@ interface FilterParams {
 export default function Directory() {
     const navigate = useRouter();
     const [filterParams, setFilterParams] = useState<FilterParams>({
-      subject: '', 
+      subject: 'payment', 
       state: '', 
       city: '', 
       zipCode: '', 
@@ -166,15 +166,79 @@ export default function Directory() {
                     </svg>
                     </button>
                 </div>
-            </div>
-            <div className='flex flex-col justify-end lg:px-28 sm:px-2 py-10'>
-                <p className='text-violet-700 text-2xl font-semibold'>
-                    Directory
-                </p>
-                
-                <div className='my-1'>
-                <hr />
-                </div>
+              <div className='w-full flex flex-col justify-end px-8 py-10'>
+              <div className="wrap-opt flex justify-between">
+                    <div>
+                      <p className='text-violet-700 text-2xl font-semibold'>
+                          Directory
+                      </p>
+
+                    </div>
+                    <div className='flex gap-2'>
+                      <button onClick={(e) => {
+                        setFilterParams(prev => {
+                          return {
+                            ...prev,
+                            subject: "payment",
+                            cursor: ""
+
+                          }
+                        })
+                        
+                      }} 
+                      className={`border-b-2 hover:border-zinc-500 ${data?.payments ? "border-violet-600" : "border-zinc-200"}`}>
+                        Transactions
+                      </button>
+                      <button onClick={(e) => {
+                        setFilterParams(prev => {
+                          return {
+                            ...prev,
+                            subject: "manufacturer",
+                            cursor: ""
+
+                          }
+                        })
+                        
+                      }} className={`border-b-2 hover:border-zinc-500 ${data?.manufacturers ? "border-violet-600" : "border-zinc-200"}`}>
+                        Manufacturers
+                      </button>
+                      <button onClick={(e) => {
+                        setFilterParams(prev => {
+                          return {
+                            ...prev,
+                            subject: "doctor",
+                            cursor: ""
+
+
+                          }
+                        })
+                        
+                      }} className={`border-b-2 hover:border-zinc-500 ${data?.doctors ? "border-violet-600" : "border-zinc-200"}`}>
+                        Doctors
+                      </button>
+                      <button onClick={(e) => {
+                        setFilterParams(prev => {
+                          return {
+                            ...prev,
+                            subject: "product",
+                            cursor: ""
+
+
+                          }
+                        })
+                        
+                      }} className={`border-b-2 hover:border-zinc-500 ${data?.products ? "border-violet-600" : "border-zinc-200"}`}>
+                        Products
+                      </button>
+
+                    </div>
+
+                  </div>
+                  
+                  <div className='my-1'>
+                  <hr />
+                  </div>
+              </div>
             </div>
             <div className="flex w-full h-[70%] xl:h-[70%] justify-center">
                 <div className='flex max-h-[100%] flex-col overflow-scroll sm:w-1/2 p-1'>
