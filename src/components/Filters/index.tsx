@@ -12,11 +12,11 @@ export default function Filters({data, filterParams, setFilterParams}: {data: Di
         <div className='w-full'>
             <div>
                 <div className="filters flex w-full items-center">
-                    <p className='text-violet-700 text-lg  my-2'>
+                    <p className='text-violet-700 w-20 text-lg  my-2'>
                         Filter By
                     </p>
                     
-                    <div className="wrap-filters py-2">
+                    <div className="wrap-filters flex w-full py-2">
                         {data && (data?.doctors || data?.manufacturers || data?.stateSummary) && <select onChange={(e) => {
                             setFilterParams((prev: any) => {
                                 return {
@@ -26,7 +26,7 @@ export default function Filters({data, filterParams, setFilterParams}: {data: Di
                                     zipCode: '',
                                 }
                             })
-                        }} value={filterParams.state} className='bg-violet-500 my-2 text-white px-4 py-2 rounded-lg mx-1 hover:bg-violet-400 hover:text-violet-900 cursor-pointer' name="state-filter" id="state-filter">
+                        }} value={filterParams.state} className='bg-violet-500 my-2 text-white w-[20%] p-1 rounded-lg mx-1 hover:bg-violet-400 hover:text-violet-900 cursor-pointer' name="state-filter" id="state-filter">
                             <option value={""}>State</option>
                             {allStates.map((item, index) => (
                                 <option key={index} value={item}>{item}</option>
@@ -37,7 +37,7 @@ export default function Filters({data, filterParams, setFilterParams}: {data: Di
                                 ...prev,
                                 city: e.target.value
                             }
-                        })}} name="city-opt" id="city-opt" className='bg-violet-500 my-2 text-white px-4 py-2 rounded-lg mx-1 hover:bg-violet-400 hover:text-violet-900 cursor-pointer w-40'>
+                        })}} name="city-opt" id="city-opt" className='bg-violet-500 my-2 text-white w-[20%] p-1 rounded-lg mx-1 hover:bg-violet-400 hover:text-violet-900 cursor-pointer'>
                             <option value="">{filterParams.city == "" ? "City" : "Reset"}</option>
                             {data?.cities.sort().map((item, index) => (
                                 <option key={index} value={item}>{item.charAt(0).toUpperCase() + item.slice(1, item.length).toLowerCase()}</option>
@@ -49,7 +49,7 @@ export default function Filters({data, filterParams, setFilterParams}: {data: Di
                                 ...prev,
                                 zipCode: e.target.value
                             }
-                        })}} name="city-opt" id="city-opt" className='bg-violet-500 my-2 text-white px-4 py-2 rounded-lg mx-1 hover:bg-violet-400 hover:text-violet-900 cursor-pointer w-28'>
+                        })}} name="city-opt" id="city-opt" className='bg-violet-500 my-2 text-white w-[20%] p-1 rounded-lg mx-1 hover:bg-violet-400 hover:text-violet-900 cursor-pointer'>
                             <option value="">{filterParams.zipCode == "" ? "Zipcode" : "Reset"}</option>
                             {data?.zipCodes.map((item, index) => (
                                 <option key={index} value={item}>{item.charAt(0).toUpperCase() + item.slice(1, item.length).toLowerCase()}</option>
@@ -60,7 +60,7 @@ export default function Filters({data, filterParams, setFilterParams}: {data: Di
                                 ...prev,
                                 specialty: e.target.value
                             }
-                        })}} name="city-opt" id="city-opt" className='bg-violet-500 my-2 text-white px-4 py-2 rounded-lg mx-1 hover:bg-violet-400 hover:text-violet-900 cursor-pointer w-40'>
+                        })}} name="city-opt" id="city-opt" className='bg-violet-500 my-2 text-white w-[20%] p-1 rounded-lg mx-1 hover:bg-violet-400 hover:text-violet-900 cursor-pointer'>
                             <option value="">{filterParams.specialty == "" ? "Specialty" : "Reset"}</option>
                             {data?.specialties.sort().map((item, index) => (
                                 <option key={index} value={item}>{item.charAt(0).toUpperCase() + item.slice(1, item.length).toLowerCase()}</option>
@@ -73,7 +73,7 @@ export default function Filters({data, filterParams, setFilterParams}: {data: Di
                                     type: e.target.value
                                 }
                             })
-                        }} value={filterParams.type} className='bg-violet-500 my-2 text-white px-4 py-2 rounded-lg mx-1 hover:bg-violet-400 hover:text-violet-900 cursor-pointer w-full' name="state-filter" id="state-filter">
+                        }} value={filterParams.type} className='bg-violet-500 my-2 text-white w-[20%] p-1 rounded-lg mx-1 hover:bg-violet-400 hover:text-violet-900 cursor-pointer' name="state-filter" id="state-filter">
                             <option value="">{filterParams.type == "" ? "Type" : "Reset"}</option>
                             {data?.productTypes.map((item, index) => (
                                 <option key={index} value={item}>{item === "NULL" ? "Misc" : item}</option>
@@ -86,7 +86,7 @@ export default function Filters({data, filterParams, setFilterParams}: {data: Di
                                     category: e.target.value
                                 }
                             })
-                        }} value={filterParams.category} className='bg-violet-500 my-2 text-white px-4 py-2 rounded-lg mx-1 hover:bg-violet-400 hover:text-violet-900 cursor-pointer w-full' name="state-filter" id="state-filter">
+                        }} value={filterParams.category} className='bg-violet-500 my-2 text-white w-[20%] p-1 rounded-lg mx-1 hover:bg-violet-400 hover:text-violet-900 cursor-pointer' name="state-filter" id="state-filter">
                             <option value="">{filterParams.category == "" ? "Category" : "Reset"}</option>
                             {data?.categories.map((item, index) => (
                                 <option key={index} value={item}>{item === "NULL" ? "Misc" : item}</option>
@@ -102,7 +102,7 @@ export default function Filters({data, filterParams, setFilterParams}: {data: Di
                                     doctorFilter: e.target.value
                                 }
                             })
-                        }} value={filterParams.doctorFilter} className='bg-violet-500 my-2 text-white px-4 py-2 rounded-lg mx-1 hover:bg-violet-400 hover:text-violet-900 cursor-pointer w-full' name="state-filter" id="state-filter">
+                        }} value={filterParams.doctorFilter} className='bg-violet-500 my-2 text-white w-[20%] p-1 rounded-lg mx-1 hover:bg-violet-400 hover:text-violet-900 cursor-pointer' name="state-filter" id="state-filter">
                             <option value={""}>{filterParams.doctorFilter == "" ? "Doctor" : "Reset"}</option>
                             {data?.doctorList.sort().map((item, index) => (
                                 <option key={index} value={item.id}>{item.name.split(" ").map((li: string) => `${li.charAt(0).toUpperCase()}${li.slice(1, li.length).toLowerCase()}`).join(" ")}</option>
@@ -115,7 +115,7 @@ export default function Filters({data, filterParams, setFilterParams}: {data: Di
                                     manufacturerFilter: e.target.value
                                 }
                             })
-                        }} value={filterParams.manufacturerFilter} className='bg-violet-500 my-2 text-white px-4 py-2 rounded-lg mx-1 hover:bg-violet-400 hover:text-violet-900 cursor-pointer w-full' name="state-filter" id="state-filter">
+                        }} value={filterParams.manufacturerFilter} className='bg-violet-500 my-2 text-white w-[20%] p-1 rounded-lg mx-1 hover:bg-violet-400 hover:text-violet-900 cursor-pointer' name="state-filter" id="state-filter">
                             <option value="">{filterParams.category == "" ? "Manufacturer" : "Reset"}</option>
                             {data?.manufacturerList.map((item, index) => (
                                 <option key={index} value={item}>{item}</option>
@@ -128,7 +128,7 @@ export default function Filters({data, filterParams, setFilterParams}: {data: Di
                                     productFilter: e.target.value
                                 }
                             })
-                        }} value={filterParams.productFilter} className='bg-violet-500 my-2 text-white px-4 py-2 rounded-lg mx-1 hover:bg-violet-400 hover:text-violet-900 cursor-pointer w-full' name="state-filter" id="state-filter">
+                        }} value={filterParams.productFilter} className='bg-violet-500 my-2 text-white w-[20%] p-1 rounded-lg mx-1 hover:bg-violet-400 hover:text-violet-900 cursor-pointer' name="state-filter" id="state-filter">
                             <option value="">{filterParams.productFilter == "" ? "Product" : "Reset"}</option>
                             {data?.productNameList.map((item, index) => (
                                 <option key={index} value={item.id}>{item.name}</option>
@@ -141,7 +141,7 @@ export default function Filters({data, filterParams, setFilterParams}: {data: Di
                                     year: e.target.value, 
                                 }
                             })
-                        }} value={filterParams.year} className='bg-violet-500 my-2 text-white px-4 py-2 rounded-lg mx-1 hover:bg-violet-400 hover:text-violet-900 cursor-pointer' name="state-filter" id="state-filter">
+                        }} value={filterParams.year} className='bg-violet-500 my-2 text-white w-[20%] p-1 rounded-lg mx-1 hover:bg-violet-400 hover:text-violet-900 cursor-pointer' name="state-filter" id="state-filter">
                             <option value={"ALL"}>Year</option>
                             {data?.allYears.map((item, index) => (
                                 <option key={index} value={item}>{item}</option>

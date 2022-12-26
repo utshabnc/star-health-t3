@@ -242,7 +242,7 @@ export default function Directory() {
               </div>
             </div>
             <div className="flex w-full h-[70%] xl:h-[70%] justify-center">
-                <div className='flex max-h-[100%] flex-col overflow-scroll w-full p-1'>
+                <div className='flex max-h-[100%] flex-col overflow-scroll w-[95%] ml-5 p-1'>
                     <DirectoryCards filterParams={filterParams} data={data} />
                     
                 </div>
