@@ -75,11 +75,7 @@ const getProductTotals = (obj: any) => {
   return sum
 }
 
-const searchFilter = (arr: Payment[] | Doctor[] | Manufacturer[] | Product[], search: string | undefined) => {
-  if(search){
-    
-  }
-}
+
 
 const getProductTransCount = (obj: any) => {
   let transactionSum = 0;

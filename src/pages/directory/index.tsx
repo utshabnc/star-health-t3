@@ -6,8 +6,9 @@ import { filterDuplicates } from '../../utils';
 import Filters from '../../components/Filters';
 import Link from 'next/link';
 import DirectoryCards from '../../components/DirectoryCards';
+import { debounce, filter } from 'lodash';
 
-export interface FilterParams {
+interface FilterParams {
     subject: string,
     state: string,
     city: string,
@@ -19,15 +20,13 @@ export interface FilterParams {
     manufacturerFilter: string,
     productFilter: string,
     cursor: string,
-    year: string,
-    rank: boolean
+    year: string
 }
 
 export default function Directory() {
     const navigate = useRouter();
-    const [btnDisable, setBtnDisable] = useState<boolean>(false)
     const [filterParams, setFilterParams] = useState<FilterParams>({
-      subject: 'payment', 
+      subject: '', 
       state: '', 
       city: '', 
       zipCode: '', 
@@ -38,8 +37,7 @@ export default function Directory() {
       manufacturerFilter: '', 
       productFilter: '',
       cursor: '',
-      year: 'ALL',
-      rank: false
+      year: ''
     })
     const {data, error, isLoading} = trpc.db.directory.useQuery({
       subject: filterParams.subject, 
@@ -53,25 +51,15 @@ export default function Directory() {
       manufacturerFilter: filterParams.manufacturerFilter, 
       productFilter: filterParams.productFilter,
       cursor: filterParams.cursor,
-      year: filterParams.year,
-      rank: filterParams.rank
+      year: filterParams.year
     });
 
     //helpers to set last index to filter param when user requests to see more data
     const setLastIndex = (arr: {id: string}[]) => {
-      if(arr[arr.length -1]?.id === filterParams.cursor){
-        return setFilterParams(prev => {
-          return {
-            ...prev,
-            cursor: ''
-          }
-        })
-        // return setBtnDisable(true)
-      }
-      setFilterParams((prev: FilterParams) => {
+      setFilterParams(prev => {
         return {
           ...prev,
-          cursor: arr[arr.length -1]?.id ?? ""
+          cursor: arr[-1]?.id ?? ""
         }
       })
     }
@@ -82,6 +70,7 @@ export default function Directory() {
       if(data?.products) setLastIndex(data?.products)
       if(data?.payments) setLastIndex(data?.payments)
       if(data?.manufacturerSummary) setLastIndex(data?.manufacturerSummary)
+
     }
 
     if (isLoading || !data) {
@@ -154,118 +143,52 @@ export default function Directory() {
 
   return (
     <>
-        <div className="p-5 rounded bg-white h-screen mb-36">
-            <div className="flex flex-row gap-9">
-              <div>
-                <button
-                onClick={navigate.back}
-                className="border border-violet-700 bg-violet-700 text-white rounded-md px-4 py-2 transition duration-500 ease select-none hover:bg-violet-900 focus:outline-none focus:shadow-outline"
-                >
-                <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    strokeWidth={1.5}
-                    stroke="currentColor"
-                    className="w-6 h-6 "
-                >
-                    <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18"
-                    />
-                </svg>
-                </button>
-              </div>
-              <div className='flex flex-col sm:px-2 w-[90%]'>
-                  <div className="wrap-opt flex justify-between">
-                    <div>
-                      <p className='text-violet-700 text-2xl font-semibold'>
-                          Directory
-                      </p>
-
-                    </div>
-                    <div className='flex gap-2'>
-                      <button onClick={() => {
-                        setFilterParams(prev => {
-                          return {
-                            ...prev,
-                            subject: "payment",
-                            cursor: ""
-                            
-                          }
-                        })
-                        setBtnDisable(false)
-                      }} 
-                      className={`border-b-2 hover:border-zinc-500 ${data?.payments ? "border-violet-600" : "border-zinc-200"}`}>
-                        Transactions
-                      </button>
-                      <button onClick={() => {
-                        setFilterParams(prev => {
-                          return {
-                            ...prev,
-                            subject: "manufacturer",
-                            cursor: ""
-
-                          }
-                        })
-                        setBtnDisable(false)
-                      }} className={`border-b-2 hover:border-zinc-500 ${data?.manufacturers ? "border-violet-600" : "border-zinc-200"}`}>
-                        Manufacturers
-                      </button>
-                      <button onClick={() => {
-                        setFilterParams(prev => {
-                          return {
-                            ...prev,
-                            subject: "doctor",
-                            cursor: ""
-
-
-                          }
-                        })
-                        setBtnDisable(false)
-                      }} className={`border-b-2 hover:border-zinc-500 ${data?.doctors ? "border-violet-600" : "border-zinc-200"}`}>
-                        Doctors
-                      </button>
-                      <button onClick={() => {
-                        setFilterParams(prev => {
-                          return {
-                            ...prev,
-                            subject: "product",
-                            cursor: ""
-
-
-                          }
-                        })
-                        setBtnDisable(false)
-                      }} className={`border-b-2 hover:border-zinc-500 ${data?.products ? "border-violet-600" : "border-zinc-200"}`}>
-                        Products
-                      </button>
-
-                    </div>
-
-                  </div>
-                  
-                  <div className='my-1'>
-                  <hr />
-                  </div>
-                  <Filters data={data} filterParams={filterParams} setFilterParams={setFilterParams} />
-              </div>
+        <div className="p-5 rounded bg-white h-screen">
+            <div className="flex flex-row">
+                <div>
+                    <button
+                    onClick={navigate.back}
+                    className="border border-violet-700 bg-violet-700 text-white rounded-md px-4 py-2 transition duration-500 ease select-none hover:bg-violet-900 focus:outline-none focus:shadow-outline"
+                    >
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        strokeWidth={1.5}
+                        stroke="currentColor"
+                        className="w-6 h-6 "
+                    >
+                        <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18"
+                        />
+                    </svg>
+                    </button>
+                </div>
             </div>
-            <div className="flex max-sm:flex-col w-[100%] h-[90%] ml-5 xl:h-[90%] justify-center">
-                <div className='flex max-sm:order-2 max-h-[100%] flex-col overflow-scroll w-[92%] ml-5 p-1'>
+            <div className='flex flex-col justify-end lg:px-28 sm:px-2 py-10'>
+                <p className='text-violet-700 text-2xl font-semibold'>
+                    Directory
+                </p>
+                
+                <div className='my-1'>
+                <hr />
+                </div>
+            </div>
+            <div className="flex w-full h-[70%] xl:h-[70%] justify-center">
+                <div className='flex max-h-[100%] flex-col overflow-scroll sm:w-1/2 p-1'>
                     <DirectoryCards filterParams={filterParams} data={data} />
                     
                 </div>
-                {/* <Filters data={data} filterParams={filterParams} setFilterParams={setFilterParams} setBtnDisable={setBtnDisable} /> */}
+                <Filters data={data} filterParams={filterParams} setFilterParams={setFilterParams} />
             </div>
-            <div className="more-btn my-2 flex justify-center w-full">
-              {(data?.doctors || data?.manufacturers || data?.products || data?.payments) && !btnDisable && <button 
-              className={`bg-violet-600 px-3 py-1 rounded-lg text-slate-50`}
+            <div className="more-btn my-2 flex justify-center lg:w-[70%] md:w-[60%] w-[50%]">
+              {(data?.doctors || data?.manufacturers || data?.products || data?.payments) && <button 
+              className='bg-violet-600 px-3 py-1 rounded-lg text-slate-50'
               onClick={() => {
                 currDataAssignedToLastIndex()
               }}
-              disabled={btnDisable ? true : false}
               >
                 See More
               </button>}

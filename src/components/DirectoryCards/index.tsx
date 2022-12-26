@@ -1,24 +1,22 @@
 import Link from 'next/link'
 import React from 'react'
-import { formatMoney, getProductTotals, getProductTransCount } from '../../utils'
+import { formatMoney } from '../../utils'
 import type { DirectoryResponse } from '../../server/trpc/router/db'
-import type { FilterParams } from '../../pages/directory'
 
-// export type FilterParams = {
-//     subject: string
-//     state: string
-//     city: string
-//     zipCode: string
-//     specialty: string
-//     type: string
-//     category: string
-//     doctorFilter: string
-//     manufacturerFilter: string
-//     productFilter: string
-//     cursor: string
-//     year: string,
-//     rank: boolean
-// }
+type FilterParams = {
+    subject: string
+    state: string
+    city: string
+    zipCode: string
+    specialty: string
+    type: string
+    category: string
+    doctorFilter: string
+    manufacturerFilter: string
+    productFilter: string
+    cursor: string
+    year: string
+}
 
 export default function DirectoryCards({data, filterParams}: {data: DirectoryResponse, filterParams: FilterParams}) {
 
@@ -64,23 +62,23 @@ export default function DirectoryCards({data, filterParams}: {data: DirectoryRes
   if(data?.manufacturers){
     return (
         <>
-            {data && data?.manufacturers && data?.manufacturers.map((item, index) => (
-            
-            <div key={index}  className="w-[100%] rounded-lg bg-white text-center shadow-lg mb-2">
-                <div className="p-2">
-                    <div className="flex flex-row justify-between">
-                        <h5 className="text-md mb-2 font-medium text-gray-900 underline">
-                        <Link href={`/manufacturer/${item.id}`}>
-                            {item.name}
-                        </Link>
-                        
-                        </h5>
-                        <p className="mb-1 text-gray-600 text-xs">
-                            Rank: {item.rank}
-                        
-                        </p>
-                    </div>
-                    <div>
+            {data && data?.manufacturers && data?.manufacturers.sort((a,b) => a.rank - b.rank).map((item, index) => (
+            <>
+                <div key={index} className="w-[100%] rounded-lg bg-white text-center shadow-lg mb-2">
+                    <div className="p-2">
+                        <div className="flex flex-row justify-between">
+                            <h5 className="text-md mb-2 font-medium text-gray-900 underline">
+                            <Link href={`/manufacturer/${item.id}`}>
+                                {item.name}
+                            </Link>
+                            
+                            </h5>
+                            <p className="mb-1 text-gray-600 text-xs">
+                                Rank: {item.rank}
+                            
+                            </p>
+                        </div>
+                        <div>
                         <div className="flex flex-row justify-between">
                             <h5 className="text-md mb-2 text-gray-900">
                             {item.state}
@@ -92,14 +90,15 @@ export default function DirectoryCards({data, filterParams}: {data: DirectoryRes
                             {item.country} 
                             </p>
 
-                            {item.ManufacturerSummary.length > 0 && item.ManufacturerSummary[0] && <p className='text-sm r'>{filterParams.year == "" || filterParams.year === "ALL" ? "Overall" : `${filterParams.year}`} earnings: {formatMoney(item.ManufacturerSummary[0].totalAmount)}</p>}
+                            {item.ManufacturerSummary.length > 0 && <p className='text-sm r'>{filterParams.year == "" || filterParams.year === "ALL" ? "Overall" : `${filterParams.year}`} earnings: {}</p>}
 
-                        
+                        {/* <div className="border-gray-300 text-gray-600"></div> */}
+
                         </div>
                     </div>
                 </div>
-            </div>
-            
+                </div>
+            </>
         ))}
         </>
     )
@@ -107,46 +106,41 @@ export default function DirectoryCards({data, filterParams}: {data: DirectoryRes
 
   if(data?.products){
     return (
-        <>
-            {data && data?.products && data?.products.map((item, index) => (
-            
-                <div key={index} className="w-[100%] rounded-lg bg-white text-center shadow-lg mb-2">
-                    <div className=" p-2">
-                        <div className="flex flex-row justify-between">
-                            <Link href={`/drug/${item.id}`}>
-                                <h5 className="text-md mb-2 font-medium text-gray-900 underline">
-                                {item.name}
-                                
-                                </h5>
-                            
-                            </Link>
-                            <p className="mb-1 text-gray-600 text-xs">
-                                {filterParams.year === "ALL" ? "Overall" : filterParams.year} earnings: {formatMoney(getProductTotals(item))}
-                            
-                            </p>
-                        </div>
-                        <div className="flex flex-row justify-between">
-                            <h5 className="text-md mb-2 text-gray-900">
-                            Product: {item.type}
-                            </h5>
-                            <p className="mb-1 text-base text-gray-700"> </p>
-                        </div>
-                        <div className="flex flex-row justify-between text-sm">
-                            {item.category && <p className="mb-1 text-xs text-gray-700">
-                                Category: {item.category.charAt(0).toUpperCase() + item.category.slice(1, item.category.length).toLowerCase()} 
-                            </p>}
-
-                            <div>
-                                <p>
-                                    Total transactions: {getProductTransCount(item)}
-                                </p>
-                            </div>
-
-                        </div>
-      
-                    </div>
-                
+      <>
+        {data &&
+          data?.products &&
+          data?.products.map((item, index) => (
+            <div
+              key={index}
+              className="mb-2 w-[100%] rounded-lg bg-white text-center shadow-lg"
+            >
+              <div className=" p-2">
+                <div className="flex flex-row justify-between">
+                  <h5 className="text-md mb-2 font-medium text-gray-900 underline">
+                    <Link href={`/drug/${item.id}`}>{item.name}</Link>
+                  </h5>
+                  <p className="mb-1 text-xs text-gray-600"></p>
                 </div>
+                <div className="flex flex-row justify-between">
+                  <h5 className="text-md mb-2 text-gray-900">
+                    Product: {item.type}
+                  </h5>
+                  <p className="mb-1 text-base text-gray-700"> </p>
+                </div>
+                <div className="flex flex-row justify-between text-sm">
+                  <p className="mb-1 text-xs text-gray-700">
+                    Category:{" "}
+                    {item.category &&
+                      item.category.charAt(0).toUpperCase() +
+                        item.category
+                          .slice(1, item.category.length)
+                          .toLowerCase()}
+                  </p>
+
+                  <div className="border-gray-300 text-gray-600"></div>
+                </div>
+              </div>
+            </div>
           ))}
       </>
     );
@@ -160,10 +154,11 @@ export default function DirectoryCards({data, filterParams}: {data: DirectoryRes
             <div key={index} className="w-[100%] rounded-lg bg-white text-center shadow-lg mb-2">
                 <div className=" p-2">
                     <div className="flex flex-row justify-between">
-                        {item.product && <h5 className="text-md mb-2 font-medium text-gray-900">
+                        <h5 className="text-md mb-2 font-medium text-gray-900">
+                        {/* Sold By: {item.manufacturerName} */}
                         Item: {item.product.name !== "UNKNOWN" ? item.product.name : "N/A"} <span className='text-sm text-slate-400'>{`(${item.product.type})`}</span>
                         
-                        </h5>}
+                        </h5>
                         <p className="mb-1 text-gray-600 text-sm text-right">
                             {formatMoney(item.amount)}
                             <br />
@@ -171,15 +166,17 @@ export default function DirectoryCards({data, filterParams}: {data: DirectoryRes
                         </p>
                     </div>
                     <div className="flex flex-row justify-between">
-                        {item.doctor && <h5 className="text-md mb-2 text-gray-900">
+                        <h5 className="text-md mb-2 text-gray-900">
+                        {/* Product: {item.type} */}
                         Doctor: {item.doctor.firstName.charAt(0).toUpperCase() + item.doctor.firstName.slice(1, item.doctor.firstName.length).toLowerCase()} {item.doctor.lastName.charAt(0).toUpperCase() + item.doctor.lastName.slice(1, item.doctor.lastName.length).toLowerCase()}
-                        </h5>}
+                        </h5>
                         <p className="mb-1 text-base text-gray-700"> </p>
                     </div>
                     <div className="flex flex-row justify-between text-sm">
-                        {item.manufacturer && <p className="mb-1 text-xs text-gray-700">
-                            Manufacturer: {item.manufacturer.name}
-                        </p>}
+                        <p className="mb-1 text-xs text-gray-700">
+                            {/* Category: {item.category.charAt(0).toUpperCase() + item.category.slice(1, item.category.length).toLowerCase()}  */}
+                            Manufacturer: {item.manufacturerName}
+                        </p>
 
                         <p className='text-gray-600 text-sm'>{item.date.toDateString()}</p>
 
