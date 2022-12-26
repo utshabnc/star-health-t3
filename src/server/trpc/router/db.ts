@@ -666,6 +666,27 @@ export const db = router({
         let doctorNames = [];
         let manufacturerNames = [];
         let productNameList = [];
+
+        doctorNames = payments.map(item => {
+          return {
+            id: item.doctorId,
+            name: `${item.doctor.firstName} ${item.doctor.lastName}`
+          }
+        })
+
+        manufacturerNames = payments.map(item => {
+          return {
+            id: item.manufacturer.id,
+            name: item.manufacturer.name
+          }
+        })
+
+        productNameList = payments.map(item => {
+          return {
+            id: item.productId,
+            name: item.product.name
+          }
+        })
         
         
         if(input.doctorFilter || input.manufacturerFilter || input.productFilter){
@@ -740,6 +761,7 @@ export const db = router({
 
 
         return {payments, manufacturerList: filterDuplicateObjArr(manufacturerNames, "id"), doctorList: filterDuplicateObjArr(doctorNames, "id"), productNameList: filterDuplicateObjArr(productNameList, "id")}
+        // return {payments}
 
       }
 

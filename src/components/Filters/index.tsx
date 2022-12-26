@@ -10,6 +10,34 @@ export default function Filters({data, filterParams, setFilterParams}: {data: Di
 
     // add in year filter
 
+    // let doctorNames = [];
+    // let manufacturerNames = [];
+    // let productNameList = [];
+    // if(data && data?.payments){
+    //     doctorNames = data?.payments.map(item => {
+    //         return {
+    //         id: item.doctorId,
+    //         name: `${item.doctor.firstName} ${item.doctor.lastName}`
+    //         }
+    //     })
+    
+    //     manufacturerNames = data?.payments.map(item => {
+    //         return {
+    //         id: item.manufacturer.id,
+    //         name: item.manufacturer.name
+    //         }
+    //     })
+    
+    //     productNameList = data?.payments.map(item => {
+    //         return {
+    //         id: item.productId,
+    //         name: item.product.name
+    //         }
+    //     })
+
+    // }
+
+
     const formatSpecialties = (str: string) => {
         const lastIndex = str.lastIndexOf("|");
         const finalString = str.slice(lastIndex + 1).trim()
