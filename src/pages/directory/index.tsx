@@ -177,7 +177,7 @@ export default function Directory() {
                 </svg>
                 </button>
               </div>
-              <div className='flex flex-col justify-end sm:px-2 w-[90%]'>
+              <div className='flex flex-col sm:px-2 w-[90%]'>
                   <div className="wrap-opt flex justify-between">
                     <div>
                       <p className='text-violet-700 text-2xl font-semibold'>
@@ -252,7 +252,7 @@ export default function Directory() {
                   <Filters data={data} filterParams={filterParams} setFilterParams={setFilterParams} />
               </div>
             </div>
-            <div className="flex max-sm:flex-col w-[100%] h-[90%] xl:h-[90%] justify-center">
+            <div className="flex max-sm:flex-col w-[100%] h-[90%] ml-5 xl:h-[90%] justify-center">
                 <div className='flex max-sm:order-2 max-h-[100%] flex-col overflow-scroll w-[92%] ml-5 p-1'>
                     <DirectoryCards filterParams={filterParams} data={data} />
                     

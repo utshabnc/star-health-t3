@@ -1,3 +1,4 @@
+import { Doctor, Manufacturer, Payment, Product } from '@prisma/client';
 import _ from 'lodash';
 const addAlpha = (color: string, opacity: number): string => {
   // coerce values so it is between 0 and 1.
@@ -72,6 +73,12 @@ const getProductTotals = (obj: any) => {
   })
 
   return sum
+}
+
+const searchFilter = (arr: Payment[] | Doctor[] | Manufacturer[] | Product[], search: string | undefined) => {
+  if(search){
+    
+  }
 }
 
 const getProductTransCount = (obj: any) => {

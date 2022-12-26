@@ -64,7 +64,7 @@ export default function DirectoryCards({data, filterParams}: {data: DirectoryRes
   if(data?.manufacturers){
     return (
         <>
-            {data && data?.manufacturers && data?.manufacturers.sort((a,b) => a.rank - b.rank).map((item, index) => (
+            {data && data?.manufacturers && data?.manufacturers.map((item, index) => (
             
             <div key={index}  className="w-[100%] rounded-lg bg-white text-center shadow-lg mb-2">
                 <div className="p-2">
@@ -160,10 +160,10 @@ export default function DirectoryCards({data, filterParams}: {data: DirectoryRes
             <div key={index} className="w-[100%] rounded-lg bg-white text-center shadow-lg mb-2">
                 <div className=" p-2">
                     <div className="flex flex-row justify-between">
-                        <h5 className="text-md mb-2 font-medium text-gray-900">
+                        {item.product && <h5 className="text-md mb-2 font-medium text-gray-900">
                         Item: {item.product.name !== "UNKNOWN" ? item.product.name : "N/A"} <span className='text-sm text-slate-400'>{`(${item.product.type})`}</span>
                         
-                        </h5>
+                        </h5>}
                         <p className="mb-1 text-gray-600 text-sm text-right">
                             {formatMoney(item.amount)}
                             <br />
@@ -171,17 +171,15 @@ export default function DirectoryCards({data, filterParams}: {data: DirectoryRes
                         </p>
                     </div>
                     <div className="flex flex-row justify-between">
-                        <h5 className="text-md mb-2 text-gray-900">
-                        {/* Product: {item.type} */}
+                        {item.doctor && <h5 className="text-md mb-2 text-gray-900">
                         Doctor: {item.doctor.firstName.charAt(0).toUpperCase() + item.doctor.firstName.slice(1, item.doctor.firstName.length).toLowerCase()} {item.doctor.lastName.charAt(0).toUpperCase() + item.doctor.lastName.slice(1, item.doctor.lastName.length).toLowerCase()}
-                        </h5>
+                        </h5>}
                         <p className="mb-1 text-base text-gray-700"> </p>
                     </div>
                     <div className="flex flex-row justify-between text-sm">
-                        <p className="mb-1 text-xs text-gray-700">
-                            {/* Category: {item.category.charAt(0).toUpperCase() + item.category.slice(1, item.category.length).toLowerCase()}  */}
-                            Manufacturer: {item.manufacturerName}
-                        </p>
+                        {item.manufacturer && <p className="mb-1 text-xs text-gray-700">
+                            Manufacturer: {item.manufacturer.name}
+                        </p>}
 
                         <p className='text-gray-600 text-sm'>{item.date.toDateString()}</p>
 

@@ -29,10 +29,10 @@ export default function Filters({data, filterParams, setFilterParams}: {data: Di
         <div className='w-full'>
             <div>
 
-                <div className="filters flex w-full items-center">
+                <div className="filters flex max-sm:flex-col max-sm:items-start w-full items-center">
 
                     <p className='text-violet-700 text-lg w-[10%] max-sm:w-[20%]'>
-                        Filter By
+                        Filter By:
                     </p>
                 
             
