@@ -636,13 +636,13 @@ export const db = router({
           where: {
             AND: [
               {
-                doctorId: input.doctorFilter ? input.doctorFilter : {not: ""}
+                doctorId: input.doctorFilter !== '' ? input.doctorFilter : {not: ""}
               },
               {
-                manufacturerId: input.manufacturerFilter ? input.manufacturerFilter : {not: ''}
+                manufacturerId: input.manufacturerFilter !== '' ? input.manufacturerFilter : {not: ''}
               },
               {
-                productId: input.productFilter ? input.productFilter : {not: ""}
+                productId: input.productFilter !== '' ? input.productFilter : {not: ""}
               }
             ]
           },
