@@ -535,6 +535,7 @@ export const db = router({
     .input(directoryInput)
     .query(async ({ctx: {prisma}, input}) => {
       console.log(input);
+      
       let globalDocList;
       let globalManufacturerList;
       let productNameItems;
@@ -733,7 +734,7 @@ export const db = router({
               name: item.product.name
             }
           })
-
+        }
 
 
         return {payments, manufacturerList: filterDuplicateObjArr(globalManufacturerList, "id"), doctorList: filterDuplicateObjArr(globalDocList, "id"), productNameList: filterDuplicateObjArr(productNameItems, "id")}

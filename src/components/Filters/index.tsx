@@ -116,7 +116,7 @@ export default function Filters({data, filterParams, setFilterParams}: {data: Di
                             })
                         }} value={filterParams.doctorFilter} className='bg-violet-500 my-2 text-white w-[20%] p-1 rounded-lg mx-1 hover:bg-violet-400 hover:text-violet-900 cursor-pointer' name="state-filter" id="state-filter">
                             <option value={""}>{filterParams.doctorFilter == "" ? "Doctor" : "Reset"}</option>
-                            {data?.doctorNames.sort().map((item, index) => (
+                            {data?.doctorList.sort().map((item, index) => (
                                 <option key={index} value={item.id}>{item.name.split(" ").map((li: string) => `${li.charAt(0).toUpperCase()}${li.slice(1, li.length).toLowerCase()}`).join(" ")}</option>
                             ))}
                         </select>}
@@ -129,7 +129,7 @@ export default function Filters({data, filterParams, setFilterParams}: {data: Di
                             })
                         }} value={filterParams.manufacturerFilter} className='bg-violet-500 my-2 text-white w-[20%] p-1 rounded-lg mx-1 hover:bg-violet-400 hover:text-violet-900 cursor-pointer' name="state-filter" id="state-filter">
                             <option value="">{filterParams.category == "" ? "Manufacturer" : "Reset"}</option>
-                            {data?.manufacturerNames.map((item, index) => (
+                            {data?.manufacturerList.map((item, index) => (
                                 <option key={index} value={item.id}>{item.name}</option>
                             ))}
                         </select>}
