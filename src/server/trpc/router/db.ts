@@ -663,6 +663,21 @@ export const db = router({
           
         })
 
+        const manufacturers = await prisma.manufacturer.findMany({
+          select: {
+            id: true,
+            name: true
+          },
+          take: 10000
+        })
+        const products = await prisma.product.findMany({
+          select: {
+            id: true,
+            name: true
+          },
+          take: 10000
+        })
+
         
         
         const doctorNames = payments.map(item => {
@@ -672,17 +687,17 @@ export const db = router({
           }
         })
 
-        const manufacturerNames = payments.map(item => {
+        const manufacturerNames = manufacturers.map(item => {
           return {
-            id: item.manufacturer.id,
-            name: item.manufacturer.name
+            id: item.id,
+            name: item.name
           }
         })
 
-        const productNameList = payments.map(item => {
+        const productNameList = products.map(item => {
           return {
-            id: item.productId,
-            name: item.product.name
+            id: item.id,
+            name: item.name
           }
         })
 
