@@ -36,6 +36,8 @@ export default function Filters({data, filterParams, setFilterParams}: {data: Di
                                     state: e.target.value,
                                     city: '',
                                     zipCode: '',
+                                    cursor: ''
+
                                 }
                             })
                         }} value={filterParams.state} className='bg-violet-500 my-2 text-white w-[20%] p-1 rounded-lg mx-1 hover:bg-violet-400 hover:text-violet-900 cursor-pointer' name="state-filter" id="state-filter">
@@ -47,7 +49,8 @@ export default function Filters({data, filterParams, setFilterParams}: {data: Di
                         {data && data?.cities && <select value={filterParams.city} onChange={(e) => {setFilterParams((prev: FilterParams) => {
                             return {
                                 ...prev,
-                                city: e.target.value
+                                city: e.target.value,
+                                cursor: ''
                             }
                         })}} name="city-opt" id="city-opt" className='bg-violet-500 my-2 text-white w-[20%] p-1 rounded-lg mx-1 hover:bg-violet-400 hover:text-violet-900 cursor-pointer'>
                             <option value="">{filterParams.city == "" ? "City" : "Reset"}</option>
@@ -59,7 +62,8 @@ export default function Filters({data, filterParams, setFilterParams}: {data: Di
                         {data && data?.zipCodes && <select value={filterParams.zipCode} onChange={(e) => {setFilterParams((prev: FilterParams) => {
                             return {
                                 ...prev,
-                                zipCode: e.target.value
+                                zipCode: e.target.value,
+                                cursor: ''
                             }
                         })}} name="city-opt" id="city-opt" className='bg-violet-500 my-2 text-white w-[20%] p-1 rounded-lg mx-1 hover:bg-violet-400 hover:text-violet-900 cursor-pointer'>
                             <option value="">{filterParams.zipCode == "" ? "Zipcode" : "Reset"}</option>
@@ -70,7 +74,8 @@ export default function Filters({data, filterParams, setFilterParams}: {data: Di
                         {data && data?.specialties && <select value={filterParams.specialty} onChange={(e) => {setFilterParams((prev: FilterParams) => {
                             return {
                                 ...prev,
-                                specialty: e.target.value
+                                specialty: e.target.value,
+                                cursor: ''
                             }
                         })}} name="city-opt" id="city-opt" className='bg-violet-500 my-2 text-white w-[20%] p-1 rounded-lg mx-1 hover:bg-violet-400 hover:text-violet-900 cursor-pointer'>
                             <option value="">{filterParams.specialty == "" ? "Specialty" : "Reset"}</option>
@@ -82,7 +87,8 @@ export default function Filters({data, filterParams, setFilterParams}: {data: Di
                             setFilterParams((prev: FilterParams) => {
                                 return {
                                     ...prev,
-                                    type: e.target.value
+                                    type: e.target.value,
+                                    cursor: ''
                                 }
                             })
                         }} value={filterParams.type} className='bg-violet-500 my-2 text-white p-1 rounded-lg mx-1 hover:bg-violet-400 hover:text-violet-900 cursor-pointer w-[20%]' name="state-filter" id="state-filter">
@@ -95,7 +101,8 @@ export default function Filters({data, filterParams, setFilterParams}: {data: Di
                             setFilterParams((prev: FilterParams) => {
                                 return {
                                     ...prev,
-                                    category: e.target.value
+                                    category: e.target.value,
+                                    cursor: ''
                                 }
                             })
                         }} value={filterParams.category} className='bg-violet-500 my-2 text-white p-1 rounded-lg mx-1 hover:bg-violet-400 hover:text-violet-900 cursor-pointer w-[20%]' name="state-filter" id="state-filter">
@@ -111,7 +118,8 @@ export default function Filters({data, filterParams, setFilterParams}: {data: Di
                             setFilterParams((prev: FilterParams) => {
                                 return {
                                     ...prev,
-                                    doctorFilter: e.target.value
+                                    doctorFilter: e.target.value,
+                                    cursor: ''
                                 }
                             })
                         }} value={filterParams.doctorFilter} className='bg-violet-500 my-2 text-white w-[20%] p-1 rounded-lg mx-1 hover:bg-violet-400 hover:text-violet-900 cursor-pointer' name="state-filter" id="state-filter">
@@ -124,7 +132,8 @@ export default function Filters({data, filterParams, setFilterParams}: {data: Di
                             setFilterParams((prev: FilterParams) => {
                                 return {
                                     ...prev,
-                                    manufacturerFilter: e.target.value
+                                    manufacturerFilter: e.target.value,
+                                    cursor: ''
                                 }
                             })
                         }} value={filterParams.manufacturerFilter} className='bg-violet-500 my-2 text-white w-[20%] p-1 rounded-lg mx-1 hover:bg-violet-400 hover:text-violet-900 cursor-pointer' name="state-filter" id="state-filter">
@@ -137,7 +146,8 @@ export default function Filters({data, filterParams, setFilterParams}: {data: Di
                             setFilterParams((prev: FilterParams) => {
                                 return {
                                     ...prev,
-                                    productFilter: e.target.value
+                                    productFilter: e.target.value,
+                                    cursor: ''
                                 }
                             })
                         }} value={filterParams.productFilter} className='bg-violet-500 my-2 text-white w-[20%] p-1 rounded-lg mx-1 hover:bg-violet-400 hover:text-violet-900 cursor-pointer' name="state-filter" id="state-filter">
@@ -150,7 +160,8 @@ export default function Filters({data, filterParams, setFilterParams}: {data: Di
                             setFilterParams((prev: FilterParams) => {
                                 return {
                                     ...prev,
-                                    year: e.target.value, 
+                                    year: e.target.value,
+                                    cursor: '', 
                                 }
                             })
                         }} value={filterParams.year} className='bg-violet-500 my-2 text-white w-[20%] p-1 rounded-lg mx-1 hover:bg-violet-400 hover:text-violet-900 cursor-pointer' name="state-filter" id="state-filter">
