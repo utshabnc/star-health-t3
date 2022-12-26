@@ -59,7 +59,7 @@ export default function Directory() {
       setFilterParams(prev => {
         return {
           ...prev,
-          cursor: arr[-1]?.id ?? ""
+          cursor: arr[arr.length -1]?.id ?? ""
         }
       })
     }
@@ -166,7 +166,7 @@ export default function Directory() {
                     </svg>
                     </button>
                 </div>
-              <div className='w-full flex flex-col justify-end px-8 py-10'>
+              <div className='w-full flex flex-col justify-end px-8 pb-10'>
               <div className="wrap-opt flex justify-between">
                     <div>
                       <p className='text-violet-700 text-2xl font-semibold'>

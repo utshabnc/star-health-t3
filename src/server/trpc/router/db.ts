@@ -659,7 +659,7 @@ export const db = router({
           cursor: {
             id: input.cursor ? input.cursor : "345881410"
           },
-          take: 100,
+          take: 1000,
           
         })
 
