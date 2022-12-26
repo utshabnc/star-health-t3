@@ -536,54 +536,6 @@ export const db = router({
     .query(async ({ctx: {prisma}, input}) => {
       console.log(input);
       
-      let globalDocList;
-      let globalManufacturerList;
-      let productNameItems;
-      let globalProdTypesList;
-
-
-
-
-      if(input.doctorFilter == "" && input.manufacturerFilter == "" && input.productFilter == ""  ){
-        const productArr = await prisma.product.findMany({
-          take: 10000
-        })
-        const allDocs = await prisma.doctor.findMany({
-          take: 10000
-        })
-
-        const allManus = await prisma.manufacturer.findMany({
-          take: 10000
-        })
-
-        globalDocList = allDocs.map(item => {
-          return {
-            id: item.id,
-            name: `${item.firstName} ${item.lastName}`
-          }
-        })
-
-        globalManufacturerList = allManus.map(item => {
-          return {
-            id: item.id,
-            name: item.name
-          }
-        })
-        productNameItems = productArr.map(item => {
-          return {
-            id: item.id,
-            name: item.name
-          }
-        }) 
-        globalProdTypesList = productArr.map(item => {
-          return {
-            type: item.type,
-            category: item.category
-          }
-        })
-
-      }
-      
 
       if(input.subject.toLowerCase().trim() === "doctor"){
         const doctors = await prisma.doctor.findMany({
@@ -643,10 +595,10 @@ export const db = router({
           take: 50
         });
 
-        
+        const allYears = ["ALL", "2021", "2020", "2019", "2018", "2017","2016"]
 
 
-        return {manufacturers}
+        return {manufacturers, allYears}
       }
 
       if(input.subject.toLowerCase() === "product"){
@@ -705,7 +657,7 @@ export const db = router({
             }
           },
           cursor: {
-            id: input.cursor !== "" ? input.cursor : "345881410"
+            id: input.cursor ? input.cursor : "345881410"
           },
           take: 1000,
           
@@ -713,31 +665,27 @@ export const db = router({
 
         
         
-        if(input.doctorFilter !=="" || input.manufacturerFilter !=="" || input.productFilter !==""){
-          globalDocList = payments.map(item => {
-            return {
-              id: item.doctorId,
-              name: `${item.doctor.firstName} ${item.doctor.lastName}`
-            }
-          })
+        const doctorNames = payments.map(item => {
+          return {
+            id: item.doctorId,
+            name: `${item.doctor.firstName} ${item.doctor.lastName}`
+          }
+        })
 
-          globalManufacturerList = payments.map(item => {
-            return {
-              id: item.manufacturerId,
-              name: item.manufacturer.name
-            }
-          })
+        const manufacturerNames = payments.map(item => {
+          return item.manufacturerName
+        })
 
-          productNameItems = payments.map(item => {
-            return {
-              id: item.productId,
-              name: item.product.name
-            }
-          })
-        }
+        const productNameList = payments.map(item => {
+          return {
+            id: item.productId,
+            name: item.product.name
+          }
+        })
 
 
-        return {payments, manufacturerList: filterDuplicateObjArr(globalManufacturerList, "id"), doctorList: filterDuplicateObjArr(globalDocList, "id"), productNameList: filterDuplicateObjArr(productNameItems, "id")}
+
+        return {payments, manufacturerList: filterDuplicates(manufacturerNames), doctorList: filterDuplicateObjArr(doctorNames, "id"), productNameList: filterDuplicateObjArr(productNameList, "id")}
 
       }
 
