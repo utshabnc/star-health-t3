@@ -684,9 +684,10 @@ export const db = router({
         return {products, productTypes: filterDuplicateObjArr(globalProdTypesList, "type")}
       }
 
+      let payments
       if(input.subject === "payment"){
                 
-        const payments = await prisma.payment.findMany({
+        payments = await prisma.payment.findMany({
           where: {
             AND: [
               {
@@ -798,7 +799,7 @@ export const db = router({
       // })
       
       // else
-      return {}
+      return {payments}
 
       
     })
