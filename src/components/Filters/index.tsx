@@ -112,7 +112,7 @@ export default function Filters({data, filterParams, setFilterParams}: {data: Di
                             ))}
                         </select>}
                         {/* fix bug of e.target.value console logging out as [onject Object] rather than its actual value*/}
-                        {data && data?.payments && <select onChange={(e) => {
+                        {data && data?.payments && data?.doctorList && <select onChange={(e) => {
                             console.log("val", e.target.value);
                             
                             setFilterParams((prev: FilterParams) => {
@@ -128,7 +128,7 @@ export default function Filters({data, filterParams, setFilterParams}: {data: Di
                                 <option key={index} value={item.id}>{item.name.split(" ").map((li: string) => `${li.charAt(0).toUpperCase()}${li.slice(1, li.length).toLowerCase()}`).join(" ")}</option>
                             ))}
                         </select>}
-                        {data && data?.payments && <select onChange={(e) => {
+                        {data && data?.payments && data?.manufacturerList && <select onChange={(e) => {
                             setFilterParams((prev: FilterParams) => {
                                 return {
                                     ...prev,
@@ -142,7 +142,7 @@ export default function Filters({data, filterParams, setFilterParams}: {data: Di
                                 <option key={index} value={item.id}>{item.name}</option>
                             ))}
                         </select>}
-                        {data && data?.payments && <select onChange={(e) => {
+                        {data && data?.payments && data?.productNameList && <select onChange={(e) => {
                             setFilterParams((prev: FilterParams) => {
                                 return {
                                     ...prev,

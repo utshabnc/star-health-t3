@@ -663,9 +663,9 @@ export const db = router({
           
         })
 
-        let doctorNames;
-        let manufacturerNames;
-        let productNameList;
+        let doctorNames = [];
+        let manufacturerNames = [];
+        let productNameList = [];
         
         
         if(input.doctorFilter || input.manufacturerFilter || input.productFilter){
