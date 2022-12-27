@@ -20,7 +20,8 @@ export interface FilterParams {
     manufacturerFilter: string,
     productFilter: string,
     cursor: string,
-    year: string
+    year: string,
+    search: string
 }
 
 export default function Directory() {
@@ -37,9 +38,10 @@ export default function Directory() {
       manufacturerFilter: '', 
       productFilter: '',
       cursor: '',
-      year: ''
+      year: '',
+      search: ''
     })
-    const {data, error, isLoading} = trpc.db.directory.useQuery({
+    const {data, error, isLoading, } = trpc.db.directory.useQuery({
       subject: filterParams.subject, 
       state: filterParams.state, 
       city: filterParams.city, 
@@ -51,8 +53,13 @@ export default function Directory() {
       manufacturerFilter: filterParams.manufacturerFilter, 
       productFilter: filterParams.productFilter,
       cursor: filterParams.cursor,
-      year: filterParams.year
+      year: filterParams.year,
+      search: filterParams.search
     });
+    const [search, setSearch] = useState<string>();
+  const { query: querySearch } = useRouter();
+
+    const { data: searchResults, refetch: fetchSearchResults, isLoading: searchLoad } = trpc.db.search.useQuery(search ?? "", { enabled: false });
 
     //helpers to set last index to filter param when user requests to see more data
     const setLastIndex = (arr: {id: string}[]) => {
@@ -80,6 +87,37 @@ export default function Directory() {
       if(data?.manufacturerSummary) setLastIndex(data?.manufacturerSummary)
 
     }
+
+    useEffect(() => {
+      const searchParam = querySearch["search"] as string;
+      if (searchParam) {
+        setFilterParams(prev => {
+          return {
+            ...prev,
+            search: searchParam
+          }
+        });
+      }
+    }, [querySearch]);
+
+    const debouncedSearch = useCallback(
+      debounce((search: string) => {
+        if (search.length < 2) return;
+        fetchSearchResults();
+      }, 1000),
+      []
+    );
+
+    useEffect(() => {
+      debouncedSearch(search ?? "");
+    }, [search]);
+
+    console.log(searchResults);
+    console.log(searchLoad);
+    
+    
+
+    
     
 
     // if(!data){
@@ -201,6 +239,7 @@ export default function Directory() {
 
                           }
                         })
+                        fetchSearchResults()
                         
                       }} 
                       className={`border-b-2 hover:border-zinc-500 ${data?.payments ? "border-violet-600" : "border-zinc-200"}`}>
@@ -215,7 +254,7 @@ export default function Directory() {
 
                           }
                         })
-                        
+                        fetchSearchResults()
                       }} className={`border-b-2 hover:border-zinc-500 ${data?.manufacturers ? "border-violet-600" : "border-zinc-200"}`}>
                         Manufacturers
                       </button>
@@ -229,7 +268,7 @@ export default function Directory() {
 
                           }
                         })
-                        
+                        fetchSearchResults()
                       }} className={`border-b-2 hover:border-zinc-500 ${data?.doctors ? "border-violet-600" : "border-zinc-200"}`}>
                         Doctors
                       </button>
@@ -243,7 +282,7 @@ export default function Directory() {
 
                           }
                         })
-                        
+                        fetchSearchResults()
                       }} className={`border-b-2 hover:border-zinc-500 ${data?.products ? "border-violet-600" : "border-zinc-200"}`}>
                         Products
                       </button>
@@ -255,13 +294,23 @@ export default function Directory() {
                   <div className='my-1'>
                   <hr />
                   </div>
-                  <Filters data={data} filterParams={filterParams} setFilterParams={setFilterParams} />
+                  <Filters search={search} setSearch={setSearch} data={data} filterParams={filterParams} setFilterParams={setFilterParams} />
+                  {filterParams.subject !== "payment" && <input
+                  type="text"
+                  placeholder={
+                  "Search for Doctor by name"
+                  }
+                  className={`
+                  bg-violet-500 my-2 placeholder:text-slate-100 text-white w-[30%] p-1 rounded-lg mx-1 hover:bg-violet-400 hover:text-violet-900 cursor-pointer`}
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  />}
               </div>
             </div>
             <div className="flex w-full h-[70%] xl:h-[70%] justify-center">
                 <div className='flex max-h-[100%] flex-col overflow-scroll w-[95%] ml-5 p-1'>
-                    {!error ? <DirectoryCards filterParams={filterParams} data={data} /> : <div>Try adjusting your search filter. No results were found</div>}
-                    
+                    {/* {!error ? <DirectoryCards filterParams={filterParams} data={data} /> : <div>Try adjusting your search filter. No results were found</div>} */}
+                    {<DirectoryCards search={search as string} searchResults={searchResults} filterParams={filterParams} data={data} />} 
                 </div>
             </div>
             <div className="more-btn my-2 flex justify-center w-full mt-5">

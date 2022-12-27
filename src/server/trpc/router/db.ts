@@ -18,7 +18,8 @@ const directoryInput = z.object({
   manufacturerFilter: z.string().optional(),
   productFilter: z.string().optional(),
   cursor: z.string().optional(),
-  year: z.string().optional()
+  year: z.string().optional(),
+  search: z.string().optional()
 
 })
 
@@ -616,7 +617,7 @@ export const db = router({
           // cursor: {
           //   id: input.cursor ? input.cursor : 
           // },
-          take: 5
+          take: 100
         });
 
         const productTypes = products.map(item => {
@@ -643,6 +644,13 @@ export const db = router({
               },
               {
                 productId: input.productFilter !== '' ? input.productFilter : {not: ""}
+              },
+              {
+                product: {
+                  name: {
+                    startsWith: input.search ?? ""
+                  }
+                }
               }
             ]
           },

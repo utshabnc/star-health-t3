@@ -2,6 +2,7 @@ import Link from 'next/link'
 import React from 'react'
 import { formatMoney } from '../../utils'
 import type { DirectoryResponse } from '../../server/trpc/router/db'
+import { Manufacturer, Product } from '@prisma/client'
 
 type FilterParams = {
     subject: string
@@ -18,7 +19,134 @@ type FilterParams = {
     year: string
 }
 
-export default function DirectoryCards({data, filterParams}: {data: DirectoryResponse, filterParams: FilterParams}) {
+export default function DirectoryCards({data, filterParams, searchResults, search}: {data: DirectoryResponse, filterParams: FilterParams, searchResults: {
+    doctors: {
+        state: string;
+        id: string;
+        city: string;
+        firstName: string;
+        lastName: string;
+    }[];
+    manufacturers: Manufacturer[];
+    products: Product[];
+} | undefined, search: string}) {
+
+    if(searchResults && search !== "") {
+        if(filterParams.subject === "doctor") {
+            return (
+                <>
+                {data && searchResults?.doctors && searchResults?.doctors.map((item, index) => (
+            <>
+                <div key={index} className="w-[100%] rounded-lg bg-white text-center shadow-lg mb-2">
+                    <div className=" p-2">
+                        <div className="flex flex-row justify-between">
+                            <h5 className="text-md mb-2 font-medium text-gray-900 underline">
+                            <Link href={`/doctor/${item.id}`}>
+                                {item.firstName} {item.lastName}
+                            </Link>
+                            
+                            </h5>
+                            <p className="mb-1 text-gray-600 text-xs">
+                            {/* {item.addressLine1} */}
+                            </p>
+                        </div>
+                        <div className="flex flex-row justify-between">
+                        <h5 className="text-md mb-2 text-gray-900">
+                        {item.city.charAt(0).toUpperCase() + item.city.slice(1, item.city.length).toLowerCase()}, {item.state}
+                        </h5>
+                        <p className="mb-1 text-base text-gray-700"> </p>
+                    </div>
+                    <div className="flex flex-row justify-between text-sm">
+                        <p className="mb-1 text-xs text-gray-700">
+                        {/* {item.specialty}  */}
+                        </p>
+
+                    <div className="border-gray-300 text-gray-600"></div>
+                </div>
+            </div>
+        </div>
+            </>
+        ))}
+                </>
+            )
+        }
+        if(filterParams.subject === "manufacturer") {
+            return (
+                <>
+                {data && searchResults?.manufacturers && searchResults?.manufacturers.map((item, index) => (
+            <>
+                <div key={index} className="w-[100%] rounded-lg bg-white text-center shadow-lg mb-2">
+                    <div className=" p-2">
+                        <div className="flex flex-row justify-between">
+                            <h5 className="text-md mb-2 font-medium text-gray-900 underline">
+                            <Link href={`/doctor/${item.id}`}>
+                                {item.name}
+                            </Link>
+                            
+                            </h5>
+                            <p className="mb-1 text-gray-600 text-xs">
+                            {/* {item.addressLine1} */}
+                            </p>
+                        </div>
+                        <div className="flex flex-row justify-between">
+                        <h5 className="text-md mb-2 text-gray-900">
+                        {/* {item.city.charAt(0).toUpperCase() + item.city.slice(1, item.city.length).toLowerCase()}, {item.state} */}
+                        </h5>
+                        <p className="mb-1 text-base text-gray-700"> </p>
+                    </div>
+                    <div className="flex flex-row justify-between text-sm">
+                        <p className="mb-1 text-xs text-gray-700">
+                        {/* {item.specialty}  */}
+                        </p>
+
+                    <div className="border-gray-300 text-gray-600"></div>
+                </div>
+            </div>
+        </div>
+            </>
+        ))}
+                </>
+            )
+        }
+        if(filterParams.subject === "product") {
+            return (
+                <>
+                {data && searchResults?.products && searchResults?.products.map((item, index) => (
+            <>
+                <div key={index} className="w-[100%] rounded-lg bg-white text-center shadow-lg mb-2">
+                    <div className=" p-2">
+                        <div className="flex flex-row justify-between">
+                            <h5 className="text-md mb-2 font-medium text-gray-900 underline">
+                            <Link href={`/doctor/${item.id}`}>
+                                {item.name}
+                            </Link>
+                            
+                            </h5>
+                            <p className="mb-1 text-gray-600 text-xs">
+                            {item.type}
+                            </p>
+                        </div>
+                        <div className="flex flex-row justify-between">
+                        <h5 className="text-md mb-2 text-gray-900">
+                        {/* {item.city.charAt(0).toUpperCase() + item.city.slice(1, item.city.length).toLowerCase()}, {item.state} */}
+                        </h5>
+                        <p className="mb-1 text-base text-gray-700"> </p>
+                    </div>
+                    <div className="flex flex-row justify-between text-sm">
+                        <p className="mb-1 text-xs text-gray-700">
+                        {/* {item.specialty}  */}
+                        </p>
+
+                    <div className="border-gray-300 text-gray-600"></div>
+                </div>
+            </div>
+        </div>
+            </>
+        ))}
+                </>
+            )
+        }
+    }
 
   if(data?.doctors){
     return (
