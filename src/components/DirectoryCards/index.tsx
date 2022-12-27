@@ -47,7 +47,7 @@ export default function DirectoryCards({data, filterParams, searchResults, searc
                             
                             </h5>
                             <p className="mb-1 text-gray-600 text-xs">
-                            {/* {item.addressLine1} */}
+                            {item.addressLine1}
                             </p>
                         </div>
                         <div className="flex flex-row justify-between">
@@ -58,7 +58,7 @@ export default function DirectoryCards({data, filterParams, searchResults, searc
                     </div>
                     <div className="flex flex-row justify-between text-sm">
                         <p className="mb-1 text-xs text-gray-700">
-                        {/* {item.specialty}  */}
+                        {item.specialty} 
                         </p>
 
                     <div className="border-gray-300 text-gray-600"></div>

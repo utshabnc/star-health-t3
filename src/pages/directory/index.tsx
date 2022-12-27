@@ -7,6 +7,7 @@ import Filters from '../../components/Filters';
 import Link from 'next/link';
 import DirectoryCards from '../../components/DirectoryCards';
 import { debounce, filter, identity } from 'lodash';
+import {AiOutlineLoading3Quarters} from "react-icons/ai/index";
 
 export interface FilterParams {
     subject: string,
@@ -239,7 +240,7 @@ export default function Directory() {
 
                           }
                         })
-                        fetchSearchResults()
+                        setSearch("")
                         
                       }} 
                       className={`border-b-2 hover:border-zinc-500 ${data?.payments ? "border-violet-600" : "border-zinc-200"}`}>
@@ -254,7 +255,7 @@ export default function Directory() {
 
                           }
                         })
-                        fetchSearchResults()
+                        setSearch("")
                       }} className={`border-b-2 hover:border-zinc-500 ${data?.manufacturers ? "border-violet-600" : "border-zinc-200"}`}>
                         Manufacturers
                       </button>
@@ -268,7 +269,7 @@ export default function Directory() {
 
                           }
                         })
-                        fetchSearchResults()
+                        setSearch("")
                       }} className={`border-b-2 hover:border-zinc-500 ${data?.doctors ? "border-violet-600" : "border-zinc-200"}`}>
                         Doctors
                       </button>
@@ -282,7 +283,7 @@ export default function Directory() {
 
                           }
                         })
-                        fetchSearchResults()
+                        setSearch("")
                       }} className={`border-b-2 hover:border-zinc-500 ${data?.products ? "border-violet-600" : "border-zinc-200"}`}>
                         Products
                       </button>
@@ -295,16 +296,28 @@ export default function Directory() {
                   <hr />
                   </div>
                   <Filters search={search} setSearch={setSearch} data={data} filterParams={filterParams} setFilterParams={setFilterParams} />
-                  {filterParams.subject !== "payment" && <input
-                  type="text"
-                  placeholder={
-                  "Search for Doctor by name"
-                  }
-                  className={`
-                  bg-violet-500 my-2 placeholder:text-slate-100 text-white w-[30%] p-1 rounded-lg mx-1 hover:bg-violet-400 hover:text-violet-900 cursor-pointer`}
-                  value={search}
-                  onChange={(e) => setSearch(e.target.value)}
-                  />}
+                  {filterParams.subject !== "payment" && (
+                    <>
+                      <div className=''>
+                        <p className='text-xs p-1 text-violet-900 font-semibold'>{`Search for ${filterParams.subject} by name`}</p>
+                        <div className='flex items-center gap-3 w-[30%]'>
+
+                          <input
+                          type="text"
+                          placeholder={
+                          `Search for ${filterParams.subject} by name`
+                          }
+                          className={`
+                          bg-violet-100 border border-violet-900 my-2 placeholder:text-violet-800 text-slate-900 w-[100%] p-1 rounded-lg mx-1 hover:bg-violet-300 hover:text-violet-900 cursor-pointer`}
+                          value={search}
+                          onChange={(e) => setSearch(e.target.value)}
+                          />
+                          {search !== "" && searchLoad && <AiOutlineLoading3Quarters className='text-violet-600 font-semibold spinner'/>}
+                        </div>
+
+                      </div>
+                    </>
+                  )}
               </div>
             </div>
             <div className="flex w-full h-[70%] xl:h-[70%] justify-center">

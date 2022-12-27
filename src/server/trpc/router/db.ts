@@ -139,6 +139,9 @@ export const db = router({
           lastName: true,
           city: true,
           state: true,
+          addressLine1: true,
+          specialty: true
+
         },
         take: 10,
       });
