@@ -30,7 +30,7 @@ function Footer() {
 					<div className='font-custom text-white grid auto-cols-custom grid-cols-custom grid-rows-custom'>
 						<div className='node flex flex-col justify-between items-start'>
 							<div className='footer-column m-5 w-[50%]'>
-								<p>The Medical Board - Structuring the worlds medical knowledge</p>
+								<p>Starhealth - Organizing the worlds medical knowledge</p>
 							</div>
 
 							<div className='m-3 w-[40%] flex footer-social-wrapper justify-around items-center'>
@@ -46,19 +46,16 @@ function Footer() {
 							</div>
 						</div>
 
-						<div className='node mt-2 grid auto-cols-custom gap-x-3.5 gap-y-3.5 grid-cols-custom2 grid-rows-custom'>
+						<div className='node mt-2 grid auto-cols-custom grid-cols-custom2 grid-rows-custom'>
 							<div className='footer-column flex-col text-white grid grid-cols-1 items-start justify-between'>
 								<div className='footer-title mb-2.5 font-bold'>Company</div>
 								<Link href='/' className='my-1 text-sm'>Home</Link>
 								<Link href='/' className='my-1 text-sm'>Features</Link>
 								<Link href='/' className='my-1 text-sm'>Contact</Link>
 							</div>
-							<div className='footer-column flex-col text-white grid grid-cols-1 '>
-								<div className='footer-title mb-2.5 font-bold'>Product</div>
-								<Link href='/' className='my-1 text-sm'>Privacy Policy</Link>
-								<Link href='/' className='my-1 text-sm'>Terms of Use</Link>
-								<Link href='/' className='my-1 text-sm'>Image License Info</Link>
-								<Link href='/' className='my-1 text-sm'>Preview</Link>
+							<div className='footer-column flex-col text-white grid grid-cols-1'>
+								<Link href='/' className='my-1 text-sm items-center mt-10'>Privacy Policy</Link>
+								<Link href='/' className='my-1 text-sm mb-10'>Terms of Use</Link>
 							</div>
 						</div>
 					</div>
@@ -69,7 +66,7 @@ function Footer() {
 						</Link> */}
 						<div className=''>
 							<p className=''>
-									Made with  in Seattle | 2022 All Rights Reserved. The Medical Board Inc
+									StarHealth Inc. | All Rights Reserved 2022
 							</p>
 						</div>
 					</div>

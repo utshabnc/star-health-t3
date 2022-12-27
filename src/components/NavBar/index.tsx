@@ -10,6 +10,7 @@ import Image from 'next/image';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 import { useSession, signIn, signOut } from 'next-auth/react';
+import { HiOutlineSearch  } from 'react-icons/hi'
 
 // --- index.module.css ---
 // .title {
@@ -61,6 +62,13 @@ function NavBar() {
             )}
           </div>
 
+					<div className='flex relative justify-center items-center'>
+						<div className='absolute mr-[22rem]' >
+							<HiOutlineSearch size={21} />
+						</div>
+						<SearchPage />	
+					</div>
+
           <div
             style={{
               minWidth: width > 1000 ? 400 : 100,
@@ -77,16 +85,7 @@ function NavBar() {
               </p>
             )}
 
-						<Link href='/' className='w-30 lg:w-22 text-white font-custom font-medium hover:text-blue-600 rounded px-3 py-1'>Features</Link>
-						<Link href='/' className='w-30 lg:w-22 text-white font-custom font-medium hover:text-blue-600 rounded px-3 py-1'>How It Works</Link>
-						<Link href='/' className='w-30 lg:w-22 text-white font-custom font-medium hover:text-blue-600 rounded px-3 py-1'>Clients</Link>
-
-            {navigate.asPath !== "/directory" && 
-							<Link href={"/directory"} className='w-30 lg:w-22 text-white font-custom font-medium hover:text-blue-300 
-							 rounded px-3 py-1'>
-								Data Directory
-							</Link>}
-						<Link href='/' className='w-30 lg:w-22 text-white font-custom font-medium hover:text-blue-600 rounded px-3 py-1'>Contact</Link>
+						{/* <Link href='/' className='w-30 lg:w-22 text-white font-custom font-medium hover:text-blue-600 rounded px-3 py-1'>Clients</Link> */}
 
 						{session?.data?.user ? (
               <button
@@ -104,6 +103,14 @@ function NavBar() {
                 Sign In
               </button>
             )}
+
+						{navigate.asPath !== "/directory" && 
+							<Link href={"/directory"} className='w-30 lg:w-22 text-white font-custom font-medium hover:text-blue-300 
+							 rounded px-3 py-1'>
+								Data Directory
+							</Link>
+						}
+						<Link href='/' className='w-30 lg:w-22 text-white font-custom font-medium hover:text-blue-600 rounded px-3 py-1'>Contact</Link>	
 
           </div>
         </div>

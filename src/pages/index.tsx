@@ -5,26 +5,27 @@
 // import { trpc } from "../utils/trpc";
 // ***********************************************************************************************************************************************
 import { useState } from 'react';
+import { signIn } from 'next-auth/react';
 // import { useAllStatesQuery } from './api';
 import UnitedStatesHeatmap from '../components/charts/UnitedStatesHeatmap';
 import Dropdown from '../components/Dropdown';
 import SearchPage from './SearchPage';
 import { drugTypes } from '../utils';
 import _ from 'lodash'
-import transparent from '../assets/transparent.png';
-import mapping from '../assets/mapping.png';
-import ratings from '../assets/ratings.png';
+import data_analytics from '../assets/data_analytics.png'
+import ehr from '../assets/ehr.png'
+import care_recommender from '../assets/care_recommender.png'
+import api from '../assets/api.png'
+import ratings_and_reviews from '../assets/ratings_and_reviews.png'
+import community from '../assets/community.png'
+
 import doctor from '../assets/doctor.png';
-import money from '../assets/money.png';
-import officeBuilding from '../assets/office-building.png';
-import doctor2 from '../assets/doctor-2.png';
-import company from '../assets/company.png';
-import drug from '../assets/drug.png';
-import state from '../assets/state.png';
+import manufacturer from '../assets/manufacturer.png';
+import transactions from '../assets/transactions.png';
+
 import goodRx from '../assets/GoodRx_logo.svg';
 import fda from '../assets/fda.svg';
 import cms from '../assets/cms.svg';
-import { HiOutlineSearch  } from 'react-icons/hi'
 import type { StaticImageData } from "next/image";
 import Image from "next/image";
 import { trpc } from '../utils/trpc';
@@ -35,10 +36,36 @@ import { TbLayoutGridAdd } from 'react-icons/tb';
 import { BsCheck2 } from 'react-icons/bs';
 
 
+const features = [
+  { label: 'Data Analytics', img: data_analytics },
+  { label: 'EMR & EHR', img: ehr },
+  { label: 'Care Recommender', img: care_recommender },
+	
+];
+
 const info = [
-  { label: 'Rate & Review Doctors', img: ratings },
-  { label: 'Transparent Doctor, Company, and Drug Data', img: transparent },
-  { label: 'Book a Doctor Appointment', img: mapping },
+  { label: 'API', img: api },
+  { label: 'Ratings & Reviews', img: ratings_and_reviews },
+  { label: 'Community', img: community },
+];
+
+const data = [
+  { label: '1M+ Doctors', img: doctor },
+  { label: '2800+ Companiess', img: manufacturer },
+  { label: '$80M Transactions', img: transactions },
+];
+
+const partners = [
+  { label: '', img: cms },
+  { label: '', img: fda },
+  { label: '', img: goodRx },
+];
+
+const understand = [
+  { label: 'Doctors', img: doctor },
+  { label: 'Companies', img: manufacturer },
+  { label: 'States', img: transactions },
+  { label: 'Drugs', img: transactions },
 ];
 
 const InfoSection = ({
@@ -47,11 +74,13 @@ const InfoSection = ({
   boxStyle,
   itemTextSpacing = false,
   textColor,
+	textSize = 'sm:text-5xl',
 }: {
   items: { label: string; img?: StaticImageData }[];
   header?: string;
   boxStyle?: string;
   textColor?: string;
+  textSize?: string;
   itemTextSpacing?: boolean;
 }) => {
   return (
@@ -62,7 +91,7 @@ const InfoSection = ({
     >
       {header && (
         <p
-          className={`text-md flex justify-center text-center font-semibold sm:text-5xl pb-20 ${
+          className={`text-md flex justify-center text-center font-semibold ${textSize} pb-20 ${
             "text-" + textColor ?? "text-violet-700"
           } my-2 mt-8 mb-4`}
         >
@@ -77,9 +106,9 @@ const InfoSection = ({
 
 						// <div key={i} className='relative w-full gap-4 rounded-md bg-white px-6 py-12'>
 						<div
-							className={`flex flex-col items-center border-bordercolor border-[1.5px] rounded-[6px] shadow-md relative w-full gap-4 rounded-md bg-white px-6 py-12  ${
+							className={`flex flex-col items-center border-bordercolor border-[1.5px] rounded-[6px] shadow-md relative w-full gap- rounded-md bg-white px-6 py-8  ${
 								boxStyle ? "" : "rounded-lg bg-[#0e1936] "
-							}   w-[25%] p-1 sm:w-[20%] sm:p-4`}
+							}   w-[25%] p-1 sm:w-[20%] h-[275px] sm:p-3`}
 							key={i}
 						>
 						{item.img && (
@@ -89,25 +118,25 @@ const InfoSection = ({
                     src={item.img}
                     alt={item.label}
                     className=""
-                    style={{ height: 150, width: 150 }}
+                    style={{ height: 185, width: 185 }}
                   />
                 ) : (
                   <Image
                     src={item.img}
                     alt={item.label}
 										className="z-10"
-                    style={{ height: 125, width: 125 }}
+                    style={{ height: 185, width: 185 }}
                   />
                 )}
               </>
             )}
 						<div className='group absolute bottom-0 translate-y-[2rem]'>
-							{boxStyle ? (<IoIosArrowDroprightCircle color='#2563EB' size={60}/>) : (<IoIosArrowDropright color='white' size={60} />)}
+							{boxStyle ? (<IoIosArrowDroprightCircle color='#0e1936' size={60}/>) : (<IoIosArrowDropright color='white' size={60} />)}
 						</div>
             <p
               className={`justify-center text-xs  font-semibold lg:text-lg ${
                 "text-" + textColor ?? "text-violet-700"
-              }          ${itemTextSpacing && "mt-2 mb-6"}`}
+              }          ${itemTextSpacing && "mt-0"}`}
             >
               {item.label}
             </p>
@@ -119,31 +148,6 @@ const InfoSection = ({
   );
 };
 
-const features = [
-  { label: 'Analytics', img: doctor },
-  { label: 'Gaming', img: officeBuilding },
-  { label: 'NFTs', img: money },
-	
-];
-
-const data = [
-  { label: '1M+ Doctors', img: doctor },
-  { label: '2800+ Companiess', img: officeBuilding },
-  { label: '$80M Transactions', img: money },
-];
-
-const partners = [
-  { label: '', img: cms },
-  { label: '', img: fda },
-  { label: '', img: goodRx },
-];
-
-const understand = [
-  { label: 'Doctors', img: doctor2 },
-  { label: 'Companies', img: company },
-  { label: 'States', img: state },
-  { label: 'Drugs', img: drug },
-];
 
 
 export default function Home() {
@@ -156,7 +160,7 @@ export default function Home() {
 			<div className='flex flex-col sm:flex-row justify-between mx-10 pt-10'>
         <div className='flex flex-col sm:w-[50%]'>
 						<h2 className='flex text-center sm:text-5xl md:text-xl xl:text-8xl leading-tight font-bold justify-center font-custom text-white mt-10 mb-5 '>
-								The Future of Healthcare
+								Future of Healthcare
 						</h2>
 						<p className='text-white text-center text-xl md:text-4xl'>
 							Data - Care - Web3
@@ -166,7 +170,7 @@ export default function Home() {
 								Improving Quality of Care.
 							</p>
 						</div>
-						<div className='container-for-form mt-12 mb-11'>
+						{/* <div className='container-for-form mt-12 mb-11'>
 							<form action="/" method="post">
 								<div className='relative flex items-center justify-center'>
 									<input className='w-44 h-14 mx-2 px-4 rounded-full' type="text" placeholder="Your Name" id="name" name="name" required />
@@ -176,14 +180,19 @@ export default function Home() {
 									</button>
 								</div>
 							</form>
+						</div> */}
+						<div className='relative flex items-center justify-center'>
+							{/* <button type="submit" className='my-4 bg-blue-500 hover:bg-blue-700 text-white text-2xl font-custom py-2 px-4 rounded-full'>
+								Sign In
+							</button> */}
+							<button
+                className='w-32 h-12 lg:w-22 text-xl font-custom font-medium bg-emerald-400 hover:bg-emerald-500 active:bg-emerald-600 rounded px-3 py-1'
+                onClick={() => signIn("google")}
+              >
+                Sign In
+              </button>
 						</div>
-						<div className='flex relative justify-center items-center'>
-							{/* <SearchPage />	 */}
-							<div className='absolute mr-[28rem]' >
-								<HiOutlineSearch size={26} />
-							</div>
-							<input className='w-[500px] h-14 mx-2 px-[3rem] rounded-full' type="text" placeholder="Search for Doctor, Company, or Drug Data" id="search" name="search" required />
-						</div>
+
 				</div>
 				<div className='sm:w-[50%] flex flex-col my-10'>
 						
@@ -234,11 +243,11 @@ export default function Home() {
 			<InfoSection 
 				items={features} 
 				header='Features'
+				textSize='sm:text-[5rem]'
 				boxStyle='bg-white'
 				textColor='font-custom'
 				itemTextSpacing={true}
 			/>
-			<Divider />
       <InfoSection 
 				items={info} 
 				textColor='font-custom'
@@ -249,25 +258,26 @@ export default function Home() {
       <InfoSection
         items={data}
         header='StarHealth Data Directory'
-        textColor='white font-custom'
+        textColor='font-custom'
+				boxStyle='bg-white'
         itemTextSpacing={true}
       />
-      <Divider />
 			<InfoSection
         items={understand}
-        header='Understand Healthcare through Data'
-        textColor='white font-custom'
+        textColor='font-custom'
+				boxStyle='bg-white'
 				itemTextSpacing={true}
       />
 			<Divider />
       <InfoSection
         items={partners}
         header='Data Partners'
-        textColor='white font-custom'
+        textColor='font-custom'
+				boxStyle='bg-white'
 				itemTextSpacing={true}
       />
 			<Divider />
-			<div id='Features' className='section l4 wf-section text-customgrey [rgba(255, 255, 255, 0.65)] font-custom px-[80px] pt-[40px] pb-[150px]'>
+			{/* <div id='Features' className='section l4 wf-section text-customgrey [rgba(255, 255, 255, 0.65)] font-custom px-[80px] pt-[40px] pb-[150px]'>
 				<div className='container max-w-[1040px] flex mx-auto flex-col justify-center items-center'>
 					<div className='flex max-w-[900px] text-white title-wrapper flex-col mb-[40px] text-center'>
 						<h2 className='h2-title my-0 pt-[40px] bg-transparent pl-0 text-[4vw] tracking-[-0.0375em] leading-[1.1] font-[700]'>
@@ -362,7 +372,7 @@ export default function Home() {
 
 				</div>
 
-			</div>
+			</div> */}
 
     </div>
   );
