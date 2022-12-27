@@ -187,7 +187,7 @@ export default function Directory() {
               <div className="wrap-opt flex justify-between">
                     <div>
                       <p className='text-violet-700 text-2xl font-semibold'>
-                          Directory
+                          StarHealth Data Directory
                       </p>
 
                     </div>
