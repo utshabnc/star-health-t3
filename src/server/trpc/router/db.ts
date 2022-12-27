@@ -673,9 +673,7 @@ export const db = router({
           take: 40,
           
         })
-        if(!payments) {
-          return {errmsg: "Error"}
-        }
+        
 
         let doctorNames = [];
         let manufacturerNames = [];
