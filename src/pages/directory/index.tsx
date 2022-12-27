@@ -6,7 +6,7 @@ import { filterDuplicates } from '../../utils';
 import Filters from '../../components/Filters';
 import Link from 'next/link';
 import DirectoryCards from '../../components/DirectoryCards';
-import { debounce, filter } from 'lodash';
+import { debounce, filter, identity } from 'lodash';
 
 export interface FilterParams {
     subject: string,
@@ -80,8 +80,17 @@ export default function Directory() {
       if(data?.manufacturerSummary) setLastIndex(data?.manufacturerSummary)
 
     }
+    
 
-    if (isLoading || !data) {
+    // if(!data){
+    //   return (
+    //     <>
+    //       <div>Try adjusting your search filter. No results were found</div>
+    //     </>
+    //   )
+    // }
+
+    if (isLoading) {
         return (
           <>
             <div className="bgColor">
@@ -251,7 +260,7 @@ export default function Directory() {
             </div>
             <div className="flex w-full h-[70%] xl:h-[70%] justify-center">
                 <div className='flex max-h-[100%] flex-col overflow-scroll w-[95%] ml-5 p-1'>
-                    <DirectoryCards filterParams={filterParams} data={data} />
+                    {!error ? <DirectoryCards filterParams={filterParams} data={data} /> : <div>Try adjusting your search filter. No results were found</div>}
                     
                 </div>
             </div>

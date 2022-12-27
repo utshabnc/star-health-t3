@@ -14,6 +14,8 @@ export default function Filters({data, filterParams, setFilterParams}: {data: Di
     //     productNameList: any[];
     // } | undefined>(undefined)  
     const {data: listData, isLoading} = trpc.db.nameList.useQuery()
+    console.log(listData);
+    
     
     const filterList = (arr: any[]) => {
         if(arr){

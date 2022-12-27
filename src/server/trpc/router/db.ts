@@ -647,8 +647,19 @@ export const db = router({
             ]
           },
           include: {
-            manufacturer: true,
-            doctor: true,
+            manufacturer: {
+              select: {
+                name: true,
+                id: true
+              }
+            },
+            doctor: {
+              select: {
+                firstName: true,
+                lastName: true,
+                id: true
+              }
+            },
             product: {
               select: {
                 name: true,
@@ -659,9 +670,12 @@ export const db = router({
           cursor: {
             id: input.cursor ? input.cursor : "345881410"
           },
-          take: 100,
+          take: 40,
           
         })
+        if(!payments) {
+          return {errmsg: "Error"}
+        }
 
         let doctorNames = [];
         let manufacturerNames = [];
@@ -824,9 +838,12 @@ export const db = router({
       let manufacturerNames = [];
       let productNameList = [];
       const manufacturers = await prisma.manufacturer.findMany({
+        where: {
+          payments: {none: undefined}
+        },
         select: {
           id: true,
-          name: true
+          name: true,
         },
         take: 1000
       })
@@ -853,22 +870,51 @@ export const db = router({
         }
       })
 
-      manufacturerNames = manufacturers.map(item => {
-        return {
-          id: item.id,
-          name: item.name
-        }
-      })
+      // manufacturerNames = manufacturers.map(item => {
+      //   return {
+      //     id: item.id,
+      //     name: item.name
+      //   }
+      // })
 
+      // manufacturers.filter(item => {
+      //   return item.payments.length > 0
+      // })
+
+      
       productNameList = products.map(item => {
         return {
           id: item.id,
           name: item.name
         }
       })
-        
-      return {doctorNames: filterDuplicateObjArr(doctorNames, "id"), manufacturerNames: filterDuplicateObjArr(manufacturerNames, "id"), productNameList: filterDuplicateObjArr(productNameList, "id")}
+      
+      // testing out query to get accurate list items that have payment relationships
+      // const payments = await prisma.payment.findMany({
+      //   select: {
+      //     manufacturer: {
+      //       select: {
+      //         id: true,
+      //         name: true
+      //       }
+      //     }
+          
+      //   },
+      //   take: 5000
+      // })
+
+      // const manufacturers = payments.map(item => {
+      //   return {
+      //     id: item.manufacturer.id,
+      //     name: item.manufacturer.name
+      //   }
+      // })
+    
      
+      
+        
+      return {doctorNames: filterDuplicateObjArr(doctorNames, "id"), manufacturerNames: filterDuplicateObjArr(manufacturers, "id"), productNameList: filterDuplicateObjArr(products, "id")}
+      // return {}
     })
 });
 
