@@ -19,15 +19,15 @@ type FilterParams = {
     year: string
 }
 
-export default function DirectoryCards({data, filterParams, searchResults, search}: {data: DirectoryResponse, filterParams: FilterParams, searchResults: {
+export default function DirectoryCards({data, filterParams, searchResults, search}: {data: any, filterParams: FilterParams, searchResults: {
     doctors: {
         state: string;
         id: string;
+        specialty: string | null;
         city: string;
         firstName: string;
         lastName: string;
-        addressLine1: string
-        specialty: string
+        addressLine1: string;
     }[];
     manufacturers: (Manufacturer & {
         ManufacturerSummary: ManufacturerSummary[]
@@ -161,7 +161,7 @@ export default function DirectoryCards({data, filterParams, searchResults, searc
   if(data?.doctors){
     return (
     <>
-        {data && data?.doctors && data?.doctors.map((item, index) => (
+        {data && data?.doctors && data?.doctors.map((item: any, index: number) => (
             <>
                 <div key={index} className="w-[100%] rounded-lg bg-white text-center shadow-lg mb-2">
                     <div className=" p-2">
@@ -178,7 +178,7 @@ export default function DirectoryCards({data, filterParams, searchResults, searc
                         </div>
                         <div className="flex flex-row justify-between">
                         <h5 className="text-md mb-2 text-gray-900">
-                            {item.city.split(" ").map(word => word.charAt(0).toUpperCase() + word.slice(1, word.length).toLowerCase() + " ")}, {item.state}
+                            {item.city.split(" ").map((word: string) => word.charAt(0).toUpperCase() + word.slice(1, word.length).toLowerCase() + " ")}, {item.state}
                         </h5>
                         <p className="mb-1 text-base text-gray-700"> </p>
                     </div>
@@ -200,7 +200,7 @@ export default function DirectoryCards({data, filterParams, searchResults, searc
   if(data?.manufacturers){
     return (
         <>
-            {data && data?.manufacturers && data?.manufacturers.sort((a,b) => a.rank - b.rank).map((item, index) => (
+            {data && data?.manufacturers && data?.manufacturers.sort((a: any,b: any) => a.rank - b.rank).map((item: any, index: number) => (
             <>
                 <div key={index} className="w-[100%] rounded-lg bg-white text-center shadow-lg mb-2">
                     <div className="p-2">
@@ -247,7 +247,7 @@ export default function DirectoryCards({data, filterParams, searchResults, searc
       <>
         {data &&
           data?.products &&
-          data?.products.map((item, index) => (
+          data?.products.map((item: any, index: number) => (
             <div
               key={index}
               className="mb-2 w-[100%] rounded-lg bg-white text-center shadow-lg"
@@ -287,7 +287,7 @@ export default function DirectoryCards({data, filterParams, searchResults, searc
   if(data?.payments){
     return (
     <>
-        {data && data?.payments && data?.payments.map((item, index) => (
+        {data && data?.payments && data?.payments.map((item: any, index: number) => (
             
             <div key={index} className="w-[100%] rounded-lg bg-white text-center shadow-lg mb-2">
                 <div className=" p-2">
@@ -332,7 +332,7 @@ export default function DirectoryCards({data, filterParams, searchResults, searc
   if(data?.manufacturerSummary){
     return (
         <>  
-            {data && data?.manufacturerSummary && data?.manufacturerSummary.map((item, index) => (
+            {data && data?.manufacturerSummary && data?.manufacturerSummary.map((item: any, index: number) => (
             
             <div key={index} className="w-[100%] rounded-lg bg-white text-center shadow-lg mb-2">
                 <div className=" p-2">

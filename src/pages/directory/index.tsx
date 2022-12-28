@@ -231,7 +231,7 @@ export default function Directory() {
 
                     </div>
                     <div className='flex gap-2'>
-                      <button onClick={(e) => {
+                      <button onClick={() => {
                         setFilterParams(prev => {
                           return {
                             ...prev,
@@ -273,7 +273,7 @@ export default function Directory() {
                       }} className={`border-b-2 hover:border-zinc-500 ${data?.doctors ? "border-violet-600" : "border-zinc-200"}`}>
                         Doctors
                       </button>
-                      <button onClick={() => {
+                      <button onClick={(e) => {
                         setFilterParams(prev => {
                           return {
                             ...prev,
@@ -320,7 +320,7 @@ export default function Directory() {
                   )}
               </div>
             </div>
-            <div className="flex w-full h-[100%] xl:h-[90%] max-sm:w-[70%] justify-center">
+            <div className="flex w-full h-[90%] xl:h-[70%] justify-center">
                 <div className='flex min-h-[100%] flex-col overflow-scroll w-[95%] ml-5 p-1'>
                     {/* {!error ? <DirectoryCards filterParams={filterParams} data={data} /> : <div>Try adjusting your search filter. No results were found</div>} */}
                     {<DirectoryCards search={search as string} searchResults={searchResults} filterParams={filterParams} data={data} />} 
