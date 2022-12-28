@@ -30,7 +30,7 @@ function Footer() {
 					<div className='font-custom text-white grid auto-cols-custom grid-cols-custom grid-rows-custom'>
 						<div className='node flex flex-col justify-between items-start'>
 							<div className='footer-column m-5 w-[50%]'>
-								<p>Starhealth - Organizing the worlds medical knowledge</p>
+								<p>Starhealth - Empowering people through accessible healthcare data</p>
 							</div>
 
 							<div className='m-3 w-[40%] flex footer-social-wrapper justify-around items-center'>
@@ -50,7 +50,7 @@ function Footer() {
 							<div className='footer-column flex-col text-white grid grid-cols-1 items-start justify-between'>
 								<div className='footer-title mb-2.5 font-bold'>Company</div>
 								<Link href='/' className='my-1 text-sm'>Home</Link>
-								<Link href='/' className='my-1 text-sm'>Features</Link>
+								<Link href='/directory' className='my-1 text-sm'>Data Directory</Link>
 								<Link href='/' className='my-1 text-sm'>Contact</Link>
 							</div>
 							<div className='footer-column flex-col text-white grid grid-cols-1'>

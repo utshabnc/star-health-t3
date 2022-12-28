@@ -23,6 +23,12 @@ import doctor from '../assets/doctor.png';
 import manufacturer from '../assets/manufacturer.png';
 import transactions from '../assets/transactions.png';
 
+import doctors from '../assets/doctors.png';
+import companies from '../assets/companies.png';
+import states from '../assets/states.png';
+import drugs from '../assets/drugs.png';
+
+
 import goodRx from '../assets/GoodRx_logo.svg';
 import fda from '../assets/fda.svg';
 import cms from '../assets/cms.svg';
@@ -50,9 +56,9 @@ const info = [
 ];
 
 const data = [
-  { label: '1M+ Doctors', img: doctor },
-  { label: '2800+ Companiess', img: manufacturer },
-  { label: '$80M Transactions', img: transactions },
+  { label: '1,000,000+ Doctors', img: doctor },
+  { label: '3,000+ Companies', img: manufacturer },
+  { label: '$100,000,000+ Transactions', img: transactions },
 ];
 
 const partners = [
@@ -62,10 +68,10 @@ const partners = [
 ];
 
 const understand = [
-  { label: 'Doctors', img: doctor },
-  { label: 'Companies', img: manufacturer },
-  { label: 'States', img: transactions },
-  { label: 'Drugs', img: transactions },
+  { label: 'Doctors', img: doctors },
+  { label: 'Companies', img: companies },
+  { label: 'States', img: states },
+  { label: 'Drugs', img: drugs },
 ];
 
 const InfoSection = ({
@@ -167,7 +173,7 @@ export default function Home() {
 						</p>
 						<div>
 							<p className='text-center px-4 text-white font-custom my-6 text-xl'>
-								Improving Quality of Care.
+								Improving Quality of Care
 							</p>
 						</div>
 						{/* <div className='container-for-form mt-12 mb-11'>

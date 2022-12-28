@@ -87,6 +87,14 @@ function NavBar() {
 
 						{/* <Link href='/' className='w-30 lg:w-22 text-white font-custom font-medium hover:text-blue-600 rounded px-3 py-1'>Clients</Link> */}
 
+
+						{navigate.asPath !== "/directory" && 
+							<Link href={"/directory"} className='w-30 lg:w-22 text-white font-custom font-medium hover:text-blue-300 
+							 rounded px-3 py-1'>
+								Data Directory
+							</Link>
+						}
+						<Link href='/' className='w-30 lg:w-22 text-white font-custom font-medium hover:text-blue-600 rounded px-3 py-1'>Contact</Link>	
 						{session?.data?.user ? (
               <button
                 className='w-30 lg:w-22 font-custom font-medium bg-emerald-400 hover:bg-emerald-500 active:bg-emerald-600  rounded px-3 py-1'
@@ -103,14 +111,6 @@ function NavBar() {
                 Sign In
               </button>
             )}
-
-						{navigate.asPath !== "/directory" && 
-							<Link href={"/directory"} className='w-30 lg:w-22 text-white font-custom font-medium hover:text-blue-300 
-							 rounded px-3 py-1'>
-								Data Directory
-							</Link>
-						}
-						<Link href='/' className='w-30 lg:w-22 text-white font-custom font-medium hover:text-blue-600 rounded px-3 py-1'>Contact</Link>	
 
           </div>
         </div>
