@@ -854,7 +854,6 @@ export const db = router({
     }),
     nameList: publicProcedure.query(async ({ctx: {prisma}}) => {
       let doctorNames = [];
-      let manufacturerNames = [];
       let productNameList = [];
       const manufacturers = await prisma.manufacturer.findMany({
         where: {
