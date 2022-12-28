@@ -2,7 +2,7 @@ import Link from 'next/link'
 import React from 'react'
 import { formatMoney } from '../../utils'
 import type { DirectoryResponse } from '../../server/trpc/router/db'
-import { Manufacturer, Product } from '@prisma/client'
+import { Manufacturer, ManufacturerSummary, Product } from '@prisma/client'
 
 type FilterParams = {
     subject: string
@@ -26,8 +26,12 @@ export default function DirectoryCards({data, filterParams, searchResults, searc
         city: string;
         firstName: string;
         lastName: string;
+        addressLine1: string
+        specialty: string
     }[];
-    manufacturers: Manufacturer[];
+    manufacturers: (Manufacturer & {
+        ManufacturerSummary: ManufacturerSummary[]
+    })[];
     products: Product[];
 } | undefined, search: string}) {
 
@@ -40,7 +44,7 @@ export default function DirectoryCards({data, filterParams, searchResults, searc
                 <div key={index} className="w-[100%] rounded-lg bg-white text-center shadow-lg mb-2">
                     <div className=" p-2">
                         <div className="flex flex-row justify-between">
-                            <h5 className="text-md mb-2 font-medium text-gray-900 underline">
+                            <h5 className="text-md mb-2 font-medium text-violet-700 underline">
                             <Link href={`/doctor/${item.id}`}>
                                 {item.firstName} {item.lastName}
                             </Link>
@@ -57,7 +61,7 @@ export default function DirectoryCards({data, filterParams, searchResults, searc
                         <p className="mb-1 text-base text-gray-700"> </p>
                     </div>
                     <div className="flex flex-row justify-between text-sm">
-                        <p className="mb-1 text-xs text-gray-700">
+                        <p className="mb-1 text-xs text-violet-400">
                         {item.specialty} 
                         </p>
 
@@ -76,33 +80,39 @@ export default function DirectoryCards({data, filterParams, searchResults, searc
                 {data && searchResults?.manufacturers && searchResults?.manufacturers.map((item, index) => (
             <>
                 <div key={index} className="w-[100%] rounded-lg bg-white text-center shadow-lg mb-2">
-                    <div className=" p-2">
+                    <div className="p-2">
                         <div className="flex flex-row justify-between">
-                            <h5 className="text-md mb-2 font-medium text-gray-900 underline">
-                            <Link href={`/doctor/${item.id}`}>
+                            <h5 className="text-md mb-2 font-medium text-violet-700 underline">
+                            <Link href={`/manufacturer/${item.id}`}>
                                 {item.name}
                             </Link>
                             
                             </h5>
                             <p className="mb-1 text-gray-600 text-xs">
-                            {/* {item.addressLine1} */}
+                                Rank: {item.rank}
+                            
                             </p>
                         </div>
+                        <div>
                         <div className="flex flex-row justify-between">
-                        <h5 className="text-md mb-2 text-gray-900">
-                        {/* {item.city.charAt(0).toUpperCase() + item.city.slice(1, item.city.length).toLowerCase()}, {item.state} */}
-                        </h5>
-                        <p className="mb-1 text-base text-gray-700"> </p>
-                    </div>
-                    <div className="flex flex-row justify-between text-sm">
-                        <p className="mb-1 text-xs text-gray-700">
-                        {/* {item.specialty}  */}
-                        </p>
+                            <h5 className="text-md mb-2 text-gray-900">
+                            {item.state}
+                            </h5>
+                            <p className="mb-1 text-base text-gray-700"> </p>
+                        </div>
+                        <div className="flex flex-row justify-between text-sm">
+                            <p className="mb-1 text-xs text-gray-700">
+                            {item.country} 
+                            </p>
 
-                    <div className="border-gray-300 text-gray-600"></div>
+                            {item.ManufacturerSummary.length > 0 && item.ManufacturerSummary[0] && <p className='text-sm r'>{filterParams.year == "" || filterParams.year === "ALL" ? "Overall" : `${filterParams.year}`} payments made to doctors: {formatMoney(item.ManufacturerSummary[0].totalAmount)}</p>}
+
+                        
+
+                        </div>
+                    </div>
                 </div>
-            </div>
-        </div>
+                </div>
             </>
         ))}
                 </>
@@ -116,7 +126,7 @@ export default function DirectoryCards({data, filterParams, searchResults, searc
                 <div key={index} className="w-[100%] rounded-lg bg-white text-center shadow-lg mb-2">
                     <div className=" p-2">
                         <div className="flex flex-row justify-between">
-                            <h5 className="text-md mb-2 font-medium text-gray-900 underline">
+                            <h5 className="text-md mb-2 font-medium text-violet-700 underline">
                             <Link href={`/doctor/${item.id}`}>
                                 {item.name}
                             </Link>
@@ -156,7 +166,7 @@ export default function DirectoryCards({data, filterParams, searchResults, searc
                 <div key={index} className="w-[100%] rounded-lg bg-white text-center shadow-lg mb-2">
                     <div className=" p-2">
                         <div className="flex flex-row justify-between">
-                            <h5 className="text-md mb-2 font-medium text-gray-900 underline">
+                            <h5 className="text-md mb-2 font-medium text-violet-700 underline">
                             <Link href={`/doctor/${item.id}`}>
                                 {item.firstName} {item.lastName}
                             </Link>
@@ -168,12 +178,12 @@ export default function DirectoryCards({data, filterParams, searchResults, searc
                         </div>
                         <div className="flex flex-row justify-between">
                         <h5 className="text-md mb-2 text-gray-900">
-                        {item.city.charAt(0).toUpperCase() + item.city.slice(1, item.city.length).toLowerCase()}, {item.state}
+                            {item.city.split(" ").map(word => word.charAt(0).toUpperCase() + word.slice(1, word.length).toLowerCase() + " ")}, {item.state}
                         </h5>
                         <p className="mb-1 text-base text-gray-700"> </p>
                     </div>
                     <div className="flex flex-row justify-between text-sm">
-                        <p className="mb-1 text-xs text-gray-700">
+                        <p className="mb-1 text-xs text-violet-400">
                         {item.specialty} 
                         </p>
 
@@ -195,7 +205,7 @@ export default function DirectoryCards({data, filterParams, searchResults, searc
                 <div key={index} className="w-[100%] rounded-lg bg-white text-center shadow-lg mb-2">
                     <div className="p-2">
                         <div className="flex flex-row justify-between">
-                            <h5 className="text-md mb-2 font-medium text-gray-900 underline">
+                            <h5 className="text-md mb-2 font-medium text-violet-700 underline">
                             <Link href={`/manufacturer/${item.id}`}>
                                 {item.name}
                             </Link>
@@ -214,13 +224,13 @@ export default function DirectoryCards({data, filterParams, searchResults, searc
                             <p className="mb-1 text-base text-gray-700"> </p>
                         </div>
                         <div className="flex flex-row justify-between text-sm">
-                            <p className="mb-1 text-xs text-gray-700">
+                            <p className="mb-1 text-xs text-violet-400">
                             {item.country} 
                             </p>
 
-                            {item.ManufacturerSummary.length > 0 && <p className='text-sm r'>{filterParams.year == "" || filterParams.year === "ALL" ? "Overall" : `${filterParams.year}`} earnings: {}</p>}
+                            {item.ManufacturerSummary.length > 0 && item.ManufacturerSummary[0] && <p className='text-sm r'>{filterParams.year == "" || filterParams.year === "ALL" ? "Overall" : `${filterParams.year}`} payments made to doctors: {formatMoney(item.ManufacturerSummary[0].totalAmount)}</p>}
 
-                        {/* <div className="border-gray-300 text-gray-600"></div> */}
+                        
 
                         </div>
                     </div>
@@ -244,7 +254,7 @@ export default function DirectoryCards({data, filterParams, searchResults, searc
             >
               <div className=" p-2">
                 <div className="flex flex-row justify-between">
-                  <h5 className="text-md mb-2 font-medium text-gray-900 underline">
+                  <h5 className="text-md mb-2 font-medium text-violet-700 underline">
                     <Link href={`/drug/${item.id}`}>{item.name}</Link>
                   </h5>
                   <p className="mb-1 text-xs text-gray-600"></p>
@@ -256,7 +266,7 @@ export default function DirectoryCards({data, filterParams, searchResults, searc
                   <p className="mb-1 text-base text-gray-700"> </p>
                 </div>
                 <div className="flex flex-row justify-between text-sm">
-                  <p className="mb-1 text-xs text-gray-700">
+                  <p className="mb-1 text-xs text-violet-400">
                     Category:{" "}
                     {item.category &&
                       item.category.charAt(0).toUpperCase() +
@@ -282,10 +292,12 @@ export default function DirectoryCards({data, filterParams, searchResults, searc
             <div key={index} className="w-[100%] rounded-lg bg-white text-center shadow-lg mb-2">
                 <div className=" p-2">
                     <div className="flex flex-row justify-between">
-                        <h5 className="text-md mb-2 font-medium text-gray-900">
+                        <h5 className="text-md mb-2 font-medium ">
+                        <Link href={`/drug/${item.id}`} className="text-violet-700 underline">
                         {/* Sold By: {item.manufacturerName} */}
-                        Item: {item.product.name !== "UNKNOWN" ? item.product.name : "N/A"} <span className='text-sm text-slate-400'>{`(${item.product.type})`}</span>
-                        
+                        Item: {item.product.name !== "UNKNOWN" ? item.product.name : "N/A"} 
+                        </Link>
+                        <span className='text-sm text-slate-400 pl-2'>{`(${item.product.type})`}</span>
                         </h5>
                         <p className="mb-1 text-gray-600 text-sm text-right">
                             {formatMoney(item.amount)}
@@ -301,7 +313,7 @@ export default function DirectoryCards({data, filterParams, searchResults, searc
                         <p className="mb-1 text-base text-gray-700"> </p>
                     </div>
                     <div className="flex flex-row justify-between text-sm">
-                        <p className="mb-1 text-xs text-gray-700">
+                        <p className="mb-1 text-xs text-violet-400">
                             {/* Category: {item.category.charAt(0).toUpperCase() + item.category.slice(1, item.category.length).toLowerCase()}  */}
                             Manufacturer: {item.manufacturerName}
                         </p>
@@ -340,7 +352,7 @@ export default function DirectoryCards({data, filterParams, searchResults, searc
                         <p className="mb-1 text-base text-gray-700"> </p>
                     </div>
                     <div className="flex flex-row justify-between text-sm">
-                        <p className="mb-1 text-xs text-gray-700">
+                        <p className="mb-1 text-xs text-violet-400">
                             Largest payment: {formatMoney(item.manufacturer.ManufacturerTopPayment[0]?.amount ?? 0)}
                         </p>
 

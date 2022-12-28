@@ -185,7 +185,7 @@ export default function Directory() {
                         </svg>
                       </div>
                       <p className="flex justify-center pt-2 text-lg font-semibold text-violet-700 sm:text-2xl">
-                        Loading StarHealth Data...
+                        Please wait. Loading StarHealth Data...
                       </p>
                     </div>
                   </div>
@@ -246,7 +246,7 @@ export default function Directory() {
                       className={`border-b-2 hover:border-zinc-500 ${data?.payments ? "border-violet-600" : "border-zinc-200"}`}>
                         Transactions
                       </button>
-                      <button onClick={(e) => {
+                      <button onClick={() => {
                         setFilterParams(prev => {
                           return {
                             ...prev,
@@ -259,7 +259,7 @@ export default function Directory() {
                       }} className={`border-b-2 hover:border-zinc-500 ${data?.manufacturers ? "border-violet-600" : "border-zinc-200"}`}>
                         Manufacturers
                       </button>
-                      <button onClick={(e) => {
+                      <button onClick={() => {
                         setFilterParams(prev => {
                           return {
                             ...prev,
@@ -273,7 +273,7 @@ export default function Directory() {
                       }} className={`border-b-2 hover:border-zinc-500 ${data?.doctors ? "border-violet-600" : "border-zinc-200"}`}>
                         Doctors
                       </button>
-                      <button onClick={(e) => {
+                      <button onClick={() => {
                         setFilterParams(prev => {
                           return {
                             ...prev,
@@ -305,7 +305,7 @@ export default function Directory() {
                           <input
                           type="text"
                           placeholder={
-                          `Search for ${filterParams.subject} by name`
+                          `Search`
                           }
                           className={`
                           bg-violet-100 border border-violet-900 my-2 placeholder:text-violet-800 text-slate-900 w-[100%] p-1 rounded-lg mx-1 hover:bg-violet-300 hover:text-violet-900 cursor-pointer`}
@@ -320,8 +320,8 @@ export default function Directory() {
                   )}
               </div>
             </div>
-            <div className="flex w-full h-[70%] xl:h-[70%] justify-center">
-                <div className='flex max-h-[100%] flex-col overflow-scroll w-[95%] ml-5 p-1'>
+            <div className="flex w-full h-[100%] xl:h-[90%] max-sm:w-[70%] justify-center">
+                <div className='flex min-h-[100%] flex-col overflow-scroll w-[95%] ml-5 p-1'>
                     {/* {!error ? <DirectoryCards filterParams={filterParams} data={data} /> : <div>Try adjusting your search filter. No results were found</div>} */}
                     {<DirectoryCards search={search as string} searchResults={searchResults} filterParams={filterParams} data={data} />} 
                 </div>

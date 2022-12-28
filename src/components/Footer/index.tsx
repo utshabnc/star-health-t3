@@ -22,7 +22,7 @@ const year = new Date().getFullYear();
 
 function Footer() {
   return (
-    <div className='bg-nav bg-[#010139] p-1'>
+    <div className='bg-nav bg-[#010139] p-1 mt-20'>
       <div className='flex items-left'>
         <div className={``}>
           <Link href={'/'}>

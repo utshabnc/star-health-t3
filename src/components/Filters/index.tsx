@@ -15,24 +15,24 @@ export default function Filters({data, filterParams, setFilterParams, search, se
     console.log(listData);
     
     
-    const filterList = (arr: any[]) => {
-        if(arr){
-            if(filterParams.doctorFilter || filterParams.manufacturerFilter || filterParams.productFilter){
-                listData?.doctorNames.filter(item => {
-                    if(data?.doctorList){
-                        if(data?.doctorList.filter((doc: Doctor) => doc.id === item.id).length > 0){
-                            return true
-                        }else {
-                            return false
-                        }
+    // const filterList = (arr: any[]) => {
+    //     if(arr){
+    //         if(filterParams.doctorFilter || filterParams.manufacturerFilter || filterParams.productFilter){
+    //             listData?.doctorNames.filter(item => {
+    //                 if(data?.doctorList){
+    //                     if(data?.doctorList.filter((doc: Doctor) => doc.id === item.id).length > 0){
+    //                         return true
+    //                     }else {
+    //                         return false
+    //                     }
                         
-                    }
-                })
-            }
-            return arr
-        }
-        return arr
-    }
+    //                 }
+    //             })
+    //         }
+    //         return arr
+    //     }
+    //     return arr
+    // }
 
     const filteredDocListToggle = () => {
         if(filterParams.doctorFilter || filterParams.manufacturerFilter || filterParams.productFilter) {
@@ -72,7 +72,7 @@ export default function Filters({data, filterParams, setFilterParams, search, se
             <div>
                 <div className="filters flex w-full items-center">
                     <p className='text-violet-700 w-20 text-lg  my-2'>
-                        Filter By
+                        Filter By:
                     </p>
                     
                     <div className="wrap-filters flex w-full py-2">
@@ -119,7 +119,7 @@ export default function Filters({data, filterParams, setFilterParams, search, se
                             })
                            
                         }} name="city-opt" id="city-opt" className='bg-violet-500 my-2 text-white w-[20%] p-1 rounded-lg mx-1 hover:bg-violet-400 hover:text-violet-900 cursor-pointer'>
-                            <option value="">{filterParams.zipCode == "" ? "Zipcode" : "Reset"}</option>
+                            <option value="">{filterParams.zipCode == "" ? "Zip Code" : "Reset"}</option>
                             {data?.zipCodes.map((item, index) => (
                                 <option key={index} value={item}>{item.charAt(0).toUpperCase() + item.slice(1, item.length).toLowerCase()}</option>
                             ))}

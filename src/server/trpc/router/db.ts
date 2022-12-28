@@ -154,6 +154,16 @@ export const db = router({
             mode: "insensitive",
           },
         },
+        include: {
+          ManufacturerSummary: {
+            where: {
+              year: "ALL"
+            }
+          }
+        },
+        orderBy: {
+          rank: "asc"
+        },
         
         take: 10,
       });
@@ -593,10 +603,10 @@ export const db = router({
               }
             }
           },
-          cursor: {
-            id: input.cursor ? input.cursor : "100000000103"
+          orderBy: {
+            rank: "asc"
           },
-          take: 50
+          take: 100
         });
 
         const allYears = ["ALL", "2021", "2020", "2019", "2018", "2017","2016"]
@@ -681,7 +691,7 @@ export const db = router({
           cursor: {
             id: input.cursor ? input.cursor : "345881410"
           },
-          take: 40,
+          take: 1000,
           
         })
         
