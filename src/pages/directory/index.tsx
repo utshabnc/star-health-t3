@@ -6,6 +6,8 @@ import { filterDuplicates } from '../../utils';
 import Filters from '../../components/Filters';
 import Link from 'next/link';
 import DirectoryCards from '../../components/DirectoryCards';
+import { debounce, filter, identity } from 'lodash';
+import {AiOutlineLoading3Quarters} from "react-icons/ai/index";
 
 export interface FilterParams {
     subject: string,
@@ -20,12 +22,11 @@ export interface FilterParams {
     productFilter: string,
     cursor: string,
     year: string,
-    rank: boolean
+    search: string
 }
 
 export default function Directory() {
     const navigate = useRouter();
-    const [btnDisable, setBtnDisable] = useState<boolean>(false)
     const [filterParams, setFilterParams] = useState<FilterParams>({
       subject: 'payment', 
       state: '', 
@@ -38,10 +39,10 @@ export default function Directory() {
       manufacturerFilter: '', 
       productFilter: '',
       cursor: '',
-      year: 'ALL',
-      rank: false
+      year: '',
+      search: ''
     })
-    const {data, error, isLoading} = trpc.db.directory.useQuery({
+    const {data, error, isLoading, } = trpc.db.directory.useQuery({
       subject: filterParams.subject, 
       state: filterParams.state, 
       city: filterParams.city, 
@@ -54,19 +55,22 @@ export default function Directory() {
       productFilter: filterParams.productFilter,
       cursor: filterParams.cursor,
       year: filterParams.year,
-      rank: filterParams.rank
+      search: filterParams.search
     });
+    const [search, setSearch] = useState<string>();
+  const { query: querySearch } = useRouter();
+
+    const { data: searchResults, refetch: fetchSearchResults, isLoading: searchLoad } = trpc.db.search.useQuery(search ?? "", { enabled: false });
 
     //helpers to set last index to filter param when user requests to see more data
     const setLastIndex = (arr: {id: string}[]) => {
-      if(arr[arr.length -1]?.id === filterParams.cursor){
-        return setFilterParams(prev => {
+      if(filterParams.cursor === arr[arr.length -1]?.id ){
+        setFilterParams(prev => {
           return {
             ...prev,
             cursor: ''
           }
         })
-        // return setBtnDisable(true)
       }
       setFilterParams(prev => {
         return {
@@ -82,9 +86,50 @@ export default function Directory() {
       if(data?.products) setLastIndex(data?.products)
       if(data?.payments) setLastIndex(data?.payments)
       if(data?.manufacturerSummary) setLastIndex(data?.manufacturerSummary)
+
     }
 
-    if (isLoading || !data) {
+    useEffect(() => {
+      const searchParam = querySearch["search"] as string;
+      if (searchParam) {
+        setFilterParams(prev => {
+          return {
+            ...prev,
+            search: searchParam
+          }
+        });
+      }
+    }, [querySearch]);
+
+    const debouncedSearch = useCallback(
+      debounce((search: string) => {
+        if (search.length < 2) return;
+        fetchSearchResults();
+      }, 1000),
+      []
+    );
+
+    useEffect(() => {
+      debouncedSearch(search ?? "");
+    }, [search]);
+
+    console.log(searchResults);
+    console.log(searchLoad);
+    
+    
+
+    
+    
+
+    // if(!data){
+    //   return (
+    //     <>
+    //       <div>Try adjusting your search filter. No results were found</div>
+    //     </>
+    //   )
+    // }
+
+    if (isLoading) {
         return (
           <>
             <div className="bgColor">
@@ -140,7 +185,7 @@ export default function Directory() {
                         </svg>
                       </div>
                       <p className="flex justify-center pt-2 text-lg font-semibold text-violet-700 sm:text-2xl">
-                        Loading StarHealth Data...
+                        Please wait. Loading StarHealth Data...
                       </p>
                     </div>
                   </div>
@@ -154,7 +199,7 @@ export default function Directory() {
 
   return (
     <>
-        <div className="p-5 rounded bg-white h-screen mb-36">
+        <div className="p-5 rounded bg-white h-screen pb-20">
             <div className="flex flex-row">
                 <div>
                     <button
@@ -177,95 +222,116 @@ export default function Directory() {
                     </svg>
                     </button>
                 </div>
-            </div>
-            <div className='flex flex-col justify-end lg:px-28 sm:px-2 pt-5'>
-                <div className="wrap-opt flex justify-between">
-                  <div>
-                    <p className='text-violet-700 text-2xl font-semibold'>
-                        Directory
-                    </p>
+              <div className='w-full flex flex-col justify-end px-8 pb-10'>
+              <div className="wrap-opt flex justify-between">
+                    <div>
+                      <p className='text-violet-700 text-2xl font-semibold'>
+                          StarHealth Data Directory
+                      </p>
+
+                    </div>
+                    <div className='flex gap-2'>
+                      <button onClick={() => {
+                        setFilterParams(prev => {
+                          return {
+                            ...prev,
+                            subject: "payment",
+                            cursor: ""
+
+                          }
+                        })
+                        setSearch("")
+                        
+                      }} 
+                      className={`border-b-2 hover:border-zinc-500 ${data?.payments ? "border-violet-600" : "border-zinc-200"}`}>
+                        Transactions
+                      </button>
+                      <button onClick={() => {
+                        setFilterParams(prev => {
+                          return {
+                            ...prev,
+                            subject: "manufacturer",
+                            cursor: ""
+
+                          }
+                        })
+                        setSearch("")
+                      }} className={`border-b-2 hover:border-zinc-500 ${data?.manufacturers ? "border-violet-600" : "border-zinc-200"}`}>
+                        Manufacturers
+                      </button>
+                      <button onClick={() => {
+                        setFilterParams(prev => {
+                          return {
+                            ...prev,
+                            subject: "doctor",
+                            cursor: ""
+
+
+                          }
+                        })
+                        setSearch("")
+                      }} className={`border-b-2 hover:border-zinc-500 ${data?.doctors ? "border-violet-600" : "border-zinc-200"}`}>
+                        Doctors
+                      </button>
+                      <button onClick={(e) => {
+                        setFilterParams(prev => {
+                          return {
+                            ...prev,
+                            subject: "product",
+                            cursor: ""
+
+
+                          }
+                        })
+                        setSearch("")
+                      }} className={`border-b-2 hover:border-zinc-500 ${data?.products ? "border-violet-600" : "border-zinc-200"}`}>
+                        Products
+                      </button>
+
+                    </div>
 
                   </div>
-                  <div className='flex gap-2'>
-                    <button onClick={() => {
-                      setFilterParams(prev => {
-                        return {
-                          ...prev,
-                          subject: "payment",
-                          cursor: ""
-                          
-                        }
-                      })
-                      setBtnDisable(false)
-                    }} 
-                    className={`border-b-2 hover:border-zinc-500 ${data?.payments ? "border-violet-600" : "border-zinc-200"}`}>
-                      Transactions
-                    </button>
-                    <button onClick={() => {
-                      setFilterParams(prev => {
-                        return {
-                          ...prev,
-                          subject: "manufacturer",
-                          cursor: ""
-
-                        }
-                      })
-                      setBtnDisable(false)
-                    }} className={`border-b-2 hover:border-zinc-500 ${data?.manufacturers ? "border-violet-600" : "border-zinc-200"}`}>
-                      Manufacturers
-                    </button>
-                    <button onClick={() => {
-                      setFilterParams(prev => {
-                        return {
-                          ...prev,
-                          subject: "doctor",
-                          cursor: ""
-
-
-                        }
-                      })
-                      setBtnDisable(false)
-                    }} className={`border-b-2 hover:border-zinc-500 ${data?.doctors ? "border-violet-600" : "border-zinc-200"}`}>
-                      Doctors
-                    </button>
-                    <button onClick={() => {
-                      setFilterParams(prev => {
-                        return {
-                          ...prev,
-                          subject: "product",
-                          cursor: ""
-
-
-                        }
-                      })
-                      setBtnDisable(false)
-                    }} className={`border-b-2 hover:border-zinc-500 ${data?.products ? "border-violet-600" : "border-zinc-200"}`}>
-                      Products
-                    </button>
-
+                  
+                  <div className='my-1'>
+                  <hr />
                   </div>
+                  <Filters search={search} setSearch={setSearch} data={data} filterParams={filterParams} setFilterParams={setFilterParams} />
+                  {filterParams.subject !== "payment" && (
+                    <>
+                      <div className=''>
+                        <p className='text-xs p-1 text-violet-900 font-semibold'>{`Search for ${filterParams.subject} by name`}</p>
+                        <div className='flex items-center gap-3 w-[30%]'>
 
-                </div>
-                
-                <div className='my-1'>
-                <hr />
-                </div>
-                <Filters data={data} filterParams={filterParams} setFilterParams={setFilterParams} setBtnDisable={setBtnDisable} />
+                          <input
+                          type="text"
+                          placeholder={
+                          `Search`
+                          }
+                          className={`
+                          bg-violet-100 border border-violet-900 my-2 placeholder:text-violet-800 text-slate-900 w-[100%] p-1 rounded-lg mx-1 hover:bg-violet-300 hover:text-violet-900 cursor-pointer`}
+                          value={search}
+                          onChange={(e) => setSearch(e.target.value)}
+                          />
+                          {search !== "" && searchLoad && <AiOutlineLoading3Quarters className='text-violet-600 font-semibold spinner'/>}
+                        </div>
+
+                      </div>
+                    </>
+                  )}
+              </div>
             </div>
-            <div className="flex max-sm:flex-col w-full h-[80%] xl:h-[70%] justify-center">
-                <div className='flex max-sm:order-2 max-h-[100%] flex-col overflow-scroll sm:w-[85%] p-1'>
-                    <DirectoryCards filterParams={filterParams} data={data} />
-                    
+            <div className="flex w-full h-[90%] xl:h-[70%] justify-center">
+                <div className='flex min-h-[100%] flex-col overflow-scroll w-[95%] ml-5 p-1'>
+                    {/* {!error ? <DirectoryCards filterParams={filterParams} data={data} /> : <div>Try adjusting your search filter. No results were found</div>} */}
+                    {<DirectoryCards search={search as string} searchResults={searchResults} filterParams={filterParams} data={data} />} 
                 </div>
-                {/* <Filters data={data} filterParams={filterParams} setFilterParams={setFilterParams} setBtnDisable={setBtnDisable} /> */}
             </div>
-            <div className="more-btn my-2 flex justify-center w-full">
-              {(data?.doctors || data?.manufacturers || data?.products || data?.payments) && !btnDisable && <button 
-              className={`bg-violet-600 px-3 py-1 rounded-lg text-slate-50`}
+            <div className="more-btn my-2 flex justify-center w-full mt-5">
+              {(data?.doctors || data?.manufacturers || data?.products || data?.payments) && <button 
+              className='bg-violet-600 px-3 py-1 rounded-lg text-slate-50'
               onClick={() => {
                 currDataAssignedToLastIndex()
               }}
-              disabled={btnDisable ? true : false}
               >
                 See More
               </button>}
