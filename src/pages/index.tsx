@@ -112,9 +112,10 @@ const InfoSection = ({
       )}
 
 				<div className="mx-2 flex flex-row justify-around sm:mx-2">
-						({items.map((item, i) => (
+						{items.map((item, i) => (
 
 							// <div key={i} className='relative w-full gap-4 rounded-md bg-white px-6 py-12'>
+							
 								<div
 									className={`flex flex-col items-center border-bordercolor border-[1.5px] rounded-[6px] shadow-md relative w-full rounded-md bg-white px-6 py-8  ${
 										boxStyle ? "" : "rounded-lg bg-[#0e1936] "
@@ -149,19 +150,50 @@ const InfoSection = ({
 
 									</>
 								)}
-								<div className='group absolute bottom-0 translate-y-[2rem]'>
-									{arrowButton ? (<IoIosArrowDroprightCircle color='#0e1936' size={60}/>) : ('')}
-								</div>
-								<p
-									className={`justify-center text-xs  font-semibold lg:text-lg ${
-										"text-" + textColor ?? "text-violet-700"
-									}          ${itemTextSpacing && "mt-0"}`}
-								>
-									{item.label}
-								</p>
-								</div>
+								{linkable ? (		
+									<Link
+									href={{
+									pathname: '/directory',
+									query: { tab: item.linkparam },
+									}}>						
+										<div className='group absolute bottom-0 translate-y-[2rem] translate-x-[-2rem]'>
+											{arrowButton ? (<IoIosArrowDroprightCircle color='#0e1936' size={60}/>) : ('')}
+										</div>
+									</Link>)
+									: (
+										<div className='group absolute bottom-0 translate-y-[2rem]'>
+										{arrowButton ? (<IoIosArrowDroprightCircle color='#0e1936' size={60}/>) : ('')}
+										</div>
+									)
+								}
 
-						))})
+								{linkable ? (			
+									<Link
+									href={{
+									pathname: '/directory',
+									query: { tab: item.linkparam },
+									}}>					
+										<p
+											className={`justify-center text-xs  font-semibold lg:text-lg ${
+												"text-" + textColor ?? "text-violet-700"
+											}          ${itemTextSpacing && "mt-0"}`}
+										>
+										{item.label}
+										</p>
+									</Link>)
+								: (								
+									<p
+										className={`justify-center text-xs  font-semibold lg:text-lg ${
+											"text-" + textColor ?? "text-violet-700"
+										}          ${itemTextSpacing && "mt-0"}`}
+									>
+									{item.label}
+									</p>)
+								}
+
+							</div>
+
+						))}
       </div>
     </div>
   );
