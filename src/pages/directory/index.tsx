@@ -314,7 +314,7 @@ export default function Directory() {
                       <p className='text-violet-700 text-2xl font-semibold flex'>
                           StarHealth Data Directory
                       </p>
-                      {searchLoad && (filterParams.subject === "payment" || filterParams.name !== "") && <AiOutlineLoading3Quarters className='text-violet-600 font-semibold spinner'/>}
+                      {searchLoad && (filterParams.subject === "transactions" || filterParams.name !== "") && <AiOutlineLoading3Quarters className='text-violet-600 font-semibold spinner'/>}
                     </div>
                     <div className='flex gap-2'>
                       <button onClick={() => {
