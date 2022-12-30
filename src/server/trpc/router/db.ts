@@ -547,7 +547,7 @@ export const db = router({
       console.log(input.name?.split(" "));
       
 
-      if(input.subject?.toLowerCase().trim() === "doctor"){
+      if(input.subject?.toLowerCase().trim() === "doctors"){
         const names = input.name?.split(" ")
         let doctors: any = []
 
@@ -674,7 +674,7 @@ export const db = router({
 
       }
 
-      if(input.subject?.toLowerCase() === "manufacturer"){
+      if(input.subject?.toLowerCase() === "manufacturers"){
         const manufacturers = await prisma.manufacturer.findMany({
           where: {
             AND: [
@@ -709,7 +709,7 @@ export const db = router({
         return {manufacturers, allYears}
       }
 
-      if(input.subject?.toLowerCase() === "product"){
+      if(input.subject?.toLowerCase() === "products"){
         const products = await prisma.product.findMany({
           where: {
             AND: [
@@ -744,7 +744,7 @@ export const db = router({
         return {products, productTypes: filterDuplicateObjArr(productTypes, "type")}
       }
 
-      if(input.subject === "payment"){
+      if(input.subject === "payments"){
                 
         const payments = await prisma.payment.findMany({
           where: {
