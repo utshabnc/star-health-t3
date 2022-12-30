@@ -3,7 +3,7 @@ import {
 } from "react";
 import { DocDets } from "../../components/DocDets";
 import ReviewForm from "../../components/ReviewForm";
-// import Reviews from '../../components/Reviews';
+import Reviews from '../../components/Reviews';
 import {
   formatMoney,
   formatName,
@@ -12,7 +12,7 @@ import {
 } from "../../utils";
 import Transaction from "../../components/DocDets/Transaction";
 import BarChart from "../../components/charts/bar";
-// import DoctorReviews from "../DoctorReviews";
+import DoctorReviews from "../DoctorReviews";
 import { useRouter } from "next/router";
 import { trpc } from "../../utils/trpc";
 
@@ -24,11 +24,10 @@ const DoctorDetails = () => {
   const { data: doctor, isLoading: isDoctorLoading, refetch: doctorRefetch } = trpc.db.doctor.useQuery({ id, year: (year? year + '' : '') }, {
     keepPreviousData: true,
   });
+  const addReview = trpc.db.addReview.useMutation();
 
-  // const addReview = useAddReviewMutation();
-
-  // const [reviewText, setReviewText] = useState('');
-  // const [reviewStars, setReviewStars] = useState(5);
+  const [reviewText, setReviewText] = useState('');
+  const [reviewStars, setReviewStars] = useState(5);
 
   if (!doctor || isDoctorLoading) {
     return (
@@ -132,7 +131,6 @@ const DoctorDetails = () => {
           doctor={doctor}
           onChangeYear={(year) =>
             setYear((oldYear) => {
-              console.log(year)
               if (!year) return undefined;
               if (oldYear === String(year)) return;
               return String(year);
@@ -249,7 +247,7 @@ const DoctorDetails = () => {
           </div>
 
           <div className="mt-8">
-            {/* <DoctorReviews doctorId={doctor.id} /> */}
+            <DoctorReviews doctor={doctor} doctorRefetch={doctorRefetch} />
           </div>
         </div>
       </div>

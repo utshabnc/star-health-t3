@@ -3,8 +3,9 @@ import { router, publicProcedure } from "../trpc";
 import _ from "lodash";
 import type { inferRouterOutputs } from "@trpc/server";
 import type { AppRouter } from "./_app";
-import { Prisma } from "@prisma/client";
+import { Prisma, Review } from "@prisma/client";
 import { filterDuplicateObjArr, filterDuplicates } from "../../../utils";
+import { useSession } from "next-auth/react";
 
 const directoryInput = z.object({
   subject: z.string(),
@@ -180,8 +181,6 @@ export const db = router({
       
       }) 
       
-      console.log(doctors)
-
       return { doctors, manufacturers, products };
     }),
 
@@ -193,8 +192,6 @@ export const db = router({
       })
     )
     .query(async ({ ctx: { prisma }, input: { id, year } }) => {
-      console.log(id);
-      
       const doctor = await prisma.doctor.findFirst({
         where: { id },
         select: {
@@ -206,9 +203,13 @@ export const db = router({
             where: year ? { year } : undefined,
             take: 50,
           },
+          reviews: {
+            include: {
+              user: true,
+            },
+          }
         },
       });
-      console.log(doctor)
       const payments =
         doctor?.payments.filter((p) => !year || p.year === year) ?? [];
 
@@ -234,18 +235,9 @@ export const db = router({
         }))
         .value();
 
-      const reviews = await Promise.all(
-        doctor?.reviews?.map(async (review) => ({
-          ...review,
-          // TODO
-          // user: await getUser(review.createdBy).catch(() => {}),
-        })) ?? []
-      );
-
       return {
         ...doctor,
         payments,
-        reviews,
         totalAmount,
         topProducts,
         topManufacturers,
@@ -934,9 +926,43 @@ export const db = router({
       return {doctorNames: filterDuplicateObjArr(doctorNames, "id"), manufacturerNames: filterDuplicateObjArr(manufacturers, "id"), productNameList: filterDuplicateObjArr(products, "id")}
       // return {}
     })
+    ,
+
+    /**
+     * Add a review if a user can review a doctor (one per user per doctor)
+     * 
+     * @param doctorId the doctor to review
+     * @param rating the rating to give the doctor
+     * @param text the text of the review
+     * @returns the review that was created, or { error: string } if the user cannot review the doctor
+     */
+    addReview: publicProcedure
+    .input(z.object({
+      doctorId: z.string(),
+      rating: z.number(),
+      text: z.string(),
+    }))
+    .mutation(async ({ctx: {prisma, session}, input}) => {
+      const reviewInput: Prisma.ReviewUncheckedCreateInput = {
+        ...input,
+        createdBy: session?.user?.id || "anonymous",
+      }
+      const hasReviewed = await prisma.review.findFirst({
+        where: {
+          doctorId: input.doctorId,
+          createdBy: session?.user?.id,
+        }
+      });
+      if (hasReviewed) {
+        return { review: hasReviewed, error: "You have already reviewed this doctor." } as const;
+      }
+      const review = await prisma.review.create({
+        data: reviewInput,
+      });
+      return {review} as const;
+    }),
 });
 
-// TODO - consider moving these type defs
 type RouterOutput = inferRouterOutputs<AppRouter>;
 export type SearchResponse = RouterOutput["db"]["search"];
 export type DoctorResponse = RouterOutput["db"]["doctor"];
@@ -946,3 +972,4 @@ export type AllStatesResponse = RouterOutput["db"]["allStates"];
 export type ProductResponse = RouterOutput["db"]["product"];
 export type DirectoryResponse = RouterOutput["db"]["directory"];
 export type NameListResponse = RouterOutput["db"]["nameList"];
+export type addReviewResponse = RouterOutput["db"]["addReview"];
