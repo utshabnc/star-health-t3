@@ -1,5 +1,6 @@
-import { ChangeEventHandler, MouseEventHandler } from 'react';
-// import ReactStars from 'react-rating-stars-component';
+import type { ChangeEventHandler, MouseEventHandler } from "react";
+import { useState } from "react";
+import ReactStars from "react-star-rating-component";
 
 interface Review {
   reviewText: string;
@@ -10,30 +11,28 @@ interface Review {
 }
 
 function ReviewForm(review: Review) {
+  const [reviewStarsShown, setReviewStarsShown] = useState(5);
   return (
     <>
-      <div className='flex flex-col px-8'>
-        <p className='text-purp-4 text-xl font-semibold align'>Write a Review</p>
-        {/* <ReactStars
-          value={review.reviewStars}
-          count={5}
-          activeColor='#ffd700'
-          size={24}
-          onChange={review.setReviewStars}
-        /> */}
+      <div className="flex flex-col px-8">
+        <ReactStars
+          name="rating"
+          value={reviewStarsShown}
+          starCount={5}
+          starColor="#ffd700"
+          onStarHover={setReviewStarsShown}
+          onStarHoverOut={() => setReviewStarsShown(review.reviewStars)}
+          onStarClick={review.setReviewStars}
+        />
         <textarea
-          className='pl-3 shadow-lg mt-5 text-gray-800 py-2 border-purp-2 rounded-md focus:ring
-focus:ring-purp-4 ring-purp-2 ring focus:ring-offset-2 appearance-none resize-none'
-          placeholder=''
+          className="mt-5 resize-none appearance-none rounded-md border-violet-600 py-2 pl-3 text-gray-800
+shadow-lg ring ring-violet-600 focus:ring focus:ring-indigo-700 focus:ring-offset-2"
+          placeholder="Write a review..."
           value={review.reviewText}
           onChange={review.setReviewText}
         />
-        {/* <label className='pb-2 pt-5 text-base text-purp-4 font-medium'>
-          Stars: (Maximum = 5 Stars)
-        </label> */}
-
         <button
-          className='bg-purp-2 hover:bg-purp-3 active:bg-purp-4 text-white px-2 py-2 mt-4 rounded-md'
+          className="mt-4 rounded-md bg-violet-600 px-2 py-2 text-white hover:bg-violet-700 active:bg-indigo-700 disabled:bg-violet-600/50"
           onClick={review.onSubmitReview}
         >
           Submit Review

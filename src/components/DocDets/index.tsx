@@ -1,11 +1,11 @@
 import { Menu, Transition } from '@headlessui/react';
 import { ChevronDownIcon } from '@heroicons/react/solid';
-// import ReactStars from 'react-rating-stars-component';
+import ReactStars from 'react-star-rating-component';
 import { Fragment, useEffect, useState } from 'react';
 import { availableYears, formatMoney, formatName, formatNumber } from '../../utils';
-// import { DoctorResponse } from '../../../functions/src/doctor';
 import _ from 'lodash';
 import type { DoctorResponse } from '../../server/trpc/router/db';
+import Link from 'next/link';
 
 interface DocSchema {
   doctor: DoctorResponse;
@@ -26,13 +26,11 @@ export const DocDets = ({ doctor, onChangeYear }: DocSchema) => {
     onChangeYear(year == 0 ? undefined : year);
   }, [year]);
 
-  // const numStars = _.mean(
-  //   doctor.reviews?.map((review) => review.rating)
-  // );
+  const numStars = _.mean(
+    doctor.reviews?.map((review) => review.rating)
+  );
 
-  // console.log({ numStars });
-
-  // const numReviews = doctor.reviews?.length ?? 0;
+  const numReviews = doctor.reviews?.length ?? 0;
 
   return (
     <>
@@ -41,23 +39,23 @@ export const DocDets = ({ doctor, onChangeYear }: DocSchema) => {
           {formatName(doctor.firstName + " " + doctor.lastName)}
         </p>
         <div className="flex flex-row items-center space-x-2">
-          {/* <ReactStars
-            edit={false}
-            value={numStars}
-            isHalf={true}
-            count={5}
-            // size={screen.width > 1000 ? 24 : 15}
-            size={24}
-            activeColor='#ffd700'
-          /> */}
+          { numReviews > 0 ?
+            <ReactStars
+              name="rating"
+              editing={false}
+              value={numStars}
+              starCount={5}
+              starColor='#ffd700'
+            /> : <><i className='text-black/50'>No Reviews</i></>
+          }
           <div className="flex flex-row items-center">
             <p className="ml-2 text-sm font-bold text-gray-900 dark:text-white">
-              {/* {isNaN(numStars) ? '' : numStars.toFixed(1)} */}
+              {isNaN(numStars) ? '' : numStars.toFixed(1)}
             </p>
-            {/* {!isNaN(numStars) && (
+            {!isNaN(numStars) && (
               <span className='w-1 h-1 mx-1.5'></span>
-            )} */}
-            {/* <Link to={`/doctor/${doctor.id}/reviews`} legacyBehavior>
+            )}
+            {/* <Link href={`/doctor/${doctor.id}/reviews`} legacyBehavior>
               <a className='text-sm font-medium text-gray-900 underline hover:no-underline dark:text-white'>
                 {numReviews} {numReviews === 1 ? 'review' : 'reviews'}
               </a>

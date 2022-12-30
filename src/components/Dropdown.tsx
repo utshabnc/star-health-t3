@@ -22,9 +22,9 @@ type Props = {
 const Dropdown = ({ items, label, placeholder, onChange, value }: Props) => {
   return (
     <div className='flex justify-center'>
-      <div className='flex flex-row text-lg font-semibold'>
+      <div className='flex flex-row text-lg font-semibold font-custom text-white'>
         {label}:&nbsp;
-        <p className='text-violet-700'>
+        <p className='text-white'>
           {value
             ? items.find((item) => item.value === value)?.label
             : placeholder}
@@ -32,8 +32,8 @@ const Dropdown = ({ items, label, placeholder, onChange, value }: Props) => {
       </div>
       <Menu as='div' className='relative text-left'>
         <div>
-          <Menu.Button className='mt-1 ml-1 rounded-md inline-flex w-full justify-center text-sm font-medium text-gray-700'>
-            <ChevronDownIcon className=' h-5 w-5' aria-hidden='true' />
+          <Menu.Button className='mt-1 ml-1 rounded-md inline-flex w-full justify-center text-sm font-medium text-white'>
+            <ChevronDownIcon className='h-5 w-5' aria-hidden='true' />
           </Menu.Button>
         </div>
 

@@ -174,7 +174,12 @@ model Review {
   text      String
   createdAt DateTime @default(now())
   createdBy String
+  user      User     @relation(fields: [createdBy], references: [id])
   doctor    Doctor   @relation(fields: [doctorId], references: [id])
+
+  @@index([doctorId], name: "review_doctor_index")
+  @@index([createdBy], name: "review_user_index")
+  @@unique([doctorId, createdBy], name: "review_doctor_user_unique") // doctor can only have one review per user
 }
 
 model Payment {
@@ -243,6 +248,7 @@ model User {
   image         String?
   accounts      Account[]
   sessions      Session[]
+  Review        Review[]
 }
 
 model VerificationToken {
