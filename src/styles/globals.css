@@ -6,6 +6,14 @@
     
     animation: spin 1s linear infinite;
 }
+
+input[type=range]::-webkit-slider-thumb {
+    pointer-events: auto;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    @apply bg-green-500
+}
   
 @keyframes spin {
 0% { transform: rotate(0deg); }

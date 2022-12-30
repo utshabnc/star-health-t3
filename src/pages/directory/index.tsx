@@ -1,6 +1,6 @@
 import { useRouter } from 'next/router'
-import React, { useCallback, useEffect, useState } from 'react'
-import { allStates } from '../../utils';
+import React, { useCallback, useEffect, useRef, useState } from 'react'
+import { allStates, formatMoney } from '../../utils';
 import { trpc } from '../../utils/trpc';
 import { filterDuplicates } from '../../utils';
 import Filters from '../../components/Filters';
@@ -8,6 +8,12 @@ import Link from 'next/link';
 import DirectoryCards from '../../components/DirectoryCards';
 import { debounce, filter, identity } from 'lodash';
 import {AiOutlineLoading3Quarters} from "react-icons/ai/index";
+
+
+interface PriceFilter {
+  min: number,
+  max: number
+}
 
 export interface FilterParams {
     subject: string,
@@ -22,13 +28,17 @@ export interface FilterParams {
     productFilter: string,
     cursor: string,
     year: string,
-    search: string
+    price: PriceFilter,
+    name: string
 }
 
 export default function Directory() {
+    const progressRef = useRef<HTMLDivElement>(null) 
     const navigate = useRouter();
+    console.log("navigate", navigate);
+    
     const [filterParams, setFilterParams] = useState<FilterParams>({
-      subject: 'payment', 
+      subject: navigate.query.tab as string ?? 'payment', 
       state: '', 
       city: '', 
       zipCode: '', 
@@ -40,7 +50,8 @@ export default function Directory() {
       productFilter: '',
       cursor: '',
       year: '',
-      search: ''
+      price: {min: 0, max: 5000},
+      name: ""
     })
     const {data, error, isLoading, } = trpc.db.directory.useQuery({
       subject: filterParams.subject, 
@@ -55,13 +66,28 @@ export default function Directory() {
       productFilter: filterParams.productFilter,
       cursor: filterParams.cursor,
       year: filterParams.year,
-      search: filterParams.search
+      
+      // name: filterParams.name
     });
     const [search, setSearch] = useState<string>();
-  const { query: querySearch } = useRouter();
+    const { query: querySearch } = useRouter();
 
-    const { data: searchResults, refetch: fetchSearchResults, isLoading: searchLoad } = trpc.db.search.useQuery(search ?? "", { enabled: false });
+    const { data: searchResults, refetch: fetchSearchResults, isLoading: searchLoad } = trpc.db.directory.useQuery({
+      name: filterParams.name, 
+      subject: filterParams.subject, 
+      price: {
+        min: filterParams.price.min,
+        max: filterParams.price.max
+      },
+      state: filterParams.state,
+      city: filterParams.city,
+      specialty: filterParams.specialty,
+      zipCode: filterParams.zipCode,
+      year: filterParams.year,
 
+    }, { enabled: false });
+    const [price, setPrice] = useState<number>(1000)
+    console.log("search", searchResults)
     //helpers to set last index to filter param when user requests to see more data
     const setLastIndex = (arr: {id: string}[]) => {
       if(filterParams.cursor === arr[arr.length -1]?.id ){
@@ -103,21 +129,81 @@ export default function Directory() {
 
     const debouncedSearch = useCallback(
       debounce((search: string) => {
-        if (search.length < 2) return;
+        if (search.length < 2 && !filterParams.price) return;
         fetchSearchResults();
       }, 1000),
       []
     );
 
     useEffect(() => {
-      debouncedSearch(search ?? "");
-    }, [search]);
+      debouncedSearch(filterParams.name ?? "");
+    }, [filterParams.name, filterParams.price]);
 
     console.log(searchResults);
     console.log(searchLoad);
-    
-    
 
+    const handleMinPrice = (e: any) => {
+      if(e.target.value >= filterParams.price.max) {
+        setFilterParams((prev: any) => {
+          return {
+            ...prev,
+            price: {
+              min: filterParams.price.min,
+              max: parseInt(e.target.value)
+  
+            }
+          }
+        })
+        return
+      }
+      setFilterParams((prev: any) => {
+        return {
+          ...prev,
+          price: {
+            min: parseInt(e.target.value),
+            max: filterParams.price.max
+
+          }
+        }
+      })
+    }
+
+    const handleMaxPrice = (e: any) => {
+      if(e.target.value <= filterParams.price.min) {
+        setFilterParams((prev: any) => {
+          return {
+            ...prev,
+            price: {
+              max: filterParams.price.max,
+              min: parseInt(e.target.value)
+  
+            }
+          }
+        })
+        return
+      }
+
+      setFilterParams((prev: any) => {
+        return {
+          ...prev,
+          price: {
+            max: parseInt(e.target.value),
+            min: filterParams.price.min
+
+          }
+        }
+      })
+    }
+    
+    
+    useEffect(() => {
+      if (progressRef.current != null) {
+        progressRef.current.style.left = (filterParams.price.min / 5000) * 10 + "%" 
+        progressRef.current.style.right = 10 - (filterParams.price.max / 5000) * 10 + "%" 
+
+      }
+
+    }, [filterParams.price.min, filterParams.price.max])
     
     
 
@@ -129,7 +215,7 @@ export default function Directory() {
     //   )
     // }
 
-    if (isLoading) {
+    if (!data) {
         return (
           <>
             <div className="bgColor">
@@ -185,7 +271,7 @@ export default function Directory() {
                         </svg>
                       </div>
                       <p className="flex justify-center pt-2 text-lg font-semibold text-violet-700 sm:text-2xl">
-                        Please wait. Loading StarHealth Data...
+                        Loading StarHealth Data...
                       </p>
                     </div>
                   </div>
@@ -199,7 +285,7 @@ export default function Directory() {
 
   return (
     <>
-        <div className="p-5 rounded bg-white h-screen pb-20">
+        <div className="p-5 rounded bg-white h-screen pb-44">
             <div className="flex flex-row">
                 <div>
                     <button
@@ -224,11 +310,11 @@ export default function Directory() {
                 </div>
               <div className='w-full flex flex-col justify-end px-8 pb-10'>
               <div className="wrap-opt flex justify-between">
-                    <div>
-                      <p className='text-violet-700 text-2xl font-semibold'>
+                    <div className='w-[70%] flex items-center gap-5'>
+                      <p className='text-violet-700 text-2xl font-semibold flex'>
                           StarHealth Data Directory
                       </p>
-
+                      {searchLoad && (filterParams.subject === "payment" || filterParams.name !== "") && <AiOutlineLoading3Quarters className='text-violet-600 font-semibold spinner'/>}
                     </div>
                     <div className='flex gap-2'>
                       <button onClick={() => {
@@ -240,7 +326,12 @@ export default function Directory() {
 
                           }
                         })
-                        setSearch("")
+                        setFilterParams(prev => {
+                          return {
+                            ...prev,
+                            name: ""
+                          }
+                        })
                         
                       }} 
                       className={`border-b-2 hover:border-zinc-500 ${data?.payments ? "border-violet-600" : "border-zinc-200"}`}>
@@ -255,7 +346,12 @@ export default function Directory() {
 
                           }
                         })
-                        setSearch("")
+                        setFilterParams(prev => {
+                          return {
+                            ...prev,
+                            name: ""
+                          }
+                        })
                       }} className={`border-b-2 hover:border-zinc-500 ${data?.manufacturers ? "border-violet-600" : "border-zinc-200"}`}>
                         Manufacturers
                       </button>
@@ -269,7 +365,12 @@ export default function Directory() {
 
                           }
                         })
-                        setSearch("")
+                        setFilterParams(prev => {
+                          return {
+                            ...prev,
+                            name: ""
+                          }
+                        })
                       }} className={`border-b-2 hover:border-zinc-500 ${data?.doctors ? "border-violet-600" : "border-zinc-200"}`}>
                         Doctors
                       </button>
@@ -283,7 +384,12 @@ export default function Directory() {
 
                           }
                         })
-                        setSearch("")
+                        setFilterParams(prev => {
+                          return {
+                            ...prev,
+                            name: ""
+                          }
+                        })
                       }} className={`border-b-2 hover:border-zinc-500 ${data?.products ? "border-violet-600" : "border-zinc-200"}`}>
                         Products
                       </button>
@@ -296,11 +402,11 @@ export default function Directory() {
                   <hr />
                   </div>
                   <Filters search={search} setSearch={setSearch} data={data} filterParams={filterParams} setFilterParams={setFilterParams} />
-                  {filterParams.subject !== "payment" && (
+                  {"data" && (
                     <>
                       <div className=''>
-                        <p className='text-xs p-1 text-violet-900 font-semibold'>{`Search for ${filterParams.subject} by name`}</p>
-                        <div className='flex items-center gap-3 w-[30%]'>
+                        <p className='text-xs p-1 text-violet-900 font-semibold'>{`Search for ${filterParams.subject} by ${filterParams.subject === "payment" ? "product" : "name"}`}</p>
+                        <div className='flex items-center gap-3 w-[100%]'>
 
                           <input
                           type="text"
@@ -308,11 +414,88 @@ export default function Directory() {
                           `Search`
                           }
                           className={`
-                          bg-violet-100 border border-violet-900 my-2 placeholder:text-violet-800 text-slate-900 w-[100%] p-1 rounded-lg mx-1 hover:bg-violet-300 hover:text-violet-900 cursor-pointer`}
-                          value={search}
-                          onChange={(e) => setSearch(e.target.value)}
+                          bg-violet-100 border border-violet-900 my-2 placeholder:text-violet-800 text-slate-900 w-[30%] p-1 rounded-lg mx-1 hover:bg-violet-300 hover:text-violet-900 cursor-pointer`}
+                          value={filterParams.name}
+                          onChange={(e) => 
+                             
+                            setFilterParams(prev => {
+                              return {
+                                ...prev,
+                                name: e.target.value
+                              }
+                            })
+                          }
                           />
-                          {search !== "" && searchLoad && <AiOutlineLoading3Quarters className='text-violet-600 font-semibold spinner'/>}
+                          
+                          <div className='flex flex-col ml-5 items-center'>
+                            {filterParams.subject === "payment" && <div className='mb-4 w-80 mt-5'>
+                              <div className="slider relative h-1 rounded-md bg-violet-100">
+                                <div ref={progressRef} className="progress absolute h-2  rounded">
+                                  
+                                </div>
+                              </div>
+                              <div className="range-input relative">
+                                
+                                <input 
+                                  type="range" value={filterParams.price.min} 
+                                  onChange={handleMinPrice}
+                                  min={0}
+                                  step={10}
+                                  max={5000}
+                                  name="price-range" id="price-range-low" className='range-min accent-violet-500 absolute w-full -top-1 h-1 bg-transparent appearance-none pointer-events-none cursor-pointer' />
+                                <input 
+                                  type="range" value={filterParams.price.max} 
+                                  onChange={handleMaxPrice}
+                                  min={0}
+                                  step={10}
+                                  max={5000}
+                                  name="price-range" id="price-range-high" className='range-max accent-violet-500 absolute w-full -top-1 h-1 bg-transparent appearance-none cursor-pointer pointer-events-none' />
+                              </div>
+                            </div>}
+                            
+                            {/* {filterParams.subject === "payment" && <div className="flex gap-4">
+                                <p className='font-semibold'>From</p>
+                                <input className='appearance-none h-5 w-20 bg-violet-500 rounded-full accent-slate-50 cursor-pointer'  onChange={(e) => {
+                                  setFilterParams((prev: any) => {
+                                    return {
+                                      ...prev,
+                                      price: {
+                                        min: parseInt(e.target.value),
+                                        max: filterParams.price.max
+                                      }
+                                    }
+                                  })
+                                    // setPrice(parseInt(e.target.value))
+                                  }} type="range" min={1} max={2500} value={filterParams.price.min} />
+                                <p className='text-violet-900'>{formatMoney(filterParams.price.min)}</p>
+                                <p className='font-semibold'>To</p>
+                                <input className='appearance-none h-5 w-20 bg-violet-500 rounded-full accent-slate-50 cursor-pointer'  onChange={(e) => {
+                                  setFilterParams((prev: any) => {
+                                    return {
+                                      ...prev,
+                                      price: {
+                                        min: filterParams.price.min,
+                                        max: parseInt(e.target.value)
+                                      }
+                                    }
+                                  })
+                                    // setPrice(parseInt(e.target.value))
+                                  }} type="range" min={2600} max={5000} value={filterParams.price.max} />
+                                <p className='text-violet-900'>{formatMoney(filterParams.price.max)}</p>
+                                
+                            </div>} */}
+                            {/* <div className='flex justify-between absolute bottom-[-25px] w-[60%]'>
+                                <p className='text-sm text-slate-500'>{formatMoney(1)}</p>
+                                <p className='text-sm text-slate-500'>{formatMoney(1000)}</p>
+                            </div> */}
+                            
+                          </div>
+                          {filterParams.subject === "payment" && <div className='flex gap-5 text-violet-400'>
+                            <p>{formatMoney(filterParams.price.min)}</p>
+                            <p>To</p>
+                            <p>{formatMoney(filterParams.price.max)}</p>
+                              
+                          </div>}
                         </div>
 
                       </div>
@@ -320,13 +503,13 @@ export default function Directory() {
                   )}
               </div>
             </div>
-            <div className="flex w-full h-[90%] xl:h-[70%] justify-center">
+            <div className="flex w-full h-[90%] justify-center">
                 <div className='flex min-h-[100%] flex-col overflow-scroll w-[95%] ml-5 p-1'>
                     {/* {!error ? <DirectoryCards filterParams={filterParams} data={data} /> : <div>Try adjusting your search filter. No results were found</div>} */}
                     {<DirectoryCards search={search as string} searchResults={searchResults} filterParams={filterParams} data={data} />} 
                 </div>
             </div>
-            <div className="more-btn my-2 flex justify-center w-full mt-5">
+            {/* <div className="more-btn my-2 flex justify-center w-full mt-5">
               {(data?.doctors || data?.manufacturers || data?.products || data?.payments) && <button 
               className='bg-violet-600 px-3 py-1 rounded-lg text-slate-50'
               onClick={() => {
@@ -336,7 +519,7 @@ export default function Directory() {
                 See More
               </button>}
 
-            </div>
+            </div> */}
         </div>
     </>
   )

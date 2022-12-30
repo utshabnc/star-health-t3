@@ -3,9 +3,17 @@ import React, { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import { FilterParams } from '../../pages/directory'
 import SearchPage from '../../pages/SearchPage'
 import type { DirectoryResponse, NameListResponse } from '../../server/trpc/router/db'
-import { allStates } from '../../utils'
+import { allStates, formatMoney } from '../../utils'
 import { trpc } from '../../utils/trpc'
 import DirectorySearch from '../DirectorySearch'
+
+
+export const formatSpecialties = (str: string) => {
+    const lastIndex = str.lastIndexOf("|");
+    const finalString = str.slice(lastIndex + 1).trim()
+
+    return finalString
+}
 
 
 
@@ -13,7 +21,8 @@ export default function Filters({data, filterParams, setFilterParams, search, se
     
     const {data: listData, isLoading} = trpc.db.nameList.useQuery()
     console.log(listData);
-    
+    const [price, setPrice] = useState<number>(1000)
+    console.log(price)
     
     // const filterList = (arr: any[]) => {
     //     if(arr){
@@ -57,12 +66,7 @@ export default function Filters({data, filterParams, setFilterParams, search, se
 
     // add in year filter
 
-    const formatSpecialties = (str: string) => {
-        const lastIndex = str.lastIndexOf("|");
-        const finalString = str.slice(lastIndex + 1).trim()
-
-        return finalString
-    }
+    
 
     const allYears = ["ALL", "2021", "2020", "2019", "2018", "2017","2016"]
 
@@ -75,7 +79,7 @@ export default function Filters({data, filterParams, setFilterParams, search, se
                         Filter By:
                     </p>
                     
-                    <div className="wrap-filters flex w-full py-2">
+                    <div className="wrap-filters flex w-full items-center py-2">
                         {data && (data?.doctors || data?.manufacturers) && <select onChange={(e) => {
                             setFilterParams((prev: FilterParams) => {
                                 return {
@@ -231,7 +235,19 @@ export default function Filters({data, filterParams, setFilterParams, search, se
                                 <option key={index} value={item}>{item}</option>
                             ))}
                         </select>}
-                        
+                        {/* {data?.payments && (
+                            <div className='flex flex-col relative ml-5'>
+                                <div className="flex gap-2">
+                                    <input className='appearance-none bg-violet-500 rounded-full accent-slate-50'  onChange={(e) => setPrice(parseInt(e.target.value))} type="range" min={1} max={100000} value={price} />
+                                    <p className='text-violet-500'>{formatMoney(price)} and less</p>
+                                </div>
+                                <div className='flex justify-between absolute bottom-[-25px] w-[80%]'>
+                                    <p className='text-sm text-slate-500'>{formatMoney(1)}</p>
+                                    <p className='text-sm text-slate-500'>{formatMoney(1000)}</p>
+                                </div>
+                            </div>
+                        )}
+                         */}
                         
                     </div>
                 </div>

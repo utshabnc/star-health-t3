@@ -3,11 +3,11 @@ import { router, publicProcedure } from "../trpc";
 import _ from "lodash";
 import type { inferRouterOutputs } from "@trpc/server";
 import type { AppRouter } from "./_app";
-import { Prisma } from "@prisma/client";
+import { Doctor, Prisma } from "@prisma/client";
 import { filterDuplicateObjArr, filterDuplicates } from "../../../utils";
 
 const directoryInput = z.object({
-  subject: z.string(),
+  subject: z.string().optional(),
   specialty: z.string().optional(),
   state: z.string().optional(), 
   city: z.string().optional(), 
@@ -19,7 +19,11 @@ const directoryInput = z.object({
   productFilter: z.string().optional(),
   cursor: z.string().optional(),
   year: z.string().optional(),
-  search: z.string().optional()
+  price: z.object({
+    min: z.number().optional(), 
+    max: z.number().optional()
+  }).optional(),
+  name: z.string().optional()  
 
 })
 
@@ -548,42 +552,129 @@ export const db = router({
   directory: publicProcedure
     .input(directoryInput)
     .query(async ({ctx: {prisma}, input}) => {
-      console.log(input);
+      console.log(input.name?.split(" "));
       
 
-      if(input.subject.toLowerCase().trim() === "doctor"){
-        const doctors = await prisma.doctor.findMany({
-          where: {
-            AND: [
-              {
-                state: input.state !== '' ? input.state : {not: ""}
-              },
-              {
-                city: input.city !== "" ? input.city : {not: ""}
-              },
-              {
-                zipCode: input.zipCode !== "" ? input.zipCode : {not: ""}
-              },
-              {
-                specialty: input.specialty !== "" ? input.specialty : {not: ""}
-              }
-            ]  
-          },
-          cursor: {
-            id: input.cursor ? input.cursor : "1"
-          },
-          take: 100
-        });
+      if(input.subject?.toLowerCase().trim() === "doctor"){
+        const names = input.name?.split(" ")
+        let doctors: any = []
 
-        const cities = doctors.map(item => {
+        if(names && names?.length === 1) {
+          console.log("HITTT")
+          doctors = await prisma.doctor.findMany({
+            where: {
+              AND: [
+                {
+                  state: input.state !== '' ? input.state : {not: ""}
+                },
+                {
+                  city: input.city !== "" ? input.city : {not: ""}
+                },
+                {
+                  zipCode: input.zipCode !== "" ? input.zipCode : {not: ""}
+                },
+                {
+                  specialty: input.specialty !== "" ? input.specialty : {not: ""}
+                },
+                {
+                  OR: [
+                    {
+                      firstName: {
+                        contains: names[0],
+                        mode: "insensitive"
+                      },
+                    },
+                    {
+                      lastName: {
+                        contains: names[0],
+                        mode: "insensitive"
+                      },
+
+                    }
+                    
+
+                  ]
+                  
+                }
+              ]  
+            },
+            cursor: {
+              id: input.cursor ? input.cursor : "1"
+            },
+            take: 10
+          });
+        }
+
+        if(names && names?.length > 1) {
+          doctors = await prisma.doctor.findMany({
+            where: {
+              AND: [
+                {
+                  state: input.state !== '' ? input.state : {not: ""}
+                },
+                {
+                  city: input.city !== "" ? input.city : {not: ""}
+                },
+                {
+                  zipCode: input.zipCode !== "" ? input.zipCode : {not: ""}
+                },
+                {
+                  specialty: input.specialty !== "" ? input.specialty : {not: ""}
+                },
+                {
+                  firstName: {
+                    contains: names[0],
+                    mode: "insensitive"
+                  },
+                  lastName: {
+                    contains: names[names.length -1],
+                    mode: "insensitive"
+                  }
+                }
+              ]  
+            },
+            cursor: {
+              id: input.cursor ? input.cursor : "1"
+            },
+            take: 10
+          });
+        }
+
+        if(!names) {
+          doctors = await prisma.doctor.findMany({
+            where: {
+              AND: [
+                {
+                  state: input.state !== '' ? input.state : {not: ""}
+                },
+                {
+                  city: input.city !== "" ? input.city : {not: ""}
+                },
+                {
+                  zipCode: input.zipCode !== "" ? input.zipCode : {not: ""}
+                },
+                {
+                  specialty: input.specialty !== "" ? input.specialty : {not: ""}
+                },
+              ]  
+            },
+            cursor: {
+              id: input.cursor ? input.cursor : "1"
+            },
+            take: 100
+          });
+
+        }
+
+        const cities = doctors.map((item: any) => {
           return item.city
         })
 
-        const zipCodes = doctors.map(item => {
+        const zipCodes = doctors.map((item: any) => {
           return item.zipCode
         })
 
-        const specialties = doctors.map(item => {
+        const specialties = doctors.map((item: any) => {
           return item.specialty
         })
 
@@ -591,10 +682,21 @@ export const db = router({
 
       }
 
-      if(input.subject.toLowerCase() === "manufacturer"){
+      if(input.subject?.toLowerCase() === "manufacturer"){
         const manufacturers = await prisma.manufacturer.findMany({
           where: {
-            state: input.state !== "" ? input.state : {not: ""}
+            AND: [
+              {
+                state: input.state !== "" ? input.state : {not: ""}
+
+              },
+              {
+                name: {
+                  contains: input.name,
+                  mode: "insensitive"
+                }
+              }
+            ]
           },
           include: {
             ManufacturerSummary: {
@@ -615,7 +717,7 @@ export const db = router({
         return {manufacturers, allYears}
       }
 
-      if(input.subject.toLowerCase() === "product"){
+      if(input.subject?.toLowerCase() === "product"){
         const products = await prisma.product.findMany({
           where: {
             AND: [
@@ -625,6 +727,12 @@ export const db = router({
               {
                 category: input.category !== "" ? input.category : {not: ""}
               },
+              {
+                name: {
+                  contains: input.name,
+                  mode: "insensitive"
+                }
+              }
             ]
           },
           // cursor: {
@@ -661,9 +769,14 @@ export const db = router({
               {
                 product: {
                   name: {
-                    startsWith: input.search ?? ""
+                    contains: input.name,
+                    mode: "insensitive"
                   }
                 }
+              },
+              {
+                amount: {gte: input.price?.min, lte: input.price?.max},
+                
               }
             ]
           },
@@ -688,10 +801,13 @@ export const db = router({
               } 
             }
           },
-          cursor: {
-            id: input.cursor ? input.cursor : "345881410"
+          orderBy: {
+            year: "desc"
           },
-          take: 1000,
+          // cursor: {
+          //   id: input.cursor ? input.cursor : "345881410"
+          // },
+          take: !input.name ? 250 : 10,
           
         })
         
@@ -720,85 +836,14 @@ export const db = router({
             name: item.product.name
           }
         })
-        
-        
-        // if(input.doctorFilter || input.manufacturerFilter || input.productFilter){
-        //   doctorNames = payments.map(item => {
-        //     return {
-        //       id: item.doctorId,
-        //       name: `${item.doctor.firstName} ${item.doctor.lastName}`
-        //     }
-        //   })
-  
-        //   manufacturerNames = payments.map(item => {
-        //     return {
-        //       id: item.manufacturer.id,
-        //       name: item.manufacturer.name
-        //     }
-        //   })
-  
-        //   productNameList = payments.map(item => {
-        //     return {
-        //       id: item.productId,
-        //       name: item.product.name
-        //     }
-        //   })
-          
-        // } else {
-        //   const manufacturers = await prisma.manufacturer.findMany({
-        //     select: {
-        //       id: true,
-        //       name: true
-        //     },
-        //     take: 1000
-        //   })
-        //   const products = await prisma.product.findMany({
-        //     select: {
-        //       id: true,
-        //       name: true
-        //     },
-        //     take: 1000
-        //   })
-        //   const doctors = await prisma.doctor.findMany({
-        //     select: {
-        //       id: true,
-        //       firstName: true,
-        //       lastName: true
-        //     },
-        //     take: 1000
-        //   })
-
-        //   doctorNames = doctors.map(item => {
-        //     return {
-        //       id: item.id,
-        //       name: `${item.firstName} ${item.lastName}`
-        //     }
-        //   })
-  
-        //   manufacturerNames = manufacturers.map(item => {
-        //     return {
-        //       id: item.id,
-        //       name: item.name
-        //     }
-        //   })
-  
-        //   productNameList = products.map(item => {
-        //     return {
-        //       id: item.id,
-        //       name: item.name
-        //     }
-        //   })
-
-        // }
 
 
 
-        return {payments, manufacturerList: filterDuplicateObjArr(manufacturerNames, "id"), doctorList: filterDuplicateObjArr(doctorNames, "id"), productNameList: filterDuplicateObjArr(productNameList, "id")}
-        // return {payments}
+        return {payments: payments.sort((a:any,b: any) => b.date - a.date), manufacturerList: filterDuplicateObjArr(manufacturerNames, "id"), doctorList: filterDuplicateObjArr(doctorNames, "id"), productNameList: filterDuplicateObjArr(productNameList, "id")}
 
       }
 
-      if(input.subject.toLowerCase() === "top-manufacturer"){
+      if(input.subject?.toLowerCase() === "top-manufacturer"){
         const manufacturerSummary = await prisma.manufacturerSummary.findMany({
           where: {
             manufacturer: {
