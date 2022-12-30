@@ -1,7 +1,8 @@
 // import { Link } from 'react-router-dom';
-import { FaFacebookSquare  } from 'react-icons/fa'
+import { FaDivide, FaFacebookSquare  } from 'react-icons/fa'
 import { SlSocialTwitter } from 'react-icons/sl'
 import { BsInstagram } from 'react-icons/bs'
+import Logo from '../../assets/Logo.png';
 import Image from 'next/image';
 import Link from 'next/link';
 import styles from './index.module.css';
@@ -30,10 +31,11 @@ function Footer() {
 					<div className='font-custom text-white grid auto-cols-custom grid-cols-custom grid-rows-custom'>
 						<div className='node flex flex-col justify-between items-start'>
 							<div className='footer-column m-5 w-[50%]'>
+								<Image src={Logo} alt='Logo' className='w-[54px] rounded-md mb-3 bg-white'/>
 								<p>Starhealth - Empowering people through accessible healthcare data</p>
 							</div>
 
-							<div className='m-3 w-[40%] flex footer-social-wrapper justify-around items-center'>
+							<div className='m-1 w-[40%] flex footer-social-wrapper justify-around items-center'>
 								<Link href='https://www.facebook.com'>
 									<FaFacebookSquare size={30} />
 								</Link>
@@ -54,8 +56,8 @@ function Footer() {
 								<Link href='/' className='my-1 text-sm'>Contact</Link>
 							</div>
 							<div className='footer-column flex-col text-white grid grid-cols-1'>
-								<Link href='/' className='my-1 text-sm items-center mt-10'>Privacy Policy</Link>
-								<Link href='/' className='my-1 text-sm mb-10'>Terms of Use</Link>
+								<Link href='/' className='text-sm items-center mt-[3.35rem]'>Privacy Policy</Link>
+								<Link href='/' className='text-sm mb-10'>Terms of Use</Link>
 							</div>
 						</div>
 					</div>
@@ -64,7 +66,8 @@ function Footer() {
 						{/* <Link href='/'>
 							<Image src={'/images/Logo.png'} alt={'image'} className='h-8' width={125} height={10} />
 						</Link> */}
-						<div className=''>
+						
+						<div>
 							<p className=''>
 									StarHealth Inc. | All Rights Reserved 2022
 							</p>

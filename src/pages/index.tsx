@@ -40,6 +40,7 @@ import { FaPencilRuler, FaPaintBrush } from 'react-icons/fa';
 import { MdPedalBike, MdOutlineAirplanemodeActive } from 'react-icons/md';
 import { TbLayoutGridAdd } from 'react-icons/tb';
 import { BsCheck2 } from 'react-icons/bs';
+import Link from 'next/link';
 
 
 const features = [
@@ -56,9 +57,9 @@ const info = [
 ];
 
 const data = [
-  { label: '1,000,000+ Doctors', img: doctor },
-  { label: '3,000+ Companies', img: manufacturer },
-  { label: '$100,000,000+ Transactions', img: transactions },
+  { label: '1,000,000+ Doctors', img: doctor, linkparam: 'doctors' },
+  { label: '3,000+ Companies', img: manufacturer, linkparam: 'manufacturers' },
+  { label: '$100,000,000+ Transactions', img: transactions, linkparam: 'transactions' },
 ];
 
 const partners = [
@@ -68,10 +69,10 @@ const partners = [
 ];
 
 const understand = [
-  { label: 'Doctors', img: doctors },
-  { label: 'Companies', img: companies },
-  { label: 'States', img: states },
-  { label: 'Drugs', img: drugs },
+  { label: 'Doctors', img: doctors, linkparam: 'products' },
+  { label: 'Companies', img: companies, linkparam: 'products' },
+  { label: 'States', img: states, linkparam: 'products' },
+  { label: 'Drugs', img: drugs, linkparam: 'products' },
 ];
 
 const InfoSection = ({
@@ -79,15 +80,20 @@ const InfoSection = ({
   header,
   boxStyle,
   itemTextSpacing = false,
+	arrowButton = true,
   textColor,
 	textSize = 'sm:text-5xl',
+	linkable = false,
 }: {
-  items: { label: string; img?: StaticImageData }[];
+  items: { label: string; img?: StaticImageData; linkparam?:string; }[];
   header?: string;
   boxStyle?: string;
   textColor?: string;
   textSize?: string;
   itemTextSpacing?: boolean;
+  arrowButton?: boolean;
+  linkable?: boolean;
+
 }) => {
   return (
     <div
@@ -105,50 +111,89 @@ const InfoSection = ({
         </p>
       )}
 
+				<div className="mx-2 flex flex-row justify-around sm:mx-2">
+						{items.map((item, i) => (
 
+							// <div key={i} className='relative w-full gap-4 rounded-md bg-white px-6 py-12'>
+							
+								<div
+									className={`flex flex-col items-center border-bordercolor border-[1.5px] rounded-[6px] shadow-md relative w-full rounded-md bg-white px-6 py-8  ${
+										boxStyle ? "" : "rounded-lg bg-[#0e1936] "
+									} ${ itemTextSpacing ? 'h-[17.188rem]' : 'h-[13.8rem]'} 
+									p-1 sm:w-[27%] md:w-[25.5%] xl:w-[21%] sm:p-3`}
+									key={i}
+								>
+								{item.img && (
+									<>
+											{linkable ? (
+												<Link
+													href={{
+													pathname: '/directory',
+													query: { tab: item.linkparam },
+													}}>
+													<Image
+														src={item.img}
+														alt={item.label}
+														className=""
+														style={{ height: 185, width: 185 }}
+													/>
+												</Link>
 
-      <div className="mx-2 flex flex-row justify-around sm:mx-20">
-        {items.map((item, i) => (
+											) : (
+												<Image
+												src={item.img}
+												alt={item.label}
+												className=""
+												style={{ height: 185, width: 185 }}
+												/>
+											)}						
 
-						// <div key={i} className='relative w-full gap-4 rounded-md bg-white px-6 py-12'>
-						<div
-							className={`flex flex-col items-center border-bordercolor border-[1.5px] rounded-[6px] shadow-md relative w-full gap- rounded-md bg-white px-6 py-8  ${
-								boxStyle ? "" : "rounded-lg bg-[#0e1936] "
-							}   w-[25%] p-1 sm:w-[20%] h-[275px] sm:p-3`}
-							key={i}
-						>
-						{item.img && (
-              <>
-                {typeof window != "undefined" && window.screen.width > 640 ? (
-                  <Image
-                    src={item.img}
-                    alt={item.label}
-                    className=""
-                    style={{ height: 185, width: 185 }}
-                  />
-                ) : (
-                  <Image
-                    src={item.img}
-                    alt={item.label}
-										className="z-10"
-                    style={{ height: 185, width: 185 }}
-                  />
-                )}
-              </>
-            )}
-						<div className='group absolute bottom-0 translate-y-[2rem]'>
-							{boxStyle ? (<IoIosArrowDroprightCircle color='#0e1936' size={60}/>) : (<IoIosArrowDropright color='white' size={60} />)}
-						</div>
-            <p
-              className={`justify-center text-xs  font-semibold lg:text-lg ${
-                "text-" + textColor ?? "text-violet-700"
-              }          ${itemTextSpacing && "mt-0"}`}
-            >
-              {item.label}
-            </p>
-					</div>
+									</>
+								)}
+								{linkable ? (		
+									<Link
+									href={{
+									pathname: '/directory',
+									query: { tab: item.linkparam },
+									}}>						
+										<div className='group absolute bottom-0 translate-y-[2rem] translate-x-[-2rem]'>
+											{arrowButton ? (<IoIosArrowDroprightCircle color='#0e1936' size={60}/>) : ('')}
+										</div>
+									</Link>)
+									: (
+										<div className='group absolute bottom-0 translate-y-[2rem]'>
+										{arrowButton ? (<IoIosArrowDroprightCircle color='#0e1936' size={60}/>) : ('')}
+										</div>
+									)
+								}
 
-        ))}
+								{linkable ? (			
+									<Link
+									href={{
+									pathname: '/directory',
+									query: { tab: item.linkparam },
+									}}>					
+										<p
+											className={`justify-center text-xs  font-semibold lg:text-lg ${
+												"text-" + textColor ?? "text-violet-700"
+											}          ${itemTextSpacing && "mt-0"}`}
+										>
+										{item.label}
+										</p>
+									</Link>)
+								: (								
+									<p
+										className={`justify-center text-xs  font-semibold lg:text-lg ${
+											"text-" + textColor ?? "text-violet-700"
+										}          ${itemTextSpacing && "mt-0"}`}
+									>
+									{item.label}
+									</p>)
+								}
+
+							</div>
+
+						))}
       </div>
     </div>
   );
@@ -264,15 +309,18 @@ export default function Home() {
       <InfoSection
         items={data}
         header='StarHealth Data Directory'
+				arrowButton={false}
         textColor='font-custom'
 				boxStyle='bg-white'
         itemTextSpacing={true}
+				linkable={true}
       />
 			<InfoSection
         items={understand}
         textColor='font-custom'
 				boxStyle='bg-white'
 				itemTextSpacing={true}
+				linkable={true}
       />
 			<Divider />
       <InfoSection
@@ -280,7 +328,6 @@ export default function Home() {
         header='Data Partners'
         textColor='font-custom'
 				boxStyle='bg-white'
-				itemTextSpacing={true}
       />
 			<Divider />
 			{/* <div id='Features' className='section l4 wf-section text-customgrey [rgba(255, 255, 255, 0.65)] font-custom px-[80px] pt-[40px] pb-[150px]'>

@@ -38,28 +38,18 @@ function NavBar() {
 
   return (
     <>
-      <nav className={`bg-nav bg-[#010139] ${navigate.asPath === "/" ? "p-1" : "p-7"} relative`}>
+      <nav className={`bg-nav bg-[#010139] p-2 relative`}>
         <div className='flex-1 flex items-center'>
-          {navigate.asPath === '/' && (
-            <div className={``}>
-              <Link href={'/'}>
-                <Image src={'/images/Logo.png'} alt='logo' className='h-12' width={175} height={10} />
-              </Link>
-            </div>
-          )}
+					<div className={``}>
+						<Link href={'/'}>
+							<Image src={'/images/Logo.png'} alt='logo' className='h-12' width={175} height={10} />
+						</Link>
+					</div>
 
           <div
             style={{ position: 'absolute', left: 5 }}
             className='flex flex-row lg:ml-2 lg:max-w-[100px]  items-center'
           >
-            {navigate.asPath !== '/' && (
-              <>
-                <SearchPage
-                  buttonSmall
-                  buttonPlaceholder={(width <= 640) ? 'Search' : undefined}
-                />
-              </>
-            )}
           </div>
 
 					<div className='flex relative justify-center items-center'>
@@ -88,12 +78,10 @@ function NavBar() {
 						{/* <Link href='/' className='w-30 lg:w-22 text-white font-custom font-medium hover:text-blue-600 rounded px-3 py-1'>Clients</Link> */}
 
 
-						{navigate.asPath !== "/directory" && 
-							<Link href={"/directory"} className='w-30 lg:w-22 text-white font-custom font-medium hover:text-blue-300 
-							 rounded px-3 py-1'>
-								Data Directory
-							</Link>
-						}
+						<Link href={"/directory"} className='w-30 lg:w-22 text-white font-custom font-medium hover:text-blue-300 
+							rounded px-3 py-1'>
+							Data Directory
+						</Link>
 						<Link href='/' className='w-30 lg:w-22 text-white font-custom font-medium hover:text-blue-600 rounded px-3 py-1'>Contact</Link>	
 						{session?.data?.user ? (
               <button
