@@ -3,8 +3,9 @@ import { router, publicProcedure } from "../trpc";
 import _ from "lodash";
 import type { inferRouterOutputs } from "@trpc/server";
 import type { AppRouter } from "./_app";
-import { Prisma } from "@prisma/client";
+import { Prisma, Review } from "@prisma/client";
 import { filterDuplicateObjArr, filterDuplicates } from "../../../utils";
+import { useSession } from "next-auth/react";
 
 const directoryInput = z.object({
   subject: z.string(),
@@ -19,7 +20,7 @@ const directoryInput = z.object({
   productFilter: z.string().optional(),
   cursor: z.string().optional(),
   year: z.string().optional(),
-  rank: z.boolean().optional()
+  search: z.string().optional()
 
 })
 
@@ -139,6 +140,9 @@ export const db = router({
           lastName: true,
           city: true,
           state: true,
+          addressLine1: true,
+          specialty: true
+
         },
         take: 10,
       });
@@ -150,6 +154,16 @@ export const db = router({
             contains: search,
             mode: "insensitive",
           },
+        },
+        include: {
+          ManufacturerSummary: {
+            where: {
+              year: "ALL"
+            }
+          }
+        },
+        orderBy: {
+          rank: "asc"
         },
         
         take: 10,
@@ -167,8 +181,6 @@ export const db = router({
       
       }) 
       
-      console.log(doctors)
-
       return { doctors, manufacturers, products };
     }),
 
@@ -180,8 +192,6 @@ export const db = router({
       })
     )
     .query(async ({ ctx: { prisma }, input: { id, year } }) => {
-      console.log(id);
-      
       const doctor = await prisma.doctor.findFirst({
         where: { id },
         select: {
@@ -193,9 +203,13 @@ export const db = router({
             where: year ? { year } : undefined,
             take: 50,
           },
+          reviews: {
+            include: {
+              user: true,
+            },
+          }
         },
       });
-      console.log(doctor)
       const payments =
         doctor?.payments.filter((p) => !year || p.year === year) ?? [];
 
@@ -221,18 +235,9 @@ export const db = router({
         }))
         .value();
 
-      const reviews = await Promise.all(
-        doctor?.reviews?.map(async (review) => ({
-          ...review,
-          // TODO
-          // user: await getUser(review.createdBy).catch(() => {}),
-        })) ?? []
-      );
-
       return {
         ...doctor,
         payments,
-        reviews,
         totalAmount,
         topProducts,
         topManufacturers,
@@ -536,44 +541,8 @@ export const db = router({
     .input(directoryInput)
     .query(async ({ctx: {prisma}, input}) => {
       console.log(input);
-
-      const productArr = await prisma.product.findMany({
-        take: 10000
-      })
-
-      const allDocs = await prisma.doctor.findMany({
-        take: 10000
-      })
-
-      const allManus = await prisma.manufacturer.findMany({
-        take: 10000
-      })
-
-      const globalDocList = allDocs.map(item => {
-        return {
-          id: item.id,
-          fullName: `${item.firstName} ${item.lastName}`
-        }
-      })
-
-      const globalManufacturerList = allManus.map(item => {
-        return item.name
-      })
-
-      const productNameItems = productArr.map(item => {
-        return {
-          id: item.id,
-          name: item.name
-        }
-      }) 
       
-      const globalProdTypesList = productArr.map(item => {
-        return {
-          type: item.type,
-          category: item.category
-        }
-      })
-      
+
       if(input.subject.toLowerCase().trim() === "doctor"){
         const doctors = await prisma.doctor.findMany({
           where: {
@@ -593,7 +562,7 @@ export const db = router({
             ]  
           },
           cursor: {
-            id: input.cursor !== "" ? input.cursor : "1"
+            id: input.cursor ? input.cursor : "1"
           },
           take: 100
         });
@@ -626,19 +595,16 @@ export const db = router({
               }
             }
           },
-          cursor: {
-            id: input.cursor !== "" ? input.cursor : "100000000103"
+          orderBy: {
+            rank: "asc"
           },
-          take: 25
+          take: 100
         });
 
-        
+        const allYears = ["ALL", "2021", "2020", "2019", "2018", "2017","2016"]
 
-        if(input.rank){
-          manufacturers.sort((a,b) => b.ManufacturerSummary[0]?.totalAmount - a.ManufacturerSummary[0]?.totalAmount)
-        }
 
-        return {manufacturers}
+        return {manufacturers, allYears}
       }
 
       if(input.subject.toLowerCase() === "product"){
@@ -653,40 +619,21 @@ export const db = router({
               },
             ]
           },
-          include: {
-            StateItem: {
-              where: {
-                year: input.year
-              },
-              select: {
-                totalAmount: true,
-                transactionCount: true
-              }
-            }
-            
-          },
-          cursor: {
-            id: input.cursor !== "" ? input.cursor : "0000ad10-c8ad-4065-9fb9-fca779833fe2"
-          },
+          // cursor: {
+          //   id: input.cursor ? input.cursor : 
+          // },
           take: 100
         });
 
-        
-
-        //temp aggregation
-        products.forEach(item => {
-          let sum = 0;
-          let transactionSum = 0;
-          item.StateItem.forEach(stateItem => {
-            sum += stateItem.totalAmount
-            transactionSum += stateItem.transactionCount
-          })
-
-          item.sumTotal = {sum, transactionSum}
+        const productTypes = products.map(item => {
+          return {
+            type: item.type,
+            category: item.category
+          }
         })
 
 
-        return {products, productTypes: filterDuplicateObjArr(globalProdTypesList, "type")}
+        return {products, productTypes: filterDuplicateObjArr(productTypes, "type")}
       }
 
       if(input.subject === "payment"){
@@ -695,19 +642,37 @@ export const db = router({
           where: {
             AND: [
               {
-                doctorId: input.doctorFilter ? input.doctorFilter : {not: ""}
+                doctorId: input.doctorFilter !== '' ? input.doctorFilter : {not: ""}
               },
               {
-                manufacturerName: input.manufacturerFilter ? input.manufacturerFilter : {not: ''}
+                manufacturerId: input.manufacturerFilter !== '' ? input.manufacturerFilter : {not: ''}
               },
               {
-                productId: input.productFilter ? input.productFilter : {not: ""}
+                productId: input.productFilter !== '' ? input.productFilter : {not: ""}
+              },
+              {
+                product: {
+                  name: {
+                    startsWith: input.search ?? ""
+                  }
+                }
               }
             ]
           },
           include: {
-            manufacturer: true,
-            doctor: true,
+            manufacturer: {
+              select: {
+                name: true,
+                id: true
+              }
+            },
+            doctor: {
+              select: {
+                firstName: true,
+                lastName: true,
+                id: true
+              }
+            },
             product: {
               select: {
                 name: true,
@@ -716,33 +681,112 @@ export const db = router({
             }
           },
           cursor: {
-            id: input.cursor !== "" ? input.cursor : "345881410"
+            id: input.cursor ? input.cursor : "345881410"
           },
-          take: 50
+          take: 1000,
           
         })
+        
 
-        // const doctorNames = payments.map(item => {
-        //   return {
-        //     id: item.doctorId,
-        //     name: `${item.doctor.firstName} ${item.doctor.lastName}`
-        //   }
-        // })
+        let doctorNames = [];
+        let manufacturerNames = [];
+        let productNameList = [];
 
-        // const manufacturerNames = payments.map(item => {
-        //   return item.manufacturerName
-        // })
+        doctorNames = payments.map(item => {
+          return {
+            id: item.doctorId,
+            name: `${item.doctor.firstName} ${item.doctor.lastName}`
+          }
+        })
 
-        // const productNameList = payments.map(item => {
-        //   return {
-        //     id: item.productId,
-        //     name: item.product.name
-        //   }
-        // })
+        manufacturerNames = payments.map(item => {
+          return {
+            id: item.manufacturer.id,
+            name: item.manufacturer.name
+          }
+        })
+
+        productNameList = payments.map(item => {
+          return {
+            id: item.productId,
+            name: item.product.name
+          }
+        })
+        
+        
+        // if(input.doctorFilter || input.manufacturerFilter || input.productFilter){
+        //   doctorNames = payments.map(item => {
+        //     return {
+        //       id: item.doctorId,
+        //       name: `${item.doctor.firstName} ${item.doctor.lastName}`
+        //     }
+        //   })
+  
+        //   manufacturerNames = payments.map(item => {
+        //     return {
+        //       id: item.manufacturer.id,
+        //       name: item.manufacturer.name
+        //     }
+        //   })
+  
+        //   productNameList = payments.map(item => {
+        //     return {
+        //       id: item.productId,
+        //       name: item.product.name
+        //     }
+        //   })
+          
+        // } else {
+        //   const manufacturers = await prisma.manufacturer.findMany({
+        //     select: {
+        //       id: true,
+        //       name: true
+        //     },
+        //     take: 1000
+        //   })
+        //   const products = await prisma.product.findMany({
+        //     select: {
+        //       id: true,
+        //       name: true
+        //     },
+        //     take: 1000
+        //   })
+        //   const doctors = await prisma.doctor.findMany({
+        //     select: {
+        //       id: true,
+        //       firstName: true,
+        //       lastName: true
+        //     },
+        //     take: 1000
+        //   })
+
+        //   doctorNames = doctors.map(item => {
+        //     return {
+        //       id: item.id,
+        //       name: `${item.firstName} ${item.lastName}`
+        //     }
+        //   })
+  
+        //   manufacturerNames = manufacturers.map(item => {
+        //     return {
+        //       id: item.id,
+        //       name: item.name
+        //     }
+        //   })
+  
+        //   productNameList = products.map(item => {
+        //     return {
+        //       id: item.id,
+        //       name: item.name
+        //     }
+        //   })
+
+        // }
 
 
 
-        return {payments, manufacturerList: globalManufacturerList, doctorList: globalDocList, productNameItems: filterDuplicateObjArr(productNameItems, "id")}
+        return {payments, manufacturerList: filterDuplicateObjArr(manufacturerNames, "id"), doctorList: filterDuplicateObjArr(doctorNames, "id"), productNameList: filterDuplicateObjArr(productNameList, "id")}
+        // return {payments}
 
       }
 
@@ -776,13 +820,13 @@ export const db = router({
         return {manufacturerSummary}
       }
 
-      // const stateSummary = await prisma.payment.findMany({
-      //   include: {
-      //     doctor: true
-      //   },
+      const stateSummary = await prisma.payment.findMany({
+        include: {
+          doctor: true
+        },
         
-      //   take: 50
-      // })
+        take: 50
+      })
 
       // const paymentSummary = await prisma.payment.groupBy({
       //   by: ["doctorId", "amount"],
@@ -796,18 +840,136 @@ export const db = router({
       // })
       
       // else
-      return {}
+      return {stateSummary}
 
       
+    }),
+    nameList: publicProcedure.query(async ({ctx: {prisma}}) => {
+      let doctorNames = [];
+      let productNameList = [];
+      const manufacturers = await prisma.manufacturer.findMany({
+        where: {
+          payments: {none: undefined}
+        },
+        select: {
+          id: true,
+          name: true,
+        },
+        take: 1000
+      })
+      const products = await prisma.product.findMany({
+        select: {
+          id: true,
+          name: true
+        },
+        take: 1000
+      })
+      const doctors = await prisma.doctor.findMany({
+        select: {
+          id: true,
+          firstName: true,
+          lastName: true
+        },
+        take: 1000
+      })
+
+      doctorNames = doctors.map(item => {
+        return {
+          id: item.id,
+          name: `${item.firstName} ${item.lastName}`
+        }
+      })
+
+      // manufacturerNames = manufacturers.map(item => {
+      //   return {
+      //     id: item.id,
+      //     name: item.name
+      //   }
+      // })
+
+      // manufacturers.filter(item => {
+      //   return item.payments.length > 0
+      // })
+
+      
+      productNameList = products.map(item => {
+        return {
+          id: item.id,
+          name: item.name
+        }
+      })
+      
+      // testing out query to get accurate list items that have payment relationships
+      // const payments = await prisma.payment.findMany({
+      //   select: {
+      //     manufacturer: {
+      //       select: {
+      //         id: true,
+      //         name: true
+      //       }
+      //     }
+          
+      //   },
+      //   take: 5000
+      // })
+
+      // const manufacturers = payments.map(item => {
+      //   return {
+      //     id: item.manufacturer.id,
+      //     name: item.manufacturer.name
+      //   }
+      // })
+    
+     
+      
+        
+      return {doctorNames: filterDuplicateObjArr(doctorNames, "id"), manufacturerNames: filterDuplicateObjArr(manufacturers, "id"), productNameList: filterDuplicateObjArr(products, "id")}
+      // return {}
     })
+    ,
+
+    /**
+     * Add a review if a user can review a doctor (one per user per doctor)
+     * 
+     * @param doctorId the doctor to review
+     * @param rating the rating to give the doctor
+     * @param text the text of the review
+     * @returns the review that was created, or { error: string } if the user cannot review the doctor
+     */
+    addReview: publicProcedure
+    .input(z.object({
+      doctorId: z.string(),
+      rating: z.number(),
+      text: z.string(),
+    }))
+    .mutation(async ({ctx: {prisma, session}, input}) => {
+      const reviewInput: Prisma.ReviewUncheckedCreateInput = {
+        ...input,
+        createdBy: session?.user?.id || "anonymous",
+      }
+      const hasReviewed = await prisma.review.findFirst({
+        where: {
+          doctorId: input.doctorId,
+          createdBy: session?.user?.id,
+        }
+      });
+      if (hasReviewed) {
+        return { review: hasReviewed, error: "You have already reviewed this doctor." } as const;
+      }
+      const review = await prisma.review.create({
+        data: reviewInput,
+      });
+      return {review} as const;
+    }),
 });
 
-// TODO - consider moving these type defs
 type RouterOutput = inferRouterOutputs<AppRouter>;
 export type SearchResponse = RouterOutput["db"]["search"];
 export type DoctorResponse = RouterOutput["db"]["doctor"];
-export type DirectoryResponse = RouterOutput["db"]["directory"];
 export type ManufacturerResponse = RouterOutput["db"]["manufacturer"];
 export type StateResponse = RouterOutput["db"]["state"];
 export type AllStatesResponse = RouterOutput["db"]["allStates"];
 export type ProductResponse = RouterOutput["db"]["product"];
+export type DirectoryResponse = RouterOutput["db"]["directory"];
+export type NameListResponse = RouterOutput["db"]["nameList"];
+export type addReviewResponse = RouterOutput["db"]["addReview"];

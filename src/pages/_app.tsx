@@ -1,12 +1,11 @@
-import { type AppType } from "next/app";
-import { type Session } from "next-auth";
+import type { AppType } from "next/app";
+import type { Session } from "next-auth";
 import { SessionProvider } from "next-auth/react";
 
 import { trpc } from "../utils/trpc";
 
 import "../styles/globals.css";
-import { NavFoot } from "../components/NavFoot";
-
+import { NavFoot } from "../components/NavFoot"; 
 
 {/* <React.StrictMode>
     <BrowserRouter>
