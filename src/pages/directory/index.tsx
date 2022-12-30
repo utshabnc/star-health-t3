@@ -38,7 +38,7 @@ export default function Directory() {
     console.log("navigate", navigate);
     
     const [filterParams, setFilterParams] = useState<FilterParams>({
-      subject: navigate.query.tab as string ?? 'payment', 
+      subject: navigate.query.tab as string ?? 'payments', 
       state: '', 
       city: '', 
       zipCode: '', 
@@ -321,7 +321,7 @@ export default function Directory() {
                         setFilterParams(prev => {
                           return {
                             ...prev,
-                            subject: "payment",
+                            subject: "payments",
                             cursor: ""
 
                           }
@@ -341,7 +341,7 @@ export default function Directory() {
                         setFilterParams(prev => {
                           return {
                             ...prev,
-                            subject: "manufacturer",
+                            subject: "manufacturers",
                             cursor: ""
 
                           }
@@ -359,7 +359,7 @@ export default function Directory() {
                         setFilterParams(prev => {
                           return {
                             ...prev,
-                            subject: "doctor",
+                            subject: "doctors",
                             cursor: ""
 
 
@@ -378,7 +378,7 @@ export default function Directory() {
                         setFilterParams(prev => {
                           return {
                             ...prev,
-                            subject: "product",
+                            subject: "products",
                             cursor: ""
 
 
@@ -428,7 +428,7 @@ export default function Directory() {
                           />
                           
                           <div className='flex flex-col ml-5 items-center'>
-                            {filterParams.subject === "payment" && <div className='mb-4 w-80 mt-5'>
+                            {filterParams.subject === "payments" && <div className='mb-4 w-80 mt-5'>
                               <div className="slider relative h-1 rounded-md bg-violet-100">
                                 <div ref={progressRef} className="progress absolute h-2  rounded">
                                   
@@ -490,7 +490,7 @@ export default function Directory() {
                             </div> */}
                             
                           </div>
-                          {filterParams.subject === "payment" && <div className='flex gap-5 text-violet-400'>
+                          {filterParams.subject === "payments" && <div className='flex gap-5 text-violet-400'>
                             <p>{formatMoney(filterParams.price.min)}</p>
                             <p>To</p>
                             <p>{formatMoney(filterParams.price.max)}</p>
