@@ -744,7 +744,7 @@ export const db = router({
         return {products, productTypes: filterDuplicateObjArr(productTypes, "type")}
       }
 
-      if(input.subject === "payments"){
+      if(input.subject === "transactions"){
                 
         const payments = await prisma.payment.findMany({
           where: {
