@@ -57,9 +57,9 @@ const info = [
 ];
 
 const data = [
-  { label: '1,000,000+ Doctors', img: doctor, linkparam: 'doctors' },
-  { label: '3,000+ Companies', img: manufacturer, linkparam: 'manufacturers' },
-  { label: '$100,000,000+ Transactions', img: transactions, linkparam: 'transactions' },
+  { label: '1,000,000+ Doctors', img: doctor },
+  { label: '3,000+ Companies', img: manufacturer },
+  { label: '$100,000,000+ Transactions', img: transactions },
 ];
 
 const partners = [
@@ -69,9 +69,9 @@ const partners = [
 ];
 
 const understand = [
-  { label: 'Doctors', img: doctors, linkparam: 'products' },
-  { label: 'Companies', img: companies, linkparam: 'products' },
-  { label: 'States', img: states, linkparam: 'products' },
+  { label: 'Doctors', img: doctors, linkparam: 'doctors' },
+  { label: 'Companies', img: companies, linkparam: 'manufacturers' },
+  { label: 'States', img: states, linkparam: '' },
   { label: 'Drugs', img: drugs, linkparam: 'products' },
 ];
 
@@ -128,7 +128,7 @@ const InfoSection = ({
 											{linkable ? (
 												<Link
 													href={{
-													pathname: '/directory',
+													pathname: item.linkparam != '' ? '/directory' : '/',
 													query: { tab: item.linkparam },
 													}}>
 													<Image
@@ -313,7 +313,6 @@ export default function Home() {
         textColor='font-custom'
 				boxStyle='bg-white'
         itemTextSpacing={true}
-				linkable={true}
       />
 			<InfoSection
         items={understand}

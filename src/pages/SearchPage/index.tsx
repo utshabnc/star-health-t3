@@ -121,7 +121,7 @@ const SearchPage = ({ buttonPlaceholder, buttonSmall }: Props) => {
         }
         className={`
               ${buttonSmall ? "max-w-[160px]" : ""}
-							 w-[390px] h-10 mx-4 px-[2.2rem] rounded-full
+							 w-[390px] h-[2.488rem] mx-4 px-[2.2rem] rounded-full
                `}
         value={search}
         onChange={(e) => setSearch(e.target.value)}
