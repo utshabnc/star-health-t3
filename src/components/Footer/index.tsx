@@ -31,11 +31,16 @@ function Footer() {
 					<div className='font-custom text-white grid auto-cols-custom grid-cols-custom grid-rows-custom'>
 						<div className='node flex flex-col justify-between items-start'>
 							<div className='footer-column m-5 w-[50%]'>
-								<Image src={Logo} alt='Logo' className='w-[54px] rounded-md mb-3 bg-white'/>
-								<p>Starhealth - Empowering people through accessible healthcare data</p>
+								<Link
+								href={{
+								pathname: '/'
+								}}>
+									<Image src={Logo} alt='Logo' className='ml-[-1.5rem] w-[100px] rounded-md '/>
+								</Link>
+								<p className='leading-relaxed'>Empowering people through accessible healthcare data</p>
 							</div>
 
-							<div className='m-1 w-[40%] flex footer-social-wrapper justify-around items-center'>
+							<div className='m-1 mt-2 w-[40%] flex footer-social-wrapper justify-around items-center'>
 								<Link href='https://www.facebook.com'>
 									<FaFacebookSquare size={30} />
 								</Link>
@@ -48,7 +53,7 @@ function Footer() {
 							</div>
 						</div>
 
-						<div className='node mt-2 grid auto-cols-custom grid-cols-custom2 grid-rows-custom'>
+						<div className='node mt-3 grid auto-cols-custom grid-cols-custom2 grid-rows-custom'>
 							<div className='footer-column flex-col text-white grid grid-cols-1 items-start justify-between'>
 								<div className='footer-title mb-2.5 font-bold'>Company</div>
 								<Link href='/' className='my-1 text-sm'>Home</Link>
@@ -56,8 +61,8 @@ function Footer() {
 								<Link href='/' className='my-1 text-sm'>Contact</Link>
 							</div>
 							<div className='footer-column flex-col text-white grid grid-cols-1'>
-								<Link href='/' className='text-sm items-center mt-[3.35rem]'>Privacy Policy</Link>
-								<Link href='/' className='text-sm mb-10'>Terms of Use</Link>
+								<Link href='/' className='text-sm items-center mt-[3.9rem]'>Privacy Policy</Link>
+								<Link href='/' className='text-sm mb-12'>Terms of Use</Link>
 							</div>
 						</div>
 					</div>

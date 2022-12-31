@@ -7,7 +7,7 @@ const addAlpha = (color: string, opacity: number): string => {
 };
 
 const colorGradient = (idx: number) =>
-  addAlpha('#4F2FED', Math.max(1 - (1 + idx) * 0.08, 0.1));
+  addAlpha('#d4ed2f', Math.max(1 - (1 + idx) * 0.08, 0.1));
 
 const availableYears = [2021, 2020, 2019, 2018, 2017, 2016];
 
