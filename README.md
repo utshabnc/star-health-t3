@@ -7,11 +7,24 @@ Star Health is a public data analytics platform focused on healthcare. It strive
 ![screenshot](public/images/ScreenGrabHomepage.png)
 
 
+## Sections
+- [Architecture](#architecture)
+- [App](#app)
+- [Quick Start](#quick-start)
+- [Development](#development)
+    - [File Structure](#file-structure)
+    - [Rough Developer Workflow](#rough-developer-workflow)
+- [Migration from GCP](#migration-from-gcp)
+    - [Legacy Architecture](#legacy-architecture)
+    - [Current Architecture](#current-architecture)
+- [Data Migration](#repeatable-steps-for-migrating-data---the-manual-way)
+- [Additional Resources](#additional-resources)
+
 
 ## Architecture
 
 The platform consists of:
-- [Next.js](https://nextjs.org/) app housed on [GitHub](https://github.com/nedink/star-health-t3) and hosted on [Vercel](https://vercel.com/), described [below](#app)
+- [Next.js](https://nextjs.org/) app housed on [GitHub](https://github.com/utshabnc/star-health-t3) and hosted on [Vercel](https://vercel.com/), described [below](#app)
 - [PostgreSQL](https://www.postgresql.org/) [database](https://console.cloud.google.com/sql/instances/starhealth/overview?project=starhealth-io)
 - [Google Authentication](https://firebase.google.com/docs/auth)
 - [Google Cloud Platform project](https://console.cloud.google.com/welcome?project=starhealth-io)
@@ -45,7 +58,7 @@ To learn more about the [T3 Stack](https://create.t3.gg/), take a look at the fo
 
 1. Clone the project and navigate into it.
 ```
-git clone https://github.com/nedink/star-health-t3.git
+git clone https://github.com/utshabnc/star-health-t3.git
 
 cd star-health-t3/
 ```
@@ -107,7 +120,7 @@ root
 
 1. After you commit, watch for the result of the build process for the `preview` deployment in Vercel. If the build fails, review the log output and debug until the build is successful. 
 
-1. Open a [pull request](https://github.com/nedink/star-health-t3/pulls) to `main` and request review from a teammate.
+1. Open a [pull request](https://github.com/utshabnc/star-health-t3/pulls) to `main` and request review from a teammate.
 
 1. On merges/changes to `main`, the app will be deployed to `production`. Make sure the build is successful here as well.
     > Unless otherwise instructed, you are responsible for seeing your changes through to production. Likewise, your team is responsible for reviewing your changes and helping to move them forward.
@@ -142,7 +155,7 @@ Steps we took to migrate the data to a new schema (as of Dec 19 '22):
 1. Set your `DATABASE_URL` in your local `.env` to point to the new database.
 1. At the root of the project run `npx prisma db push` to update the remote database. This adds the tables + relationships defined in the schema file. If any potential for data loss, this command will throw an error. [Documentation](https://www.prisma.io/docs/concepts/components/prisma-migrate/db-push)
 1. Download/export the data from the old database as CSV files ([pgAdmin](https://www.pgadmin.org/) among others will let you do this) - make sure that you set it to use the double-quote `"` for both the __Quote__ and __Escape__ characters in export options.
-1. Use scripts to transform this data into files that match the tables in the new schema. [Some scripts to help with this](https://github.com/nedink/csv-scripts)
+1. Use scripts to transform this data into files that match the tables in the new schema.
 1. Copy your updated CSV files into the new database you created. For example, you can use `psql` and the `\copy` command:
     ```
     psql -h '[db host/IP]' -p [5432] -d dbname -U username -W
