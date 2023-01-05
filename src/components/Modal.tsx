@@ -1,6 +1,6 @@
 /**
  * Simple modal that can be used to display a message to the user.
- * 
+ *
  * @param open Whether the modal should be open or not
  * @param message The message to display to the user
  * @param onClose The function to call when the user closes the modal

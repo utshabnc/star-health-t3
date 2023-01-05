@@ -58,7 +58,7 @@ const Reviews = ({ reviews }: Props) => {
                     editing={false}
                     value={data.rating}
                     starCount={5}
-                    starColor='#ffd700'
+                    starColor="#ffd700"
                   />
                 </div>
 

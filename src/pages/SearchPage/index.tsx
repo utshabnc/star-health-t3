@@ -95,11 +95,14 @@ const SearchPage = ({ buttonPlaceholder, buttonSmall }: Props) => {
             ),
             // products
             ...searchResults?.products
-              .filter((product) => product.type && product.type.toLowerCase() === "drug") // TODO - enable other products when we have somewhere to display them
+              .filter(
+                (product) =>
+                  product.type && product.type.toLowerCase() === "drug"
+              ) // TODO - enable other products when we have somewhere to display them
               .map(({ id, name }) => ({
                 id: id,
-                name: name ?? '',
-                location: '',
+                name: name ?? "",
+                location: "",
                 type: "drug" as const,
               })),
           ]}
@@ -121,7 +124,7 @@ const SearchPage = ({ buttonPlaceholder, buttonSmall }: Props) => {
         }
         className={`
               ${buttonSmall ? "max-w-[160px]" : ""}
-							 w-[390px] h-[2.488rem] mx-4 px-[2.2rem] rounded-full
+							 mx-4 h-[2.488rem] w-[390px] rounded-full px-[2.2rem]
                `}
         value={search}
         onChange={(e) => setSearch(e.target.value)}

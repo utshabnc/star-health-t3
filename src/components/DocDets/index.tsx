@@ -1,11 +1,16 @@
-import { Menu, Transition } from '@headlessui/react';
-import { ChevronDownIcon } from '@heroicons/react/solid';
-import ReactStars from 'react-star-rating-component';
-import { Fragment, useEffect, useState } from 'react';
-import { availableYears, formatMoney, formatName, formatNumber } from '../../utils';
-import _ from 'lodash';
-import type { DoctorResponse } from '../../server/trpc/router/db';
-import Link from 'next/link';
+import { Menu, Transition } from "@headlessui/react";
+import { ChevronDownIcon } from "@heroicons/react/solid";
+import ReactStars from "react-star-rating-component";
+import { Fragment, useEffect, useState } from "react";
+import {
+  availableYears,
+  formatMoney,
+  formatName,
+  formatNumber,
+} from "../../utils";
+import _ from "lodash";
+import type { DoctorResponse } from "../../server/trpc/router/db";
+import Link from "next/link";
 
 interface DocSchema {
   doctor: DoctorResponse;
@@ -14,7 +19,7 @@ interface DocSchema {
 }
 
 function classNames(...classes: string[]) {
-  return classes.filter(Boolean).join(' ');
+  return classes.filter(Boolean).join(" ");
 }
 
 const NUM_DOCTORS = 1267275;
@@ -26,9 +31,7 @@ export const DocDets = ({ doctor, onChangeYear }: DocSchema) => {
     onChangeYear(year == 0 ? undefined : year);
   }, [year]);
 
-  const numStars = _.mean(
-    doctor.reviews?.map((review) => review.rating)
-  );
+  const numStars = _.mean(doctor.reviews?.map((review) => review.rating));
 
   const numReviews = doctor.reviews?.length ?? 0;
 
@@ -39,22 +42,24 @@ export const DocDets = ({ doctor, onChangeYear }: DocSchema) => {
           {formatName(doctor.firstName + " " + doctor.lastName)}
         </p>
         <div className="flex flex-row items-center space-x-2">
-          { numReviews > 0 ?
+          {numReviews > 0 ? (
             <ReactStars
               name="rating"
               editing={false}
               value={numStars}
               starCount={5}
-              starColor='#ffd700'
-            /> : <><i className='text-black/50'>No Reviews</i></>
-          }
+              starColor="#ffd700"
+            />
+          ) : (
+            <>
+              <i className="text-black/50">No Reviews</i>
+            </>
+          )}
           <div className="flex flex-row items-center">
             <p className="ml-2 text-sm font-bold text-gray-900 dark:text-white">
-              {isNaN(numStars) ? '' : numStars.toFixed(1)}
+              {isNaN(numStars) ? "" : numStars.toFixed(1)}
             </p>
-            {!isNaN(numStars) && (
-              <span className='w-1 h-1 mx-1.5'></span>
-            )}
+            {!isNaN(numStars) && <span className="mx-1.5 h-1 w-1"></span>}
             {/* <Link href={`/doctor/${doctor.id}/reviews`} legacyBehavior>
               <a className='text-sm font-medium text-gray-900 underline hover:no-underline dark:text-white'>
                 {numReviews} {numReviews === 1 ? 'review' : 'reviews'}
@@ -80,9 +85,7 @@ export const DocDets = ({ doctor, onChangeYear }: DocSchema) => {
           <div className="flex">
             <div className="flex flex-row text-lg font-semibold">
               Payments for:&nbsp;
-              <div className="text-violet-700">
-                {year || "All Years"}
-              </div>
+              <div className="text-violet-700">{year || "All Years"}</div>
             </div>
             <Menu as="div" className="relative text-left">
               <div>
@@ -147,7 +150,9 @@ export const DocDets = ({ doctor, onChangeYear }: DocSchema) => {
           <div className="flex">
             <p className="flex text-lg font-semibold text-gray-800">
               Pay from Manufacturers:&nbsp;
-              <p className="text-violet-700">{formatMoney(doctor.totalAmount)}</p>
+              <p className="text-violet-700">
+                {formatMoney(doctor.totalAmount)}
+              </p>
             </p>
           </div>
         </div>

@@ -4,7 +4,7 @@ const options = [{ name: "Doctors" }, { name: "Manufacturers" }];
 
 function SearchBar() {
   const [inputText, setInputText] = useState("Search Doctors/Companies");
-  const inputHandler = (e: { target: { value: string; }; }) => {
+  const inputHandler = (e: { target: { value: string } }) => {
     //convert input text to lower case
     const text = e.target.value;
     setInputText(text);
@@ -12,17 +12,17 @@ function SearchBar() {
 
   return (
     <>
-      <div className="flex flex-row h-10">
+      <div className="flex h-10 flex-row">
         <input
           type="text"
           onChange={inputHandler}
-          className="focus:ring-purple-400 focus:border-purple-400 block w-full pl-3 pr-3 text-md border-gray-300 rounded-md"
+          className="text-md block w-full rounded-md border-gray-300 pl-3 pr-3 focus:border-purple-400 focus:ring-purple-400"
           placeholder={inputText}
         />
         <button
           type="button"
           onClick={undefined}
-          className="flex px-6 py-2.5 bg-purple-400 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-purple-600 hover:shadow-lg focus:shadow-lg focus:outline-none focus:ring-0 active:bg-purple-800 active:shadow-lg transition duration-150 ease-in-out"
+          className="flex rounded bg-purple-400 px-6 py-2.5 text-xs font-medium uppercase leading-tight text-white shadow-md transition duration-150 ease-in-out hover:bg-purple-600 hover:shadow-lg focus:shadow-lg focus:outline-none focus:ring-0 active:bg-purple-800 active:shadow-lg"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"

@@ -11,9 +11,14 @@ const getBaseUrl = () => {
 
   // const [window, setWindow] = useState('')
   // useEffect(() => setColor('red'), [])
-  if (process.env.NEXT_PUBLIC_VERCEL_ENV === "production" && process.env.NEXT_PUBLIC_URL) return `https://${process.env.NEXT_PUBLIC_URL}`; // browser should use custom domain in production
+  if (
+    process.env.NEXT_PUBLIC_VERCEL_ENV === "production" &&
+    process.env.NEXT_PUBLIC_URL
+  )
+    return `https://${process.env.NEXT_PUBLIC_URL}`; // browser should use custom domain in production
   if (process.env.VERCEL_URL) return `https://${process.env.VERCEL_URL}`; // SSR should use vercel url
-  if (process.env.NEXT_PUBLIC_VERCEL_URL) return `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`; // TODO - Find out why we have to hack it like this; it should not be necessary
+  if (process.env.NEXT_PUBLIC_VERCEL_URL)
+    return `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`; // TODO - Find out why we have to hack it like this; it should not be necessary
   return `http://localhost:${process.env.PORT ?? 3000}`; // dev SSR should use localhost
 };
 
