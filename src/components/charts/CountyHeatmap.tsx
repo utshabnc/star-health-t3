@@ -92,7 +92,7 @@ type Props = {
 
 const colorRange = [0, 1, 2, 4, 5, 6, 7, 8, 9, 10].map(colorGradient).reverse();
 
-const CountyHeatmap = (props: Props) => {
+export const CountyHeatmap = (props: Props) => {
   const [tooltipContent, setTooltipContent] = useState("");
   return (
     <>
@@ -252,4 +252,4 @@ const Map = ({ state, data, width, height, setTooltipContent }: Props) => {
   );
 };
 
-export default CountyHeatmap;
+

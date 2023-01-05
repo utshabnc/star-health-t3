@@ -53,7 +53,7 @@ const features = [
 ];
 
 const info = [
-  { label: "API", img: api, linkparam: "Api" },
+  { label: "API", img: api, linkparam: "/" },
   {
     label: "Ratings & Reviews",
     img: ratings_and_reviews,
