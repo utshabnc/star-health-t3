@@ -138,8 +138,8 @@ const InfoSection = ({
 									p-1 sm:w-[27%] sm:p-3 md:w-[25.5%] xl:w-[21%]`}
             key={i}
           >
-          {item.img &&
-            item.linkparam === "doctors" ||
+
+            {item.linkparam === "doctors" ||
             item.linkparam === "manufacturers" ||
             item.linkparam === "products" ? (
               <>
@@ -151,12 +151,12 @@ const InfoSection = ({
                     query: { tab: item.linkparam },
                   }}
                 >
-                  <Image
+                {item.img &&  <Image
                     src={item.img}
                     alt={item.label}
                     className=""
                     style={{ height: 185, width: 185 }}
-                  />
+                  />}
                 </Link>
 
                 <Link
