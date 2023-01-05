@@ -63,9 +63,9 @@ const info = [
 ];
 
 const data = [
-  { label: "1,000,000+ Doctors", img: doctor },
-  { label: "3,000+ Companies", img: manufacturer },
-  { label: "$100,000,000+ Transactions", img: transactions },
+  { label: "1,000,000+ Doctors", img: doctor, linkparam: "doctors" },
+  { label: "3,000+ Companies", img: manufacturer, linkparam: "manufacturers" },
+  { label: "$100,000,000+ Transactions", img: transactions, linkparam: "products" },
 ];
 
 const partners = [
@@ -80,18 +80,6 @@ const understand = [
   { label: "States", img: states, linkparam: "Map" },
   { label: "Drugs", img: drugs, linkparam: "products" },
 ];
-
-function useQueryParam(linkparam: string) {
-  if (
-    linkparam === "doctors" ||
-    linkparam === "manufacturers" ||
-    linkparam === "products"
-  ) {
-    return true;
-  } else {
-    return false;
-  }
-}
 
 function returnParam(linkparam: string) {
   console.log(linkparam, "hit link param");
