@@ -1,9 +1,9 @@
 const CareRecommender = () => {
-    return (
-        <>
-        <p>Care Recommender</p>
-        </>
-    )
-}
+  return (
+    <>
+      <p>Care Recommender</p>
+    </>
+  );
+};
 
-export default CareRecommender
+export default CareRecommender;

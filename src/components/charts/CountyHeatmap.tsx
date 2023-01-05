@@ -251,5 +251,3 @@ const Map = ({ state, data, width, height, setTooltipContent }: Props) => {
     </div>
   );
 };
-
-

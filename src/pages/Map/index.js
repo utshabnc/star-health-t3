@@ -1,10 +1,9 @@
-
 const Map = () => {
-    return (
-        <>
-        <p>map!</p>
-        </>
-    )
-}
+  return (
+    <>
+      <p>map!</p>
+    </>
+  );
+};
 
-export default Map
+export default Map;

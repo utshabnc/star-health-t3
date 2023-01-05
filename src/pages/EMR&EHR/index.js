@@ -1,9 +1,9 @@
 const EmrForm = () => {
-    return (
-        <>
-        <p>EmrForm</p>
-        </>
-    )
-}
+  return (
+    <>
+      <p>EmrForm</p>
+    </>
+  );
+};
 
-export default EmrForm
+export default EmrForm;

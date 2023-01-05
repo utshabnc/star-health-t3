@@ -65,7 +65,11 @@ const info = [
 const data = [
   { label: "1,000,000+ Doctors", img: doctor, linkparam: "doctors" },
   { label: "3,000+ Companies", img: manufacturer, linkparam: "manufacturers" },
-  { label: "$100,000,000+ Transactions", img: transactions, linkparam: "products" },
+  {
+    label: "$100,000,000+ Transactions",
+    img: transactions,
+    linkparam: "products",
+  },
 ];
 
 const partners = [
@@ -138,7 +142,6 @@ const InfoSection = ({
 									p-1 sm:w-[27%] sm:p-3 md:w-[25.5%] xl:w-[21%]`}
             key={i}
           >
-
             {item.linkparam === "doctors" ||
             item.linkparam === "manufacturers" ||
             item.linkparam === "products" ? (
@@ -151,12 +154,14 @@ const InfoSection = ({
                     query: { tab: item.linkparam },
                   }}
                 >
-                {item.img &&  <Image
-                    src={item.img}
-                    alt={item.label}
-                    className=""
-                    style={{ height: 185, width: 185 }}
-                  />}
+                  {item.img && (
+                    <Image
+                      src={item.img}
+                      alt={item.label}
+                      className=""
+                      style={{ height: 185, width: 185 }}
+                    />
+                  )}
                 </Link>
 
                 <Link
@@ -203,12 +208,14 @@ const InfoSection = ({
                       : "/",
                   }}
                 >
-                  <Image
-                    src={item.img}
-                    alt={item.label}
-                    className=""
-                    style={{ height: 185, width: 185 }}
-                  />
+                  {item.img && (
+                    <Image
+                      src={item.img}
+                      alt={item.label}
+                      className=""
+                      style={{ height: 185, width: 185 }}
+                    />
+                  )}
                 </Link>
                 <Link
                   href={{

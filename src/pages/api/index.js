@@ -1,9 +1,9 @@
 const Api = () => {
-    return (
-        <>
-        <p>Api</p>
-        </>
-    )
-}
+  return (
+    <>
+      <p>Api</p>
+    </>
+  );
+};
 
-export default Api
+export default Api;

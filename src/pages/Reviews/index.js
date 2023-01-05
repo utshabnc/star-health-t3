@@ -1,9 +1,9 @@
 const Reviews = () => {
-    return (
-        <>
-        <p>Ratings and Reviews</p>
-        </>
-    )
-}
+  return (
+    <>
+      <p>Ratings and Reviews</p>
+    </>
+  );
+};
 
-export default Reviews
+export default Reviews;
