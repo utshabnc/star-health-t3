@@ -366,7 +366,6 @@ export default function Home() {
         textColor="font-custom"
         boxStyle="bg-white"
         itemTextSpacing={true}
-        linkable={true}
       />
       <Divider />
       <InfoSection
