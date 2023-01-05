@@ -138,7 +138,8 @@ const InfoSection = ({
 									p-1 sm:w-[27%] sm:p-3 md:w-[25.5%] xl:w-[21%]`}
             key={i}
           >
-            {item.linkparam === "doctors" ||
+          {item.img &&
+            item.linkparam === "doctors" ||
             item.linkparam === "manufacturers" ||
             item.linkparam === "products" ? (
               <>
