@@ -5,9 +5,10 @@ import { SessionProvider } from "next-auth/react";
 import { trpc } from "../utils/trpc";
 
 import "../styles/globals.css";
-import { NavFoot } from "../components/NavFoot"; 
+import { NavFoot } from "../components/NavFoot";
 
-{/* <React.StrictMode>
+{
+  /* <React.StrictMode>
     <BrowserRouter>
       <NavFoot>
         <Routes>
@@ -20,7 +21,8 @@ import { NavFoot } from "../components/NavFoot";
         </Routes>
       </NavFoot>
     </BrowserRouter>
-  </React.StrictMode> */}
+  </React.StrictMode> */
+}
 
 const MyApp: AppType<{ session: Session | null }> = ({
   Component,
@@ -31,7 +33,6 @@ const MyApp: AppType<{ session: Session | null }> = ({
       <NavFoot>
         <Component {...pageProps} />
       </NavFoot>
-
     </SessionProvider>
   );
 };

@@ -40,7 +40,6 @@ export const StateDets = ({
 }: StateSchema) => {
   const d = new Date();
 
-  console.log("S", state.summaryRank);
   return (
     <>
       <div className="flex flex-col justify-end lg:px-24">

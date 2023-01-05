@@ -8,11 +8,11 @@ import { useSession } from "next-auth/react";
 import type { DoctorResponse } from "../../server/trpc/router/db";
 
 type Props = {
-  doctor: DoctorResponse
-  doctorRefetch: () => void
+  doctor: DoctorResponse;
+  doctorRefetch: () => void;
 };
 
-const DoctorReviews = ({doctor, doctorRefetch: doctorRefetch}: Props) => {
+const DoctorReviews = ({ doctor, doctorRefetch: doctorRefetch }: Props) => {
   const navigate = useRouter();
   const { data: session, status: sessionStatus } = useSession();
   const [showModal, setShowModal] = useState(false);
@@ -23,7 +23,7 @@ const DoctorReviews = ({doctor, doctorRefetch: doctorRefetch}: Props) => {
 
   const onSubmitReview = () => {
     if (!session?.user || sessionStatus !== "authenticated") {
-      setModalMessage("You must be signed in to leave a review.")
+      setModalMessage("You must be signed in to leave a review.");
       setShowModal(true);
       return;
     }
@@ -33,14 +33,14 @@ const DoctorReviews = ({doctor, doctorRefetch: doctorRefetch}: Props) => {
         text: reviewText,
         rating: reviewStars,
       })
-      .then(({error}) => {
+      .then(({ error }) => {
         if (error) {
-          setModalMessage(error)
+          setModalMessage(error);
           setShowModal(true);
           return;
         }
         doctorRefetch();
-       })
+      });
   };
 
   if (!doctor) {
@@ -117,7 +117,11 @@ const DoctorReviews = ({doctor, doctorRefetch: doctorRefetch}: Props) => {
   return (
     <>
       <div className="">
-        <Modal open={showModal} onClose={() => setShowModal(false)} message={modalMessage}/>
+        <Modal
+          open={showModal}
+          onClose={() => setShowModal(false)}
+          message={modalMessage}
+        />
         <div className="rounded bg-white sm:p-5">
           <div className="flex flex-row">
             {doctor == null && (

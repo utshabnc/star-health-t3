@@ -1,9 +1,7 @@
-import {
-  useState,
-} from "react";
+import { useState } from "react";
 import { DocDets } from "../../components/DocDets";
 import ReviewForm from "../../components/ReviewForm";
-import Reviews from '../../components/Reviews';
+import Reviews from "../../components/Reviews";
 import {
   formatMoney,
   formatName,
@@ -16,17 +14,23 @@ import DoctorReviews from "../DoctorReviews";
 import { useRouter } from "next/router";
 import { trpc } from "../../utils/trpc";
 
-
 const DoctorDetails = () => {
   const navigate = useRouter();
   const id = navigate.query.id as string;
   const [year, setYear] = useState<string>();
-  const { data: doctor, isLoading: isDoctorLoading, refetch: doctorRefetch } = trpc.db.doctor.useQuery({ id, year: (year? year + '' : '') }, {
-    keepPreviousData: true,
-  });
+  const {
+    data: doctor,
+    isLoading: isDoctorLoading,
+    refetch: doctorRefetch,
+  } = trpc.db.doctor.useQuery(
+    { id, year: year ? year + "" : "" },
+    {
+      keepPreviousData: true,
+    }
+  );
   const addReview = trpc.db.addReview.useMutation();
 
-  const [reviewText, setReviewText] = useState('');
+  const [reviewText, setReviewText] = useState("");
   const [reviewStars, setReviewStars] = useState(5);
 
   if (!doctor || isDoctorLoading) {
@@ -175,7 +179,8 @@ const DoctorDetails = () => {
                         key={id}
                         className="text-center text-sm sm:text-base "
                       >
-                        {typeof window != 'undefined' && window.screen.width > 1000 &&
+                        {typeof window != "undefined" &&
+                          window.screen.width > 1000 &&
                           `${formatProductName(name)}: ${formatMoney(amount)}`}
                       </li>
                     );
@@ -196,7 +201,11 @@ const DoctorDetails = () => {
                         key={`${product.productName}-${idx}`}
                         className="text-center text-sm sm:text-base "
                       >
-                        {`${formatProductType(product.type)}: ${formatProductName(product.productName)} (${product.count})`}
+                        {`${formatProductType(
+                          product.type
+                        )}: ${formatProductName(product.productName)} (${
+                          product.count
+                        })`}
                       </li>
                     );
                   })}
@@ -224,7 +233,7 @@ const DoctorDetails = () => {
             <div
               style={{
                 maxHeight:
-                  (typeof window != 'undefined' && window.screen.width > 640)
+                  typeof window != "undefined" && window.screen.width > 640
                     ? Math.ceil(screen.width * 0.24)
                     : undefined,
               }}

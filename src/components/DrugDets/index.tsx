@@ -1,11 +1,15 @@
-import { Menu, Transition } from '@headlessui/react';
-import { ChevronDownIcon } from '@heroicons/react/solid';
+import { Menu, Transition } from "@headlessui/react";
+import { ChevronDownIcon } from "@heroicons/react/solid";
 // import ReactStars from 'react-rating-stars-component';
-import { Fragment, SetStateAction, useEffect, useState } from 'react';
-import { availableYears, formatMoney, formatName, formatNumber } from '../../utils';
-import _ from 'lodash';
-import type { ProductResponse } from '../../server/trpc/router/db';
-
+import { Fragment, SetStateAction, useEffect, useState } from "react";
+import {
+  availableYears,
+  formatMoney,
+  formatName,
+  formatNumber,
+} from "../../utils";
+import _ from "lodash";
+import type { ProductResponse } from "../../server/trpc/router/db";
 
 interface DrugSchema {
   drug: ProductResponse;
@@ -14,7 +18,7 @@ interface DrugSchema {
 }
 
 function classNames(...classes: string[]) {
-  return classes.filter(Boolean).join(' ');
+  return classes.filter(Boolean).join(" ");
 }
 
 export const DrugDets = ({ drug, onChangeYear }: DrugSchema) => {
@@ -38,9 +42,7 @@ export const DrugDets = ({ drug, onChangeYear }: DrugSchema) => {
           <div className="flex">
             <div className="flex flex-row text-lg font-semibold">
               Payments for:&nbsp;
-              <div className="text-violet-700">
-                {year || "All Years"}
-              </div>
+              <div className="text-violet-700">{year || "All Years"}</div>
             </div>
             <Menu as="div" className="relative text-left">
               <div>
@@ -79,16 +81,16 @@ export const DrugDets = ({ drug, onChangeYear }: DrugSchema) => {
                     )}
                   </Menu.Item>
                   {availableYears.map((year) => (
-                    <div key={year} className='py-1 flex justify-center'>
+                    <div key={year} className="flex justify-center py-1">
                       <Menu.Item>
                         {({ active }) => (
                           <button
                             value={year}
                             className={classNames(
                               active
-                                ? 'bg-gray-100 text-gray-900'
-                                : 'text-gray-700',
-                              'block px-4 py-2 text-sm w-full overflow-y-auto '
+                                ? "bg-gray-100 text-gray-900"
+                                : "text-gray-700",
+                              "block w-full overflow-y-auto px-4 py-2 text-sm "
                             )}
                             onClick={() => setYear(year)}
                           >

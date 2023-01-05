@@ -1,16 +1,12 @@
 import type { Payment, Product } from "@prisma/client";
 import Link from "next/link";
-import {
-  formatMoney,
-  formatProductName,
-  formatProductType,
-} from "../../utils";
+import { formatMoney, formatProductName, formatProductType } from "../../utils";
 
 type Props = {
   transaction: Payment & {
     product: Product;
-  }
-}
+  };
+};
 
 const Transaction = ({
   transaction: {
@@ -25,7 +21,7 @@ const Transaction = ({
     paymentType,
     product,
     year,
-  }
+  },
 }: Props) => (
   <div className="flex w-full justify-center">
     <div className="w-full rounded-lg bg-white text-center shadow-lg lg:w-3/4">
@@ -43,7 +39,8 @@ const Transaction = ({
         </div>
         <div className="flex flex-row justify-between">
           <h5 className="text-md mb-2 text-gray-900">
-            {formatProductType(product.type)}{": "}
+            {formatProductType(product.type)}
+            {": "}
             {product.type?.toLowerCase() == "drug" ? (
               <Link href={`/drug/${product.id}`}>
                 {formatProductName(product.name)}

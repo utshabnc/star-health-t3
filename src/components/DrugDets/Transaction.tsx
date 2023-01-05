@@ -1,15 +1,13 @@
 import type { Doctor, Manufacturer, Payment } from "@prisma/client";
 import Link from "next/link";
-import {
-  formatMoney, formatName,
-} from "../../utils";
+import { formatMoney, formatName } from "../../utils";
 
 type Props = {
   transaction: Payment & {
     doctor: Doctor;
     manufacturer: Manufacturer;
-  },
-}
+  };
+};
 
 const Transaction = ({
   transaction: {
@@ -26,7 +24,7 @@ const Transaction = ({
     productId,
     doctor,
     manufacturer,
-  }
+  },
 }: Props) => (
   <div className="flex w-full justify-center">
     <div className="w-full rounded-lg bg-white text-center shadow-lg lg:w-3/4">
@@ -44,7 +42,7 @@ const Transaction = ({
         </div>
         <div className="flex flex-row justify-between">
           <h5 className="text-md mb-2 text-gray-900">
-            Doctor: {formatName(doctor.firstName + ' ' + doctor.lastName)}
+            Doctor: {formatName(doctor.firstName + " " + doctor.lastName)}
           </h5>
           <p className="mb-1 text-base text-gray-700"> {formatMoney(amount)}</p>
         </div>
