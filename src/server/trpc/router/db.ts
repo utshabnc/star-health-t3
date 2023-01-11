@@ -71,6 +71,127 @@ const defaultManufacturerSelect = Prisma.validator<Prisma.ManufacturerSelect>()(
 );
 
 export const db = router({
+  recommender: publicProcedure
+    .input(
+			z.object({
+        doctor: z.string(),
+        location: z.string(),
+        specialty: z.string(),
+        insurance: z.string(),
+      }
+		))
+    .query(async ({ ctx: { prisma }, input: { doctor, location, specialty, insurance } }) => {
+			const names = doctor.split(" ");
+
+      let searchArgs: Prisma.DoctorWhereInput = {
+        OR: [
+          {
+            firstName: {
+              contains: doctor,
+              mode: "insensitive",
+            },
+          },
+          {
+            lastName: {
+              contains: doctor,
+              mode: "insensitive",
+            },
+          },
+        ],
+      };
+
+      if (names.length === 2) {
+        searchArgs = {
+          AND: [
+            {
+              firstName: {
+                startsWith: names[0],
+                mode: "insensitive",
+              },
+            },
+            {
+              lastName: {
+                startsWith: names[1],
+                mode: "insensitive",
+              },
+            },
+          ],
+        };
+      } else if (names.length > 2) {
+        searchArgs = {
+          AND: [
+            {
+              firstName: {
+                startsWith: names[0],
+                mode: "insensitive",
+              },
+            },
+            {
+              middleName: {
+                startsWith: names[1],
+                mode: "insensitive",
+              },
+            },
+            {
+              lastName: {
+                startsWith: names[2],
+                mode: "insensitive",
+              },
+            },
+          ],
+        };
+      }
+
+
+      const includeSpecialtyList = []
+      if (specialty) {
+        includeSpecialtyList.push({
+          specialty
+        })
+      }
+
+      const includeStateList = []
+      if (location) {
+        includeStateList.push({
+          state: location
+        })
+      }
+      
+      const doctors = await prisma.doctor.findMany({
+        // only include state (location) if location
+        where: {
+          AND: [
+            searchArgs,
+            ...includeSpecialtyList,
+            ...includeStateList,
+          ]
+        },
+        select: {
+          id: true,
+          firstName: true,
+          lastName: true,
+          city: true,
+          state: true,
+          addressLine1: true,
+          specialty: true
+        },
+      });
+
+      return doctors;
+		}),
+
+    specialties: publicProcedure
+    // query the unique specialties from the doctor table
+    .query(async ({ctx: { prisma }}) => {
+      const specialties = await prisma.doctor.findMany({
+        distinct: ['specialty'],
+        select: {
+          specialty: true
+        }
+      })
+      return specialties;
+    }),
+
   search: publicProcedure
     .input(z.string())
     .query(async ({ ctx: { prisma }, input: search }) => {
@@ -543,8 +664,8 @@ export const db = router({
     }),
   directory: publicProcedure
     .input(directoryInput)
-    .query(async ({ctx: {prisma}, input}) => {
-      console.log(input.name?.split(" "));
+    .query(async ({ctx: {prisma}, input} ) => {
+      // console.log(input.name?.split(" "));
       
 
       if(input.subject?.toLowerCase().trim() === "doctors"){
@@ -552,7 +673,7 @@ export const db = router({
         let doctors: any = []
 
         if(names && names?.length === 1) {
-          console.log("HITTT")
+          // console.log("HITTT")
           doctors = await prisma.doctor.findMany({
             where: {
               AND: [

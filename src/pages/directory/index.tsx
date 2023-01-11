@@ -35,7 +35,7 @@ export interface FilterParams {
 export default function Directory() {
     const progressRef = useRef<HTMLDivElement>(null) 
     const navigate = useRouter();
-    console.log("navigate", navigate);
+    // console.log("navigate", navigate);
     
     const [filterParams, setFilterParams] = useState<FilterParams>({
       subject: navigate.query.tab as string ?? "transactions", 
@@ -87,7 +87,7 @@ export default function Directory() {
 
     }, { enabled: false });
     const [price, setPrice] = useState<number>(1000)
-    console.log("search", searchResults)
+    // console.log("search", searchResults)
     //helpers to set last index to filter param when user requests to see more data
     const setLastIndex = (arr: {id: string}[]) => {
       if(filterParams.cursor === arr[arr.length -1]?.id ){
@@ -139,8 +139,8 @@ export default function Directory() {
       debouncedSearch(filterParams.name ?? "");
     }, [filterParams.name, filterParams.price]);
 
-    console.log(searchResults);
-    console.log(searchLoad);
+    // console.log(searchResults);
+    // console.log(searchLoad);
 
     const handleMinPrice = (e: any) => {
       if(e.target.value >= filterParams.price.max) {

@@ -20,9 +20,9 @@ export const formatSpecialties = (str: string) => {
 export default function Filters({data, filterParams, setFilterParams, search, setSearch }: {data: any, filterParams: any, setFilterParams: any, search: string | undefined, setSearch: Dispatch<SetStateAction<string | undefined>>}) {  
     
     const {data: listData, isLoading} = trpc.db.nameList.useQuery()
-    console.log(listData);
+    // console.log(listData);
     const [price, setPrice] = useState<number>(1000)
-    console.log(price)
+    // console.log(price)
     
     // const filterList = (arr: any[]) => {
     //     if(arr){
@@ -174,7 +174,7 @@ export default function Filters({data, filterParams, setFilterParams, search, se
                         </select>}
                         {/* fix bug of e.target.value console logging out as [onject Object] rather than its actual value*/}
                         {data && data?.payments && listData?.doctorNames && <select onChange={(e) => {
-                            console.log("val", e.target.value);
+                            // console.log("val", e.target.value);
                             
                             setFilterParams((prev: FilterParams) => {
                                 return {

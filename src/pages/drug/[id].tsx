@@ -151,7 +151,7 @@ const DoctorDetails = () => {
           drug={drug}
           onChangeYear={(year) =>
             setYear((oldYear) => {
-              console.log(year)
+              // console.log(year)
               if (!year) return undefined;
               if (oldYear === String(year)) return;
               return String(year);

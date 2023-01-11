@@ -9,7 +9,6 @@ import { signIn } from 'next-auth/react';
 // import { useAllStatesQuery } from './api';
 import UnitedStatesHeatmap from '../components/charts/UnitedStatesHeatmap';
 import Dropdown from '../components/Dropdown';
-import SearchPage from './SearchPage';
 import { drugTypes } from '../utils';
 import _ from 'lodash'
 import data_analytics from '../assets/data_analytics.png'
@@ -36,10 +35,10 @@ import type { StaticImageData } from "next/image";
 import Image from "next/image";
 import { trpc } from '../utils/trpc';
 import { IoIosArrowDroprightCircle, IoIosArrowDropright } from 'react-icons/io';
-import { FaPencilRuler, FaPaintBrush } from 'react-icons/fa';
-import { MdPedalBike, MdOutlineAirplanemodeActive } from 'react-icons/md';
-import { TbLayoutGridAdd } from 'react-icons/tb';
-import { BsCheck2 } from 'react-icons/bs';
+// import { FaPencilRuler, FaPaintBrush } from 'react-icons/fa';
+// import { MdPedalBike, MdOutlineAirplanemodeActive } from 'react-icons/md';
+// import { TbLayoutGridAdd } from 'react-icons/tb';
+// import { BsCheck2 } from 'react-icons/bs';
 import Link from 'next/link';
 
 
