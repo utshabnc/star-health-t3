@@ -21,7 +21,6 @@ type FilterParams = {
 }
 
 export default function DirectoryCards({data, filterParams, searchResults, search}: {data: any, filterParams: FilterParams, searchResults: any, search: string}) {
-
     // if(searchResults && search !== "") {
     //     if(filterParams.subject === "doctor") {
     //         return (
@@ -345,6 +344,43 @@ export default function DirectoryCards({data, filterParams, searchResults, searc
                     <div className="flex flex-row justify-between text-sm">
                         <p className="mb-1 text-xs text-violet-400">
                             Largest payment: {formatMoney(item.manufacturer.ManufacturerTopPayment[0]?.amount ?? 0)}
+                        </p>
+
+                    <div className="border-gray-300 text-gray-600"></div>
+                </div>
+            </div>
+            </div>
+        
+    ))}
+        </>
+    )
+  }
+
+  if(data?.drugs){
+    return (
+        <>  
+            {data && data?.drugs && data?.drugs.map((item: any, index: number) => (
+            
+            <div key={index} className="w-[100%] rounded-lg bg-white text-center shadow-lg mb-2">
+                <div className=" p-2">
+                    <div className="flex flex-row justify-between">
+                        <h5 className="text-md mb-2 font-medium text-gray-900">
+                            {item.name}
+                        </h5>
+                        <p className="mb-1 text-gray-600 text-sm text-right">
+                            {formatMoney(item.id)}
+                            <br />
+                        </p>
+                    </div>
+                    <div className="flex flex-row justify-between">
+                        <h5 className="text-md mb-2 text-gray-900">
+                            {item.name}
+                        </h5>
+                        <p className="mb-1 text-base text-gray-700"> </p>
+                    </div>
+                    <div className="flex flex-row justify-between text-sm">
+                        <p className="mb-1 text-xs text-violet-400">
+                            Largest payment: {formatMoney(item.name ?? 0)}
                         </p>
 
                     <div className="border-gray-300 text-gray-600"></div>

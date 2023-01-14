@@ -76,7 +76,6 @@ export const db = router({
     .query(async ({ ctx: { prisma }, input: search }) => {
       const names = search.split(" ");
       
-
       let searchArgs: Prisma.DoctorWhereInput = {
         OR: [
           {
@@ -740,7 +739,6 @@ export const db = router({
           }
         })
 
-
         return {products, productTypes: filterDuplicateObjArr(productTypes, "type")}
       }
 
@@ -861,8 +859,15 @@ export const db = router({
         manufacturerSummary.forEach(item => {
           return item.manufacturer.ManufacturerTopPayment.sort((a,b) => b.amount - a.amount)
         })
-  
         return {manufacturerSummary}
+      }
+
+      if (input.subject?.toLowerCase() === 'drugs') {
+        const drugs = await prisma.test.findMany({
+        })
+        console.log(drugs)
+        // const allYears = ["ALL", "2021", "2020", "2019", "2018", "2017","2016"]
+        return {drugs}
       }
 
       const stateSummary = await prisma.payment.findMany({
