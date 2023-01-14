@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import React from 'react'
-import { formatMoney } from '../../utils'
+import { formatMoney, formatDate } from '../../utils'
 import type { DirectoryResponse } from '../../server/trpc/router/db'
 import { Manufacturer, ManufacturerSummary, Product } from '@prisma/client'
 import { formatSpecialties } from '../Filters'
@@ -359,16 +359,18 @@ export default function DirectoryCards({data, filterParams, searchResults, searc
   if(data?.drugs){
     return (
         <>  
-            {data && data?.drugs && data?.drugs.map((item: any, index: number) => (
+            {data && data?.drugs && (!searchResults ? data?.drugs : searchResults?.drugs).map((item: any, index: number) => (
             
             <div key={index} className="w-[100%] rounded-lg bg-white text-center shadow-lg mb-2">
                 <div className=" p-2">
                     <div className="flex flex-row justify-between">
                         <h5 className="text-md mb-2 font-medium text-gray-900">
+                        <Link href={`/drugs/${item.id}`} className="hover:underline hover:text-violet-600 text-violet-500 font-semibold">
                             {item.brand_name}
+                        </Link>
                         </h5>
                         <p className="mb-1 text-gray-600 text-sm text-right">
-                            Effective Time: {item.effective_time}
+                            Effective Date: {formatDate(item.effective_time, '-')}
                             <br />
                         </p>
                     </div>
@@ -382,9 +384,17 @@ export default function DirectoryCards({data, filterParams, searchResults, searc
                         <p className="mb-1 text-xs text-violet-400">
                             product type: {item.product_type}
                         </p>
-
+                        
+                        
                     <div className="border-gray-300 text-gray-600"></div>
+                    
+                    
                 </div>
+                <div className="flex flex-row justify-between text-sm">
+                        <p className="mb-1 text-xs text-violet-400">
+                            route: {item.route}
+                        </p>
+                        </div>
             </div>
             </div>
         

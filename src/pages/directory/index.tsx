@@ -435,13 +435,14 @@ export default function Directory() {
                           bg-violet-100 border border-violet-900 my-2 placeholder:text-violet-800 text-slate-900 w-[30%] p-1 rounded-lg mx-1 hover:bg-violet-300 hover:text-violet-900 cursor-pointer`}
                           value={filterParams.name}
                           onChange={(e) => 
-                             
+                          {
                             setFilterParams(prev => {
                               return {
                                 ...prev,
                                 name: e.target.value
                               }
                             })
+                          }
                           }
                           />
                           
