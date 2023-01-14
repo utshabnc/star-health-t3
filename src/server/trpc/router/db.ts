@@ -70,6 +70,15 @@ const defaultManufacturerSelect = Prisma.validator<Prisma.ManufacturerSelect>()(
   }
 );
 
+const defaultDrugSelect = Prisma.validator<Prisma.DrugsSelect>()({
+  id: true,
+  brand_name: true,
+  manufacturer_name: true,
+  effective_time: true,
+  product_type: true,
+  route: true,
+})
+
 export const db = router({
   search: publicProcedure
     .input(z.string())
@@ -475,6 +484,20 @@ export const db = router({
       return states;
     }),
   // add in query for product model
+
+  drugs: publicProcedure
+  .input(z.object({
+    id: z.string()
+  })).query(async ({ ctx: { prisma }, input: {id}}) => {
+    const drug = await prisma.drugs.findFirst({
+      where: { id },
+      select: {
+        ...defaultDrugSelect
+      },
+    });
+    return {drug}
+  }),
+
   product: publicProcedure
     .input(
       z.object({
@@ -863,11 +886,23 @@ export const db = router({
       }
 
       if (input.subject?.toLowerCase() === 'drugs') {
+        console.log(input)
         const drugs = await prisma.drugs.findMany({
+          where: {
+            AND: [
+              {
+                brand_name: {
+                  contains: input.name,
+                  mode: "insensitive"
+                }
+              }
+            ]
+          },
+          orderBy: {effective_time: 'desc'},
+          take: 50
         })
-        console.log(drugs)
-        // const allYears = ["ALL", "2021", "2020", "2019", "2018", "2017","2016"]
-        return {drugs}
+        const allYears = ["ALL", "2021", "2020", "2019", "2018", "2017","2016"]
+        return {drugs, allYears}
       }
 
       const stateSummary = await prisma.payment.findMany({
@@ -897,6 +932,7 @@ export const db = router({
     nameList: publicProcedure.query(async ({ctx: {prisma}}) => {
       let doctorNames = [];
       let productNameList = [];
+      let drugNames = [];
       const manufacturers = await prisma.manufacturer.findMany({
         where: {
           payments: {none: undefined}
@@ -921,6 +957,21 @@ export const db = router({
           lastName: true
         },
         take: 1000
+      })
+
+      const drugs = await prisma.drugs.findMany({
+        select: {
+          id: true,
+          brand_name: true
+        },
+        take: 1000
+      })
+
+      drugNames = drugs.map(item => {
+        return {
+          id: item.id,
+          name: item.brand_name
+        }
       })
 
       doctorNames = doctors.map(item => {
@@ -973,7 +1024,7 @@ export const db = router({
      
       
         
-      return {doctorNames: filterDuplicateObjArr(doctorNames, "id"), manufacturerNames: filterDuplicateObjArr(manufacturers, "id"), productNameList: filterDuplicateObjArr(products, "id")}
+      return {drugNames: filterDuplicateObjArr(drugNames, "id"), doctorNames: filterDuplicateObjArr(doctorNames, "id"), manufacturerNames: filterDuplicateObjArr(manufacturers, "id"), productNameList: filterDuplicateObjArr(products, "id")}
       // return {}
     })
     ,
@@ -1023,3 +1074,4 @@ export type ProductResponse = RouterOutput["db"]["product"];
 export type DirectoryResponse = RouterOutput["db"]["directory"];
 export type NameListResponse = RouterOutput["db"]["nameList"];
 export type addReviewResponse = RouterOutput["db"]["addReview"];
+export type DrugResponse = RouterOutput["db"]["drugs"]

@@ -21,6 +21,20 @@ const formatMoney = (amount: number, decimals = 2) => {
   return formatter.format(amount);
 };
 
+const formatDate = (date: string, type: string | null) => {
+  date = date.replace(/[^0-9 ]/g, '');
+  date = date.substring(0, 8)
+  date = `${date.substring(0, 4)}/${date.substring(4, 6)}/${date.substring(6, 8)}`
+  if (type === '/') {
+    return date
+  } else if (type === '-') {
+    date = date.replaceAll('/', '-')
+    return date
+  }
+  return date
+  
+}
+
 const formatNumber = (amount: number, decimals = 2) => {
   const formatter = new Intl.NumberFormat('en-US', {
     maximumFractionDigits: decimals,
@@ -113,5 +127,6 @@ export {
   filterDuplicates,
   filterDuplicateObjArr,
   getProductTotals,
-  getProductTransCount
+  getProductTransCount,
+  formatDate
 };
