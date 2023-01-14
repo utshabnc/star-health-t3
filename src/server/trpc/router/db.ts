@@ -863,7 +863,7 @@ export const db = router({
       }
 
       if (input.subject?.toLowerCase() === 'drugs') {
-        const drugs = await prisma.test.findMany({
+        const drugs = await prisma.drugs.findMany({
         })
         console.log(drugs)
         // const allYears = ["ALL", "2021", "2020", "2019", "2018", "2017","2016"]

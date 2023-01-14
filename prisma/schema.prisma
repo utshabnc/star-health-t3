@@ -259,3 +259,12 @@ model Test {
   id   String  @id
   name String?
 }
+
+model Drugs {
+  id                String @id
+  brand_name        String
+  manufacturer_name String
+  product_type      String
+  route             String
+  effective_time    String
+}
