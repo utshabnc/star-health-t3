@@ -204,7 +204,7 @@ const InfoSection = ({
 export default function Home() {
   const [drugType, setDrugType] = useState<string>();
   const { data: allStates } = trpc.db.allStates.useQuery({ drugType })
-
+  console.log(data)
   const FirstSection = () => (
 		<div className='mb-20'>
 

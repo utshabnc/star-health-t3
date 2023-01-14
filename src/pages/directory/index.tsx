@@ -112,7 +112,7 @@ export default function Directory() {
       if(data?.products) setLastIndex(data?.products)
       if(data?.payments) setLastIndex(data?.payments)
       if(data?.manufacturerSummary) setLastIndex(data?.manufacturerSummary)
-
+      if(data?.drugs) setLastIndex(data?.drugs)
     }
 
     useEffect(() => {
@@ -282,7 +282,6 @@ export default function Directory() {
         );
       }
     
-
   return (
     <>
         <div className="p-5 rounded bg-white h-screen pb-44">
@@ -393,7 +392,25 @@ export default function Directory() {
                       }} className={`border-b-2 hover:border-zinc-500 ${data?.products ? "border-violet-600" : "border-zinc-200"}`}>
                         Products
                       </button>
+                      <button onClick={(e) => {
+                        setFilterParams(prev => {
+                          return {
+                            ...prev,
+                            subject: "drugs",
+                            cursor: ""
 
+
+                          }
+                        })
+                        setFilterParams(prev => {
+                          return {
+                            ...prev,
+                            name: ""
+                          }
+                        })
+                      }} className={`border-b-2 hover:border-zinc-500 ${data?.drugs ? "border-violet-600" : "border-zinc-200"}`}>
+                        Drugs
+                      </button>
                     </div>
 
                   </div>
@@ -402,7 +419,8 @@ export default function Directory() {
                   <hr />
                   </div>
                   <Filters search={search} setSearch={setSearch} data={data} filterParams={filterParams} setFilterParams={setFilterParams} />
-                  {"data" && (
+                  {
+                  "data" && (
                     <>
                       <div className=''>
                         <p className='text-xs p-1 text-violet-900 font-semibold'>{`Search for ${filterParams.subject} by ${filterParams.subject === "payment" ? "product" : "name"}`}</p>
@@ -500,7 +518,8 @@ export default function Directory() {
 
                       </div>
                     </>
-                  )}
+                  )
+                  }
               </div>
             </div>
             <div className="flex w-full h-[90%] justify-center">
