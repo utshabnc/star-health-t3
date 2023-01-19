@@ -58,6 +58,7 @@ function Footer() {
 								<div className='footer-title mb-2.5 font-bold'>Company</div>
 								<Link href='/' className='my-1 text-sm'>Home</Link>
 								<Link href='/directory' className='my-1 text-sm'>Data Directory</Link>
+								<Link href='/pricing' className='my-1 text-sm'>Pricing</Link>
 								<Link href='/' className='my-1 text-sm'>Contact</Link>
 							</div>
 							<div className='footer-column flex-col text-white grid grid-cols-1'>
