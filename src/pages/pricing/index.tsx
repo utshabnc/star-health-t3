@@ -110,7 +110,7 @@ const pricing = () => {
 				<div className='container text-[16px] leading-relaxed flex max-w-[1190px] my-0 mx-auto w-[100%] pb-[50px] justify-center '>
 					<div className='self-center break-words'>
 						<h2 className='font-medium leading-tight text-[36px]'>Interested in Licensing Starhealth Data? </h2>
-						<p className='mb-[15px] text-[18px] leading-relaxed'>With Data Licensing, bring Starhealth's best-in-class data to your customers. </p>
+						<p className='mb-[15px] text-[18px] leading-relaxed'>With Data Licensing, bring Starhealths best-in-class data to your customers. </p>
 						<div>
 							<div className='flex flex-wrap inline-block items-center break-words'>
 								<a className='flex ml-5 bg-blue-600 text-[14px] text-center text-white mt-[30px] rounded-[10px] items-center justify-center h-[54px] leading-[54px] min-w-[200px]'>
