@@ -1,6 +1,6 @@
 import Image from 'next/image'
 import React from 'react'
-import { RiCheckboxCircleFill } from 'react-icons/Ri'
+import { RiCheckboxCircleFill } from 'react-icons/ri'
 import { BsCheck2, BsLightningFill } from 'react-icons/bs'
 import manufacturer from '../../assets/manufacturer.png'
 
