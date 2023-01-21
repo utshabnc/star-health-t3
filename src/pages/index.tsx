@@ -213,14 +213,9 @@ export default function Home() {
 						<h2 className='flex text-center sm:text-5xl md:text-xl xl:text-8xl leading-tight font-bold justify-center font-custom text-white mt-10 mb-5 '>
 								Future of Healthcare
 						</h2>
-						<p className='text-white text-center text-xl md:text-4xl'>
+						<p className='text-white text-center text-xl md:text-4xl mb-12'>
 							Data - Care - Web3
 						</p>
-						<div>
-							<p className='text-center px-4 text-white font-custom my-6 text-xl'>
-								Improving Quality of Care
-							</p>
-						</div>
 						{/* <div className='container-for-form mt-12 mb-11'>
 							<form action="/" method="post">
 								<div className='relative flex items-center justify-center'>
