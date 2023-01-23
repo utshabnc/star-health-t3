@@ -261,10 +261,21 @@ model Test {
 }
 
 model Drugs {
-  id                String @id
-  brand_name        String
-  manufacturer_name String
-  product_type      String
-  route             String
-  effective_time    String
+  id                    String  @id
+  brand_name            String?
+  generic_name          String?
+  manufacturer_name     String?
+  product_type          String?
+  route                 String?
+  instructions_for_use  String?
+  purpose               String?
+  warnings_and_cautions String?
+  adverse_reactions     String?
+  description           String?
+  clinical_studies      String?
+  effective_time        String?
+  active_ingredient     String?
+  laboratory_tests      String?
+  overdosage            String?
+  microbiology          String?
 }

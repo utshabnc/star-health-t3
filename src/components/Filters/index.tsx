@@ -235,6 +235,57 @@ export default function Filters({data, filterParams, setFilterParams, search, se
                                 <option key={index} value={item}>{item}</option>
                             ))}
                         </select>}
+
+                        {data && data?.drugs && <select onChange={(e) => {
+                            console.log(e.target.value)
+                            setFilterParams((prev: FilterParams) => {
+                                return {
+                                    ...prev,
+                                    drugManufacturer: e.target.value,
+                                    cursor: ''
+                                }
+                            })
+                           
+                        }} value={filterParams.drugManufacturer} className='bg-violet-500 my-2 text-white p-1 rounded-lg mx-1 hover:bg-violet-400 hover:text-violet-900 cursor-pointer w-[20%]' name="state-filter" id="state-filter">
+                            <option value="">{filterParams.drugManufacturer == "" ? "Manufacturer" : "Reset"}</option>
+                            {data?.manufacturerNames.map((item: {id: string, name: string} , index: number) => (
+                                <option key={item.id} value={item.name}>{item.name === "NULL" ? "" : item.name}</option>
+                            ))}
+                        </select>}
+
+                        {data && data?.drugs && <select onChange={(e) => {
+                            console.log(e.target.value)
+                            setFilterParams((prev: FilterParams) => {
+                                return {
+                                    ...prev,
+                                    drugRoute: e.target.value,
+                                    cursor: ''
+                                }
+                            })
+                           
+                        }} value={filterParams.drugRoute} className='bg-violet-500 my-2 text-white p-1 rounded-lg mx-1 hover:bg-violet-400 hover:text-violet-900 cursor-pointer w-[20%]' name="state-filter" id="state-filter">
+                            <option value="">{filterParams.drugRoute == "" ? "Route" : "Reset"}</option>
+                            {data?.routeNames.map((item: {id: string, name: string} , index: number) => (
+                                <option key={item.id} value={item.name}>{item.name === "NULL" ? "" : item.name}</option>
+                            ))}
+                        </select>}
+
+                        {data && data?.drugs && <select onChange={(e) => {
+                            console.log(e.target.value)
+                            setFilterParams((prev: FilterParams) => {
+                                return {
+                                    ...prev,
+                                    drugType: e.target.value,
+                                    cursor: ''
+                                }
+                            })
+                           
+                        }} value={filterParams.drugType} className='bg-violet-500 my-2 text-white p-1 rounded-lg mx-1 hover:bg-violet-400 hover:text-violet-900 cursor-pointer w-[20%]' name="state-filter" id="state-filter">
+                            <option value="">{filterParams.drugType == "" ? "Product Type" : "Reset"}</option>
+                            {data?.typeNames.map((item: {id: string, name: string} , index: number) => (
+                                <option key={item.id} value={item.name}>{item.name === "NULL" ? "" : item.name}</option>
+                            ))}
+                        </select>}
                         {/* {data?.payments && (
                             <div className='flex flex-col relative ml-5'>
                                 <div className="flex gap-2">

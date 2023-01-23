@@ -5,6 +5,7 @@ import { Fragment, SetStateAction, useEffect, useState } from 'react';
 import { availableYears, formatDate, formatMoney, formatName, formatNumber } from '../../utils';
 import _ from 'lodash';
 import type { DrugResponse } from '../../server/trpc/router/db';
+import FAQ from '../FAQ';
 
 
 interface DrugSchema {
@@ -17,7 +18,18 @@ function classNames(...classes: string[]) {
 }
 
 export const DrugsDets = ({ data }: DrugSchema) => {
-
+  const dropdowns = [
+    {title: 'Purpose' || null, content: data?.drug?.purpose || null},
+    {title: 'Description' || null, content: data?.drug?.description || null},
+    {title: 'Instructions For Use' || null, content: data?.drug?.instructions_for_use || null},
+    {title: 'Active Ingredient' || null, content: data?.drug?.active_ingredient || null},
+    {title: 'Warnings And Cautions' || null, content: data?.drug?.warnings_and_cautions || null},
+    {title: 'Overdosage' || null, content: data?.drug?.overdosage || null},
+    {title: 'Adverse Reactions' || null, content: data?.drug?.adverse_reactions || null},
+    {title: 'Clinical Studies' || null, content: data?.drug?.clinical_studies || null},
+    {title: 'Microbiology' || null, content: data?.drug?.microbiology || null},
+    {title: 'Laboratory Tests' || null, content: data?.drug?.laboratory_tests || null},
+  ]
   return (
     <>
       <div className="flex flex-col justify-end sm:px-2 lg:px-28">
@@ -40,7 +52,12 @@ export const DrugsDets = ({ data }: DrugSchema) => {
         <div className="my-1">
           <hr />
         </div>
-        {/* <div className="flex flex-col items-center justify-around sm:h-[60px] sm:flex-row">
+        {dropdowns.map((dropdown, index) => {
+          return (
+            <FAQ key={`${dropdown.title}-${index}`}title={dropdown?.title || null} content={dropdown?.content || null} />
+          )
+        })}
+                {/* <div className="flex flex-col items-center justify-around sm:h-[60px] sm:flex-row">
           <div className="flex">
             <div className="flex flex-row text-lg font-semibold">
               Payments for:&nbsp;

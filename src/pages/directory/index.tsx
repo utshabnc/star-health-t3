@@ -29,7 +29,10 @@ export interface FilterParams {
     cursor: string,
     year: string,
     price: PriceFilter,
-    name: string
+    name: string,
+    drugManufacturer: string,
+    drugType: string,
+    drugRoute: string,
 }
 
 export default function Directory() {
@@ -51,7 +54,10 @@ export default function Directory() {
       cursor: '',
       year: '',
       price: {min: 0, max: 5000},
-      name: ""
+      name: "",
+      drugManufacturer: '',
+      drugType: '',
+      drugRoute: ''
     })
     const {data, error, isLoading, } = trpc.db.directory.useQuery({
       subject: filterParams.subject, 
@@ -66,7 +72,9 @@ export default function Directory() {
       productFilter: filterParams.productFilter,
       cursor: filterParams.cursor,
       year: filterParams.year,
-      
+      drugManufacturer: filterParams.drugManufacturer,
+      drugType: filterParams.drugType,
+      drugRoute: filterParams.drugRoute,
       // name: filterParams.name
     });
     const [search, setSearch] = useState<string>();
@@ -84,6 +92,9 @@ export default function Directory() {
       specialty: filterParams.specialty,
       zipCode: filterParams.zipCode,
       year: filterParams.year,
+      drugManufacturer: filterParams.drugManufacturer,
+      drugType: filterParams.drugType,
+      drugRoute: filterParams.drugRoute,
 
     }, { enabled: false });
     const [price, setPrice] = useState<number>(1000)
