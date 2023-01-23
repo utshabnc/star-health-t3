@@ -24,7 +24,10 @@ const directoryInput = z.object({
     min: z.number().optional(), 
     max: z.number().optional()
   }).optional(),
-  name: z.string().optional()  
+  name: z.string().optional(),
+  drugManufacturer: z.string().optional(),
+  drugType: z.string().optional(),
+  drugRoute: z.string().optional()
 
 })
 
@@ -73,10 +76,22 @@ const defaultManufacturerSelect = Prisma.validator<Prisma.ManufacturerSelect>()(
 const defaultDrugSelect = Prisma.validator<Prisma.DrugsSelect>()({
   id: true,
   brand_name: true,
+  generic_name: true,
   manufacturer_name: true,
   effective_time: true,
   product_type: true,
   route: true,
+  purpose: true,
+  warnings_and_cautions: true,
+  adverse_reactions: true,
+  description: true,
+  clinical_studies: true,
+  active_ingredient: true,
+  laboratory_tests: true,
+  instructions_for_use: true,
+  overdosage: true,
+  microbiology: true,
+
 })
 
 export const db = router({
@@ -886,8 +901,75 @@ export const db = router({
       }
 
       if (input.subject?.toLowerCase() === 'drugs') {
+        console.log('hello input')
         console.log(input)
-        const drugs = await prisma.drugs.findMany({
+        let drugs = []
+        if (input.name) {
+          drugs = await prisma.drugs.findMany({
+            where: {
+              AND: [
+                {
+                  brand_name: {
+                    contains: input.name,
+                    mode: "insensitive"
+                  }
+                },
+                
+              ]
+            },
+            orderBy: {brand_name: 'asc'},
+            take: 100
+          })
+        } else if (input.drugManufacturer) {
+          drugs = await prisma.drugs.findMany({
+            where: {
+              AND: [
+                {
+                  manufacturer_name: {
+                    contains: input.drugManufacturer,
+                    mode: "insensitive"
+                  }
+                },
+                
+              ]
+            },
+            orderBy: {brand_name: 'asc'},
+            take: 100
+          })
+        } else if (input.drugRoute && !input.drugManufacturer) {
+          drugs = await prisma.drugs.findMany({
+            where: {
+              AND: [
+                {
+                  route: {
+                    contains: input.drugRoute,
+                    mode: "insensitive"
+                  }
+                },
+                
+              ]
+            },
+            orderBy: {brand_name: 'asc'},
+            take: 100
+          })
+        } else if (input.drugType && !input.drugManufacturer) {
+          drugs = await prisma.drugs.findMany({
+            where: {
+              AND: [
+                {
+                  product_type: {
+                    contains: input.drugType,
+                    mode: "insensitive"
+                  }
+                },
+                
+              ]
+            },
+            orderBy: {brand_name: 'asc'},
+            take: 100
+          })
+        } else {
+        drugs = await prisma.drugs.findMany({
           where: {
             AND: [
               {
@@ -895,14 +977,51 @@ export const db = router({
                   contains: input.name,
                   mode: "insensitive"
                 }
-              }
+              },
+              
             ]
           },
-          orderBy: {effective_time: 'desc'},
-          take: 50
+          orderBy: {brand_name: 'asc'},
+          take: 100
         })
-        const allYears = ["ALL", "2021", "2020", "2019", "2018", "2017","2016"]
-        return {drugs, allYears}
+      }
+        if (input.drugRoute) {
+          drugs = drugs.filter(drug => drug.route?.toLowerCase() === input.drugRoute?.toLowerCase())
+        }
+        if (input.drugManufacturer) {
+          drugs = drugs.filter(drug => drug.manufacturer_name?.toLowerCase() === input.drugManufacturer?.toLowerCase())
+        }
+        if (input.drugType) {
+          drugs = drugs.filter(drug => drug.product_type?.toLowerCase() === input.drugType?.toLowerCase())
+        }
+      
+
+        const manufacturerNames = drugs.map(item => {
+          return {
+            id: item.id,
+            name: item?.manufacturer_name
+          }
+        })
+
+        let routeNames = drugs.map(item => {
+          return {
+            id: item.id,
+            name: item?.route
+          }
+        })
+        routeNames = routeNames.filter(route => route?.name)
+
+        let typeNames = drugs.map(item => {
+          return {
+            id: item.id,
+            name: item?.product_type
+          }
+        })
+        typeNames = typeNames.filter(type => type?.name)
+
+        
+        const allYears = ["ALL", "2023", "2022", "2021", "2020", "2019", "2018", "2017","2016"]
+        return {drugs, allYears,  manufacturerNames: filterDuplicateObjArr(manufacturerNames, 'name'), routeNames: filterDuplicateObjArr(routeNames, 'name'), typeNames: filterDuplicateObjArr(typeNames, 'name')}
       }
 
       const stateSummary = await prisma.payment.findMany({

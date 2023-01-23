@@ -18,6 +18,9 @@ type FilterParams = {
     productFilter: string
     cursor: string
     year: string
+    drugManufacturer: string,
+    drugType: string,
+    drugRoute: string,
 }
 
 export default function DirectoryCards({data, filterParams, searchResults, search}: {data: any, filterParams: FilterParams, searchResults: any, search: string}) {
