@@ -17,47 +17,47 @@ const pricing = () => {
 				</div>
 
 				<div className='container flex max-w-[1140px] my-0 mx-auto w-[100%] pb-[50px] justify-center'>
-					<div className='p-[25px] mx-4 leading-tight border border-[#d0d0d0] text-center relative md:mb-8 '>
+					<div className='w-[300px] p-[25px] mx-4 leading-tight border border-[#d0d0d0] text-center relative md:mb-8 '>
 						<h2 className='py-[10px] font-bold text-[36px]'>Basic</h2>
 						<h5 className='py-4 mb-2 font-bold text-[22px] '>Try StarHealth for free</h5>
 						<p className='font-medium mb-[157.8px]'>Access healthcare data to learn more about doctors, drugs, companies and more</p>
-						<div className='w-100 flex flex-wrap items-center justify-center align-bottom '>
+						<div className='flex flex-wrap items-center justify-center align-bottom '>
 							<div className='button p-[18px] rounded-lg text-white  bg-blue-600 inline-block m-0 w-[205px]'>
 								<a className='font-medium'>REGISTER</a>
 							</div>
 						</div>
 					</div>
-					<div className='p-[25px] mx-4 leading-tight border border-[#d0d0d0] text-center relative md:mb-8 '>
+					<div className='w-[300px] p-[25px] mx-4 leading-tight border border-[#d0d0d0] text-center relative md:mb-8 '>
 						<h2 className='py-[10px] font-bold text-[36px]'>Starter</h2>
 						<h5 className='py-4 mb-2 font-bold text-[22px] '>$9</h5>
 						<p className='font-medium mb-[20px] '>/ user / month, billed annually</p>
 						<p className='font-medium mb-[20px] '>Track and monitor healthcare data</p>
 						<p className='font-medium italic mb-[105px]'>Best for Individuals</p>
-						<div className='w-100 flex flex-wrap items-center justify-center '>
+						<div className='flex flex-wrap items-center justify-center '>
 							<div className='button p-[18px] rounded-lg bg-[#8D47FC] text-white inline-block m-0 w-[205px]'>
 								<a className='font-medium'><BsLightningFill className='absolute mt-[3px] left-[41px]'/>TRY STARTER FREE</a>
 							</div>
 						</div>
 					</div>
-					<div className='p-[25px] mx-4 leading-tight border border-[#d0d0d0] text-center relative md:mb-8 '>
+					<div className='w-[300px]  p-[25px] mx-4 leading-tight border border-[#d0d0d0] text-center relative md:mb-8 '>
 						<h2 className='py-[10px] font-bold text-[36px]'>Pro</h2>
 						<h5 className='py-4 mb-2 font-bold text-[22px] '>$19</h5>
 						<p className='font-medium mb-[20px] '>/ user / month, billed annually</p>
 						<p className='font-medium mb-[20px] '>Unlock StarHealth&apos;s full suite of tools fueled by proprietary data</p>
 						<p className='font-medium italic mb-[65px]'>Best for Individuals and Small Teams</p>
-						<div className='w-100 flex flex-wrap items-center justify-center '>
+						<div className='flex flex-wrap items-center justify-center '>
 							<div className='button p-[18px] rounded-lg bg-[#8D47FC] text-white inline-block m-0 w-[205px]'>
 								<a className='font-medium'><BsLightningFill className='absolute mt-[3px] left-[54px]'/> TRY PRO FREE</a>
 							</div>
 						</div>
 					</div>
-					<div className='p-[25px] mx-4 leading-tight border border-[#d0d0d0] text-center relative md:mb-8 '>
+					<div className='w-[300px]  p-[25px] mx-4 leading-tight border border-[#d0d0d0] text-center relative md:mb-8 '>
 						<h2 className='py-[10px] font-bold text-[36px]'>Enterprise</h2>
 						<h5 className='py-4 mb-2 font-bold text-[22px] '>Contact Us</h5>
 						<p className='font-medium mb-[20px] '>Custom billing</p>
 						<p className='font-medium mb-[20px] '>A custom solution that scales as teams do</p>
 						<p className='font-medium italic mb-[125px]'>Best for Large Teams</p>
-						<div className='w-100 flex flex-wrap items-center justify-center '>
+						<div className='flex flex-wrap items-center justify-center '>
 							<div className='button p-[18px] rounded-lg bg-[#8D47FC] text-white inline-block m-0 w-[205px]'>
 								<a className='font-medium'><BsLightningFill className='absolute mt-[3px] left-[57px]'/>CONTACT US</a>
 							</div>
