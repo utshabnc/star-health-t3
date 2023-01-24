@@ -82,6 +82,10 @@ function NavBar() {
 							rounded px-3 py-1'>
 							Data Directory
 						</Link>
+						<Link href={"/pricing"} className='w-30 lg:w-22 text-white font-custom font-medium hover:text-blue-300 
+							rounded px-3 py-1'>
+							Pricing
+						</Link>
 						<Link href='/' className='w-30 lg:w-22 text-white font-custom font-medium hover:text-blue-600 rounded px-3 py-1'>Contact</Link>	
 						{session?.data?.user ? (
               <button
