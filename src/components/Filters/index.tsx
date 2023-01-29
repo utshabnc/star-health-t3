@@ -23,7 +23,7 @@ export default function Filters({data, filterParams, setFilterParams, search, se
     console.log(listData);
     const [price, setPrice] = useState<number>(1000)
     console.log(price)
-    
+    console.log(data.manufacturerNames)
     // const filterList = (arr: any[]) => {
     //     if(arr){
     //         if(filterParams.doctorFilter || filterParams.manufacturerFilter || filterParams.productFilter){
@@ -248,9 +248,9 @@ export default function Filters({data, filterParams, setFilterParams, search, se
                            
                         }} value={filterParams.drugManufacturer} className='bg-violet-500 my-2 text-white p-1 rounded-lg mx-1 hover:bg-violet-400 hover:text-violet-900 cursor-pointer w-[20%]' name="state-filter" id="state-filter">
                             <option value="">{filterParams.drugManufacturer == "" ? "Manufacturer" : "Reset"}</option>
-                            {data?.manufacturerNames.map((item: {id: string, name: string} , index: number) => (
-                                <option key={item.id} value={item.name}>{item.name === "NULL" ? "" : item.name}</option>
-                            ))}
+                            {data?.manufacturerNames.map((item: {id: string, name: string} , index: number) => {
+                                return <option key={item.id} value={item.name}>{item.name === "NULL" ? "" : item.name}</option>
+                                })}
                         </select>}
 
                         {data && data?.drugs && <select onChange={(e) => {

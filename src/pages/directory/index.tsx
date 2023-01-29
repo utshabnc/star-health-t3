@@ -37,6 +37,7 @@ export interface FilterParams {
 
 export default function Directory() {
     const progressRef = useRef<HTMLDivElement>(null) 
+    const searchRef = useRef<HTMLInputElement>(null)
     const navigate = useRouter();
     console.log("navigate", navigate);
     
@@ -60,6 +61,7 @@ export default function Directory() {
       drugRoute: ''
     })
     const {data, error, isLoading, } = trpc.db.directory.useQuery({
+      altName: searchRef?.current?.value,
       subject: filterParams.subject, 
       state: filterParams.state, 
       city: filterParams.city, 
@@ -148,7 +150,7 @@ export default function Directory() {
 
     useEffect(() => {
       debouncedSearch(filterParams.name ?? "");
-    }, [filterParams.name, filterParams.price]);
+    }, [filterParams.name, filterParams.price, filterParams.drugManufacturer, filterParams.drugRoute, filterParams.drugType]);
 
     console.log(searchResults);
     console.log(searchLoad);

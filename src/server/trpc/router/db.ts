@@ -27,8 +27,8 @@ const directoryInput = z.object({
   name: z.string().optional(),
   drugManufacturer: z.string().optional(),
   drugType: z.string().optional(),
-  drugRoute: z.string().optional()
-
+  drugRoute: z.string().optional(),
+  altName: z.string().optional()
 })
 
 const defaultDoctorSelect = Prisma.validator<Prisma.DoctorSelect>()({
@@ -994,14 +994,20 @@ export const db = router({
         if (input.drugType) {
           drugs = drugs.filter(drug => drug.product_type?.toLowerCase() === input.drugType?.toLowerCase())
         }
+        if (input.name) {
+          drugs = drugs.filter(drug => drug?.brand_name?.toLowerCase()?.includes(input?.name?.toLowerCase() || ''))
+        }
       
-
-        const manufacturerNames = drugs.map(item => {
+        console.log(drugs.length)
+        let manufacturerNames = drugs.map(item => {
           return {
             id: item.id,
             name: item?.manufacturer_name
           }
         })
+        console.log(manufacturerNames.length)
+        manufacturerNames = manufacturerNames.filter(manu => manu?.name)
+        manufacturerNames = manufacturerNames.sort()
 
         let routeNames = drugs.map(item => {
           return {
@@ -1021,7 +1027,7 @@ export const db = router({
 
         
         const allYears = ["ALL", "2023", "2022", "2021", "2020", "2019", "2018", "2017","2016"]
-        return {drugs, allYears,  manufacturerNames: filterDuplicateObjArr(manufacturerNames, 'name'), routeNames: filterDuplicateObjArr(routeNames, 'name'), typeNames: filterDuplicateObjArr(typeNames, 'name')}
+        return {drugs, allYears,  manufacturerNames, routeNames: filterDuplicateObjArr(routeNames, 'name'), typeNames: filterDuplicateObjArr(typeNames, 'name')}
       }
 
       const stateSummary = await prisma.payment.findMany({
