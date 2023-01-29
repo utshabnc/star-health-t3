@@ -53,9 +53,11 @@ export const DrugsDets = ({ data }: DrugSchema) => {
           <hr />
         </div>
         {dropdowns.map((dropdown, index) => {
+          if (dropdown.content) {
           return (
             <FAQ key={`${dropdown.title}-${index}`}title={dropdown?.title || null} content={dropdown?.content || null} />
           )
+          }
         })}
                 {/* <div className="flex flex-col items-center justify-around sm:h-[60px] sm:flex-row">
           <div className="flex">
