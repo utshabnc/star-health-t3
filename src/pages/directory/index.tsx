@@ -400,15 +400,13 @@ export default function Directory() {
                 <button onClick={(e) => {
                   setSelectedTab(Tab.ClinicalTrials);
                   setIsProcessing(true);
-                  // TODO: build the query to use only the fields we want
-                  // TODO: use the official title to query when clicking a specific trial
-                  // ajax.getJSON<ClinicalTrials>('https://clinicaltrials.gov/api/query/full_studies?min_rnk=1&max_rnk=100&fmt=json').pipe(
                   const fields: Field[] = [
                     Field.BriefTitle,
                     Field.StartDate,
                     Field.OfficialTitle,
                     Field.OrgFullName,
-                  ]
+                    Field.NCTId,
+                  ];
                   const getClinicalTrialsListRequest: Observable<ClinicalTrialsStudyFieldsResponse<ClinicalTrialsListItem>> = getClinicalTrialsList(fields);
                   getClinicalTrialsListRequest.pipe(
                     finalize(() => setIsProcessing(false))

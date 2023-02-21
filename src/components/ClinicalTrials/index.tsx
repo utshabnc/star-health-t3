@@ -1,5 +1,6 @@
 // import type { ClinicalTrials, FullStudy } from "./ClinicalTrialsFullStudyResponse.model";
 
+import Link from "next/link";
 import type { ClinicalTrialsListItem, ClinicalTrialsStudyFieldsResponse } from "./ClinicalTrialsStudyFieldsResponse.model";
 
 export default function ClinicalTrialsComponent({ data }: { data: ClinicalTrialsStudyFieldsResponse<ClinicalTrialsListItem> }) {
@@ -13,8 +14,9 @@ export default function ClinicalTrialsComponent({ data }: { data: ClinicalTrials
             <div className=" p-2">
               <div className="flex flex-row justify-between">
                 <h5 className="text-md mb-2 font-medium text-violet-700 underline w-[75%]">
-                  {study?.BriefTitle[0] || '-'}
-                  {/* <Link href={`/drug/${item.id}`}>{item.name}</Link> */}
+                  <Link
+                    href={`/clinicalTrial/?officialTitle=${study?.OfficialTitle[0] || ''}`}
+                  >{study?.BriefTitle[0] || '-'}</Link>
                 </h5>
                 <p className="mb-1 text-gray-600 text-sm text-right">
                   Start Date: {study?.StartDate[0] || '-'}

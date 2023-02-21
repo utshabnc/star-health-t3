@@ -4,6 +4,7 @@ export interface ClinicalTrialsListItem {
   OfficialTitle: string[];
   OrgFullName: string[];
   StartDate: string[];
+  NCTId: string[];
 }
 
 

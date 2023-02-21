@@ -3,4 +3,5 @@ export enum Field {
   StartDate = 'StartDate',
   OfficialTitle = 'OfficialTitle',
   OrgFullName = 'OrgFullName',
+  NCTId = 'NCTId',
 }
