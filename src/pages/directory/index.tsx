@@ -90,6 +90,13 @@ export default function Directory() {
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
   const [clinicalTrialsData, setClinicalTrialsData] = useState<ClinicalTrialsStudyFieldsResponse<ClinicalTrialsListItem>>({} as ClinicalTrialsStudyFieldsResponse<ClinicalTrialsListItem>);
   const { query: querySearch } = useRouter();
+  const defaultClinicalTrialFields: Field[] = [
+    Field.BriefTitle,
+    Field.StartDate,
+    Field.OfficialTitle,
+    Field.OrgFullName,
+    Field.NCTId,
+  ];
 
   const { data: searchResults, refetch: fetchSearchResults, isLoading: searchLoad } = trpc.db.directory.useQuery({
     name: filterParams.name,
@@ -128,6 +135,19 @@ export default function Directory() {
     }, 1000),
     []
   );
+
+  const debouncedClinicalTrialSearch = debounce((expr: string) => {
+    if (expr.length < 2) {
+      return;
+    }
+    setIsProcessing(true);
+    const getClinicalTrialsListRequest: Observable<ClinicalTrialsStudyFieldsResponse<ClinicalTrialsListItem>> = getClinicalTrialsList(defaultClinicalTrialFields, expr);
+    getClinicalTrialsListRequest.pipe(
+      finalize(() => setIsProcessing(false))
+    ).subscribe((data: ClinicalTrialsStudyFieldsResponse<ClinicalTrialsListItem>) => {
+      setClinicalTrialsData(data);
+    });
+  }, 1000);
 
   useEffect(() => {
     debouncedSearch(filterParams.name ?? "");
@@ -400,18 +420,10 @@ export default function Directory() {
                 <button onClick={(e) => {
                   setSelectedTab(Tab.ClinicalTrials);
                   setIsProcessing(true);
-                  const fields: Field[] = [
-                    Field.BriefTitle,
-                    Field.StartDate,
-                    Field.OfficialTitle,
-                    Field.OrgFullName,
-                    Field.NCTId,
-                  ];
-                  const getClinicalTrialsListRequest: Observable<ClinicalTrialsStudyFieldsResponse<ClinicalTrialsListItem>> = getClinicalTrialsList(fields);
+                  const getClinicalTrialsListRequest: Observable<ClinicalTrialsStudyFieldsResponse<ClinicalTrialsListItem>> = getClinicalTrialsList(defaultClinicalTrialFields);
                   getClinicalTrialsListRequest.pipe(
                     finalize(() => setIsProcessing(false))
                   ).subscribe((data: ClinicalTrialsStudyFieldsResponse<ClinicalTrialsListItem>) => {
-                    // TODO: type data response here
                     setClinicalTrialsData(data);
                   });
                 }} className={`border-b-2 hover:border-zinc-500 ${selectedTab === Tab.ClinicalTrials ? "border-violet-600" : "border-zinc-200"}`}>
@@ -426,7 +438,25 @@ export default function Directory() {
             </div>
             {
               selectedTab === Tab.ClinicalTrials ? (
-                <div> {`<TODO: Clinical Trial Filter>`} </div>
+                <>
+                  <div>
+                    <p className='text-xs p-1 text-violet-900 font-semibold'>Search for clinical trials</p>
+                    <div className='flex items-center gap-3 w-[100%]'>
+                      <input
+                        type="text"
+                        placeholder={
+                          `Search`
+                        }
+                        className={`
+                          bg-violet-100 border border-violet-900 my-2 placeholder:text-violet-800 text-slate-900 w-[30%] p-1 rounded-lg mx-1 hover:bg-violet-300 hover:text-violet-900 cursor-pointer`}
+                        // value={filterParams.name}
+                        onChange={(e) => {
+                          debouncedClinicalTrialSearch(e.target.value);
+                        }}
+                      />
+                    </div>
+                  </div>
+                </>
               ) : (
                 <>
                   <Filters search={search} setSearch={setSearch} data={data} filterParams={filterParams} setFilterParams={setFilterParams} />
@@ -505,7 +535,7 @@ export default function Directory() {
             {
               selectedTab === Tab.ClinicalTrials ? (
                 <ClinicalTrialsComponent data={clinicalTrialsData} />
-              ) :(
+              ) : (
                 <DirectoryCards search={search as string} searchResults={searchResults} filterParams={filterParams} data={data} />
               )
             }

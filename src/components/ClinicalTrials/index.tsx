@@ -7,7 +7,7 @@ export default function ClinicalTrialsComponent({ data }: { data: ClinicalTrials
   console.log(data);
   return (
     <>
-      {data.StudyFieldsResponse.StudyFields.map((study: ClinicalTrialsListItem, index: number) => {
+      {data.StudyFieldsResponse.StudyFields?.map((study: ClinicalTrialsListItem, index: number) => {
         return (
           <div key={index} className="mb-2 w-[100%] rounded-lg bg-white shadow-lg">
 
