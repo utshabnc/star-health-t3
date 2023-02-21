@@ -1,5 +1,3 @@
-// import type { ClinicalTrials, FullStudy } from "./ClinicalTrialsFullStudyResponse.model";
-
 import Link from "next/link";
 import type { ClinicalTrialsListItem, ClinicalTrialsStudyFieldsResponse } from "./ClinicalTrialsStudyFieldsResponse.model";
 
