@@ -1,14 +1,19 @@
 import { useRouter } from 'next/router'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
-import { allStates, formatMoney } from '../../utils';
+import { formatMoney } from '../../utils';
 import { trpc } from '../../utils/trpc';
-import { filterDuplicates } from '../../utils';
 import Filters from '../../components/Filters';
-import Link from 'next/link';
 import DirectoryCards from '../../components/DirectoryCards';
-import { debounce, filter, identity } from 'lodash';
-import {AiOutlineLoading3Quarters} from "react-icons/ai/index";
+import { debounce } from 'lodash';
+import { AiOutlineLoading3Quarters } from "react-icons/ai/index";
 
+import type { Observable } from 'rxjs';
+import { finalize } from 'rxjs/operators'
+import { Tab } from '../../utils/Enums/Tab.enum';
+import ClinicalTrialsComponent from '../../components/ClinicalTrials';
+import { getClinicalTrialsList } from '../../components/ClinicalTrials/helpers';
+import { Field } from '../../components/ClinicalTrials/Fields.enum';
+import type { ClinicalTrialsListItem, ClinicalTrialsStudyFieldsResponse } from '../../components/ClinicalTrials/ClinicalTrialsStudyFieldsResponse.model';
 
 interface PriceFilter {
   min: number,
@@ -16,544 +21,528 @@ interface PriceFilter {
 }
 
 export interface FilterParams {
-    subject: string,
-    state: string,
-    city: string,
-    zipCode: string,
-    specialty: string,
-    type: string,
-    category: string,
-    doctorFilter: string,
-    manufacturerFilter: string,
-    productFilter: string,
-    cursor: string,
-    year: string,
-    price: PriceFilter,
-    name: string,
-    drugManufacturer: string,
-    drugType: string,
-    drugRoute: string,
+  subject: string,
+  state: string,
+  city: string,
+  zipCode: string,
+  specialty: string,
+  type: string,
+  category: string,
+  doctorFilter: string,
+  manufacturerFilter: string,
+  productFilter: string,
+  cursor: string,
+  year: string,
+  price: PriceFilter,
+  name: string,
+  drugManufacturer: string,
+  drugType: string,
+  drugRoute: string,
 }
 
 export default function Directory() {
-    const progressRef = useRef<HTMLDivElement>(null) 
-    const searchRef = useRef<HTMLInputElement>(null)
-    const navigate = useRouter();
-    console.log("navigate", navigate);
-    
-    const [filterParams, setFilterParams] = useState<FilterParams>({
-      subject: navigate.query.tab as string ?? "transactions", 
-      state: '', 
-      city: '', 
-      zipCode: '', 
-      specialty: '', 
-      type: '', 
-      category: '', 
-      doctorFilter: "", 
-      manufacturerFilter: '', 
-      productFilter: '',
-      cursor: '',
-      year: '',
-      price: {min: 0, max: 5000},
-      name: "",
-      drugManufacturer: '',
-      drugType: '',
-      drugRoute: ''
-    })
-    const {data, error, isLoading, } = trpc.db.directory.useQuery({
-      altName: searchRef?.current?.value,
-      subject: filterParams.subject, 
-      state: filterParams.state, 
-      city: filterParams.city, 
-      zipCode: filterParams.zipCode, 
-      specialty: filterParams.specialty, 
-      type: filterParams.type, 
-      category: filterParams.category, 
-      doctorFilter: filterParams.doctorFilter, 
-      manufacturerFilter: filterParams.manufacturerFilter, 
-      productFilter: filterParams.productFilter,
-      cursor: filterParams.cursor,
-      year: filterParams.year,
-      drugManufacturer: filterParams.drugManufacturer,
-      drugType: filterParams.drugType,
-      drugRoute: filterParams.drugRoute,
-      // name: filterParams.name
-    });
-    const [search, setSearch] = useState<string>();
-    const { query: querySearch } = useRouter();
+  const progressRef = useRef<HTMLDivElement>(null)
+  const searchRef = useRef<HTMLInputElement>(null)
+  const navigate = useRouter();
 
-    const { data: searchResults, refetch: fetchSearchResults, isLoading: searchLoad } = trpc.db.directory.useQuery({
-      name: filterParams.name, 
-      subject: filterParams.subject, 
-      price: {
-        min: filterParams.price.min,
-        max: filterParams.price.max
-      },
-      state: filterParams.state,
-      city: filterParams.city,
-      specialty: filterParams.specialty,
-      zipCode: filterParams.zipCode,
-      year: filterParams.year,
-      drugManufacturer: filterParams.drugManufacturer,
-      drugType: filterParams.drugType,
-      drugRoute: filterParams.drugRoute,
+  const [filterParams, setFilterParams] = useState<FilterParams>({
+    subject: navigate.query.tab as string ?? "transactions",
+    state: '',
+    city: '',
+    zipCode: '',
+    specialty: '',
+    type: '',
+    category: '',
+    doctorFilter: "",
+    manufacturerFilter: '',
+    productFilter: '',
+    cursor: '',
+    year: '',
+    price: { min: 0, max: 5000 },
+    name: "",
+    drugManufacturer: '',
+    drugType: '',
+    drugRoute: ''
+  })
+  const { data } = trpc.db.directory.useQuery({
+    altName: searchRef?.current?.value,
+    subject: filterParams.subject,
+    state: filterParams.state,
+    city: filterParams.city,
+    zipCode: filterParams.zipCode,
+    specialty: filterParams.specialty,
+    type: filterParams.type,
+    category: filterParams.category,
+    doctorFilter: filterParams.doctorFilter,
+    manufacturerFilter: filterParams.manufacturerFilter,
+    productFilter: filterParams.productFilter,
+    cursor: filterParams.cursor,
+    year: filterParams.year,
+    drugManufacturer: filterParams.drugManufacturer,
+    drugType: filterParams.drugType,
+    drugRoute: filterParams.drugRoute,
+    // name: filterParams.name
+  });
+  const [search, setSearch] = useState<string>();
+  const [selectedTab, setSelectedTab] = useState<Tab>(Tab.Transactions);
+  const [isProcessing, setIsProcessing] = useState<boolean>(false);
+  const [clinicalTrialsData, setClinicalTrialsData] = useState<ClinicalTrialsStudyFieldsResponse<ClinicalTrialsListItem>>({} as ClinicalTrialsStudyFieldsResponse<ClinicalTrialsListItem>);
+  const [clinicalTrialSearchExpr, setClinicalTrialSearchExpr] = useState<string>('');
+  const { query: querySearch } = useRouter();
+  const defaultClinicalTrialFields: Field[] = [
+    Field.BriefTitle,
+    Field.StartDate,
+    Field.OfficialTitle,
+    Field.OrgFullName,
+    Field.NCTId,
+  ];
 
-    }, { enabled: false });
-    const [price, setPrice] = useState<number>(1000)
-    console.log("search", searchResults)
-    //helpers to set last index to filter param when user requests to see more data
-    const setLastIndex = (arr: {id: string}[]) => {
-      if(filterParams.cursor === arr[arr.length -1]?.id ){
-        setFilterParams(prev => {
-          return {
-            ...prev,
-            cursor: ''
-          }
-        })
-      }
+  const { data: searchResults, refetch: fetchSearchResults, isLoading: searchLoad } = trpc.db.directory.useQuery({
+    name: filterParams.name,
+    subject: filterParams.subject,
+    price: {
+      min: filterParams.price.min,
+      max: filterParams.price.max
+    },
+    state: filterParams.state,
+    city: filterParams.city,
+    specialty: filterParams.specialty,
+    zipCode: filterParams.zipCode,
+    year: filterParams.year,
+    drugManufacturer: filterParams.drugManufacturer,
+    drugType: filterParams.drugType,
+    drugRoute: filterParams.drugRoute,
+
+  }, { enabled: false });
+
+  useEffect(() => {
+    const searchParam = querySearch["search"] as string;
+    if (searchParam) {
       setFilterParams(prev => {
         return {
           ...prev,
-          cursor: arr[arr.length -1]?.id ?? ""
+          search: searchParam
         }
-      })
+      });
     }
+  }, [querySearch]);
 
-    const currDataAssignedToLastIndex = () => {
-      if(data?.doctors) setLastIndex(data?.doctors)
-      if(data?.manufacturers) setLastIndex(data?.manufacturers)
-      if(data?.products) setLastIndex(data?.products)
-      if(data?.payments) setLastIndex(data?.payments)
-      if(data?.manufacturerSummary) setLastIndex(data?.manufacturerSummary)
-      if(data?.drugs) setLastIndex(data?.drugs)
+  const debouncedSearch = useCallback(
+    debounce((search: string) => {
+      if (search.length < 2 && !filterParams.price) return;
+      fetchSearchResults();
+    }, 1000),
+    []
+  );
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const debouncedClinicalTrialSearch = useCallback(debounce((expr: string) => {
+    if (expr.length < 2) {
+      return;
     }
+    setIsProcessing(true);
+    const getClinicalTrialsListRequest: Observable<ClinicalTrialsStudyFieldsResponse<ClinicalTrialsListItem>> = getClinicalTrialsList(defaultClinicalTrialFields, expr);
+    getClinicalTrialsListRequest.pipe(
+      finalize(() => setIsProcessing(false))
+    ).subscribe((data: ClinicalTrialsStudyFieldsResponse<ClinicalTrialsListItem>) => {
+      setClinicalTrialsData(data);
+    });
+  }, 1000), []);
 
-    useEffect(() => {
-      const searchParam = querySearch["search"] as string;
-      if (searchParam) {
-        setFilterParams(prev => {
-          return {
-            ...prev,
-            search: searchParam
-          }
-        });
-      }
-    }, [querySearch]);
+  useEffect(() => {
+    debouncedSearch(filterParams.name ?? "");
+  }, [filterParams.name, filterParams.price, filterParams.drugManufacturer, filterParams.drugRoute, filterParams.drugType]);
 
-    const debouncedSearch = useCallback(
-      debounce((search: string) => {
-        if (search.length < 2 && !filterParams.price) return;
-        fetchSearchResults();
-      }, 1000),
-      []
-    );
-
-    useEffect(() => {
-      debouncedSearch(filterParams.name ?? "");
-    }, [filterParams.name, filterParams.price, filterParams.drugManufacturer, filterParams.drugRoute, filterParams.drugType]);
-
-    console.log(searchResults);
-    console.log(searchLoad);
-
-    const handleMinPrice = (e: any) => {
-      if(e.target.value >= filterParams.price.max) {
-        setFilterParams((prev: any) => {
-          return {
-            ...prev,
-            price: {
-              min: filterParams.price.min,
-              max: parseInt(e.target.value)
-  
-            }
-          }
-        })
-        return
-      }
+  const handleMinPrice = (e: any) => {
+    if (e.target.value >= filterParams.price.max) {
       setFilterParams((prev: any) => {
         return {
           ...prev,
           price: {
-            min: parseInt(e.target.value),
-            max: filterParams.price.max
+            min: filterParams.price.min,
+            max: parseInt(e.target.value)
 
           }
         }
       })
+      return
     }
+    setFilterParams((prev: any) => {
+      return {
+        ...prev,
+        price: {
+          min: parseInt(e.target.value),
+          max: filterParams.price.max
 
-    const handleMaxPrice = (e: any) => {
-      if(e.target.value <= filterParams.price.min) {
-        setFilterParams((prev: any) => {
-          return {
-            ...prev,
-            price: {
-              max: filterParams.price.max,
-              min: parseInt(e.target.value)
-  
-            }
-          }
-        })
-        return
+        }
       }
+    })
+  }
 
+  const handleMaxPrice = (e: any) => {
+    if (e.target.value <= filterParams.price.min) {
       setFilterParams((prev: any) => {
         return {
           ...prev,
           price: {
-            max: parseInt(e.target.value),
-            min: filterParams.price.min
+            max: filterParams.price.max,
+            min: parseInt(e.target.value)
 
           }
         }
       })
+      return
     }
-    
-    
-    useEffect(() => {
-      if (progressRef.current != null) {
-        progressRef.current.style.left = (filterParams.price.min / 5000) * 10 + "%" 
-        progressRef.current.style.right = 10 - (filterParams.price.max / 5000) * 10 + "%" 
 
+    setFilterParams((prev: any) => {
+      return {
+        ...prev,
+        price: {
+          max: parseInt(e.target.value),
+          min: filterParams.price.min
+
+        }
       }
+    })
+  }
 
-    }, [filterParams.price.min, filterParams.price.max])
-    
-    
 
-    // if(!data){
-    //   return (
-    //     <>
-    //       <div>Try adjusting your search filter. No results were found</div>
-    //     </>
-    //   )
-    // }
+  useEffect(() => {
+    if (progressRef.current != null) {
+      progressRef.current.style.left = (filterParams.price.min / 5000) * 10 + "%"
+      progressRef.current.style.right = 10 - (filterParams.price.max / 5000) * 10 + "%"
 
-    if (!data) {
-        return (
-          <>
-            <div className="bgColor">
-              <div
-                style={{
-                  height: "800px",
-                }}
-                className="rounded bg-white p-5"
-              >
-                <div className="flex flex-row">
-                  <div>
-                    <button
-                      onClick={navigate.back}
-                      className="ease focus:shadow-outline select-none rounded-md border border-violet-700 bg-violet-700 px-4 py-2 text-white transition duration-500 hover:bg-violet-900 focus:outline-none"
+    }
+
+  }, [filterParams.price.min, filterParams.price.max])
+
+  if (!data) {
+    return (
+      <>
+        <div className="bgColor">
+          <div
+            style={{
+              height: "800px",
+            }}
+            className="rounded bg-white p-5"
+          >
+            <div className="flex flex-row">
+              <div>
+                <button
+                  onClick={navigate.back}
+                  className="ease focus:shadow-outline select-none rounded-md border border-violet-700 bg-violet-700 px-4 py-2 text-white transition duration-500 hover:bg-violet-900 focus:outline-none"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={1.5}
+                    stroke="currentColor"
+                    className="h-6 w-6 "
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18"
+                    />
+                  </svg>
+                </button>
+              </div>
+
+              <div className="flex w-11/12 justify-center">
+                <div className="flex flex-col">
+                  <p className="p-1 text-2xl font-semibold text-violet-700"></p>
+
+                  <div className="mx-auto mt-48 max-w-2xl">
+                    <svg
+                      role="status"
+                      className="mr-2 inline h-20 w-20 animate-spin fill-purple-600 text-gray-200 dark:text-gray-600"
+                      viewBox="0 0 100 101"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
                     >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        strokeWidth={1.5}
-                        stroke="currentColor"
-                        className="h-6 w-6 "
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18"
-                        />
-                      </svg>
-                    </button>
+                      <path
+                        d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
+                        fill="currentColor"
+                      />
+                      <path
+                        d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
+                        fill="currentFill"
+                      />
+                    </svg>
                   </div>
-    
-                  <div className="flex w-11/12 justify-center">
-                    <div className="flex flex-col">
-                      <p className="p-1 text-2xl font-semibold text-violet-700"></p>
-    
-                      <div className="mx-auto mt-48 max-w-2xl">
-                        <svg
-                          role="status"
-                          className="mr-2 inline h-20 w-20 animate-spin fill-purple-600 text-gray-200 dark:text-gray-600"
-                          viewBox="0 0 100 101"
-                          fill="none"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <path
-                            d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
-                            fill="currentColor"
-                          />
-                          <path
-                            d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
-                            fill="currentFill"
-                          />
-                        </svg>
-                      </div>
-                      <p className="flex justify-center pt-2 text-lg font-semibold text-violet-700 sm:text-2xl">
-                        Loading StarHealth Data...
-                      </p>
-                    </div>
-                  </div>
+                  <p className="flex justify-center pt-2 text-lg font-semibold text-violet-700 sm:text-2xl">
+                    Loading StarHealth Data...
+                  </p>
                 </div>
               </div>
             </div>
-          </>
-        );
-      }
-    
+          </div>
+        </div>
+      </>
+    );
+  }
+
   return (
     <>
-        <div className="p-5 rounded bg-white h-screen pb-44">
-            <div className="flex flex-row">
-                <div>
-                    <button
-                    onClick={navigate.back}
-                    className="border border-violet-700 bg-violet-700 text-white rounded-md px-4 py-2 transition duration-500 ease select-none hover:bg-violet-900 focus:outline-none focus:shadow-outline"
-                    >
-                    <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        strokeWidth={1.5}
-                        stroke="currentColor"
-                        className="w-6 h-6 "
-                    >
-                        <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18"
-                        />
-                    </svg>
-                    </button>
-                </div>
-              <div className='w-full flex flex-col justify-end px-8 pb-10'>
-              <div className="wrap-opt flex justify-between">
-                    <div className='w-[70%] flex items-center gap-5'>
-                      <p className='text-violet-700 text-2xl font-semibold flex'>
-                          StarHealth Data Directory
-                      </p>
-                      {searchLoad && (filterParams.subject === "transactions" || filterParams.name !== "") && <AiOutlineLoading3Quarters className='text-violet-600 font-semibold spinner'/>}
+      <div className="p-5 rounded bg-white h-screen pb-44">
+        <div className="flex flex-row">
+          <div>
+            <button
+              onClick={navigate.back}
+              className="border border-violet-700 bg-violet-700 text-white rounded-md px-4 py-2 transition duration-500 ease select-none hover:bg-violet-900 focus:outline-none focus:shadow-outline"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="currentColor"
+                className="w-6 h-6 "
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18"
+                />
+              </svg>
+            </button>
+          </div>
+          <div className='w-full flex flex-col justify-end px-8 pb-10'>
+            <div className="wrap-opt flex justify-between">
+              <div className='w-[60%] flex items-center gap-5'>
+                <p className='text-violet-700 text-2xl font-semibold flex'>
+                  StarHealth Data Directory
+                </p>
+                {(searchLoad && (filterParams.subject === "transactions" || filterParams.name !== "") || isProcessing) && <AiOutlineLoading3Quarters className='text-violet-600 font-semibold spinner' />}
+              </div>
+              <div className='flex gap-2'>
+                <button onClick={() => {
+                  setSelectedTab(Tab.Transactions);
+                  setFilterParams(prev => {
+                    return {
+                      ...prev,
+                      subject: "transactions",
+                      cursor: ""
+
+                    }
+                  })
+                  setFilterParams(prev => {
+                    return {
+                      ...prev,
+                      name: ""
+                    }
+                  })
+
+                }}
+                  className={`border-b-2 hover:border-zinc-500 ${selectedTab === Tab.Transactions ? "border-violet-600" : "border-zinc-200"}`}>
+                  Transactions
+                </button>
+                <button onClick={() => {
+                  setSelectedTab(Tab.Manufacturers);
+                  setFilterParams(prev => {
+                    return {
+                      ...prev,
+                      subject: "manufacturers",
+                      cursor: ""
+
+                    }
+                  })
+                  setFilterParams(prev => {
+                    return {
+                      ...prev,
+                      name: ""
+                    }
+                  })
+                }} className={`border-b-2 hover:border-zinc-500 ${selectedTab === Tab.Manufacturers ? "border-violet-600" : "border-zinc-200"}`}>
+                  Manufacturers
+                </button>
+                <button onClick={() => {
+                  setSelectedTab(Tab.Doctors);
+                  setFilterParams(prev => {
+                    return {
+                      ...prev,
+                      subject: "doctors",
+                      cursor: ""
+
+
+                    }
+                  })
+                  setFilterParams(prev => {
+                    return {
+                      ...prev,
+                      name: ""
+                    }
+                  })
+                }} className={`border-b-2 hover:border-zinc-500 ${selectedTab === Tab.Doctors ? "border-violet-600" : "border-zinc-200"}`}>
+                  Doctors
+                </button>
+                <button onClick={(e) => {
+                  setSelectedTab(Tab.Products);
+                  setFilterParams(prev => {
+                    return {
+                      ...prev,
+                      subject: "products",
+                      cursor: ""
+
+
+                    }
+                  })
+                  setFilterParams(prev => {
+                    return {
+                      ...prev,
+                      name: ""
+                    }
+                  })
+                }} className={`border-b-2 hover:border-zinc-500 ${selectedTab === Tab.Products ? "border-violet-600" : "border-zinc-200"}`}>
+                  Products
+                </button>
+                <button onClick={(e) => {
+                  setSelectedTab(Tab.Drugs);
+                  setFilterParams(prev => {
+                    return {
+                      ...prev,
+                      subject: "drugs",
+                      cursor: ""
+
+
+                    }
+                  })
+                  setFilterParams(prev => {
+                    return {
+                      ...prev,
+                      name: ""
+                    }
+                  })
+                }} className={`border-b-2 hover:border-zinc-500 ${selectedTab === Tab.Drugs ? "border-violet-600" : "border-zinc-200"}`}>
+                  Drugs
+                </button>
+                <button onClick={(e) => {
+                  setSelectedTab(Tab.ClinicalTrials);
+                  setIsProcessing(true);
+                  const getClinicalTrialsListRequest: Observable<ClinicalTrialsStudyFieldsResponse<ClinicalTrialsListItem>> = getClinicalTrialsList(defaultClinicalTrialFields);
+                  getClinicalTrialsListRequest.pipe(
+                    finalize(() => setIsProcessing(false))
+                  ).subscribe((data: ClinicalTrialsStudyFieldsResponse<ClinicalTrialsListItem>) => {
+                    setClinicalTrialsData(data);
+                  });
+                }} className={`border-b-2 hover:border-zinc-500 ${selectedTab === Tab.ClinicalTrials ? "border-violet-600" : "border-zinc-200"}`}>
+                  Clinical Trials
+                </button>
+              </div>
+
+            </div>
+
+            <div className='my-1'>
+              <hr />
+            </div>
+            {
+              selectedTab === Tab.ClinicalTrials ? (
+                <>
+                  <div>
+                    <p className='text-xs p-1 text-violet-900 font-semibold'>Search for clinical trials</p>
+                    <div className='flex items-center gap-3 w-[100%]'>
+                      <input
+                        type="text"
+                        placeholder={
+                          `Search`
+                        }
+                        className={`
+                          bg-violet-100 border border-violet-900 my-2 placeholder:text-violet-800 text-slate-900 w-[30%] p-1 rounded-lg mx-1 hover:bg-violet-300 hover:text-violet-900 cursor-pointer`}
+                        value={clinicalTrialSearchExpr}
+                        onChange={(e) => {
+                          setClinicalTrialSearchExpr(e.target.value);
+                          debouncedClinicalTrialSearch(e.target.value);
+                        }}
+                      />
                     </div>
-                    <div className='flex gap-2'>
-                      <button onClick={() => {
-                        setFilterParams(prev => {
-                          return {
-                            ...prev,
-                            subject: "transactions",
-                            cursor: ""
-
-                          }
-                        })
-                        setFilterParams(prev => {
-                          return {
-                            ...prev,
-                            name: ""
-                          }
-                        })
-                        
-                      }} 
-                      className={`border-b-2 hover:border-zinc-500 ${data?.payments ? "border-violet-600" : "border-zinc-200"}`}>
-                        Transactions
-                      </button>
-                      <button onClick={() => {
-                        setFilterParams(prev => {
-                          return {
-                            ...prev,
-                            subject: "manufacturers",
-                            cursor: ""
-
-                          }
-                        })
-                        setFilterParams(prev => {
-                          return {
-                            ...prev,
-                            name: ""
-                          }
-                        })
-                      }} className={`border-b-2 hover:border-zinc-500 ${data?.manufacturers ? "border-violet-600" : "border-zinc-200"}`}>
-                        Manufacturers
-                      </button>
-                      <button onClick={() => {
-                        setFilterParams(prev => {
-                          return {
-                            ...prev,
-                            subject: "doctors",
-                            cursor: ""
-
-
-                          }
-                        })
-                        setFilterParams(prev => {
-                          return {
-                            ...prev,
-                            name: ""
-                          }
-                        })
-                      }} className={`border-b-2 hover:border-zinc-500 ${data?.doctors ? "border-violet-600" : "border-zinc-200"}`}>
-                        Doctors
-                      </button>
-                      <button onClick={(e) => {
-                        setFilterParams(prev => {
-                          return {
-                            ...prev,
-                            subject: "products",
-                            cursor: ""
-
-
-                          }
-                        })
-                        setFilterParams(prev => {
-                          return {
-                            ...prev,
-                            name: ""
-                          }
-                        })
-                      }} className={`border-b-2 hover:border-zinc-500 ${data?.products ? "border-violet-600" : "border-zinc-200"}`}>
-                        Products
-                      </button>
-                      <button onClick={(e) => {
-                        setFilterParams(prev => {
-                          return {
-                            ...prev,
-                            subject: "drugs",
-                            cursor: ""
-
-
-                          }
-                        })
-                        setFilterParams(prev => {
-                          return {
-                            ...prev,
-                            name: ""
-                          }
-                        })
-                      }} className={`border-b-2 hover:border-zinc-500 ${data?.drugs ? "border-violet-600" : "border-zinc-200"}`}>
-                        Drugs
-                      </button>
-                    </div>
-
                   </div>
-                  
-                  <div className='my-1'>
-                  <hr />
-                  </div>
+                </>
+              ) : (
+                <>
                   <Filters search={search} setSearch={setSearch} data={data} filterParams={filterParams} setFilterParams={setFilterParams} />
                   {
-                  "data" && (
-                    <>
-                      <div className=''>
-                        <p className='text-xs p-1 text-violet-900 font-semibold'>{`Search for ${filterParams.subject} by ${filterParams.subject === "payment" ? "product" : "name"}`}</p>
-                        <div className='flex items-center gap-3 w-[100%]'>
+                    "data" && (
+                      <>
+                        <div className=''>
+                          <p className='text-xs p-1 text-violet-900 font-semibold'>{`Search for ${filterParams.subject} by ${filterParams.subject === "payment" ? "product" : "name"}`}</p>
+                          <div className='flex items-center gap-3 w-[100%]'>
 
-                          <input
-                          type="text"
-                          placeholder={
-                          `Search`
-                          }
-                          className={`
-                          bg-violet-100 border border-violet-900 my-2 placeholder:text-violet-800 text-slate-900 w-[30%] p-1 rounded-lg mx-1 hover:bg-violet-300 hover:text-violet-900 cursor-pointer`}
-                          value={filterParams.name}
-                          onChange={(e) => 
-                          {
-                            setFilterParams(prev => {
-                              return {
-                                ...prev,
-                                name: e.target.value
+                            <input
+                              type="text"
+                              placeholder={
+                                `Search`
                               }
-                            })
-                          }
-                          }
-                          />
-                          
-                          <div className='flex flex-col ml-5 items-center'>
-                            {filterParams.subject === "transactions" && <div className='mb-4 w-80 mt-5'>
-                              <div className="slider relative h-1 rounded-md bg-violet-100">
-                                <div ref={progressRef} className="progress absolute h-2  rounded">
-                                  
+                              className={`
+                          bg-violet-100 border border-violet-900 my-2 placeholder:text-violet-800 text-slate-900 w-[30%] p-1 rounded-lg mx-1 hover:bg-violet-300 hover:text-violet-900 cursor-pointer`}
+                              value={filterParams.name}
+                              onChange={(e) => {
+                                setFilterParams(prev => {
+                                  return {
+                                    ...prev,
+                                    name: e.target.value
+                                  }
+                                })
+                              }
+                              }
+                            />
+
+                            <div className='flex flex-col ml-5 items-center'>
+                              {filterParams.subject === "transactions" && <div className='mb-4 w-80 mt-5'>
+                                <div className="slider relative h-1 rounded-md bg-violet-100">
+                                  <div ref={progressRef} className="progress absolute h-2  rounded">
+
+                                  </div>
                                 </div>
-                              </div>
-                              <div className="range-input relative">
-                                
-                                <input 
-                                  type="range" value={filterParams.price.min} 
-                                  onChange={handleMinPrice}
-                                  min={0}
-                                  step={10}
-                                  max={5000}
-                                  name="price-range" id="price-range-low" className='range-min accent-violet-500 absolute w-full -top-1 h-1 bg-transparent appearance-none pointer-events-none cursor-pointer' />
-                                <input 
-                                  type="range" value={filterParams.price.max} 
-                                  onChange={handleMaxPrice}
-                                  min={0}
-                                  step={10}
-                                  max={5000}
-                                  name="price-range" id="price-range-high" className='range-max accent-violet-500 absolute w-full -top-1 h-1 bg-transparent appearance-none cursor-pointer pointer-events-none' />
-                              </div>
+                                <div className="range-input relative">
+
+                                  <input
+                                    type="range" value={filterParams.price.min}
+                                    onChange={handleMinPrice}
+                                    min={0}
+                                    step={10}
+                                    max={5000}
+                                    name="price-range" id="price-range-low" className='range-min accent-violet-500 absolute w-full -top-1 h-1 bg-transparent appearance-none pointer-events-none cursor-pointer' />
+                                  <input
+                                    type="range" value={filterParams.price.max}
+                                    onChange={handleMaxPrice}
+                                    min={0}
+                                    step={10}
+                                    max={5000}
+                                    name="price-range" id="price-range-high" className='range-max accent-violet-500 absolute w-full -top-1 h-1 bg-transparent appearance-none cursor-pointer pointer-events-none' />
+                                </div>
+                              </div>}
+                            </div>
+                            {filterParams.subject === "transactions" && <div className='flex gap-5 text-violet-400'>
+                              <p>{formatMoney(filterParams.price.min)}</p>
+                              <p>To</p>
+                              <p>{formatMoney(filterParams.price.max)}</p>
+
                             </div>}
-                            
-                            {/* {filterParams.subject === "payment" && <div className="flex gap-4">
-                                <p className='font-semibold'>From</p>
-                                <input className='appearance-none h-5 w-20 bg-violet-500 rounded-full accent-slate-50 cursor-pointer'  onChange={(e) => {
-                                  setFilterParams((prev: any) => {
-                                    return {
-                                      ...prev,
-                                      price: {
-                                        min: parseInt(e.target.value),
-                                        max: filterParams.price.max
-                                      }
-                                    }
-                                  })
-                                    // setPrice(parseInt(e.target.value))
-                                  }} type="range" min={1} max={2500} value={filterParams.price.min} />
-                                <p className='text-violet-900'>{formatMoney(filterParams.price.min)}</p>
-                                <p className='font-semibold'>To</p>
-                                <input className='appearance-none h-5 w-20 bg-violet-500 rounded-full accent-slate-50 cursor-pointer'  onChange={(e) => {
-                                  setFilterParams((prev: any) => {
-                                    return {
-                                      ...prev,
-                                      price: {
-                                        min: filterParams.price.min,
-                                        max: parseInt(e.target.value)
-                                      }
-                                    }
-                                  })
-                                    // setPrice(parseInt(e.target.value))
-                                  }} type="range" min={2600} max={5000} value={filterParams.price.max} />
-                                <p className='text-violet-900'>{formatMoney(filterParams.price.max)}</p>
-                                
-                            </div>} */}
-                            {/* <div className='flex justify-between absolute bottom-[-25px] w-[60%]'>
-                                <p className='text-sm text-slate-500'>{formatMoney(1)}</p>
-                                <p className='text-sm text-slate-500'>{formatMoney(1000)}</p>
-                            </div> */}
-                            
                           </div>
-                          {filterParams.subject === "transactions" && <div className='flex gap-5 text-violet-400'>
-                            <p>{formatMoney(filterParams.price.min)}</p>
-                            <p>To</p>
-                            <p>{formatMoney(filterParams.price.max)}</p>
-                              
-                          </div>}
+
                         </div>
-
-                      </div>
-                    </>
-                  )
+                      </>
+                    )
                   }
-              </div>
-            </div>
-            <div className="flex w-full h-[90%] justify-center">
-                <div className='flex min-h-[100%] flex-col overflow-scroll w-[95%] ml-5 p-1'>
-                    {/* {!error ? <DirectoryCards filterParams={filterParams} data={data} /> : <div>Try adjusting your search filter. No results were found</div>} */}
-                    {<DirectoryCards search={search as string} searchResults={searchResults} filterParams={filterParams} data={data} />} 
-                </div>
-            </div>
-            {/* <div className="more-btn my-2 flex justify-center w-full mt-5">
-              {(data?.doctors || data?.manufacturers || data?.products || data?.payments) && <button 
-              className='bg-violet-600 px-3 py-1 rounded-lg text-slate-50'
-              onClick={() => {
-                currDataAssignedToLastIndex()
-              }}
-              >
-                See More
-              </button>}
+                </>
+              )
+            }
 
-            </div> */}
+          </div>
         </div>
+        <div className="flex w-full h-[90%] justify-center">
+          <div className='flex min-h-[100%] flex-col overflow-scroll w-[95%] ml-5 p-1'>
+            {
+              selectedTab === Tab.ClinicalTrials ? (
+                <ClinicalTrialsComponent data={clinicalTrialsData} />
+              ) : (
+                <DirectoryCards search={search as string} searchResults={searchResults} filterParams={filterParams} data={data} />
+              )
+            }
+          </div>
+        </div>
+      </div>
     </>
   )
 }
