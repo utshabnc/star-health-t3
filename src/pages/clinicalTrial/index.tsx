@@ -13,7 +13,6 @@ const ClinicalTrialDetails = () => {
 
   const navigate = useRouter();
   const officialTitle = navigate.query?.officialTitle as string;
-  console.log(officialTitle);
 
 
   useEffect(() => {

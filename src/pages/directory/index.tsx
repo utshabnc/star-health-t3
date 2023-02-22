@@ -135,7 +135,8 @@ export default function Directory() {
     []
   );
 
-  const debouncedClinicalTrialSearch = debounce((expr: string) => {
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const debouncedClinicalTrialSearch = useCallback(debounce((expr: string) => {
     if (expr.length < 2) {
       return;
     }
@@ -146,7 +147,7 @@ export default function Directory() {
     ).subscribe((data: ClinicalTrialsStudyFieldsResponse<ClinicalTrialsListItem>) => {
       setClinicalTrialsData(data);
     });
-  }, 1000);
+  }, 1000), []);
 
   useEffect(() => {
     debouncedSearch(filterParams.name ?? "");
