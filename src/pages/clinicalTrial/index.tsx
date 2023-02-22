@@ -4,6 +4,7 @@ import { finalize } from "rxjs";
 import { getClinicalTrialByOfficialTitle } from "../../components/ClinicalTrials/helpers";
 import type { ClinicalTrialsFullStudyResponse } from '../../components/ClinicalTrials/ClinicalTrialsFullStudyResponse.model';
 import ExpansionPanel from "../../components/ExpansionPanel";
+import { MailIcon, PhoneIcon } from '@heroicons/react/solid';
 
 const ClinicalTrialDetails = () => {
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
@@ -29,19 +30,80 @@ const ClinicalTrialDetails = () => {
 
   }, [isInitialLoad, officialTitle]);
 
+  const SummaryJSX = clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.DescriptionModule?.BriefSummary ?
+    <div className="text-purp-5 pt-1 sm:text-xs lg:text-lg whitespace-pre-wrap">
+      {clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.DescriptionModule.BriefSummary || '-'}
+    </div> :
+    <div>-</div>;
+
+  const ContactsJSX = clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.ContactsLocationsModule.CentralContactList ?
+    <div className="flex-col text-purp-5 pt-1 sm:text-xs lg:text-lg ">
+      {clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.ContactsLocationsModule.CentralContactList?.CentralContact.map((contact, index) => {
+        return <div key={index} className="flex flex-row mb-2">
+          <div className="w-[75%]">{contact.CentralContactName}</div>
+          <div className="flex flex-col w-[50%]">
+            <div className="flex flex-row items-center">
+              <MailIcon className="h-4 w-4 mr-1" />
+              {contact?.CentralContactEMail || '-'}
+            </div>
+            <div className="flex flex-row items-center">
+              <PhoneIcon className="h-4 w-4 mr-1" />
+              {contact?.CentralContactPhone || '-'}
+            </div>
+          </div>
+        </div>
+      })}
+    </div> :
+    <div>-</div>
+
+  const StatusJSX =
+    clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.StatusModule ?
+      <div className="flex-col text-purp-5 pt-1 sm:text-xs lg:text-lg ">
+        <div>
+          Status: {clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.StatusModule.OverallStatus || '-'}
+        </div>
+        <div>
+          Start Date: {clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.StatusModule.StartDateStruct.StartDate || '-'}
+        </div>
+        <div>
+          Completion Date: {clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.StatusModule.PrimaryCompletionDateStruct.PrimaryCompletionDate || '-'}
+        </div>
+        <div>
+          Completion Date Status: {clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.StatusModule.PrimaryCompletionDateStruct.PrimaryCompletionDateType || '-'}
+        </div>
+      </div> :
+      <div>-</div>;
+  
+  const DescriptionJSX =
+    clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.DescriptionModule ?
+      <div className="flex-col">
+        <div className="whitespace-pre-wrap text-purp-5 pt-1 sm:text-xs lg:text-lg">
+          {clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.DescriptionModule.DetailedDescription || '-'}
+        </div>
+      </div> :
+      <div>-</div>;
+
+  const EligibilityJSX =
+    clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.EligibilityModule ?
+    <div className="flex flex-col whitespace-pre-wrap text-purp-5 pt-1 sm:text-xs lg:text-lg">
+      <div className="mb-2 flex flex-col">
+        <div>Gender: {clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.EligibilityModule.Gender || '-'}</div>
+        <div>Healthy Volunteers: {clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.EligibilityModule.HealthyVolunteers || '-'}</div>
+        <div>Min Age: {clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.EligibilityModule.MinimumAge || '-'}</div>
+        <div>Min Age: {clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.EligibilityModule.MaximumAge || '-'}</div>
+      </div>
+      <div>
+        {clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.EligibilityModule.EligibilityCriteria || '-'}
+      </div>
+    </div> :
+    <div>-</div>;
+
   const expansionPanels = [
-    { title: 'Arms Interventions' || null, content: <div>TODO: Arms Interventions</div> },
-    { title: 'Conditions' || null, content: <div>TODO: Conditions</div> },
-    { title: 'Contacts' || null, content: <div>TODO: Contacts</div> },
-    { title: 'Description' || null, content: <div>TODO: Description</div> },
-    { title: 'Design' || null, content: <div>TODO: Design</div> },
-    { title: 'Eligibility' || null, content: <div>TODO: Eligibility</div> },
-    { title: 'IPD Sharing' || null, content: <div>TODO: IPD Sharing</div> },
-    { title: 'Identification' || null, content: <div>TODO: Identification</div> },
-    { title: 'Outcomes' || null, content: <div>TODO: Outcomes</div> },
-    { title: 'Oversight' || null, content: <div>TODO: Oversight</div> },
-    { title: 'Sponsor and Collaborators' || null, content: <div>TODO: Sponsor and Collaborators</div> },
-    { title: 'Status' || null, content: <div>TODO: Status</div> },
+    { title: 'Summary' || null, content: SummaryJSX },
+    { title: 'Description' || null, content: DescriptionJSX },
+    { title: 'Status' || null, content: StatusJSX },
+    { title: 'Contacts' || null, content: ContactsJSX },
+    { title: 'Eligibility' || null, content: EligibilityJSX },
   ]
 
   return (
@@ -88,30 +150,51 @@ const ClinicalTrialDetails = () => {
       </>
     ) : (
       <>
-        <div className="flex flex-col justify-end sm:px-2 lg:px-28">
-          <p className="text-2xl font-semibold text-violet-700">
-            {clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.IdentificationModule.OfficialTitle || '-'}
-          </p>
+        <div className="bgColor">
+          <div className="rounded bg-white p-5">
+            <div className="flex flex-row">
+              <div>
+                <button
+                  onClick={navigate.back}
+                  className="ease focus:shadow-outline select-none rounded-md border border-violet-700 bg-violet-700 px-4 py-2 text-white transition duration-500 hover:bg-violet-900 focus:outline-none"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={1.5}
+                    stroke="currentColor"
+                    className="h-6 w-6 "
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18"
+                    />
+                  </svg>
+                </button>
+              </div>
+            </div>
+            <div className="flex flex-col justify-end sm:px-2 lg:px-28">
+              <p className="text-2xl font-semibold text-violet-700">
+                {clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.IdentificationModule.BriefTitle || '-'}
+              </p>
 
-          <p className="text-purp-2 font-semibold sm:text-sm lg:text-xl">
-            Organization: {clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.IdentificationModule.Organization.OrgFullName || '-'}
-          </p>
-          <p className="text-purp-5 pt-1 sm:text-xs lg:text-lg">
-            {clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.DescriptionModule.BriefSummary || '-'}
-          </p>
-          <p className="text-purp-5 pt-1 sm:text-xs text-violet-700">
-            Start Date: {clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.StatusModule.StartDateStruct.StartDate || '-'}
-          </p>
-          <div className="my-1">
-            <hr />
+              <p className="text-purp-2 font-semibold sm:text-sm lg:text-xl mt-2 mb-2">
+                Organization: {clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.IdentificationModule.Organization.OrgFullName || '-'}
+              </p>
+              <div className="my-1">
+                <hr />
+              </div>
+              {expansionPanels.map((panel, index) => {
+                if (panel.content) {
+                  return (
+                    <ExpansionPanel key={`${panel.title}-${index}`} title={panel?.title || null} content={panel?.content || null} />
+                  )
+                }
+              })}
+            </div>
           </div>
-          {expansionPanels.map((panel, index) => {
-            if (panel.content) {
-              return (
-                <ExpansionPanel key={`${panel.title}-${index}`} title={panel?.title || null} content={panel?.content || null} />
-              )
-            }
-          })}
         </div>
       </>
     )

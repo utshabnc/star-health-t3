@@ -89,6 +89,7 @@ export default function Directory() {
   const [selectedTab, setSelectedTab] = useState<Tab>(Tab.Transactions);
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
   const [clinicalTrialsData, setClinicalTrialsData] = useState<ClinicalTrialsStudyFieldsResponse<ClinicalTrialsListItem>>({} as ClinicalTrialsStudyFieldsResponse<ClinicalTrialsListItem>);
+  const [clinicalTrialSearchExpr, setClinicalTrialSearchExpr] = useState<string>('');
   const { query: querySearch } = useRouter();
   const defaultClinicalTrialFields: Field[] = [
     Field.BriefTitle,
@@ -216,7 +217,7 @@ export default function Directory() {
 
   }, [filterParams.price.min, filterParams.price.max])
 
-  if (!data || isProcessing) {
+  if (!data) {
     return (
       <>
         <div className="bgColor">
@@ -314,7 +315,7 @@ export default function Directory() {
                 <p className='text-violet-700 text-2xl font-semibold flex'>
                   StarHealth Data Directory
                 </p>
-                {searchLoad && (filterParams.subject === "transactions" || filterParams.name !== "") && <AiOutlineLoading3Quarters className='text-violet-600 font-semibold spinner' />}
+                {(searchLoad && (filterParams.subject === "transactions" || filterParams.name !== "") || isProcessing) && <AiOutlineLoading3Quarters className='text-violet-600 font-semibold spinner' />}
               </div>
               <div className='flex gap-2'>
                 <button onClick={() => {
@@ -449,8 +450,9 @@ export default function Directory() {
                         }
                         className={`
                           bg-violet-100 border border-violet-900 my-2 placeholder:text-violet-800 text-slate-900 w-[30%] p-1 rounded-lg mx-1 hover:bg-violet-300 hover:text-violet-900 cursor-pointer`}
-                        // value={filterParams.name}
+                        value={clinicalTrialSearchExpr}
                         onChange={(e) => {
+                          setClinicalTrialSearchExpr(e.target.value);
                           debouncedClinicalTrialSearch(e.target.value);
                         }}
                       />

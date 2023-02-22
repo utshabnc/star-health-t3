@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { IoMdAddCircleOutline } from 'react-icons/io'
 import { AiOutlineMinusCircle, AiFillMinusCircle, AiFillPlusCircle } from 'react-icons/ai'
 export default function ExpansionPanel ({title, content} : {title: string | null, content: JSX.Element | null}) {
-  const [togglePanel, setTogglePanel] = useState(true)
+  const [togglePanel, setTogglePanel] = useState(false)
   return (
     <div
       className='border-b-[1px] border-violet-700 mt-[20px] pb-3 cursor-pointer'

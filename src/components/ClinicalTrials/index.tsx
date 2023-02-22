@@ -2,13 +2,11 @@ import Link from "next/link";
 import type { ClinicalTrialsListItem, ClinicalTrialsStudyFieldsResponse } from "./ClinicalTrialsStudyFieldsResponse.model";
 
 export default function ClinicalTrialsComponent({ data }: { data: ClinicalTrialsStudyFieldsResponse<ClinicalTrialsListItem> }) {
-  console.log(data);
   return (
     <>
-      {data.StudyFieldsResponse.StudyFields?.map((study: ClinicalTrialsListItem, index: number) => {
+      {data.StudyFieldsResponse?.StudyFields?.map((study: ClinicalTrialsListItem, index: number) => {
         return (
           <div key={index} className="mb-2 w-[100%] rounded-lg bg-white shadow-lg">
-
             <div className=" p-2">
               <div className="flex flex-row justify-between">
                 <h5 className="text-md mb-2 font-medium text-violet-700 underline w-[75%]">
