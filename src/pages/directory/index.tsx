@@ -8,10 +8,8 @@ import { debounce } from 'lodash';
 import { AiOutlineLoading3Quarters } from "react-icons/ai/index";
 
 import type { Observable } from 'rxjs';
-import { of } from 'rxjs'
-import { ajax } from 'rxjs/ajax'
-import { map, catchError, finalize } from 'rxjs/operators'
-import { Tab } from './Tab.enum';
+import { finalize } from 'rxjs/operators'
+import { Tab } from '../../utils/Enums/Tab.enum';
 import ClinicalTrialsComponent from '../../components/ClinicalTrials';
 import { getClinicalTrialsList } from '../../components/ClinicalTrials/helpers';
 import { Field } from '../../components/ClinicalTrials/Fields.enum';
