@@ -156,8 +156,14 @@ const ClinicalTrialDetails = () => {
               <div className="my-1">
                 <hr />
               </div>
-              <div className="flex flex-row">
+              <div className="flex flex-row mt-4">
                 <div className="flex-auto">
+                  <p className="text-xl font-semibold pt-1">
+                    Overview
+                  </p>
+                  <div className="my-1 mr-8">
+                    <hr />
+                  </div>
                   <p className="text-purp-2 font-semibold sm:text-sm lg:text-xl mt-2 mb-2">
                     Organization: <span className="font-normal">{clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.IdentificationModule.Organization.OrgFullName || '-'}</span>
                   </p>
@@ -183,6 +189,12 @@ const ClinicalTrialDetails = () => {
                 </div>
                 <div className="flex-auto">
                   <div className="flex-col text-purp-5 pt-1 sm:text-xs lg:text-lg ">
+                    <p className="text-xl font-semibold">
+                      Contact Info
+                    </p>
+                    <div className="my-1">
+                      <hr />
+                    </div>
                     {clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.ContactsLocationsModule.OverallOfficialList?.OverallOfficial.map((official, index) => {
                       return <div key={index} className="flex flex-row mb-2">
                         <div className="flex-auto">{official.OverallOfficialName}</div>
