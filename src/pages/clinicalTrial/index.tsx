@@ -60,15 +60,15 @@ const ClinicalTrialDetails = () => {
   const DesignJSX = clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.DesignModule ?
     <div className="flex flex-col whitespace-pre-wrap text-purp-5 pt-1 sm:text-xs lg:text-lg">
       <div className="mb-2 flex flex-col">
-        <div><span className="font-semibold">Description:</span> {clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.DesignModule.DesignInfo.DesignInterventionModelDescription || '-'}</div>
-        <div><span className="font-semibold">Study Type:</span> {clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.DesignModule.StudyType || '-'}</div>
-        <div><span className="font-semibold">Primary Purpose:</span> {clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.DesignModule.DesignInfo.DesignPrimaryPurpose || '-'}</div>
-        <div><span className="font-semibold">Allocation:</span> {clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.DesignModule.DesignInfo.DesignAllocation || '-'}</div>
-        <div><span className="font-semibold">Intervention Model:</span> {clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.DesignModule.DesignInfo.DesignInterventionModel || '-'}</div>
-        <div><span className="font-semibold">Masking:</span> {clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.DesignModule.DesignInfo.DesignMaskingInfo.DesignMasking || '-'}</div>
-        <div><span className="font-semibold">Enrollment Count:</span> {clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.DesignModule.EnrollmentInfo.EnrollmentCount || '-'}</div>
-        <div><span className="font-semibold">Enrollment Type:</span> {clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.DesignModule.EnrollmentInfo.EnrollmentType || '-'}</div>
-        <div><span className="font-semibold">Phase:</span> {clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.DesignModule.PhaseList.Phase.join(', ') || '-'}</div>
+        <div><span className="font-semibold">Description:</span> {clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.DesignModule.DesignInfo?.DesignInterventionModelDescription || '-'}</div>
+        <div><span className="font-semibold">Study Type:</span> {clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.DesignModule?.StudyType || '-'}</div>
+        <div><span className="font-semibold">Primary Purpose:</span> {clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.DesignModule.DesignInfo?.DesignPrimaryPurpose || '-'}</div>
+        <div><span className="font-semibold">Allocation:</span> {clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.DesignModule.DesignInfo?.DesignAllocation || '-'}</div>
+        <div><span className="font-semibold">Intervention Model:</span> {clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.DesignModule.DesignInfo?.DesignInterventionModel || '-'}</div>
+        <div><span className="font-semibold">Masking:</span> {clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.DesignModule.DesignInfo.DesignMaskingInfo?.DesignMasking || '-'}</div>
+        <div><span className="font-semibold">Enrollment Count:</span> {clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.DesignModule.EnrollmentInfo?.EnrollmentCount || '-'}</div>
+        <div><span className="font-semibold">Enrollment Type:</span> {clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.DesignModule.EnrollmentInfo?.EnrollmentType || '-'}</div>
+        <div><span className="font-semibold">Phase:</span> {clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.DesignModule.PhaseList?.Phase.join(', ') || '-'}</div>
       </div>
     </div> :
     <div>-</div>;
