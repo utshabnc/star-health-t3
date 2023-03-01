@@ -6,7 +6,7 @@ import type {
   ClinicalTrialsListItem,
   ClinicalTrialsStudyFieldsResponse,
 } from "./ClinicalTrialsStudyFieldsResponse.model";
-import type { Field } from "./Fields.enum";
+import { Field } from "./Fields.enum";
 
 const clinicalTrialsQueryURL = "https://clinicaltrials.gov/api/query";
 
@@ -22,11 +22,11 @@ export const getClinicalTrialsList = (
   );
 };
 
-export const getClinicalTrialByOfficialTitle = (
-  officialTitle: string
+export const getClinicalTrialByNCTId = (
+  NCTId: string
 ): Observable<ClinicalTrialsFullStudyResponse> => {
   return ajax.getJSON<ClinicalTrialsFullStudyResponse>(
-    `${clinicalTrialsQueryURL}/full_studies?expr=${officialTitle}&min_rnk=1&max_rnk=1&fmt=json`
+    `${clinicalTrialsQueryURL}/full_studies?expr=AREA[${Field.NCTId}]${NCTId}&min_rnk=1&max_rnk=1&fmt=json`
   );
 };
 

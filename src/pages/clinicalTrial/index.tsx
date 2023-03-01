@@ -1,7 +1,7 @@
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { finalize } from "rxjs";
-import { getClinicalTrialByOfficialTitle } from "../../components/ClinicalTrials/helpers";
+import { getClinicalTrialByNCTId } from "../../components/ClinicalTrials/helpers";
 import type { ClinicalTrialsFullStudyResponse } from '../../components/ClinicalTrials/ClinicalTrialsFullStudyResponse.model';
 import ExpansionPanel from "../../components/ExpansionPanel";
 import { MailIcon, PhoneIcon } from '@heroicons/react/solid';
@@ -9,17 +9,15 @@ import { MailIcon, PhoneIcon } from '@heroicons/react/solid';
 const ClinicalTrialDetails = () => {
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
   const [clinicalTrialData, setClinicalTrialData] = useState<ClinicalTrialsFullStudyResponse>();
-  const [isInitialLoad, setIsInitialLoad] = useState<boolean>(true);
 
   const navigate = useRouter();
-  const officialTitle = navigate.query?.officialTitle as string;
+  const NCTId = navigate.query?.NCTId as string;
 
 
   useEffect(() => {
-    if (isInitialLoad && officialTitle) {
-      setIsInitialLoad(false);
+    if (NCTId) {
       setIsProcessing(true);
-      const clinicalTrialRequest = getClinicalTrialByOfficialTitle(officialTitle);
+      const clinicalTrialRequest = getClinicalTrialByNCTId(NCTId);
       clinicalTrialRequest.pipe(
         finalize(() => setIsProcessing(false))
       ).subscribe((data: ClinicalTrialsFullStudyResponse) => {
@@ -27,7 +25,7 @@ const ClinicalTrialDetails = () => {
       });
     }
 
-  }, [isInitialLoad, officialTitle]);
+  }, [NCTId]);
 
   const SummaryJSX = clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.DescriptionModule?.BriefSummary ?
     <div className="text-purp-5 pt-1 sm:text-xs lg:text-lg whitespace-pre-wrap">
@@ -72,7 +70,7 @@ const ClinicalTrialDetails = () => {
         </div>
       </div> :
       <div>-</div>;
-  
+
   const DescriptionJSX =
     clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.DescriptionModule ?
       <div className="flex-col">
@@ -84,18 +82,18 @@ const ClinicalTrialDetails = () => {
 
   const EligibilityJSX =
     clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.EligibilityModule ?
-    <div className="flex flex-col whitespace-pre-wrap text-purp-5 pt-1 sm:text-xs lg:text-lg">
-      <div className="mb-2 flex flex-col">
-        <div>Gender: {clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.EligibilityModule.Gender || '-'}</div>
-        <div>Healthy Volunteers: {clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.EligibilityModule.HealthyVolunteers || '-'}</div>
-        <div>Min Age: {clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.EligibilityModule.MinimumAge || '-'}</div>
-        <div>Min Age: {clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.EligibilityModule.MaximumAge || '-'}</div>
-      </div>
-      <div>
-        {clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.EligibilityModule.EligibilityCriteria || '-'}
-      </div>
-    </div> :
-    <div>-</div>;
+      <div className="flex flex-col whitespace-pre-wrap text-purp-5 pt-1 sm:text-xs lg:text-lg">
+        <div className="mb-2 flex flex-col">
+          <div>Gender: {clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.EligibilityModule.Gender || '-'}</div>
+          <div>Healthy Volunteers: {clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.EligibilityModule.HealthyVolunteers || '-'}</div>
+          <div>Min Age: {clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.EligibilityModule.MinimumAge || '-'}</div>
+          <div>Min Age: {clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.EligibilityModule.MaximumAge || '-'}</div>
+        </div>
+        <div>
+          {clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.EligibilityModule.EligibilityCriteria || '-'}
+        </div>
+      </div> :
+      <div>-</div>;
 
   const expansionPanels = [
     { title: 'Summary' || null, content: SummaryJSX },
