@@ -144,7 +144,6 @@ export default function Directory() {
       getClinicalTrialsListRequest.pipe(
         finalize(() => setIsProcessing(false))
       ).subscribe((data: ClinicalTrialsStudyFieldsResponse<ClinicalTrialsListItem>) => {
-        console.log(data);
         setClinicalTrialsData(data);
       });
     }, 1000),
