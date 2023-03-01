@@ -9,7 +9,7 @@ export default function ClinicalTrialsComponent({ data }: { data: ClinicalTrials
           <div key={index} className="mb-2 w-[100%] rounded-lg bg-white shadow-lg">
             <div className="p-2">
               <div className="flex flex-row justify-between">
-                <div>
+                <div className="flex-auto">
                   <h5 className="text-md mb-2 font-medium text-violet-700 underline w-[75%]">
                     <Link
                       href={`/clinicalTrial/?NCTId=${study?.NCTId[0] || ''}`}
