@@ -8,12 +8,15 @@ import { debounce } from 'lodash';
 import { AiOutlineLoading3Quarters } from "react-icons/ai/index";
 
 import type { Observable } from 'rxjs';
-import { finalize } from 'rxjs/operators'
+import { forkJoin } from 'rxjs';
+import { finalize, tap } from 'rxjs/operators'
 import { Tab } from '../../utils/Enums/Tab.enum';
 import ClinicalTrialsComponent from '../../components/ClinicalTrials';
-import { getClinicalTrialsList } from '../../components/ClinicalTrials/helpers';
+import { getClinicalTrialFieldValues, getClinicalTrialsList } from '../../components/ClinicalTrials/helpers';
 import { Field } from '../../components/ClinicalTrials/Fields.enum';
 import type { ClinicalTrialsListItem, ClinicalTrialsStudyFieldsResponse } from '../../components/ClinicalTrials/ClinicalTrialsStudyFieldsResponse.model';
+import ClinicalTrialsFilters from '../../components/ClinicalTrials/ClinicalTrialsFilters';
+import type { ClinicalTrialsFieldValuesResponse, FieldValue } from '../../components/ClinicalTrials/ClinicalTrialsFieldValuesResponse.model';
 
 interface PriceFilter {
   min: number,
@@ -87,7 +90,13 @@ export default function Directory() {
   const [selectedTab, setSelectedTab] = useState<Tab>(Tab.Transactions);
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
   const [clinicalTrialsData, setClinicalTrialsData] = useState<ClinicalTrialsStudyFieldsResponse<ClinicalTrialsListItem>>({} as ClinicalTrialsStudyFieldsResponse<ClinicalTrialsListItem>);
+  const [clinicalTrialSearchKeywordExpr, setClinicalTrialSearchKeywordExpr] = useState<string>('');
   const [clinicalTrialSearchExpr, setClinicalTrialSearchExpr] = useState<string>('');
+  const [clinicalTrialOverallStatusFilters, setClinicalTrialOverallStatusFilters] = useState<FieldValue[]>([] as FieldValue[]);
+  const [clinicalTrialGenderFilters, setClinicalTrialGenderFilters] = useState<FieldValue[]>([] as FieldValue[]);
+  const [clinicalTrialHealthyVolunteersFilters, setClinicalTrialHealthyVolunteersFilters] = useState<FieldValue[]>([] as FieldValue[]);
+  const [clinicalTrialMinimumAgeFilters, setClinicalTrialMinimumAgeFilters] = useState<FieldValue[]>([] as FieldValue[]);
+  const [clinicalTrialMaximumAgeFilters, setClinicalTrialMaximumAgeFilters] = useState<FieldValue[]>([] as FieldValue[]);
   const { query: querySearch } = useRouter();
   const defaultClinicalTrialFields: Field[] = [
     Field.BriefTitle,
@@ -127,6 +136,32 @@ export default function Directory() {
     }
   }, [querySearch]);
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const clinicalTrialsSearch = useCallback(
+    debounce((expr: string) => {
+      setIsProcessing(true);
+      const getClinicalTrialsListRequest: Observable<ClinicalTrialsStudyFieldsResponse<ClinicalTrialsListItem>> = getClinicalTrialsList(defaultClinicalTrialFields, expr);
+      getClinicalTrialsListRequest.pipe(
+        finalize(() => setIsProcessing(false))
+      ).subscribe((data: ClinicalTrialsStudyFieldsResponse<ClinicalTrialsListItem>) => {
+        console.log(data);
+        setClinicalTrialsData(data);
+      });
+    }, 1000),
+    []
+  );
+
+  useEffect(() => {
+    let searchExpr = '';
+    if (clinicalTrialSearchKeywordExpr.length > 1) {
+      searchExpr = `${clinicalTrialSearchKeywordExpr} AND ${clinicalTrialSearchExpr}`;
+    } else {
+      searchExpr = clinicalTrialSearchExpr;
+    }
+    clinicalTrialsSearch(searchExpr);
+  }, [clinicalTrialsSearch, clinicalTrialSearchKeywordExpr, clinicalTrialSearchExpr])
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const debouncedSearch = useCallback(
     debounce((search: string) => {
       if (search.length < 2 && !filterParams.price) return;
@@ -134,20 +169,6 @@ export default function Directory() {
     }, 1000),
     []
   );
-
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const debouncedClinicalTrialSearch = useCallback(debounce((expr: string) => {
-    if (expr.length < 2) {
-      return;
-    }
-    setIsProcessing(true);
-    const getClinicalTrialsListRequest: Observable<ClinicalTrialsStudyFieldsResponse<ClinicalTrialsListItem>> = getClinicalTrialsList(defaultClinicalTrialFields, expr);
-    getClinicalTrialsListRequest.pipe(
-      finalize(() => setIsProcessing(false))
-    ).subscribe((data: ClinicalTrialsStudyFieldsResponse<ClinicalTrialsListItem>) => {
-      setClinicalTrialsData(data);
-    });
-  }, 1000), []);
 
   useEffect(() => {
     debouncedSearch(filterParams.name ?? "");
@@ -417,22 +438,62 @@ export default function Directory() {
                 }} className={`border-b-2 hover:border-zinc-500 ${selectedTab === Tab.Drugs ? "border-violet-600" : "border-zinc-200"}`}>
                   Drugs
                 </button>
-                <button onClick={(e) => {
+                <button onClick={() => {
                   setSelectedTab(Tab.ClinicalTrials);
                   setIsProcessing(true);
+
+                  // Gather requests for filters
                   const getClinicalTrialsListRequest: Observable<ClinicalTrialsStudyFieldsResponse<ClinicalTrialsListItem>> = getClinicalTrialsList(defaultClinicalTrialFields);
-                  getClinicalTrialsListRequest.pipe(
+                  const filterRequests = [
+                    Field.OverallStatus,
+                    Field.Gender,
+                    Field.HealthyVolunteers,
+                    Field.MinimumAge,
+                    Field.MaximumAge,
+                  ].map((field: Field) => getClinicalTrialFieldValues(field).pipe(
+                    tap((data: ClinicalTrialsFieldValuesResponse) => {
+                      switch (field) {
+                        case Field.OverallStatus: {
+                          setClinicalTrialOverallStatusFilters(data.FieldValuesResponse.FieldValues);
+                          break;
+                        }
+                        case Field.Gender: {
+                          setClinicalTrialGenderFilters(data.FieldValuesResponse.FieldValues);
+                          break;
+                        }
+                        case Field.HealthyVolunteers: {
+                          setClinicalTrialHealthyVolunteersFilters(data.FieldValuesResponse.FieldValues);
+                          break;
+                        }
+                        case Field.MinimumAge: {
+                          setClinicalTrialMinimumAgeFilters(data.FieldValuesResponse.FieldValues);
+                          break;
+                        }
+                        case Field.MaximumAge: {
+                          setClinicalTrialMaximumAgeFilters(data.FieldValuesResponse.FieldValues);
+                          break;
+                        }
+                      }
+                    })
+                  ));
+
+                  // Execute filter requests all together
+                  forkJoin([
+                    getClinicalTrialsListRequest.pipe(
+                      tap((data: ClinicalTrialsStudyFieldsResponse<ClinicalTrialsListItem>) => {
+                        setClinicalTrialsData(data);
+                      })
+                    ),
+                    ...filterRequests
+                  ]).pipe(
                     finalize(() => setIsProcessing(false))
-                  ).subscribe((data: ClinicalTrialsStudyFieldsResponse<ClinicalTrialsListItem>) => {
-                    setClinicalTrialsData(data);
-                  });
+                  ).subscribe();
+
                 }} className={`border-b-2 hover:border-zinc-500 ${selectedTab === Tab.ClinicalTrials ? "border-violet-600" : "border-zinc-200"}`}>
                   Clinical Trials
                 </button>
               </div>
-
             </div>
-
             <div className='my-1'>
               <hr />
             </div>
@@ -440,6 +501,19 @@ export default function Directory() {
               selectedTab === Tab.ClinicalTrials ? (
                 <>
                   <div>
+                    <ClinicalTrialsFilters
+                      Gender={clinicalTrialGenderFilters}
+                      HealthyVolunteers={clinicalTrialHealthyVolunteersFilters}
+                      MinimumAge={clinicalTrialMinimumAgeFilters}
+                      MaximumAge={clinicalTrialMaximumAgeFilters}
+                      OverallStatus={clinicalTrialOverallStatusFilters}
+                      OnSearchExprChange={(expr: string) => {
+                        setClinicalTrialSearchExpr(expr);
+                      }}
+                    />
+                    <div className='my-1'>
+                      <hr />
+                    </div>
                     <p className='text-xs p-1 text-violet-900 font-semibold'>Search for clinical trials</p>
                     <div className='flex items-center gap-3 w-[100%]'>
                       <input
@@ -449,10 +523,9 @@ export default function Directory() {
                         }
                         className={`
                           bg-violet-100 border border-violet-900 my-2 placeholder:text-violet-800 text-slate-900 w-[30%] p-1 rounded-lg mx-1 hover:bg-violet-300 hover:text-violet-900 cursor-pointer`}
-                        value={clinicalTrialSearchExpr}
+                        value={clinicalTrialSearchKeywordExpr}
                         onChange={(e) => {
-                          setClinicalTrialSearchExpr(e.target.value);
-                          debouncedClinicalTrialSearch(e.target.value);
+                          setClinicalTrialSearchKeywordExpr(e.target.value);
                         }}
                       />
                     </div>
