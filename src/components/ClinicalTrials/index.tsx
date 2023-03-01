@@ -11,7 +11,7 @@ export default function ClinicalTrialsComponent({ data }: { data: ClinicalTrials
               <div className="flex flex-row justify-between">
                 <h5 className="text-md mb-2 font-medium text-violet-700 underline w-[75%]">
                   <Link
-                    href={`/clinicalTrial/?officialTitle=${study?.OfficialTitle[0] || ''}`}
+                    href={`/clinicalTrial/?NCTId=${study?.NCTId[0] || ''}`}
                   >{study?.BriefTitle[0] || '-'}</Link>
                 </h5>
                 <p className="mb-1 text-gray-600 text-sm text-right">
