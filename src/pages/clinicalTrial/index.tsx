@@ -4,7 +4,7 @@ import { finalize } from "rxjs";
 import { getClinicalTrialByNCTId } from "../../components/ClinicalTrials/helpers";
 import type { ClinicalTrialsFullStudyResponse } from '../../components/ClinicalTrials/ClinicalTrialsFullStudyResponse.model';
 import ExpansionPanel from "../../components/ExpansionPanel";
-import { MailIcon, PhoneIcon } from '@heroicons/react/solid';
+import { MailIcon, OfficeBuildingIcon, PhoneIcon, UserIcon } from '@heroicons/react/solid';
 
 const ClinicalTrialDetails = () => {
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
@@ -33,44 +33,6 @@ const ClinicalTrialDetails = () => {
     </div> :
     <div>-</div>;
 
-  const ContactsJSX = clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.ContactsLocationsModule.CentralContactList ?
-    <div className="flex-col text-purp-5 pt-1 sm:text-xs lg:text-lg ">
-      {clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.ContactsLocationsModule.CentralContactList?.CentralContact.map((contact, index) => {
-        return <div key={index} className="flex flex-row mb-2">
-          <div className="w-[75%]">{contact.CentralContactName}</div>
-          <div className="flex flex-col w-[50%]">
-            <div className="flex flex-row items-center">
-              <MailIcon className="h-4 w-4 mr-1" />
-              {contact?.CentralContactEMail || '-'}
-            </div>
-            <div className="flex flex-row items-center">
-              <PhoneIcon className="h-4 w-4 mr-1" />
-              {contact?.CentralContactPhone || '-'}
-            </div>
-          </div>
-        </div>
-      })}
-    </div> :
-    <div>-</div>
-
-  const StatusJSX =
-    clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.StatusModule ?
-      <div className="flex-col text-purp-5 pt-1 sm:text-xs lg:text-lg ">
-        <div>
-          Status: {clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.StatusModule.OverallStatus || '-'}
-        </div>
-        <div>
-          Start Date: {clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.StatusModule.StartDateStruct.StartDate || '-'}
-        </div>
-        <div>
-          Completion Date: {clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.StatusModule.PrimaryCompletionDateStruct.PrimaryCompletionDate || '-'}
-        </div>
-        <div>
-          Completion Date Status: {clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.StatusModule.PrimaryCompletionDateStruct.PrimaryCompletionDateType || '-'}
-        </div>
-      </div> :
-      <div>-</div>;
-
   const DescriptionJSX =
     clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.DescriptionModule ?
       <div className="flex-col">
@@ -95,12 +57,27 @@ const ClinicalTrialDetails = () => {
       </div> :
       <div>-</div>;
 
+  const DesignJSX = clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.DesignModule ?
+    <div className="flex flex-col whitespace-pre-wrap text-purp-5 pt-1 sm:text-xs lg:text-lg">
+      <div className="mb-2 flex flex-col">
+        <div><span className="font-semibold">Description:</span> {clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.DesignModule.DesignInfo.DesignInterventionModelDescription || '-'}</div>
+        <div><span className="font-semibold">Study Type:</span> {clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.DesignModule.StudyType || '-'}</div>
+        <div><span className="font-semibold">Primary Purpose:</span> {clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.DesignModule.DesignInfo.DesignPrimaryPurpose || '-'}</div>
+        <div><span className="font-semibold">Allocation:</span> {clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.DesignModule.DesignInfo.DesignAllocation || '-'}</div>
+        <div><span className="font-semibold">Intervention Model:</span> {clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.DesignModule.DesignInfo.DesignInterventionModel || '-'}</div>
+        <div><span className="font-semibold">Masking:</span> {clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.DesignModule.DesignInfo.DesignMaskingInfo.DesignMasking || '-'}</div>
+        <div><span className="font-semibold">Enrollment Count:</span> {clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.DesignModule.EnrollmentInfo.EnrollmentCount || '-'}</div>
+        <div><span className="font-semibold">Enrollment Type:</span> {clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.DesignModule.EnrollmentInfo.EnrollmentType || '-'}</div>
+        <div><span className="font-semibold">Phase:</span> {clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.DesignModule.PhaseList.Phase.join(', ') || '-'}</div>
+      </div>
+    </div> :
+    <div>-</div>;
+
   const expansionPanels = [
     { title: 'Summary' || null, content: SummaryJSX },
     { title: 'Description' || null, content: DescriptionJSX },
-    { title: 'Status' || null, content: StatusJSX },
-    { title: 'Contacts' || null, content: ContactsJSX },
     { title: 'Eligibility' || null, content: EligibilityJSX },
+    { title: 'Design' || null, content: DesignJSX },
   ]
 
   return (
@@ -176,10 +153,73 @@ const ClinicalTrialDetails = () => {
               <p className="text-2xl font-semibold text-violet-700">
                 {clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.IdentificationModule.BriefTitle || '-'}
               </p>
-
-              <p className="text-purp-2 font-semibold sm:text-sm lg:text-xl mt-2 mb-2">
-                Organization: {clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.IdentificationModule.Organization.OrgFullName || '-'}
-              </p>
+              <div className="my-1">
+                <hr />
+              </div>
+              <div className="flex flex-row">
+                <div className="flex-auto">
+                  <p className="text-purp-2 font-semibold sm:text-sm lg:text-xl mt-2 mb-2">
+                    Organization: <span className="font-normal">{clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.IdentificationModule.Organization.OrgFullName || '-'}</span>
+                  </p>
+                  <p className="text-purp-2 font-semibold sm:text-sm lg:text-xl mt-2 mb-2">
+                    Status: <span className="font-normal">{clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.StatusModule.OverallStatus || '-'}</span>
+                  </p>
+                  <p className="text-purp-2 font-semibold sm:text-sm lg:text-xl mt-2 mb-2">
+                    Start Date: <span className="font-normal">{clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.StatusModule.StartDateStruct.StartDate || '-'}</span>
+                  </p>
+                  <p className="text-purp-2 font-semibold sm:text-sm lg:text-xl mt-2 mb-2">
+                    Completion Date: <span className="font-normal">{clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.StatusModule.PrimaryCompletionDateStruct.PrimaryCompletionDate || '-'}</span>
+                  </p>
+                  <p className="text-purp-2 font-semibold sm:text-sm lg:text-xl mt-2 mb-2">
+                    Completion Date Status: <span className="font-normal">{clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.StatusModule.PrimaryCompletionDateStruct.PrimaryCompletionDateType || '-'}</span>
+                  </p>
+                  <p className="text-purp-2 font-semibold sm:text-sm lg:text-xl mt-2 mb-2">
+                    Conditions: {
+                      clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.ConditionsModule.ConditionList.Condition.length ?
+                        <span className="font-normal">{clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.ConditionsModule.ConditionList.Condition.join(', ')}</span> :
+                        '-'
+                    }
+                  </p>
+                </div>
+                <div className="flex-auto">
+                  <div className="flex-col text-purp-5 pt-1 sm:text-xs lg:text-lg ">
+                    {clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.ContactsLocationsModule.OverallOfficialList?.OverallOfficial.map((official, index) => {
+                      return <div key={index} className="flex flex-row mb-2">
+                        <div className="flex-auto">{official.OverallOfficialName}</div>
+                        <div className="flex flex-col w-[50%]">
+                          <div className="flex flex-row items-center">
+                            <UserIcon className="h-4 w-4 mr-1" />
+                            {official?.OverallOfficialRole || '-'}
+                          </div>
+                          <div className="flex flex-row items-center">
+                            <OfficeBuildingIcon className="h-4 w-4 mr-1" />
+                            {official?.OverallOfficialAffiliation || '-'}
+                          </div>
+                        </div>
+                      </div>
+                    })}
+                    {clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.ContactsLocationsModule.CentralContactList?.CentralContact.map((contact, index) => {
+                      return <div key={index} className="flex flex-row mb-2">
+                        <div className="flex-auto">{contact.CentralContactName}</div>
+                        <div className="flex flex-col w-[50%]">
+                          <div className="flex flex-row items-center">
+                            <UserIcon className="h-4 w-4 mr-1" />
+                            {contact?.CentralContactRole || '-'}
+                          </div>
+                          <div className="flex flex-row items-center">
+                            <MailIcon className="h-4 w-4 mr-1" />
+                            {contact?.CentralContactEMail || '-'}
+                          </div>
+                          <div className="flex flex-row items-center">
+                            <PhoneIcon className="h-4 w-4 mr-1" />
+                            {contact?.CentralContactPhone || '-'}
+                          </div>
+                        </div>
+                      </div>
+                    })}
+                  </div>
+                </div>
+              </div>
               <div className="my-1">
                 <hr />
               </div>
