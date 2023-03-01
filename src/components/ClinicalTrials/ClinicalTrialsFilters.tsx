@@ -33,7 +33,7 @@ export default function ClinicalTrialsFilters(
       searchExprArr.push(`AREA[${Field.OrgFullName}]${orgFullName}`);
     }
     if (overallOfficialName.length > 1) {
-      searchExprArr.push(`AREA[${Field.OverallOfficialName}]${overallOfficialName} OR AREA[${Field.CentralContactName}]${overallOfficialName}`);
+      searchExprArr.push(`(AREA[${Field.OverallOfficialName}]${overallOfficialName} OR AREA[${Field.CentralContactName}]${overallOfficialName})`);
     }
     if (overallStatus.length > 1) {
       searchExprArr.push(`AREA[${Field.OverallStatus}]${overallStatus}`);
