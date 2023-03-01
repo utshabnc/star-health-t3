@@ -101,9 +101,11 @@ export default function Directory() {
   const defaultClinicalTrialFields: Field[] = [
     Field.BriefTitle,
     Field.StartDate,
+    Field.CompletionDate,
     Field.OfficialTitle,
     Field.OrgFullName,
     Field.NCTId,
+    Field.OverallStatus
   ];
 
   const { data: searchResults, refetch: fetchSearchResults, isLoading: searchLoad } = trpc.db.directory.useQuery({

@@ -5,6 +5,30 @@ interface CentralContact {
   CentralContactRole: string;
 }
 
+interface ConditionsModule {
+  ConditionList: { Condition: string[] };
+}
+
+interface DesignInfo {
+  DesignAllocation: string;
+  DesignInterventionModel: string;
+  DesignInterventionModelDescription: string;
+  DesignMaskingInfo: { DesignMasking: string };
+  DesignPrimaryPurpose: string;
+}
+
+interface EnrollmentInfo {
+  EnrollmentCount: string;
+  EnrollmentType: string;
+}
+
+interface DesignModule {
+  DesignInfo: DesignInfo;
+  EnrollmentInfo: EnrollmentInfo;
+  PhaseList: { Phase: string[] };
+  StudyType: string;
+}
+
 interface OverallOfficial {
   OverallOfficialAffiliation: string;
   OverallOfficialName: string;
@@ -39,18 +63,22 @@ interface IdentificationModule {
 }
 
 interface StatusModule {
-  StartDateStruct: { StartDate: string; StartDateType: string; }
+  StartDateStruct: { StartDate: string; StartDateType: string };
   OverallStatus: string;
-  PrimaryCompletionDateStruct: { PrimaryCompletionDate: string, PrimaryCompletionDateType: string }
+  PrimaryCompletionDateStruct: {
+    PrimaryCompletionDate: string;
+    PrimaryCompletionDateType: string;
+  };
 }
 
-// TODO: add the other fields that we are interested in here
 interface ProtocolSection {
   DescriptionModule: DescriptionModule;
   IdentificationModule: IdentificationModule;
   StatusModule: StatusModule;
   ContactsLocationsModule: ContactsLocationsModule;
   EligibilityModule: EligibilityModule;
+  ConditionsModule: ConditionsModule;
+  DesignModule: DesignModule;
 }
 
 interface Study {
@@ -60,7 +88,7 @@ interface Study {
 
 export interface FullStudy {
   Rank: number;
-  Study: Study
+  Study: Study;
 }
 
 interface FullStudiesResponse {
@@ -72,9 +100,8 @@ interface FullStudiesResponse {
   MinRank: number;
   NStudiesAvail: number;
   NStudiesFound: number;
-  NStudiesReturned: number
+  NStudiesReturned: number;
 }
-
 
 export interface ClinicalTrialsFullStudyResponse {
   FullStudiesResponse: FullStudiesResponse;
