@@ -173,7 +173,7 @@ export default function Directory() {
 
   useEffect(() => {
     debouncedSearch(filterParams.name ?? "");
-  }, [filterParams.name, filterParams.price, filterParams.drugManufacturer, filterParams.drugRoute, filterParams.drugType]);
+}, [filterParams.name, filterParams.price, filterParams.drugManufacturer, filterParams.drugRoute, filterParams.drugType, debouncedSearch]);
 
   const handleMinPrice = (e: any) => {
     if (e.target.value >= filterParams.price.max) {
@@ -339,6 +339,27 @@ export default function Directory() {
                 {(searchLoad && (filterParams.subject === "transactions" || filterParams.name !== "") || isProcessing) && <AiOutlineLoading3Quarters className='text-violet-600 font-semibold spinner' />}
               </div>
               <div className='flex gap-2'>
+              <button onClick={() => {
+                  setSelectedTab(Tab.Plans);
+                  setFilterParams(prev => {
+                    return {
+                      ...prev,
+                      subject: "plans",
+                      cursor: ""
+
+                    }
+                  })
+                  setFilterParams(prev => {
+                    return {
+                      ...prev,
+                      name: ""
+                    }
+                  })
+
+                }}
+                  className={`border-b-2 hover:border-zinc-500 ${selectedTab === Tab.Transactions ? "border-violet-600" : "border-zinc-200"}`}>
+                  Plans
+                </button>
                 <button onClick={() => {
                   setSelectedTab(Tab.Transactions);
                   setFilterParams(prev => {
@@ -399,7 +420,7 @@ export default function Directory() {
                 }} className={`border-b-2 hover:border-zinc-500 ${selectedTab === Tab.Doctors ? "border-violet-600" : "border-zinc-200"}`}>
                   Doctors
                 </button>
-                <button onClick={(e) => {
+                <button onClick={() => {
                   setSelectedTab(Tab.Products);
                   setFilterParams(prev => {
                     return {
@@ -419,7 +440,7 @@ export default function Directory() {
                 }} className={`border-b-2 hover:border-zinc-500 ${selectedTab === Tab.Products ? "border-violet-600" : "border-zinc-200"}`}>
                   Products
                 </button>
-                <button onClick={(e) => {
+                <button onClick={() => {
                   setSelectedTab(Tab.Drugs);
                   setFilterParams(prev => {
                     return {

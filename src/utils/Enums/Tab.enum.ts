@@ -1,4 +1,5 @@
 export enum Tab {
+  Plans,
   Transactions,
   Manufacturers,
   Doctors,
