@@ -1,5 +1,5 @@
 import type { Observable } from "rxjs";
-import { ajax } from "rxjs/ajax";
+import { ajax, AjaxResponse } from "rxjs/ajax";
 import type { CMSStateResponse } from "./httpsRequests.model";
 // export const getClinicalTrialsList = (
 //     fields: Field[],
@@ -15,8 +15,12 @@ import type { CMSStateResponse } from "./httpsRequests.model";
 // createXHR: function () {
 //     return new XMLHttpRequest();
 //   }
-export const getListofStates = (): Observable<any> => {
+export const getListofStates = (): Observable<
+  AjaxResponse<CMSStateResponse>
+> => {
   return ajax({
+    method: "GET",
     url: `https://marketplace.api.healthcare.gov/api/v1/states?year=2019&apikey=wSih5VqFSlWFht5qcIDUkjfFM2LSXP5y`,
+    crossDomain: true,
   });
 };

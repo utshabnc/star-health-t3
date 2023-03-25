@@ -27,6 +27,8 @@ import type {
   FieldValue,
 } from "../../components/ClinicalTrials/ClinicalTrialsFieldValuesResponse.model";
 import { getListofStates } from "../../components/HealthPlans/httpsRequests";
+import HealthPlanFilters from "../../components/HealthPlans/HealthPlansFilters";
+import HealthPlansFilters from "../../components/HealthPlans/HealthPlansFilters";
 
 interface PriceFilter {
   min: number;
@@ -591,6 +593,7 @@ export default function Directory() {
                 <button
                   onClick={() => {
                     setSelectedTab(Tab.Plans);
+                    setIsProcessing(true);
                     setFilterParams((prev) => {
                       return {
                         ...prev,
@@ -607,11 +610,12 @@ export default function Directory() {
                     getListofStates()
                       .pipe(
                         catchError((error) => {
-                          console.error("Error fetching data:", error);
+                          console.error("Error fetching CMS data:", error);
                           return [];
                         })
                       )
-                      .subscribe((resp) => console.log(resp));
+                      .pipe(finalize(() => setIsProcessing(false)))
+                      .subscribe((resp: any) => console.log(resp));
                   }}
                   className={`border-b-2 hover:border-zinc-500 ${
                     selectedTab === Tab.Plans
@@ -658,7 +662,12 @@ export default function Directory() {
                 </div>
               </div>
             )}
-            {selectedTab !== Tab.ClinicalTrials && (
+            {selectedTab == Tab.Plans && (
+              <div>
+                <HealthPlansFilters MaximumAge={[{ FieldValue: 2134 }]} />
+              </div>
+            )}
+            {selectedTab !== (Tab.ClinicalTrials || Tab.Plans) && (
               <>
                 <Filters
                   search={search}
