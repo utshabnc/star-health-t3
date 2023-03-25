@@ -81,7 +81,7 @@ const StateDetails = () => {
     );
   }
 
-  console.log(state)
+  // console.log(state)
 
   const topManufacturers = state.topManufacturers
     .sort(
