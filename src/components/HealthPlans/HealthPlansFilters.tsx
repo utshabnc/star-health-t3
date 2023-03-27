@@ -1,53 +1,30 @@
-import { useEffect, useState } from "react";
-
-export default function ClinicalTrialsFilters({
-  MaximumAge,
-}: // OnSearchExprChange,
-any) {
-  const [maximumAge, setMaximumAge] = useState<string>("");
-  // const [searchExpr, setSearchExpr] = useState<string>("");
-
-  // useEffect(() => {
-  //   const searchExprArr = [];
-
-  //   if (maximumAge.length > 1) {
-  //     searchExprArr.push(`AREA[${MaximumAge}]${maximumAge}`);
-  //   }
-
-  //   setSearchExpr(searchExprArr.join(" AND "));
-  // }, [maximumAge]);
-
-  // useEffect(() => {
-  //   OnSearchExprChange(searchExpr);
-  // }, [searchExpr, OnSearchExprChange]);
-
+export default function HealthPlansFilters({ params }: any) {
+  const { zipcode, setZipcode, healthPlansDataError } = params;
   return (
     <>
       <div className="w-full">
         <div>
           <div className="filters flex w-full items-center">
-            <p className="my-2 w-20 text-lg  text-violet-700">Filter By:</p>
+            <p className="w-100 my-2 text-lg  text-violet-700">
+              Search by 5 digit zipcode:
+            </p>
             <div className="wrap-filters flex w-full items-center py-2">
-              <select
-                className="my-2 mx-1 w-[20%] cursor-pointer rounded-lg bg-violet-500 p-1 text-white hover:bg-violet-400 hover:text-violet-900"
+              <input
+                type="text"
+                className={`
+                          my-2 mx-1 w-[30%] cursor-pointer rounded-lg border border-violet-900 bg-violet-100 p-1 text-slate-900 placeholder:text-violet-800 hover:bg-violet-300 hover:text-violet-900`}
+                value={zipcode}
                 onChange={(e) => {
-                  setMaximumAge(e.target.value);
+                  setZipcode(e.target.value);
                 }}
-                placeholder="Maximum Age"
-              >
-                {maximumAge.length < 1 ? (
-                  <option value="">Maximum Age</option>
-                ) : (
-                  <option value="">-</option>
-                )}
-                {MaximumAge?.map((item: any, index: number) => (
-                  <option key={index} value={item.FieldValue}>
-                    {item.FieldValue}
-                  </option>
-                ))}
-              </select>
+              />
             </div>
           </div>
+          {healthPlansDataError && (
+            <p className="w-100 my-2 text-lg  text-red-700">
+              {`zipcode ${healthPlansDataError}`}
+            </p>
+          )}
         </div>
       </div>
     </>

@@ -26,15 +26,32 @@ import type {
   ClinicalTrialsFieldValuesResponse,
   FieldValue,
 } from "../../components/ClinicalTrials/ClinicalTrialsFieldValuesResponse.model";
-import { getListofStates } from "../../components/HealthPlans/httpsRequests";
-import HealthPlanFilters from "../../components/HealthPlans/HealthPlansFilters";
+import {
+  getHealthPlans,
+  searchLocationByZipcode,
+} from "../../components/HealthPlans/httpsRequests";
 import HealthPlansFilters from "../../components/HealthPlans/HealthPlansFilters";
+import HealthPlansComponent from "../../components/HealthPlans/HealthPlansComponent";
 
 interface PriceFilter {
   min: number;
   max: number;
 }
 
+// const healthPlansData = {
+//   plans: [
+//     {
+//       id: "1234",
+//       name: "orraior",
+//       issuer: {
+//         name: "BCBS",
+//       },
+//       state: "IL",
+//       premium: "10000",
+//       market: "Individual",
+//     },
+//   ],
+// };
 export interface FilterParams {
   subject: string;
   state: string;
@@ -98,6 +115,9 @@ export default function Directory() {
     drugRoute: filterParams.drugRoute,
     // name: filterParams.name
   });
+  const [zipcode, setZipcode] = useState<string>("78753");
+  const [healthPlansData, setHealthPlansData] = useState<Array<any>>();
+  const [healthPlansDataError, setHealthPlansDataError] = useState<string>("");
   const [search, setSearch] = useState<string>();
   const [selectedTab, setSelectedTab] = useState<Tab>(Tab.Transactions);
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
@@ -210,6 +230,37 @@ export default function Directory() {
     }, 1000),
     []
   );
+
+  useEffect(() => {
+    if (zipcode.length === 5) {
+      setHealthPlansDataError("");
+      setIsProcessing(true);
+      searchLocationByZipcode(zipcode)
+        .pipe(
+          catchError((error) => {
+            console.error("Error fetching searchStateByZipcode data:", error);
+            return [];
+          })
+        )
+        .pipe(finalize(() => setIsProcessing(false)))
+        .subscribe((resp: any) => {
+          // console.log(resp?.response?.counties[0], ">>>");
+          const { fips, state, zipcode } = resp?.response?.counties[0];
+          getHealthPlans(fips, state, zipcode)
+            .pipe(
+              catchError((err) => {
+                setHealthPlansDataError(err?.response?.message);
+                return [];
+              })
+            )
+            .subscribe((resp: any) => {
+              if (resp?.status == 200) {
+                setHealthPlansData(resp?.response?.plans);
+              }
+            });
+        });
+    }
+  }, [zipcode]);
 
   useEffect(() => {
     debouncedSearch(filterParams.name ?? "");
@@ -607,15 +658,28 @@ export default function Directory() {
                         name: "",
                       };
                     });
-                    getListofStates()
+                    searchLocationByZipcode(zipcode)
                       .pipe(
                         catchError((error) => {
-                          console.error("Error fetching CMS data:", error);
+                          console.error(
+                            "Error fetching searchStateByZipcode data:",
+                            error
+                          );
                           return [];
                         })
                       )
                       .pipe(finalize(() => setIsProcessing(false)))
-                      .subscribe((resp: any) => console.log(resp));
+                      .subscribe((resp: any) => {
+                        const { fips, state, zipcode } =
+                          resp?.response?.counties[0];
+                        getHealthPlans(fips, state, zipcode).subscribe(
+                          (resp: any) => {
+                            if (resp?.status == 200) {
+                              setHealthPlansData(resp?.response?.plans);
+                            }
+                          }
+                        );
+                      });
                   }}
                   className={`border-b-2 hover:border-zinc-500 ${
                     selectedTab === Tab.Plans
@@ -664,10 +728,12 @@ export default function Directory() {
             )}
             {selectedTab == Tab.Plans && (
               <div>
-                <HealthPlansFilters MaximumAge={[{ FieldValue: 2134 }]} />
+                <HealthPlansFilters
+                  params={{ zipcode, setZipcode, healthPlansDataError }}
+                />
               </div>
             )}
-            {selectedTab !== (Tab.ClinicalTrials || Tab.Plans) && (
+            {selectedTab !== Tab.ClinicalTrials && selectedTab !== Tab.Plans && (
               <>
                 <Filters
                   search={search}
@@ -754,16 +820,21 @@ export default function Directory() {
         </div>
         <div className="flex h-[90%] w-full justify-center">
           <div className="ml-5 flex min-h-[100%] w-[95%] flex-col overflow-scroll p-1">
-            {selectedTab === Tab.ClinicalTrials ? (
+            {selectedTab === Tab.ClinicalTrials && (
               <ClinicalTrialsComponent data={clinicalTrialsData} />
-            ) : (
-              <DirectoryCards
-                search={search as string}
-                searchResults={searchResults}
-                filterParams={filterParams}
-                data={data}
-              />
             )}
+            {selectedTab === Tab.Plans && (
+              <HealthPlansComponent plans={healthPlansData} />
+            )}
+            {selectedTab !== Tab.ClinicalTrials &&
+              selectedTab !== Tab.Plans && (
+                <DirectoryCards
+                  search={search as string}
+                  searchResults={searchResults}
+                  filterParams={filterParams}
+                  data={data}
+                />
+              )}
           </div>
         </div>
       </div>
