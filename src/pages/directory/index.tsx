@@ -1,72 +1,81 @@
-import { useRouter } from 'next/router'
-import React, { useCallback, useEffect, useRef, useState } from 'react'
-import { formatMoney } from '../../utils';
-import { trpc } from '../../utils/trpc';
-import Filters from '../../components/Filters';
-import DirectoryCards from '../../components/DirectoryCards';
-import { debounce } from 'lodash';
+import { useRouter } from "next/router";
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import { formatMoney } from "../../utils";
+import { trpc } from "../../utils/trpc";
+import Filters from "../../components/Filters";
+import DirectoryCards from "../../components/DirectoryCards";
+import { debounce } from "lodash";
 import { AiOutlineLoading3Quarters } from "react-icons/ai/index";
 
-import type { Observable } from 'rxjs';
-import { forkJoin } from 'rxjs';
-import { finalize, tap } from 'rxjs/operators'
-import { Tab } from '../../utils/Enums/Tab.enum';
-import ClinicalTrialsComponent from '../../components/ClinicalTrials';
-import { getClinicalTrialFieldValues, getClinicalTrialsList } from '../../components/ClinicalTrials/helpers';
-import { Field } from '../../components/ClinicalTrials/Fields.enum';
-import type { ClinicalTrialsListItem, ClinicalTrialsStudyFieldsResponse } from '../../components/ClinicalTrials/ClinicalTrialsStudyFieldsResponse.model';
-import ClinicalTrialsFilters from '../../components/ClinicalTrials/ClinicalTrialsFilters';
-import type { ClinicalTrialsFieldValuesResponse, FieldValue } from '../../components/ClinicalTrials/ClinicalTrialsFieldValuesResponse.model';
+import type { Observable } from "rxjs";
+import { forkJoin } from "rxjs";
+import { finalize, tap } from "rxjs/operators";
+import { Tab } from "../../utils/Enums/Tab.enum";
+import ClinicalTrialsComponent from "../../components/ClinicalTrials";
+import {
+  getClinicalTrialFieldValues,
+  getClinicalTrialsList,
+} from "../../components/ClinicalTrials/helpers";
+import { Field } from "../../components/ClinicalTrials/Fields.enum";
+import type {
+  ClinicalTrialsListItem,
+  ClinicalTrialsStudyFieldsResponse,
+} from "../../components/ClinicalTrials/ClinicalTrialsStudyFieldsResponse.model";
+import ClinicalTrialsFilters from "../../components/ClinicalTrials/ClinicalTrialsFilters";
+import type {
+  ClinicalTrialsFieldValuesResponse,
+  FieldValue,
+} from "../../components/ClinicalTrials/ClinicalTrialsFieldValuesResponse.model";
 
 interface PriceFilter {
-  min: number,
-  max: number
+  min: number;
+  max: number;
 }
 
 export interface FilterParams {
-  subject: string,
-  state: string,
-  city: string,
-  zipCode: string,
-  specialty: string,
-  type: string,
-  category: string,
-  doctorFilter: string,
-  manufacturerFilter: string,
-  productFilter: string,
-  cursor: string,
-  year: string,
-  price: PriceFilter,
-  name: string,
-  drugManufacturer: string,
-  drugType: string,
-  drugRoute: string,
+  subject: string;
+  state: string;
+  city: string;
+  zipCode: string;
+  specialty: string;
+  type: string;
+  category: string;
+  doctorFilter: string;
+  manufacturerFilter: string;
+  productFilter: string;
+  cursor: string;
+  year: string;
+  price: PriceFilter;
+  name: string;
+  drugManufacturer: string;
+  drugType: string;
+  drugRoute: string;
 }
 
 export default function Directory() {
-  const progressRef = useRef<HTMLDivElement>(null)
-  const searchRef = useRef<HTMLInputElement>(null)
+  const progressRef = useRef<HTMLDivElement>(null);
+  const searchRef = useRef<HTMLInputElement>(null);
   const navigate = useRouter();
 
   const [filterParams, setFilterParams] = useState<FilterParams>({
-    subject: navigate.query.tab as string ?? "transactions",
-    state: '',
-    city: '',
-    zipCode: '',
-    specialty: '',
-    type: '',
-    category: '',
+    subject: (navigate.query.tab as string) ?? "transactions",
+    state: "",
+    city: "",
+    zipCode: "",
+    specialty: "",
+    type: "",
+    category: "",
     doctorFilter: "",
-    manufacturerFilter: '',
-    productFilter: '',
-    cursor: '',
-    year: '',
+    manufacturerFilter: "",
+    productFilter: "",
+    cursor: "",
+    year: "",
     price: { min: 0, max: 5000 },
     name: "",
-    drugManufacturer: '',
-    drugType: '',
-    drugRoute: ''
-  })
+    drugManufacturer: "",
+    drugType: "",
+    drugRoute: "",
+  });
   const { data } = trpc.db.directory.useQuery({
     altName: searchRef?.current?.value,
     subject: filterParams.subject,
@@ -89,14 +98,28 @@ export default function Directory() {
   const [search, setSearch] = useState<string>();
   const [selectedTab, setSelectedTab] = useState<Tab>(Tab.Transactions);
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
-  const [clinicalTrialsData, setClinicalTrialsData] = useState<ClinicalTrialsStudyFieldsResponse<ClinicalTrialsListItem>>({} as ClinicalTrialsStudyFieldsResponse<ClinicalTrialsListItem>);
-  const [clinicalTrialSearchKeywordExpr, setClinicalTrialSearchKeywordExpr] = useState<string>('');
-  const [clinicalTrialSearchExpr, setClinicalTrialSearchExpr] = useState<string>('');
-  const [clinicalTrialOverallStatusFilters, setClinicalTrialOverallStatusFilters] = useState<FieldValue[]>([] as FieldValue[]);
-  const [clinicalTrialGenderFilters, setClinicalTrialGenderFilters] = useState<FieldValue[]>([] as FieldValue[]);
-  const [clinicalTrialHealthyVolunteersFilters, setClinicalTrialHealthyVolunteersFilters] = useState<FieldValue[]>([] as FieldValue[]);
-  const [clinicalTrialMinimumAgeFilters, setClinicalTrialMinimumAgeFilters] = useState<FieldValue[]>([] as FieldValue[]);
-  const [clinicalTrialMaximumAgeFilters, setClinicalTrialMaximumAgeFilters] = useState<FieldValue[]>([] as FieldValue[]);
+  const [clinicalTrialsData, setClinicalTrialsData] = useState<
+    ClinicalTrialsStudyFieldsResponse<ClinicalTrialsListItem>
+  >({} as ClinicalTrialsStudyFieldsResponse<ClinicalTrialsListItem>);
+  const [clinicalTrialSearchKeywordExpr, setClinicalTrialSearchKeywordExpr] =
+    useState<string>("");
+  const [clinicalTrialSearchExpr, setClinicalTrialSearchExpr] =
+    useState<string>("");
+  const [
+    clinicalTrialOverallStatusFilters,
+    setClinicalTrialOverallStatusFilters,
+  ] = useState<FieldValue[]>([] as FieldValue[]);
+  const [clinicalTrialGenderFilters, setClinicalTrialGenderFilters] = useState<
+    FieldValue[]
+  >([] as FieldValue[]);
+  const [
+    clinicalTrialHealthyVolunteersFilters,
+    setClinicalTrialHealthyVolunteersFilters,
+  ] = useState<FieldValue[]>([] as FieldValue[]);
+  const [clinicalTrialMinimumAgeFilters, setClinicalTrialMinimumAgeFilters] =
+    useState<FieldValue[]>([] as FieldValue[]);
+  const [clinicalTrialMaximumAgeFilters, setClinicalTrialMaximumAgeFilters] =
+    useState<FieldValue[]>([] as FieldValue[]);
   const { query: querySearch } = useRouter();
   const defaultClinicalTrialFields: Field[] = [
     Field.BriefTitle,
@@ -105,35 +128,87 @@ export default function Directory() {
     Field.OfficialTitle,
     Field.OrgFullName,
     Field.NCTId,
-    Field.OverallStatus
+    Field.OverallStatus,
   ];
 
-  const { data: searchResults, refetch: fetchSearchResults, isLoading: searchLoad } = trpc.db.directory.useQuery({
-    name: filterParams.name,
-    subject: filterParams.subject,
-    price: {
-      min: filterParams.price.min,
-      max: filterParams.price.max
+  const {
+    data: searchResults,
+    refetch: fetchSearchResults,
+    isLoading: searchLoad,
+  } = trpc.db.directory.useQuery(
+    {
+      name: filterParams.name,
+      subject: filterParams.subject,
+      price: {
+        min: filterParams.price.min,
+        max: filterParams.price.max,
+      },
+      state: filterParams.state,
+      city: filterParams.city,
+      specialty: filterParams.specialty,
+      zipCode: filterParams.zipCode,
+      year: filterParams.year,
+      drugManufacturer: filterParams.drugManufacturer,
+      drugType: filterParams.drugType,
+      drugRoute: filterParams.drugRoute,
     },
-    state: filterParams.state,
-    city: filterParams.city,
-    specialty: filterParams.specialty,
-    zipCode: filterParams.zipCode,
-    year: filterParams.year,
-    drugManufacturer: filterParams.drugManufacturer,
-    drugType: filterParams.drugType,
-    drugRoute: filterParams.drugRoute,
+    { enabled: false }
+  );
 
-  }, { enabled: false });
+  /* makes sure user on the right tab when press back btn */
+  useEffect(() => {
+    const curTab = localStorage.getItem("curDirTab");
+    if (curTab) {
+      const { tab, subject } = JSON.parse(curTab);
+      setSelectedTab(tab);
+      setFilterParams((prev) => {
+        return {
+          ...prev,
+          subject,
+          cursor: "",
+          name: "",
+        };
+      });
+    } else {
+      localStorage.setItem(
+        "curDirTab",
+        JSON.stringify({ tab: selectedTab, subject: "transactions" })
+      );
+      setSelectedTab(Tab.Transactions);
+      setFilterParams((prev) => {
+        return {
+          ...prev,
+          subject: "transactions",
+          cursor: "",
+          name: "",
+        };
+      });
+    }
+  }, []);
+
+  const handleTabClick = (tab: Tab, subject: string) => {
+    if (tab !== Tab.ClinicalTrials) {
+      setFilterParams((prev) => {
+        return {
+          ...prev,
+          subject,
+          cursor: "",
+          name: "",
+        };
+      });
+    }
+    setSelectedTab(tab);
+    localStorage.setItem("curDirTab", JSON.stringify({ tab, subject }));
+  };
 
   useEffect(() => {
     const searchParam = querySearch["search"] as string;
     if (searchParam) {
-      setFilterParams(prev => {
+      setFilterParams((prev) => {
         return {
           ...prev,
-          search: searchParam
-        }
+          search: searchParam,
+        };
       });
     }
   }, [querySearch]);
@@ -142,25 +217,33 @@ export default function Directory() {
   const clinicalTrialsSearch = useCallback(
     debounce((expr: string) => {
       setIsProcessing(true);
-      const getClinicalTrialsListRequest: Observable<ClinicalTrialsStudyFieldsResponse<ClinicalTrialsListItem>> = getClinicalTrialsList(defaultClinicalTrialFields, expr);
-      getClinicalTrialsListRequest.pipe(
-        finalize(() => setIsProcessing(false))
-      ).subscribe((data: ClinicalTrialsStudyFieldsResponse<ClinicalTrialsListItem>) => {
-        setClinicalTrialsData(data);
-      });
+      const getClinicalTrialsListRequest: Observable<
+        ClinicalTrialsStudyFieldsResponse<ClinicalTrialsListItem>
+      > = getClinicalTrialsList(defaultClinicalTrialFields, expr);
+      getClinicalTrialsListRequest
+        .pipe(finalize(() => setIsProcessing(false)))
+        .subscribe(
+          (data: ClinicalTrialsStudyFieldsResponse<ClinicalTrialsListItem>) => {
+            setClinicalTrialsData(data);
+          }
+        );
     }, 1000),
     []
   );
 
   useEffect(() => {
-    let searchExpr = '';
+    let searchExpr = "";
     if (clinicalTrialSearchKeywordExpr.length > 1) {
       searchExpr = `${clinicalTrialSearchKeywordExpr} AND ${clinicalTrialSearchExpr}`;
     } else {
       searchExpr = clinicalTrialSearchExpr;
     }
     clinicalTrialsSearch(searchExpr);
-  }, [clinicalTrialsSearch, clinicalTrialSearchKeywordExpr, clinicalTrialSearchExpr])
+  }, [
+    clinicalTrialsSearch,
+    clinicalTrialSearchKeywordExpr,
+    clinicalTrialSearchExpr,
+  ]);
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const debouncedSearch = useCallback(
@@ -173,7 +256,13 @@ export default function Directory() {
 
   useEffect(() => {
     debouncedSearch(filterParams.name ?? "");
-  }, [filterParams.name, filterParams.price, filterParams.drugManufacturer, filterParams.drugRoute, filterParams.drugType]);
+  }, [
+    filterParams.name,
+    filterParams.price,
+    filterParams.drugManufacturer,
+    filterParams.drugRoute,
+    filterParams.drugType,
+  ]);
 
   const handleMinPrice = (e: any) => {
     if (e.target.value >= filterParams.price.max) {
@@ -182,24 +271,22 @@ export default function Directory() {
           ...prev,
           price: {
             min: filterParams.price.min,
-            max: parseInt(e.target.value)
-
-          }
-        }
-      })
-      return
+            max: parseInt(e.target.value),
+          },
+        };
+      });
+      return;
     }
     setFilterParams((prev: any) => {
       return {
         ...prev,
         price: {
           min: parseInt(e.target.value),
-          max: filterParams.price.max
-
-        }
-      }
-    })
-  }
+          max: filterParams.price.max,
+        },
+      };
+    });
+  };
 
   const handleMaxPrice = (e: any) => {
     if (e.target.value <= filterParams.price.min) {
@@ -208,12 +295,11 @@ export default function Directory() {
           ...prev,
           price: {
             max: filterParams.price.max,
-            min: parseInt(e.target.value)
-
-          }
-        }
-      })
-      return
+            min: parseInt(e.target.value),
+          },
+        };
+      });
+      return;
     }
 
     setFilterParams((prev: any) => {
@@ -221,22 +307,20 @@ export default function Directory() {
         ...prev,
         price: {
           max: parseInt(e.target.value),
-          min: filterParams.price.min
-
-        }
-      }
-    })
-  }
-
+          min: filterParams.price.min,
+        },
+      };
+    });
+  };
 
   useEffect(() => {
     if (progressRef.current != null) {
-      progressRef.current.style.left = (filterParams.price.min / 5000) * 10 + "%"
-      progressRef.current.style.right = 10 - (filterParams.price.max / 5000) * 10 + "%"
-
+      progressRef.current.style.left =
+        (filterParams.price.min / 5000) * 10 + "%";
+      progressRef.current.style.right =
+        10 - (filterParams.price.max / 5000) * 10 + "%";
     }
-
-  }, [filterParams.price.min, filterParams.price.max])
+  }, [filterParams.price.min, filterParams.price.max]);
 
   if (!data) {
     return (
@@ -307,12 +391,12 @@ export default function Directory() {
 
   return (
     <>
-      <div className="p-5 rounded bg-white h-screen pb-44">
+      <div className="h-screen rounded bg-white p-5 pb-44">
         <div className="flex flex-row">
           <div>
             <button
               onClick={navigate.back}
-              className="border border-violet-700 bg-violet-700 text-white rounded-md px-4 py-2 transition duration-500 ease select-none hover:bg-violet-900 focus:outline-none focus:shadow-outline"
+              className="ease focus:shadow-outline select-none rounded-md border border-violet-700 bg-violet-700 px-4 py-2 text-white transition duration-500 hover:bg-violet-900 focus:outline-none"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -320,7 +404,7 @@ export default function Directory() {
                 viewBox="0 0 24 24"
                 strokeWidth={1.5}
                 stroke="currentColor"
-                className="w-6 h-6 "
+                className="h-6 w-6 "
               >
                 <path
                   strokeLinecap="round"
@@ -330,293 +414,309 @@ export default function Directory() {
               </svg>
             </button>
           </div>
-          <div className='w-full flex flex-col justify-end px-8 pb-10'>
+          <div className="flex w-full flex-col justify-end px-8 pb-10">
             <div className="wrap-opt flex justify-between">
-              <div className='w-[60%] flex items-center gap-5'>
-                <p className='text-violet-700 text-2xl font-semibold flex'>
+              <div className="flex w-[60%] items-center gap-5">
+                <p className="flex text-2xl font-semibold text-violet-700">
                   StarHealth Data Directory
                 </p>
-                {(searchLoad && (filterParams.subject === "transactions" || filterParams.name !== "") || isProcessing) && <AiOutlineLoading3Quarters className='text-violet-600 font-semibold spinner' />}
+                {((searchLoad &&
+                  (filterParams.subject === "transactions" ||
+                    filterParams.name !== "")) ||
+                  isProcessing) && (
+                  <AiOutlineLoading3Quarters className="spinner font-semibold text-violet-600" />
+                )}
               </div>
-              <div className='flex gap-2'>
-                <button onClick={() => {
-                  setSelectedTab(Tab.Transactions);
-                  setFilterParams(prev => {
-                    return {
-                      ...prev,
-                      subject: "transactions",
-                      cursor: ""
-
-                    }
-                  })
-                  setFilterParams(prev => {
-                    return {
-                      ...prev,
-                      name: ""
-                    }
-                  })
-
-                }}
-                  className={`border-b-2 hover:border-zinc-500 ${selectedTab === Tab.Transactions ? "border-violet-600" : "border-zinc-200"}`}>
-                  Transactions
-                </button>
-                <button onClick={() => {
-                  setSelectedTab(Tab.Manufacturers);
-                  setFilterParams(prev => {
-                    return {
-                      ...prev,
-                      subject: "manufacturers",
-                      cursor: ""
-
-                    }
-                  })
-                  setFilterParams(prev => {
-                    return {
-                      ...prev,
-                      name: ""
-                    }
-                  })
-                }} className={`border-b-2 hover:border-zinc-500 ${selectedTab === Tab.Manufacturers ? "border-violet-600" : "border-zinc-200"}`}>
-                  Manufacturers
-                </button>
-                <button onClick={() => {
-                  setSelectedTab(Tab.Doctors);
-                  setFilterParams(prev => {
-                    return {
-                      ...prev,
-                      subject: "doctors",
-                      cursor: ""
-
-
-                    }
-                  })
-                  setFilterParams(prev => {
-                    return {
-                      ...prev,
-                      name: ""
-                    }
-                  })
-                }} className={`border-b-2 hover:border-zinc-500 ${selectedTab === Tab.Doctors ? "border-violet-600" : "border-zinc-200"}`}>
+              <div className="flex gap-2">
+                {/* doctors tab */}
+                <button
+                  onClick={() => {
+                    handleTabClick(Tab.Doctors, "doctors");
+                  }}
+                  className={`border-b-2 hover:border-zinc-500 ${
+                    selectedTab === Tab.Doctors
+                      ? "border-violet-600"
+                      : "border-zinc-200"
+                  }`}
+                >
                   Doctors
                 </button>
-                <button onClick={(e) => {
-                  setSelectedTab(Tab.Products);
-                  setFilterParams(prev => {
-                    return {
-                      ...prev,
-                      subject: "products",
-                      cursor: ""
 
-
-                    }
-                  })
-                  setFilterParams(prev => {
-                    return {
-                      ...prev,
-                      name: ""
-                    }
-                  })
-                }} className={`border-b-2 hover:border-zinc-500 ${selectedTab === Tab.Products ? "border-violet-600" : "border-zinc-200"}`}>
-                  Products
-                </button>
-                <button onClick={(e) => {
-                  setSelectedTab(Tab.Drugs);
-                  setFilterParams(prev => {
-                    return {
-                      ...prev,
-                      subject: "drugs",
-                      cursor: ""
-
-
-                    }
-                  })
-                  setFilterParams(prev => {
-                    return {
-                      ...prev,
-                      name: ""
-                    }
-                  })
-                }} className={`border-b-2 hover:border-zinc-500 ${selectedTab === Tab.Drugs ? "border-violet-600" : "border-zinc-200"}`}>
+                {/* drugs tab */}
+                <button
+                  onClick={(e) => {
+                    handleTabClick(Tab.Drugs, "drugs");
+                  }}
+                  className={`border-b-2 hover:border-zinc-500 ${
+                    selectedTab === Tab.Drugs
+                      ? "border-violet-600"
+                      : "border-zinc-200"
+                  }`}
+                >
                   Drugs
                 </button>
-                <button onClick={() => {
-                  setSelectedTab(Tab.ClinicalTrials);
-                  setIsProcessing(true);
 
-                  // Gather requests for filters
-                  const getClinicalTrialsListRequest: Observable<ClinicalTrialsStudyFieldsResponse<ClinicalTrialsListItem>> = getClinicalTrialsList(defaultClinicalTrialFields);
-                  const filterRequests = [
-                    Field.OverallStatus,
-                    Field.Gender,
-                    Field.HealthyVolunteers,
-                    Field.MinimumAge,
-                    Field.MaximumAge,
-                  ].map((field: Field) => getClinicalTrialFieldValues(field).pipe(
-                    tap((data: ClinicalTrialsFieldValuesResponse) => {
-                      switch (field) {
-                        case Field.OverallStatus: {
-                          setClinicalTrialOverallStatusFilters(data.FieldValuesResponse.FieldValues);
-                          break;
-                        }
-                        case Field.Gender: {
-                          setClinicalTrialGenderFilters(data.FieldValuesResponse.FieldValues);
-                          break;
-                        }
-                        case Field.HealthyVolunteers: {
-                          setClinicalTrialHealthyVolunteersFilters(data.FieldValuesResponse.FieldValues);
-                          break;
-                        }
-                        case Field.MinimumAge: {
-                          setClinicalTrialMinimumAgeFilters(data.FieldValuesResponse.FieldValues);
-                          break;
-                        }
-                        case Field.MaximumAge: {
-                          setClinicalTrialMaximumAgeFilters(data.FieldValuesResponse.FieldValues);
-                          break;
-                        }
-                      }
-                    })
-                  ));
+                {/* manufactures tab */}
+                <button
+                  onClick={() => {
+                    handleTabClick(Tab.Manufacturers, "manufacturers");
+                  }}
+                  className={`border-b-2 hover:border-zinc-500 ${
+                    selectedTab === Tab.Manufacturers
+                      ? "border-violet-600"
+                      : "border-zinc-200"
+                  }`}
+                >
+                  Manufacturers
+                </button>
 
-                  // Execute filter requests all together
-                  forkJoin([
-                    getClinicalTrialsListRequest.pipe(
-                      tap((data: ClinicalTrialsStudyFieldsResponse<ClinicalTrialsListItem>) => {
-                        setClinicalTrialsData(data);
-                      })
-                    ),
-                    ...filterRequests
-                  ]).pipe(
-                    finalize(() => setIsProcessing(false))
-                  ).subscribe();
+                {/* clinical trials tab */}
+                <button
+                  onClick={() => {
+                    handleTabClick(Tab.ClinicalTrials, "");
+                    setIsProcessing(true);
 
-                }} className={`border-b-2 hover:border-zinc-500 ${selectedTab === Tab.ClinicalTrials ? "border-violet-600" : "border-zinc-200"}`}>
+                    // Gather requests for filters
+                    const getClinicalTrialsListRequest: Observable<
+                      ClinicalTrialsStudyFieldsResponse<ClinicalTrialsListItem>
+                    > = getClinicalTrialsList(defaultClinicalTrialFields);
+                    const filterRequests = [
+                      Field.OverallStatus,
+                      Field.Gender,
+                      Field.HealthyVolunteers,
+                      Field.MinimumAge,
+                      Field.MaximumAge,
+                    ].map((field: Field) =>
+                      getClinicalTrialFieldValues(field).pipe(
+                        tap((data: ClinicalTrialsFieldValuesResponse) => {
+                          switch (field) {
+                            case Field.OverallStatus: {
+                              setClinicalTrialOverallStatusFilters(
+                                data.FieldValuesResponse.FieldValues
+                              );
+                              break;
+                            }
+                            case Field.Gender: {
+                              setClinicalTrialGenderFilters(
+                                data.FieldValuesResponse.FieldValues
+                              );
+                              break;
+                            }
+                            case Field.HealthyVolunteers: {
+                              setClinicalTrialHealthyVolunteersFilters(
+                                data.FieldValuesResponse.FieldValues
+                              );
+                              break;
+                            }
+                            case Field.MinimumAge: {
+                              setClinicalTrialMinimumAgeFilters(
+                                data.FieldValuesResponse.FieldValues
+                              );
+                              break;
+                            }
+                            case Field.MaximumAge: {
+                              setClinicalTrialMaximumAgeFilters(
+                                data.FieldValuesResponse.FieldValues
+                              );
+                              break;
+                            }
+                          }
+                        })
+                      )
+                    );
+
+                    // Execute filter requests all together
+                    forkJoin([
+                      getClinicalTrialsListRequest.pipe(
+                        tap(
+                          (
+                            data: ClinicalTrialsStudyFieldsResponse<ClinicalTrialsListItem>
+                          ) => {
+                            setClinicalTrialsData(data);
+                          }
+                        )
+                      ),
+                      ...filterRequests,
+                    ])
+                      .pipe(finalize(() => setIsProcessing(false)))
+                      .subscribe();
+                  }}
+                  className={`border-b-2 hover:border-zinc-500 ${
+                    selectedTab === Tab.ClinicalTrials
+                      ? "border-violet-600"
+                      : "border-zinc-200"
+                  }`}
+                >
                   Clinical Trials
                 </button>
+
+                {/* transactions tab */}
+                <button
+                  onClick={() => {
+                    handleTabClick(Tab.Transactions, "transactions");
+                  }}
+                  className={`border-b-2 hover:border-zinc-500 ${
+                    selectedTab === Tab.Transactions
+                      ? "border-violet-600"
+                      : "border-zinc-200"
+                  }`}
+                >
+                  Transactions
+                </button>
+
+                {/* medical devices tab */}
+                <button
+                  onClick={(e) => {
+                    handleTabClick(Tab.Products, "products");
+                  }}
+                  className={`border-b-2 hover:border-zinc-500 ${
+                    selectedTab === Tab.Products
+                      ? "border-violet-600"
+                      : "border-zinc-200"
+                  }`}
+                >
+                  Medical Devices
+                </button>
+
+                {/* insurance plans tab goes here */}
               </div>
             </div>
-            <div className='my-1'>
+            <div className="my-1">
               <hr />
             </div>
-            {
-              selectedTab === Tab.ClinicalTrials ? (
-                <>
-                  <div>
-                    <ClinicalTrialsFilters
-                      Gender={clinicalTrialGenderFilters}
-                      HealthyVolunteers={clinicalTrialHealthyVolunteersFilters}
-                      MinimumAge={clinicalTrialMinimumAgeFilters}
-                      MaximumAge={clinicalTrialMaximumAgeFilters}
-                      OverallStatus={clinicalTrialOverallStatusFilters}
-                      OnSearchExprChange={(expr: string) => {
-                        setClinicalTrialSearchExpr(expr);
+            {selectedTab === Tab.ClinicalTrials ? (
+              <>
+                <div>
+                  <ClinicalTrialsFilters
+                    Gender={clinicalTrialGenderFilters}
+                    HealthyVolunteers={clinicalTrialHealthyVolunteersFilters}
+                    MinimumAge={clinicalTrialMinimumAgeFilters}
+                    MaximumAge={clinicalTrialMaximumAgeFilters}
+                    OverallStatus={clinicalTrialOverallStatusFilters}
+                    OnSearchExprChange={(expr: string) => {
+                      setClinicalTrialSearchExpr(expr);
+                    }}
+                  />
+                  <div className="my-1">
+                    <hr />
+                  </div>
+                  <p className="p-1 text-xs font-semibold text-violet-900">
+                    Search for clinical trials
+                  </p>
+                  <div className="flex w-[100%] items-center gap-3">
+                    <input
+                      type="text"
+                      placeholder={`Search`}
+                      className={`
+                          my-2 mx-1 w-[30%] cursor-pointer rounded-lg border border-violet-900 bg-violet-100 p-1 text-slate-900 placeholder:text-violet-800 hover:bg-violet-300 hover:text-violet-900`}
+                      value={clinicalTrialSearchKeywordExpr}
+                      onChange={(e) => {
+                        setClinicalTrialSearchKeywordExpr(e.target.value);
                       }}
                     />
-                    <div className='my-1'>
-                      <hr />
-                    </div>
-                    <p className='text-xs p-1 text-violet-900 font-semibold'>Search for clinical trials</p>
-                    <div className='flex items-center gap-3 w-[100%]'>
-                      <input
-                        type="text"
-                        placeholder={
-                          `Search`
-                        }
-                        className={`
-                          bg-violet-100 border border-violet-900 my-2 placeholder:text-violet-800 text-slate-900 w-[30%] p-1 rounded-lg mx-1 hover:bg-violet-300 hover:text-violet-900 cursor-pointer`}
-                        value={clinicalTrialSearchKeywordExpr}
-                        onChange={(e) => {
-                          setClinicalTrialSearchKeywordExpr(e.target.value);
-                        }}
-                      />
-                    </div>
                   </div>
-                </>
-              ) : (
-                <>
-                  <Filters search={search} setSearch={setSearch} data={data} filterParams={filterParams} setFilterParams={setFilterParams} />
-                  {
-                    "data" && (
-                      <>
-                        <div className=''>
-                          <p className='text-xs p-1 text-violet-900 font-semibold'>{`Search for ${filterParams.subject} by ${filterParams.subject === "payment" ? "product" : "name"}`}</p>
-                          <div className='flex items-center gap-3 w-[100%]'>
+                </div>
+              </>
+            ) : (
+              <>
+                <Filters
+                  search={search}
+                  setSearch={setSearch}
+                  data={data}
+                  filterParams={filterParams}
+                  setFilterParams={setFilterParams}
+                />
+                {"data" && (
+                  <>
+                    <div className="">
+                      <p className="p-1 text-xs font-semibold text-violet-900">{`Search for ${
+                        filterParams.subject
+                      } by ${
+                        filterParams.subject === "payment" ? "product" : "name"
+                      }`}</p>
+                      <div className="flex w-[100%] items-center gap-3">
+                        <input
+                          type="text"
+                          placeholder={`Search`}
+                          className={`
+                          my-2 mx-1 w-[30%] cursor-pointer rounded-lg border border-violet-900 bg-violet-100 p-1 text-slate-900 placeholder:text-violet-800 hover:bg-violet-300 hover:text-violet-900`}
+                          value={filterParams.name}
+                          onChange={(e) => {
+                            setFilterParams((prev) => {
+                              return {
+                                ...prev,
+                                name: e.target.value,
+                              };
+                            });
+                          }}
+                        />
 
-                            <input
-                              type="text"
-                              placeholder={
-                                `Search`
-                              }
-                              className={`
-                          bg-violet-100 border border-violet-900 my-2 placeholder:text-violet-800 text-slate-900 w-[30%] p-1 rounded-lg mx-1 hover:bg-violet-300 hover:text-violet-900 cursor-pointer`}
-                              value={filterParams.name}
-                              onChange={(e) => {
-                                setFilterParams(prev => {
-                                  return {
-                                    ...prev,
-                                    name: e.target.value
-                                  }
-                                })
-                              }
-                              }
-                            />
-
-                            <div className='flex flex-col ml-5 items-center'>
-                              {filterParams.subject === "transactions" && <div className='mb-4 w-80 mt-5'>
-                                <div className="slider relative h-1 rounded-md bg-violet-100">
-                                  <div ref={progressRef} className="progress absolute h-2  rounded">
-
-                                  </div>
-                                </div>
-                                <div className="range-input relative">
-
-                                  <input
-                                    type="range" value={filterParams.price.min}
-                                    onChange={handleMinPrice}
-                                    min={0}
-                                    step={10}
-                                    max={5000}
-                                    name="price-range" id="price-range-low" className='range-min accent-violet-500 absolute w-full -top-1 h-1 bg-transparent appearance-none pointer-events-none cursor-pointer' />
-                                  <input
-                                    type="range" value={filterParams.price.max}
-                                    onChange={handleMaxPrice}
-                                    min={0}
-                                    step={10}
-                                    max={5000}
-                                    name="price-range" id="price-range-high" className='range-max accent-violet-500 absolute w-full -top-1 h-1 bg-transparent appearance-none cursor-pointer pointer-events-none' />
-                                </div>
-                              </div>}
+                        <div className="ml-5 flex flex-col items-center">
+                          {filterParams.subject === "transactions" && (
+                            <div className="mb-4 mt-5 w-80">
+                              <div className="slider relative h-1 rounded-md bg-violet-100">
+                                <div
+                                  ref={progressRef}
+                                  className="progress absolute h-2  rounded"
+                                ></div>
+                              </div>
+                              <div className="range-input relative">
+                                <input
+                                  type="range"
+                                  value={filterParams.price.min}
+                                  onChange={handleMinPrice}
+                                  min={0}
+                                  step={10}
+                                  max={5000}
+                                  name="price-range"
+                                  id="price-range-low"
+                                  className="range-min pointer-events-none absolute -top-1 h-1 w-full cursor-pointer appearance-none bg-transparent accent-violet-500"
+                                />
+                                <input
+                                  type="range"
+                                  value={filterParams.price.max}
+                                  onChange={handleMaxPrice}
+                                  min={0}
+                                  step={10}
+                                  max={5000}
+                                  name="price-range"
+                                  id="price-range-high"
+                                  className="range-max pointer-events-none absolute -top-1 h-1 w-full cursor-pointer appearance-none bg-transparent accent-violet-500"
+                                />
+                              </div>
                             </div>
-                            {filterParams.subject === "transactions" && <div className='flex gap-5 text-violet-400'>
-                              <p>{formatMoney(filterParams.price.min)}</p>
-                              <p>To</p>
-                              <p>{formatMoney(filterParams.price.max)}</p>
-
-                            </div>}
-                          </div>
-
+                          )}
                         </div>
-                      </>
-                    )
-                  }
-                </>
-              )
-            }
-
+                        {filterParams.subject === "transactions" && (
+                          <div className="flex gap-5 text-violet-400">
+                            <p>{formatMoney(filterParams.price.min)}</p>
+                            <p>To</p>
+                            <p>{formatMoney(filterParams.price.max)}</p>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </>
+                )}
+              </>
+            )}
           </div>
         </div>
-        <div className="flex w-full h-[90%] justify-center">
-          <div className='flex min-h-[100%] flex-col overflow-scroll w-[95%] ml-5 p-1'>
-            {
-              selectedTab === Tab.ClinicalTrials ? (
-                <ClinicalTrialsComponent data={clinicalTrialsData} />
-              ) : (
-                <DirectoryCards search={search as string} searchResults={searchResults} filterParams={filterParams} data={data} />
-              )
-            }
+        <div className="flex h-[90%] w-full justify-center">
+          <div className="ml-5 flex min-h-[100%] w-[95%] flex-col overflow-scroll p-1">
+            {selectedTab === Tab.ClinicalTrials ? (
+              <ClinicalTrialsComponent data={clinicalTrialsData} />
+            ) : (
+              <DirectoryCards
+                search={search as string}
+                searchResults={searchResults}
+                filterParams={filterParams}
+                data={data}
+              />
+            )}
           </div>
         </div>
       </div>
     </>
-  )
+  );
 }

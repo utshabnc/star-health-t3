@@ -1,12 +1,17 @@
-import { Menu, Transition } from '@headlessui/react';
-import { ChevronDownIcon } from '@heroicons/react/solid';
+import { Menu, Transition } from "@headlessui/react";
+import { ChevronDownIcon } from "@heroicons/react/solid";
 // import ReactStars from 'react-rating-stars-component';
-import { Fragment, SetStateAction, useEffect, useState } from 'react';
-import { availableYears, formatDate, formatMoney, formatName, formatNumber } from '../../utils';
-import _ from 'lodash';
-import type { DrugResponse } from '../../server/trpc/router/db';
-import FAQ from '../FAQ';
-
+import { Fragment, SetStateAction, useEffect, useState } from "react";
+import {
+  availableYears,
+  formatDate,
+  formatMoney,
+  formatName,
+  formatNumber,
+} from "../../utils";
+import _ from "lodash";
+import type { DrugResponse } from "../../server/trpc/router/db";
+import FAQ from "../FAQ";
 
 interface DrugSchema {
   data: DrugResponse;
@@ -14,22 +19,43 @@ interface DrugSchema {
 }
 
 function classNames(...classes: string[]) {
-  return classes.filter(Boolean).join(' ');
+  return classes.filter(Boolean).join(" ");
 }
 
 export const DrugsDets = ({ data }: DrugSchema) => {
   const dropdowns = [
-    {title: 'Purpose' || null, content: data?.drug?.purpose || null},
-    {title: 'Description' || null, content: data?.drug?.description || null},
-    {title: 'Instructions For Use' || null, content: data?.drug?.instructions_for_use || null},
-    {title: 'Active Ingredient' || null, content: data?.drug?.active_ingredient || null},
-    {title: 'Warnings And Cautions' || null, content: data?.drug?.warnings_and_cautions || null},
-    {title: 'Overdosage' || null, content: data?.drug?.overdosage || null},
-    {title: 'Adverse Reactions' || null, content: data?.drug?.adverse_reactions || null},
-    {title: 'Clinical Studies' || null, content: data?.drug?.clinical_studies || null},
-    {title: 'Microbiology' || null, content: data?.drug?.microbiology || null},
-    {title: 'Laboratory Tests' || null, content: data?.drug?.laboratory_tests || null},
-  ]
+    { title: "Purpose" || null, content: data?.drug?.purpose || null },
+    { title: "Description" || null, content: data?.drug?.description || null },
+    {
+      title: "Instructions For Use" || null,
+      content: data?.drug?.instructions_for_use || null,
+    },
+    {
+      title: "Active Ingredient" || null,
+      content: data?.drug?.active_ingredient || null,
+    },
+    {
+      title: "Warnings And Cautions" || null,
+      content: data?.drug?.warnings_and_cautions || null,
+    },
+    { title: "Overdosage" || null, content: data?.drug?.overdosage || null },
+    {
+      title: "Adverse Reactions" || null,
+      content: data?.drug?.adverse_reactions || null,
+    },
+    {
+      title: "Clinical Studies" || null,
+      content: data?.drug?.clinical_studies || null,
+    },
+    {
+      title: "Microbiology" || null,
+      content: data?.drug?.microbiology || null,
+    },
+    {
+      title: "Laboratory Tests" || null,
+      content: data?.drug?.laboratory_tests || null,
+    },
+  ];
   return (
     <>
       <div className="flex flex-col justify-end sm:px-2 lg:px-28">
@@ -38,7 +64,6 @@ export const DrugsDets = ({ data }: DrugSchema) => {
         </p>
         <p className="text-purp-2 font-semibold sm:text-sm lg:text-xl">
           Manufacturer: {data?.drug?.manufacturer_name}
-         
         </p>
         <p className="text-purp-5 pt-1 sm:text-xs lg:text-lg">
           Product Type: {data?.drug?.product_type}
@@ -46,20 +71,25 @@ export const DrugsDets = ({ data }: DrugSchema) => {
         <p className="text-purp-5 pt-1 sm:text-xs lg:text-lg">
           Route: {data?.drug?.route}
         </p>
-        <p className="text-purp-5 pt-1 sm:text-xs text-violet-700">
-          Effective Date: {formatDate(data?.drug?.effective_time || '00000000', '-')}
+        <p className="text-purp-5 pt-1 text-violet-700 sm:text-xs">
+          Effective Date:{" "}
+          {formatDate(data?.drug?.effective_time || "00000000", "-")}
         </p>
         <div className="my-1">
           <hr />
         </div>
         {dropdowns.map((dropdown, index) => {
           if (dropdown.content) {
-          return (
-            <FAQ key={`${dropdown.title}-${index}`}title={dropdown?.title || null} content={dropdown?.content || null} />
-          )
+            return (
+              <FAQ
+                key={`${dropdown.title}-${index}`}
+                title={dropdown?.title || null}
+                content={dropdown?.content || null}
+              />
+            );
           }
         })}
-                {/* <div className="flex flex-col items-center justify-around sm:h-[60px] sm:flex-row">
+        {/* <div className="flex flex-col items-center justify-around sm:h-[60px] sm:flex-row">
           <div className="flex">
             <div className="flex flex-row text-lg font-semibold">
               Payments for:&nbsp;

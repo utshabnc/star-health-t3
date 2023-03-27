@@ -35,7 +35,7 @@ import Transaction from "../../components/DrugDets/Transaction";
  *   - Top Doctors By Payment (doctors with the largest total payments for the drug)
  *   - Largest Payments (largest single payments for the drug)
  *   - Top Transaction Doctors (payment count per doctor for payments for the drug)
- * - A map of the United States to show geographical patterns in transaction 
+ * - A map of the United States to show geographical patterns in transaction
  *   count, cost, or other variables relating to the drug (to be titled + included with a dropdown)
  * - A list of transactions for the drug
  */
@@ -43,16 +43,15 @@ import Transaction from "../../components/DrugDets/Transaction";
 const DoctorDetails = () => {
   const navigate = useRouter();
   const id = navigate.query.id as string;
-  
+
   const [drugType, setDrugType] = useState<string>("Antibiotic");
   const [year, setYear] = useState<string>();
-  const {
-    data: drug,
-    isLoading: isDrugLoading,
-  } = trpc.db.drugs.useQuery({ id }, {
-    keepPreviousData: true,
-  });
-
+  const { data: drug, isLoading: isDrugLoading } = trpc.db.drugs.useQuery(
+    { id },
+    {
+      keepPreviousData: true,
+    }
+  );
 
   if (!drug || isDrugLoading) {
     return (
@@ -62,13 +61,13 @@ const DoctorDetails = () => {
             style={{
               height: "800px",
             }}
-            className="p-5 rounded bg-white"
+            className="rounded bg-white p-5"
           >
             <div className="flex flex-row">
               <div>
                 <button
                   onClick={navigate.back}
-                  className="border border-violet-700 bg-violet-700 text-white rounded-md px-4 py-2 transition duration-500 ease select-none hover:bg-violet-900 focus:outline-none focus:shadow-outline"
+                  className="ease focus:shadow-outline select-none rounded-md border border-violet-700 bg-violet-700 px-4 py-2 text-white transition duration-500 hover:bg-violet-900 focus:outline-none"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -76,7 +75,7 @@ const DoctorDetails = () => {
                     viewBox="0 0 24 24"
                     strokeWidth={1.5}
                     stroke="currentColor"
-                    className="w-6 h-6 "
+                    className="h-6 w-6 "
                   >
                     <path
                       strokeLinecap="round"
@@ -87,14 +86,14 @@ const DoctorDetails = () => {
                 </button>
               </div>
 
-              <div className="flex justify-center w-11/12">
+              <div className="flex w-11/12 justify-center">
                 <div className="flex flex-col">
-                  <p className="text-violet-700 text-2xl p-1 font-semibold"></p>
+                  <p className="p-1 text-2xl font-semibold text-violet-700"></p>
 
-                  <div className="max-w-2xl mx-auto mt-48">
+                  <div className="mx-auto mt-48 max-w-2xl">
                     <svg
                       role="status"
-                      className="inline h-20 w-20 animate-spin mr-2 text-gray-200 dark:text-gray-600 fill-purple-600"
+                      className="mr-2 inline h-20 w-20 animate-spin fill-purple-600 text-gray-200 dark:text-gray-600"
                       viewBox="0 0 100 101"
                       fill="none"
                       xmlns="http://www.w3.org/2000/svg"
@@ -109,7 +108,7 @@ const DoctorDetails = () => {
                       />
                     </svg>
                   </div>
-                  <p className="flex font-semibold text-violet-700 justify-center text-lg sm:text-2xl pt-2">
+                  <p className="flex justify-center pt-2 text-lg font-semibold text-violet-700 sm:text-2xl">
                     Loading StarHealth drug...
                   </p>
                 </div>
@@ -147,10 +146,7 @@ const DoctorDetails = () => {
             </button>
           </div>
         </div>
-        <DrugsDets
-          data={drug}
-          
-        />
+        <DrugsDets data={drug} />
 
         {/* <div className="grid grid-cols-1">
           <div className="mx-1 grid grid-cols-3 rounded-lg border-2 border-violet-400 p-2">
