@@ -26,8 +26,14 @@ export const getListofStates = (): Observable<
     crossDomain: true,
   });
 };
-
-export const searchLocationByZipcode = (zipcode: string): any => {
+/**
+ * Search Location: county fips, zipcode, state information by Zipcode
+ * @param zipcode 5 digit zipcode
+ * @returns
+ */
+export const searchLocationByZipcode = (
+  zipcode: string
+): Observable<AjaxResponse<any>> => {
   return ajax({
     method: "GET",
     url: `https://marketplace.api.healthcare.gov/api/v1/counties/by/zip/${zipcode}?apikey=${APIKEY}`,

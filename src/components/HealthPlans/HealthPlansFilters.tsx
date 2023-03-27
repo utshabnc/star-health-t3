@@ -5,8 +5,8 @@ export default function HealthPlansFilters({ params }: any) {
       <div className="w-full">
         <div>
           <div className="filters flex w-full items-center">
-            <p className="w-100 my-2 text-lg  text-violet-700">
-              Search by 5 digit zipcode:
+            <p className="w-100 w-[12%] my-2 text-lg  text-violet-700">
+              Search by Zipcode:
             </p>
             <div className="wrap-filters flex w-full items-center py-2">
               <input

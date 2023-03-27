@@ -30,36 +30,168 @@ const HealthPlansDetails = () => {
   }, [id]);
 
   const HealthPlanSummaryJSX = (
-    <div className="text-purp-5 flex flex-col whitespace-pre-wrap pt-1 sm:text-xs lg:text-lg">
-      <div className="mb-2 flex flex-col">
-        {/* <div>Premium: {healthPlanDetail?.premium || "-"}</div> */}
-        <div>Metal Level: {healthPlanDetail?.metal_level || "-"}</div>
-        <div>Type: {healthPlanDetail?.type || "-"}</div>
-        <div>Market: {healthPlanDetail?.market || "-"}</div>
-      </div>
+    <div className="text-purp-5 flex flex-row whitespace-pre-wrap pt-1 sm:text-xs lg:text-lg">
+      <ul className="mb-2 flex grow list-disc flex-col pl-5">
+        <li>
+          <b>Metal Level</b>: {healthPlanDetail?.metal_level || "-"}
+        </li>
+        <li>
+          <b>Type</b>: {healthPlanDetail?.type || "-"}
+        </li>
+        <li>
+          <b>Market</b>: {healthPlanDetail?.market || "-"}
+        </li>
+        <li>
+          <b>Max child age</b>: {healthPlanDetail?.max_age_child || "-"}
+        </li>
+        <li>
+          <b>HSA Eligible</b>: {healthPlanDetail?.hsa_eligible || "-"}
+        </li>
+        <li>
+          <b>Insurance Market</b>: {healthPlanDetail?.insurance_market || "-"}
+        </li>
+      </ul>
+      <ul className="mb-2 flex grow list-disc flex-col pl-5">
+        <li>
+          <b>Specialist referral required</b>:{" "}
+          {healthPlanDetail?.special_referral_required}
+        </li>
+        <li>
+          <b>Oopc</b>: {healthPlanDetail?.oopc}
+        </li>
+        <li>
+          <b>Tobacco Lookback</b>: {`${healthPlanDetail?.tobacco_lookback}`}
+        </li>
+        <li>
+          <b>Supression State</b>: {`${healthPlanDetail?.suppression_state}`}
+        </li>
+        <li>
+          <b>Guarantee Rate</b>: {`${healthPlanDetail?.guaranteed_rate}`}
+        </li>
+        <li>
+          <b>Simple Choice</b>: {`${healthPlanDetail?.simple_choice}`}
+        </li>
+      </ul>
+      <ul className="mb-2 flex grow list-disc flex-col pl-5">
+        <li>
+          <b>Is Ineligible</b>: {`${healthPlanDetail?.is_ineligible}`}
+        </li>
+        <li>
+          <b>RX 3mo mail order</b>: {`${healthPlanDetail?.rx_3mo_mail_order}`}
+        </li>
+        <li>
+          <b>Covers nonhyde abortion</b>:{" "}
+          {`${healthPlanDetail?.covers_nonhyde_abortion}`}
+        </li>
+        <li>
+          <b>Service area id</b>: {`${healthPlanDetail?.service_area_id}`}
+        </li>
+      </ul>
     </div>
   );
 
   const CoverageJSX = (
-    <div className="text-purp-5 flex flex-col whitespace-pre-wrap pt-1 sm:text-xs lg:text-lg">
-      <div className="mb-2 flex flex-col">
-        {healthPlanDetail?.benefits.map((ben: any, index: number) =>
-          ben?.covered ? <div key={index}>{ben?.name}</div> : null
-        )}
-      </div>
-    </div>
+    <ul className="text-purp-5 flex list-outside list-disc flex-row flex-wrap whitespace-pre-wrap pl-5 pt-1 sm:text-xs lg:text-lg">
+      {healthPlanDetail?.benefits.map((ben: any, index: number) =>
+        ben?.covered ? (
+          <li className="pr-6" key={index}>
+            {ben?.name}
+          </li>
+        ) : null
+      )}
+    </ul>
   );
 
   const DeductibleJSX = (
-    <div className="text-purp-5 flex flex-col whitespace-pre-wrap pt-1 sm:text-xs lg:text-lg">
+    <div className="text-purp-5 flex flex-row whitespace-pre-wrap pt-1 sm:text-xs lg:text-lg">
       {healthPlanDetail?.deductibles.map((ded: any, index: number) => (
-        <div key={index} className="mb-2 flex flex-col">
-          <div key={index}>Type: {ded?.type}</div>
-          <div key={index}>Family cost: {ded?.family_cost}</div>
-          <div key={index}>Network Tier: {ded?.network_tier}</div>
-          <div key={index}>Amount: {ded?.amount}</div>
+        <div key={index} className="mb-2 flex grow flex-col">
+          <div key={index}>
+            <b>Type:</b> {ded?.type}
+          </div>
+          <div key={index}>
+            <b>Family cost</b>: {ded?.family_cost}
+          </div>
+          <div key={index}>
+            <b>Network Tier</b>: {ded?.network_tier}
+          </div>
+          <div key={index}>
+            <b>Amount</b>: ${ded?.amount}
+          </div>
         </div>
       ))}
+    </div>
+  );
+
+  const EligibleDepedentsJSX = (
+    <ul className="text-purp-5 flex list-outside list-disc flex-row flex-wrap whitespace-pre-wrap pl-5 pt-1 sm:text-xs lg:text-lg">
+      {healthPlanDetail?.issuer?.eligible_dependents.map(
+        (ben: any, index: number) => (
+          <li className="pr-6" key={index}>
+            {ben}
+          </li>
+        )
+      )}
+    </ul>
+  );
+
+  const SBCSJSX = (
+    <div className="text-purp-5 flex flex-row whitespace-pre-wrap pt-1 sm:text-xs lg:text-lg">
+      <div className="mb-2 flex grow list-disc flex-col">
+        <p>
+          <b>Baby</b>
+        </p>
+        <li>
+          <b>coinsurance</b>: ${healthPlanDetail?.sbcs?.baby?.coinsurance || 0}
+        </li>
+        <li>
+          <b>copay</b>: ${healthPlanDetail?.sbcs?.baby?.copay || 0}
+        </li>
+        <li>
+          <b>deductible</b>: ${healthPlanDetail?.sbcs?.baby?.deductible || 0}
+        </li>
+        <li>
+          <b>limit</b>: ${healthPlanDetail?.sbcs?.baby?.limit || 0}
+        </li>
+      </div>
+      <div className="mb-2 flex grow list-disc flex-col">
+        <p>
+          <b>Diabetes</b>
+        </p>
+        <li>
+          <b>coinsurance</b>: $
+          {healthPlanDetail?.sbcs?.diabetes?.coinsurance || 0}
+        </li>
+        <li>
+          <b>copay</b>: ${healthPlanDetail?.sbcs?.diabetes?.copay || 0}
+        </li>
+        <li>
+          <b>deductible</b>: $
+          {healthPlanDetail?.sbcs?.diabetes?.deductible || 0}
+        </li>
+        <li>
+          <b>limit</b>: ${healthPlanDetail?.sbcs?.diabetes?.limit || 0}
+        </li>
+      </div>
+      <div className="mb-2 flex grow list-disc flex-col">
+        <p>
+          <b>Fracture</b>
+        </p>
+        <li>
+          <b>coinsurance</b>: $
+          {healthPlanDetail?.sbcs?.fracture?.coinsurance || 0}
+        </li>
+        <li>
+          <b>copay</b>: ${healthPlanDetail?.sbcs?.fracture?.copay || 0}
+        </li>
+        <li>
+          <b>deductible</b>: $
+          {healthPlanDetail?.sbcs?.fracture?.deductible || 0}
+        </li>
+        <li>
+          <b>limit</b>: ${healthPlanDetail?.sbcs?.fracture?.limit || 0}
+        </li>
+      </div>
     </div>
   );
 
@@ -67,6 +199,8 @@ const HealthPlansDetails = () => {
     { title: "Summary" || null, content: HealthPlanSummaryJSX },
     { title: "Coverage" || null, content: CoverageJSX },
     { title: "Deductible" || null, content: DeductibleJSX },
+    { title: "Eligible Depedents" || null, content: EligibleDepedentsJSX },
+    { title: "SBCS" || null, content: SBCSJSX },
   ];
 
   return isProcessing ? (
@@ -105,8 +239,9 @@ const HealthPlansDetails = () => {
             <div className="my-1">
               <hr />
             </div>
+            <div>id: {healthPlanDetail?.id}</div>
             <div className="mt-4 flex flex-row">
-              <div className="flex-auto">
+              <div className="flex-[30%]">
                 <p className="pt-1 text-xl font-semibold">Issuer Overview</p>
                 <div className="my-1 mr-8">
                   <hr />
@@ -206,7 +341,6 @@ const HealthPlansDetails = () => {
           </div>
         </div>
       </div>
-      {/* <div>HEllO</div> */}
     </>
   );
 };

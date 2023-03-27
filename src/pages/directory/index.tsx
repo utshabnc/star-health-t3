@@ -687,7 +687,7 @@ export default function Directory() {
                       : "border-zinc-200"
                   }`}
                 >
-                  Plans
+                  Insurance
                 </button>
               </div>
             </div>

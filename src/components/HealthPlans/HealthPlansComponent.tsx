@@ -21,7 +21,7 @@ export default function HealthPlansComponent({ plans }: any) {
                   </h5>
                   <div className="flex w-[75%] flex-row justify-between">
                     <h5 className="text-md mb-2 text-gray-900">
-                      {`${plan?.id || "-"}`}
+                      {`Issuer id: ${plan?.id || "-"}`}
                     </h5>
                     <p className="mb-1 text-base text-gray-700"> </p>
                   </div>
@@ -39,7 +39,7 @@ export default function HealthPlansComponent({ plans }: any) {
                       <br />
                     </p>
                     <p className="mb-1 text-right text-sm text-gray-600">
-                      Premium: {plan?.premium || "-"}
+                      Premium: ${plan?.premium || "-"}
                       <br />
                     </p>
                     <p className="mb-1 text-right text-sm text-gray-600">
