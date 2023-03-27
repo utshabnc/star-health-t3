@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-export default function HealthPlansComponent({ plans }: any) {
+export default function HealthPlansList({ plans }: any) {
   return (
     <>
       {plans?.map((plan: any, index: number) => {

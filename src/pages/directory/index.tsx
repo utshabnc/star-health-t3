@@ -31,27 +31,13 @@ import {
   searchLocationByZipcode,
 } from "../../components/HealthPlans/httpsRequests";
 import HealthPlansFilters from "../../components/HealthPlans/HealthPlansFilters";
-import HealthPlansComponent from "../../components/HealthPlans/HealthPlansComponent";
+import HealthPlansList from "../../components/HealthPlans/HealthPlansList";
 
 interface PriceFilter {
   min: number;
   max: number;
 }
 
-// const healthPlansData = {
-//   plans: [
-//     {
-//       id: "1234",
-//       name: "orraior",
-//       issuer: {
-//         name: "BCBS",
-//       },
-//       state: "IL",
-//       premium: "10000",
-//       market: "Individual",
-//     },
-//   ],
-// };
 export interface FilterParams {
   subject: string;
   state: string;
@@ -117,6 +103,8 @@ export default function Directory() {
   });
   const [zipcode, setZipcode] = useState<string>("78753");
   const [healthPlansData, setHealthPlansData] = useState<Array<any>>();
+  const [displayHealthPlansData, setDisplayHealthPlansData] =
+    useState<Array<any>>();
   const [healthPlansDataError, setHealthPlansDataError] = useState<string>("");
   const [search, setSearch] = useState<string>();
   const [selectedTab, setSelectedTab] = useState<Tab>(Tab.Transactions);
@@ -245,6 +233,11 @@ export default function Directory() {
         .pipe(finalize(() => setIsProcessing(false)))
         .subscribe((resp: any) => {
           // console.log(resp?.response?.counties[0], ">>>");
+          if (!resp?.response?.counties.length) {
+            setHealthPlansDataError("does not exist");
+            return [];
+          }
+
           const { fips, state, zipcode } = resp?.response?.counties[0];
           getHealthPlans(fips, state, zipcode)
             .pipe(
@@ -256,6 +249,7 @@ export default function Directory() {
             .subscribe((resp: any) => {
               if (resp?.status == 200) {
                 setHealthPlansData(resp?.response?.plans);
+                setDisplayHealthPlansData(resp?.response?.plans);
               }
             });
         });
@@ -676,6 +670,7 @@ export default function Directory() {
                           (resp: any) => {
                             if (resp?.status == 200) {
                               setHealthPlansData(resp?.response?.plans);
+                              setDisplayHealthPlansData(resp?.response?.plans);
                             }
                           }
                         );
@@ -729,7 +724,13 @@ export default function Directory() {
             {selectedTab == Tab.Plans && (
               <div>
                 <HealthPlansFilters
-                  params={{ zipcode, setZipcode, healthPlansDataError }}
+                  params={{
+                    zipcode,
+                    setZipcode,
+                    healthPlansDataError,
+                    healthPlansData,
+                    setDisplayHealthPlansData,
+                  }}
                 />
               </div>
             )}
@@ -824,7 +825,7 @@ export default function Directory() {
               <ClinicalTrialsComponent data={clinicalTrialsData} />
             )}
             {selectedTab === Tab.Plans && (
-              <HealthPlansComponent plans={healthPlansData} />
+              <HealthPlansList plans={displayHealthPlansData} />
             )}
             {selectedTab !== Tab.ClinicalTrials &&
               selectedTab !== Tab.Plans && (

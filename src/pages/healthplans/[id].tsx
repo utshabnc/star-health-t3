@@ -241,7 +241,7 @@ const HealthPlansDetails = () => {
             </div>
             <div>id: {healthPlanDetail?.id}</div>
             <div className="mt-4 flex flex-row">
-              <div className="flex-[30%]">
+              <div className="flex-[30%] pr-10">
                 <p className="pt-1 text-xl font-semibold">Issuer Overview</p>
                 <div className="my-1 mr-8">
                   <hr />
