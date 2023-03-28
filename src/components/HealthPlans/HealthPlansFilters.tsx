@@ -6,6 +6,7 @@ interface HealthPlansFiltersProps {
     healthPlansDataError: string;
     healthPlansData: any[] | undefined;
     setDisplayHealthPlansData: (data: any[] | undefined) => void;
+    setHealthPlansData: (data: any[] | undefined) => void;
   };
 }
 
@@ -18,6 +19,7 @@ export default function HealthPlansFilters({
     healthPlansDataError,
     healthPlansData,
     setDisplayHealthPlansData,
+    setHealthPlansData,
   } = params;
   const premiumList = healthPlansData?.map((hp: any) => hp?.premium || 0) || [
     0,
@@ -88,6 +90,10 @@ export default function HealthPlansFilters({
     setlowprice(minNum);
   }, [minNum, maxNum]);
 
+  useEffect(() => {
+    setIssuer("");
+  }, [zipcode]);
+
   return (
     <>
       <div className="w-full">
@@ -105,6 +111,9 @@ export default function HealthPlansFilters({
                 value={zipcode}
                 onChange={(e) => {
                   setZipcode(e.target.value);
+                  if (e.target.value.length === (5 || 0)) {
+                    setHealthPlansData(undefined);
+                  }
                 }}
               />
               <div className="ml-5 flex flex-row items-center">
@@ -150,7 +159,9 @@ export default function HealthPlansFilters({
                 }}
                 placeholder="Issuer"
               >
-                <option value="">Issuer</option>
+                <option selected value="">
+                  Issuer
+                </option>
                 {issuerList?.map((item, index: number) => (
                   <option key={index} value={item}>
                     {item}

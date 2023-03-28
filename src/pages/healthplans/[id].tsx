@@ -1,9 +1,11 @@
+import { capitalize } from "lodash";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { catchError, finalize } from "rxjs";
 import ExpansionPanel from "../../components/ExpansionPanel";
 import { getHealthPlanDetailById } from "../../components/HealthPlans/httpsRequests";
 import LoadingStarHealth from "../../components/Loading";
+import { formatMoney } from "../../utils";
 
 const HealthPlansDetails = () => {
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
@@ -57,7 +59,8 @@ const HealthPlansDetails = () => {
           {healthPlanDetail?.special_referral_required}
         </li>
         <li>
-          <b>Oopc</b>: {healthPlanDetail?.oopc}
+          <b>Out-of-Pocket Cost (OOPC)</b>:{" "}
+          {formatMoney(healthPlanDetail?.oopc)}
         </li>
         <li>
           <b>Tobacco Lookback</b>: {`${healthPlanDetail?.tobacco_lookback}`}
@@ -66,22 +69,26 @@ const HealthPlansDetails = () => {
           <b>Supression State</b>: {`${healthPlanDetail?.suppression_state}`}
         </li>
         <li>
-          <b>Guarantee Rate</b>: {`${healthPlanDetail?.guaranteed_rate}`}
+          <b>Guarantee Rate</b>:{" "}
+          {capitalize(`${healthPlanDetail?.guaranteed_rate}`)}
         </li>
         <li>
-          <b>Simple Choice</b>: {`${healthPlanDetail?.simple_choice}`}
+          <b>Simple Choice</b>:{" "}
+          {capitalize(`${healthPlanDetail?.simple_choice}`)}
         </li>
       </ul>
       <ul className="mb-2 flex grow list-disc flex-col pl-5">
         <li>
-          <b>Is Ineligible</b>: {`${healthPlanDetail?.is_ineligible}`}
+          <b>Is Ineligible</b>:{" "}
+          {capitalize(`${healthPlanDetail?.is_ineligible}`)}
         </li>
         <li>
-          <b>RX 3mo mail order</b>: {`${healthPlanDetail?.rx_3mo_mail_order}`}
+          <b>RX 3mo mail order</b>:{" "}
+          {capitalize(`${healthPlanDetail?.rx_3mo_mail_order}`)}
         </li>
         <li>
           <b>Covers nonhyde abortion</b>:{" "}
-          {`${healthPlanDetail?.covers_nonhyde_abortion}`}
+          {capitalize(`${healthPlanDetail?.covers_nonhyde_abortion}`)}
         </li>
         <li>
           <b>Service area id</b>: {`${healthPlanDetail?.service_area_id}`}
@@ -91,7 +98,7 @@ const HealthPlansDetails = () => {
   );
 
   const CoverageJSX = (
-    <ul className="text-purp-5 flex list-outside list-disc flex-row flex-wrap whitespace-pre-wrap pl-5 pt-1 sm:text-xs lg:text-lg">
+    <ul className="text-purp-5 list-outside list-disc grid grid-cols-3 whitespace-pre-wrap pl-5 pt-1 sm:text-xs lg:text-lg">
       {healthPlanDetail?.benefits.map((ben: any, index: number) =>
         ben?.covered ? (
           <li className="pr-6" key={index}>
@@ -110,13 +117,13 @@ const HealthPlansDetails = () => {
             <b>Type:</b> {ded?.type}
           </div>
           <div key={index}>
-            <b>Family cost</b>: {ded?.family_cost}
+            <b>Family Cost</b>: {ded?.family_cost}
           </div>
           <div key={index}>
             <b>Network Tier</b>: {ded?.network_tier}
           </div>
           <div key={index}>
-            <b>Amount</b>: ${ded?.amount}
+            <b>Amount</b>: {formatMoney(ded?.amount)}
           </div>
         </div>
       ))}
@@ -124,7 +131,7 @@ const HealthPlansDetails = () => {
   );
 
   const EligibleDepedentsJSX = (
-    <ul className="text-purp-5 flex list-outside list-disc flex-row flex-wrap whitespace-pre-wrap pl-5 pt-1 sm:text-xs lg:text-lg">
+    <ul className="text-purp-5 grid grid-cols-3 list-outside list-disc whitespace-pre-wrap pl-5 pt-1 sm:text-xs lg:text-lg">
       {healthPlanDetail?.issuer?.eligible_dependents.map(
         (ben: any, index: number) => (
           <li className="pr-6" key={index}>
@@ -142,16 +149,18 @@ const HealthPlansDetails = () => {
           <b>Baby</b>
         </p>
         <li>
-          <b>coinsurance</b>: ${healthPlanDetail?.sbcs?.baby?.coinsurance || 0}
+          <b>Coinsurance</b>:{" "}
+          {formatMoney(healthPlanDetail?.sbcs?.baby?.coinsurance || 0)}
         </li>
         <li>
-          <b>copay</b>: ${healthPlanDetail?.sbcs?.baby?.copay || 0}
+          <b>Copay</b>: {formatMoney(healthPlanDetail?.sbcs?.baby?.copay || 0)}
         </li>
         <li>
-          <b>deductible</b>: ${healthPlanDetail?.sbcs?.baby?.deductible || 0}
+          <b>Deductible</b>:{" "}
+          {formatMoney(healthPlanDetail?.sbcs?.baby?.deductible || 0)}
         </li>
         <li>
-          <b>limit</b>: ${healthPlanDetail?.sbcs?.baby?.limit || 0}
+          <b>Limit</b>: {formatMoney(healthPlanDetail?.sbcs?.baby?.limit || 0)}
         </li>
       </div>
       <div className="mb-2 flex grow list-disc flex-col">
@@ -159,18 +168,20 @@ const HealthPlansDetails = () => {
           <b>Diabetes</b>
         </p>
         <li>
-          <b>coinsurance</b>: $
-          {healthPlanDetail?.sbcs?.diabetes?.coinsurance || 0}
+          <b>Coinsurance</b>: $
+          {formatMoney(healthPlanDetail?.sbcs?.diabetes?.coinsurance || 0)}
         </li>
         <li>
-          <b>copay</b>: ${healthPlanDetail?.sbcs?.diabetes?.copay || 0}
+          <b>Copay</b>:{" "}
+          {formatMoney(healthPlanDetail?.sbcs?.diabetes?.copay || 0)}
         </li>
         <li>
-          <b>deductible</b>: $
-          {healthPlanDetail?.sbcs?.diabetes?.deductible || 0}
+          <b>Deductible</b>: $
+          {formatMoney(healthPlanDetail?.sbcs?.diabetes?.deductible || 0)}
         </li>
         <li>
-          <b>limit</b>: ${healthPlanDetail?.sbcs?.diabetes?.limit || 0}
+          <b>Limit</b>:{" "}
+          {formatMoney(healthPlanDetail?.sbcs?.diabetes?.limit || 0)}
         </li>
       </div>
       <div className="mb-2 flex grow list-disc flex-col">
@@ -178,18 +189,20 @@ const HealthPlansDetails = () => {
           <b>Fracture</b>
         </p>
         <li>
-          <b>coinsurance</b>: $
-          {healthPlanDetail?.sbcs?.fracture?.coinsurance || 0}
+          <b>Coinsurance</b>: $
+          {formatMoney(healthPlanDetail?.sbcs?.fracture?.coinsurance || 0)}
         </li>
         <li>
-          <b>copay</b>: ${healthPlanDetail?.sbcs?.fracture?.copay || 0}
+          <b>Copay</b>:{" "}
+          {formatMoney(healthPlanDetail?.sbcs?.fracture?.copay || 0)}
         </li>
         <li>
-          <b>deductible</b>: $
-          {healthPlanDetail?.sbcs?.fracture?.deductible || 0}
+          <b>Deductible</b>: $
+          {formatMoney(healthPlanDetail?.sbcs?.fracture?.deductible || 0)}
         </li>
         <li>
-          <b>limit</b>: ${healthPlanDetail?.sbcs?.fracture?.limit || 0}
+          <b>Limit</b>:{" "}
+          {formatMoney(healthPlanDetail?.sbcs?.fracture?.limit || 0)}
         </li>
       </div>
     </div>
@@ -200,7 +213,7 @@ const HealthPlansDetails = () => {
     { title: "Coverage" || null, content: CoverageJSX },
     { title: "Deductible" || null, content: DeductibleJSX },
     { title: "Eligible Depedents" || null, content: EligibleDepedentsJSX },
-    { title: "SBCS" || null, content: SBCSJSX },
+    { title: "Summary of Benefits and Coverage" || null, content: SBCSJSX },
   ];
 
   return isProcessing ? (
@@ -239,7 +252,7 @@ const HealthPlansDetails = () => {
             <div className="my-1">
               <hr />
             </div>
-            <div>id: {healthPlanDetail?.id}</div>
+            <div>ID: {healthPlanDetail?.id}</div>
             <div className="mt-4 flex flex-row">
               <div className="flex-[30%] pr-10">
                 <p className="pt-1 text-xl font-semibold">Issuer Overview</p>

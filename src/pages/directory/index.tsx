@@ -737,6 +737,7 @@ export default function Directory() {
                     setZipcode,
                     healthPlansDataError,
                     healthPlansData,
+                    setHealthPlansData,
                     setDisplayHealthPlansData,
                   }}
                 />
