@@ -55,8 +55,8 @@ const HealthPlansDetails = () => {
       </ul>
       <ul className="mb-2 flex grow list-disc flex-col pl-5">
         <li>
-          <b>Specialist referral required</b>:{" "}
-          {healthPlanDetail?.special_referral_required}
+          <b>Specialist Referral Required</b>:{" "}
+          {healthPlanDetail?.special_referral_required || "-"}
         </li>
         <li>
           <b>Out-of-Pocket Cost (OOPC)</b>:{" "}
