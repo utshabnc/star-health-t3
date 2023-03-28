@@ -1,6 +1,17 @@
 import { useEffect, useRef, useState } from "react";
+interface HealthPlansFiltersProps {
+  params: {
+    zipcode: string;
+    setZipcode: (zipcode: string) => void;
+    healthPlansDataError: string;
+    healthPlansData: any[] | undefined;
+    setDisplayHealthPlansData: (data: any[] | undefined) => void;
+  };
+}
 
-export default function HealthPlansFilters({ params }: any) {
+export default function HealthPlansFilters({
+  params,
+}: HealthPlansFiltersProps) {
   const {
     zipcode,
     setZipcode,
@@ -8,13 +19,65 @@ export default function HealthPlansFilters({ params }: any) {
     healthPlansData,
     setDisplayHealthPlansData,
   } = params;
-  const premiumList = healthPlansData?.map((hp: any) => hp?.premium || 0);
+  const premiumList = healthPlansData?.map((hp: any) => hp?.premium || 0) || [
+    0,
+  ];
+  const issuerList =
+    [...new Set(healthPlansData?.map((hp: any) => hp?.issuer?.name))] || [];
+
   const minNum = Math.min(...premiumList);
   const maxNum = Math.max(...premiumList);
   const progressRef = useRef<HTMLDivElement>(null);
+  const [lowprice, setlowprice] = useState<number>(minNum);
+  const [highprice, sethighprice] = useState<number>(maxNum);
+  const [issuer, setIssuer] = useState<string>("");
 
-  const [lowprice, setlowprice] = useState(minNum);
-  const [highprice, sethighprice] = useState(maxNum);
+  const handleMinPrice = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = parseInt(e.target.value);
+    if (!isNaN(value) && value <= highprice) {
+      setlowprice(value);
+      let displayData = healthPlansData?.filter(
+        (i: any) => i?.premium >= value && i?.premium <= highprice
+      );
+      if (issuer.length)
+        displayData = displayData?.filter(
+          (i: any) => i?.issuer?.name === issuer
+        );
+      setDisplayHealthPlansData(displayData);
+    }
+  };
+
+  const handleHighPrice = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = parseInt(e.target.value);
+    if (!isNaN(value) && value >= lowprice) {
+      sethighprice(value);
+
+      let displayData = healthPlansData?.filter(
+        (i: any) => i?.premium <= value && i?.premium >= lowprice
+      );
+
+      if (issuer.length)
+        displayData = displayData?.filter(
+          (i: any) => i?.issuer?.name === issuer
+        );
+      setDisplayHealthPlansData(displayData);
+    }
+  };
+
+  const filterByIssuer = (issuer: string) => {
+    setIssuer(issuer);
+    if (!issuer.length) {
+      setDisplayHealthPlansData(healthPlansData);
+    } else {
+      const displayData = healthPlansData?.filter(
+        (i: any) =>
+          i?.issuer?.name === issuer &&
+          i?.premium <= highprice &&
+          i?.premium >= lowprice
+      );
+      setDisplayHealthPlansData(displayData);
+    }
+  };
 
   useEffect(() => {
     if (progressRef.current != null) {
@@ -24,25 +87,6 @@ export default function HealthPlansFilters({ params }: any) {
     sethighprice(maxNum);
     setlowprice(minNum);
   }, [minNum, maxNum]);
-
-  const handleMinPrice = (e: any) => {
-    if (e.target.value <= highprice) {
-      setlowprice(parseInt(e.target.value));
-      const displayData = healthPlansData?.filter(
-        (i: any) => i?.premium >= e.target.value && i?.premium <= highprice
-      );
-      setDisplayHealthPlansData(displayData);
-    }
-  };
-  const handleHighPrice = (e: any) => {
-    if (e.target.value >= lowprice) {
-      sethighprice(parseInt(e.target.value));
-      const displayData = healthPlansData?.filter(
-        (i: any) => i?.premium <= e.target.value && i?.premium >= lowprice
-      );
-      setDisplayHealthPlansData(displayData);
-    }
-  };
 
   return (
     <>
@@ -55,6 +99,7 @@ export default function HealthPlansFilters({ params }: any) {
             <div className="wrap-filters flex w-full items-center py-2">
               <input
                 type="text"
+                placeholder="Type in Zipcode to See Insurance Data..."
                 className={`
                           my-2 mx-1 w-[30%] cursor-pointer rounded-lg border border-violet-900 bg-violet-100 p-1 text-slate-900 placeholder:text-violet-800 hover:bg-violet-300 hover:text-violet-900`}
                 value={zipcode}
@@ -98,6 +143,20 @@ export default function HealthPlansFilters({ params }: any) {
                 </div>
                 <div className="text-violet-400">${maxNum}</div>
               </div>
+              <select
+                className="my-2 mx-5 w-[20%] cursor-pointer rounded-lg bg-violet-500 p-1 text-white hover:bg-violet-400 hover:text-violet-900"
+                onChange={(e) => {
+                  filterByIssuer(e.target.value);
+                }}
+                placeholder="Issuer"
+              >
+                <option value="">Issuer</option>
+                {issuerList?.map((item, index: number) => (
+                  <option key={index} value={item}>
+                    {item}
+                  </option>
+                ))}
+              </select>
             </div>
           </div>
           {healthPlansDataError && (

@@ -101,7 +101,7 @@ export default function Directory() {
     drugRoute: filterParams.drugRoute,
     // name: filterParams.name
   });
-  const [zipcode, setZipcode] = useState<string>("78753");
+  const [zipcode, setZipcode] = useState<string>("");
   const [healthPlansData, setHealthPlansData] = useState<Array<any>>();
   const [displayHealthPlansData, setDisplayHealthPlansData] =
     useState<Array<any>>();
@@ -253,6 +253,12 @@ export default function Directory() {
               }
             });
         });
+    }
+
+    // reset if no zipcode was entered
+    if (zipcode.length === 0) {
+      setHealthPlansData(undefined);
+      setDisplayHealthPlansData(undefined);
     }
   }, [zipcode]);
 
@@ -638,7 +644,6 @@ export default function Directory() {
                 <button
                   onClick={() => {
                     setSelectedTab(Tab.Plans);
-                    setIsProcessing(true);
                     setFilterParams((prev) => {
                       return {
                         ...prev,
@@ -652,29 +657,32 @@ export default function Directory() {
                         name: "",
                       };
                     });
-                    searchLocationByZipcode(zipcode)
-                      .pipe(
-                        catchError((error) => {
-                          console.error(
-                            "Error fetching searchStateByZipcode data:",
-                            error
-                          );
-                          return [];
-                        })
-                      )
-                      .pipe(finalize(() => setIsProcessing(false)))
-                      .subscribe((resp: any) => {
-                        const { fips, state, zipcode } =
-                          resp?.response?.counties[0];
-                        getHealthPlans(fips, state, zipcode).subscribe(
-                          (resp: any) => {
-                            if (resp?.status == 200) {
-                              setHealthPlansData(resp?.response?.plans);
-                              setDisplayHealthPlansData(resp?.response?.plans);
-                            }
-                          }
-                        );
-                      });
+                    setHealthPlansData(undefined);
+                    setDisplayHealthPlansData(undefined);
+                    setZipcode("");
+                    // searchLocationByZipcode(zipcode)
+                    //   .pipe(
+                    //     catchError((error) => {
+                    //       console.error(
+                    //         "Error fetching searchStateByZipcode data:",
+                    //         error
+                    //       );
+                    //       return [];
+                    //     })
+                    //   )
+                    //   .pipe(finalize(() => setIsProcessing(false)))
+                    //   .subscribe((resp: any) => {
+                    //     const { fips, state, zipcode } =
+                    //       resp?.response?.counties[0];
+                    //     getHealthPlans(fips, state, zipcode).subscribe(
+                    //       (resp: any) => {
+                    //         if (resp?.status == 200) {
+                    //           setHealthPlansData(resp?.response?.plans);
+                    //           setDisplayHealthPlansData(resp?.response?.plans);
+                    //         }
+                    //       }
+                    //     );
+                    //   });
                   }}
                   className={`border-b-2 hover:border-zinc-500 ${
                     selectedTab === Tab.Plans
