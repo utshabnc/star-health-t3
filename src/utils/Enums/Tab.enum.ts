@@ -4,5 +4,6 @@ export enum Tab {
   Doctors,
   Products,
   Drugs,
-  ClinicalTrials
+  ClinicalTrials,
+  Plans,
 }
