@@ -27,6 +27,12 @@ import type {
   FieldValue,
 } from "../../components/ClinicalTrials/ClinicalTrialsFieldValuesResponse.model";
 
+import fda from "../../assets/logos/fda.png";
+import cms from "../../assets/logos/cms.png";
+import openPayments from "../../assets/logos/open-payments.png";
+import clinicalTrials from "../../assets/logos/clinical-trials.png";
+import Image from "next/image";
+
 interface PriceFilter {
   min: number;
   max: number;
@@ -586,7 +592,7 @@ export default function Directory() {
             </div>
             {selectedTab === Tab.ClinicalTrials ? (
               <>
-                <div>
+                <div className="relative">
                   <ClinicalTrialsFilters
                     Gender={clinicalTrialGenderFilters}
                     HealthyVolunteers={clinicalTrialHealthyVolunteersFilters}
@@ -608,13 +614,20 @@ export default function Directory() {
                       type="text"
                       placeholder={`Search`}
                       className={`
-                          my-2 mx-1 w-[30%] cursor-pointer rounded-lg border border-violet-900 bg-violet-100 p-1 text-slate-900 placeholder:text-violet-800 hover:bg-violet-300 hover:text-violet-900`}
+                              my-2 mx-1 w-[30%] cursor-pointer rounded-lg border border-violet-900 bg-violet-100 p-1 text-slate-900 placeholder:text-violet-800 hover:bg-violet-300 hover:text-violet-900`}
                       value={clinicalTrialSearchKeywordExpr}
                       onChange={(e) => {
                         setClinicalTrialSearchKeywordExpr(e.target.value);
                       }}
                     />
                   </div>
+                  <Image
+                    src={clinicalTrials}
+                    alt=""
+                    width={128}
+                    height={128}
+                    className="absolute -bottom-10 right-0 object-contain"
+                  />
                 </div>
               </>
             ) : (
@@ -628,7 +641,7 @@ export default function Directory() {
                 />
                 {"data" && (
                   <>
-                    <div className="">
+                    <div className="relative">
                       <p className="p-1 text-xs font-semibold text-violet-900">{`Search for ${
                         filterParams.subject
                       } by ${
@@ -695,6 +708,57 @@ export default function Directory() {
                           </div>
                         )}
                       </div>
+                      {(selectedTab === Tab.Doctors ||
+                        selectedTab === Tab.Manufacturers ||
+                        selectedTab === Tab.Transactions ||
+                        selectedTab === Tab.Products) && (
+                        <div className="absolute bottom-0 right-0 flex gap-10">
+                          <Image
+                            src={cms}
+                            alt=""
+                            width={128}
+                            height={128}
+                            className=" object-contain"
+                          />
+                          <Image
+                            src={openPayments}
+                            alt=""
+                            width={128}
+                            height={128}
+                            className=" object-contain"
+                          />
+                        </div>
+                      )}
+                      {(selectedTab === Tab.Doctors ||
+                        selectedTab === Tab.Manufacturers ||
+                        selectedTab === Tab.Transactions ||
+                        selectedTab === Tab.Products) && (
+                        <div className="absolute bottom-0 right-0 flex gap-10">
+                          <Image
+                            src={cms}
+                            alt=""
+                            width={128}
+                            height={128}
+                            className=" object-contain"
+                          />
+                          <Image
+                            src={openPayments}
+                            alt=""
+                            width={128}
+                            height={128}
+                            className=" object-contain"
+                          />
+                        </div>
+                      )}
+                      {selectedTab === Tab.Drugs && (
+                        <Image
+                          src={fda}
+                          alt=""
+                          width={128}
+                          height={128}
+                          className="absolute bottom-0 right-0 object-contain"
+                        />
+                      )}
                     </div>
                   </>
                 )}
