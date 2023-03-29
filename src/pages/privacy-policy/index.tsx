@@ -87,10 +87,10 @@ const PrivacyPolicy = () => {
 
         <h2 className="mt-5 text-xl">Your Choices</h2>
         <p>
-          You can choose not to provide us with certain information, but this
+          {`You can choose not to provide us with certain information, but this
           may limit your ability to use some of our app's features. You can also
           opt-out of receiving marketing communications from us by following the
-          instructions in the communication.
+          instructions in the communication.`}
         </p>
 
         <h2 className="mt-5 text-xl">Changes to This Privacy Policy</h2>
@@ -102,8 +102,8 @@ const PrivacyPolicy = () => {
 
         <h2 className="mt-5 text-xl">Contact Us</h2>
         <p>
-          If you have any questions or concerns about this Privacy Policy or our
-          app's privacy practices, please contact us
+          {`If you have any questions or concerns about this Privacy Policy or our
+          app's privacy practices, please contact us`}
         </p>
       </div>
     </div>

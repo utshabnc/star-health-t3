@@ -4,9 +4,9 @@ const TermsAndConditions = () => {
       <div className="container mx-auto flex max-w-4xl flex-col gap-5 py-20">
         <h1 className="text-3xl">Terms and Conditions for StarHealth.io</h1>
         <p>
-          Welcome to StarHealth.io. These Terms and Conditions ("Terms") govern
+          {` Welcome to StarHealth.io. These Terms and Conditions ("Terms") govern
           your use of our healthcare data app. Please read these Terms carefully
-          before using our app.
+          before using our app.`}
         </p>
 
         <h2 className="mt-5 text-xl">Acceptance of Terms</h2>
@@ -38,10 +38,10 @@ const TermsAndConditions = () => {
 
         <h2 className="mt-5 text-xl">User Accounts</h2>
         <p>
-          5. You may be required to create an account to use some of our app's
+          {`5. You may be required to create an account to use some of our app's
           features. You are responsible for maintaining the confidentiality of
           your account information, including your username and password. You
-          are also responsible for all activities that occur under your account.
+          are also responsible for all activities that occur under your account.`}
         </p>
 
         <h2 className="mt-5 text-xl">User Conduct</h2>
@@ -62,10 +62,10 @@ const TermsAndConditions = () => {
 
         <h2 className="mt-5 text-xl">Disclaimer of Warranties</h2>
         <p>
-          8. Our app is provided "as is" and "as available." We make no
+          {`8. Our app is provided "as is" and "as available." We make no
           warranties, express or implied, about the accuracy, reliability,
           suitability, or availability of our app. We also do not warrant that
-          our app will be uninterrupted or error-free.
+          our app will be uninterrupted or error-free.`}
         </p>
 
         <h2 className="mt-5 text-xl">Limitation of Liability</h2>
@@ -77,9 +77,9 @@ const TermsAndConditions = () => {
 
         <h2 className="mt-5 text-xl">Indemnification</h2>
         <p>
-          10. You agree to indemnify and hold us harmless from any claims,
+          {`10. You agree to indemnify and hold us harmless from any claims,
           damages, and expenses (including attorneys' fees) arising out of or in
-          connection with your use of our app.
+          connection with your use of our app.`}
         </p>
 
         <h2 className="mt-5 text-xl">Termination</h2>
