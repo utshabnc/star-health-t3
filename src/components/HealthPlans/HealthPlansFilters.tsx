@@ -116,6 +116,22 @@ export default function HealthPlansFilters({
                   }
                 }}
               />
+              <select
+                className="my-2 mx-5 w-[20%] cursor-pointer rounded-lg bg-violet-500 p-1 text-white hover:bg-violet-400 hover:text-violet-900"
+                onChange={(e) => {
+                  filterByIssuer(e.target.value);
+                }}
+                placeholder="Issuer"
+              >
+                <option selected value="">
+                  Issuer
+                </option>
+                {issuerList?.map((item, index: number) => (
+                  <option key={index} value={item}>
+                    {item}
+                  </option>
+                ))}
+              </select>
               <div className="ml-5 flex flex-row items-center">
                 <div className="text-violet-400">${minNum}</div>
                 <div className="mb-4 mt-5 w-80 px-5">
@@ -152,22 +168,6 @@ export default function HealthPlansFilters({
                 </div>
                 <div className="text-violet-400">${maxNum}</div>
               </div>
-              <select
-                className="my-2 mx-5 w-[20%] cursor-pointer rounded-lg bg-violet-500 p-1 text-white hover:bg-violet-400 hover:text-violet-900"
-                onChange={(e) => {
-                  filterByIssuer(e.target.value);
-                }}
-                placeholder="Issuer"
-              >
-                <option selected value="">
-                  Issuer
-                </option>
-                {issuerList?.map((item, index: number) => (
-                  <option key={index} value={item}>
-                    {item}
-                  </option>
-                ))}
-              </select>
             </div>
           </div>
           {healthPlansDataError && (

@@ -606,13 +606,13 @@ export default function Directory() {
                       .pipe(finalize(() => setIsProcessing(false)))
                       .subscribe();
                   }}
-                  className={`border-b-2 hover:border-zinc-500 ${
+                  className={`whitespace-nowrap border-b-2 hover:border-zinc-500 ${
                     selectedTab === Tab.ClinicalTrials
                       ? "border-violet-600"
                       : "border-zinc-200"
                   }`}
                 >
-                  Clinical Trials
+                  <span>Clinical Trials</span>
                 </button>
 
                 {/* transactions tab */}

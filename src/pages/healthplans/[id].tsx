@@ -254,7 +254,7 @@ const HealthPlansDetails = () => {
             </div>
             <div>ID: {healthPlanDetail?.id}</div>
             <div className="mt-4 flex flex-row">
-              <div className="flex-[30%] pr-10">
+              <div className="pr-10">
                 <p className="pt-1 text-xl font-semibold">Issuer Overview</p>
                 <div className="my-1 mr-8">
                   <hr />
@@ -271,7 +271,7 @@ const HealthPlansDetails = () => {
                     {healthPlanDetail?.issuer?.state || "-"}
                   </span>
                 </p>
-                <p className="text-purp-2 mt-2 mb-2 font-semibold sm:text-sm lg:text-xl">
+                <p className="break-all text-purp-2 mt-2 mb-2 font-semibold sm:text-sm lg:text-xl">
                   Shop URL:{" "}
                   <span className="font-normal">
                     <a
@@ -291,12 +291,12 @@ const HealthPlansDetails = () => {
                   </span>
                 </p>
               </div>
-              <div className="flex-auto">
+              <div className="">
                 <p className="pt-1 text-xl font-semibold">Product Overview</p>
                 <div className="my-1 mr-8">
                   <hr />
                 </div>
-                <p className="text-purp-2 mt-2 mb-2 font-semibold sm:text-sm lg:text-xl">
+                <p className="break-all text-purp-2 mt-2 mb-2 font-semibold sm:text-sm lg:text-xl">
                   Benefit URL:{" "}
                   <span className="font-normal">
                     <a
@@ -309,7 +309,7 @@ const HealthPlansDetails = () => {
                     </a>
                   </span>
                 </p>
-                <p className="text-purp-2 mt-2 mb-2 font-semibold sm:text-sm lg:text-xl">
+                <p className="break-all text-purp-2 mt-2 mb-2 font-semibold sm:text-sm lg:text-xl">
                   Brochure URL:{" "}
                   <span className="font-normal">
                     <a
@@ -322,7 +322,7 @@ const HealthPlansDetails = () => {
                     </a>
                   </span>
                 </p>
-                <p className="text-purp-2 mt-2 mb-2 font-semibold sm:text-sm lg:text-xl">
+                <p className="break-all text-purp-2 mt-2 mb-2 font-semibold sm:text-sm lg:text-xl">
                   Formulary URL:{" "}
                   <span className="font-normal">
                     <a
