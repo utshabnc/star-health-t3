@@ -13,7 +13,7 @@ const InfoSection = ({
   linkable = false,
 }: {
   items: {
-    label: string;
+    label: string | string[];
     img?: StaticImageData;
     linkparam?: string;
     count?: string;
@@ -63,7 +63,11 @@ const InfoSection = ({
                   >
                     <Image
                       src={item.img}
-                      alt={item.label}
+                      alt={
+                        typeof item.label === "string"
+                          ? item.label
+                          : item.label.join(" ")
+                      }
                       className=""
                       style={{ height: 185, width: 185, objectFit: "contain" }}
                     />
@@ -71,7 +75,11 @@ const InfoSection = ({
                 ) : (
                   <Image
                     src={item.img}
-                    alt={item.label}
+                    alt={
+                      typeof item.label === "string"
+                        ? item.label
+                        : item.label.join(" ")
+                    }
                     className=""
                     style={{ height: 185, width: 185, objectFit: "contain" }}
                   />
@@ -111,7 +119,7 @@ const InfoSection = ({
                 }}
               >
                 <p
-                  className={`justify-center pb-5 text-center text-xs font-semibold capitalize lg:text-lg ${
+                  className={`justify-center pb-10 text-center text-xs font-semibold capitalize lg:text-lg ${
                     "text-" + textColor ?? "text-violet-700"
                   }          ${itemTextSpacing && "mt-0"}`}
                 >
@@ -120,11 +128,13 @@ const InfoSection = ({
               </Link>
             ) : (
               <p
-                className={`justify-center pb-5 text-center text-xs font-semibold capitalize lg:text-lg ${
+                className={`justify-center pb-10 text-center text-xs font-semibold capitalize lg:text-lg ${
                   "text-" + textColor ?? "text-violet-700"
                 }          ${itemTextSpacing && "mt-0"}`}
               >
-                {item.label}
+                {typeof item.label === "string"
+                  ? item.label
+                  : item.label.map((line, idx) => <p key={idx}>{line}</p>)}
               </p>
             )}
           </div>

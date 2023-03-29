@@ -57,8 +57,12 @@ import Map from "../components/Map";
 const features = [
   { label: "Data Analytics", img: data_analytics },
   { label: "Healthcare Data", img: healthcare },
+  /* {
+    label: "Proprietary Insights &\n Clinical intelligence",
+    img: insights,
+  }, */
   {
-    label: "Proprietary Insights & Clinical intelligence",
+    label: ["Proprietary Insights &", "Clinical intelligence"],
     img: insights,
   },
 ];
