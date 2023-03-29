@@ -142,20 +142,10 @@ export default function Home() {
           </button>
         </div>
         <div className="mx-auto mt-16 flex w-fit items-center justify-center gap-10 rounded-xl bg-white px-10">
-          <Image
-            src="/logos/open-payments.png"
-            alt=""
-            width={128}
-            height={128}
-          />
-          <Image src="/logos/fda.png" alt="" width={128} height={128} />
-          <Image src="/logos/cms.png" alt="" width={128} height={128} />
-          <Image
-            src="/logos/clinical-trials.png"
-            alt=""
-            width={128}
-            height={128}
-          />
+          <Image src={openPayments} alt="" width={128} height={128} />
+          <Image src={fda} alt="" width={128} height={128} />
+          <Image src={cms} alt="" width={128} height={128} />
+          <Image src={clinicalTrials} alt="" width={128} height={128} />
         </div>
       </div>
       {/* <Map /> */}
