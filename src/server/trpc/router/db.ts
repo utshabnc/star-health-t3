@@ -3,7 +3,7 @@ import { router, publicProcedure } from "../trpc";
 import _ from "lodash";
 import type { inferRouterOutputs } from "@trpc/server";
 import type { AppRouter } from "./_app";
-import { Doctor, Prisma, Review } from "@prisma/client";
+import { Doctor, Payment, Prisma, Product, Review } from "@prisma/client";
 import { filterDuplicateObjArr, filterDuplicates } from "../../../utils";
 import { useSession } from "next-auth/react";
 
@@ -243,7 +243,7 @@ export const db = router({
       const totalAmount = _.round(_.sum(payments.map((p) => p.amount)), 2);
 
       const topProducts = _(payments)
-        .groupBy("product.name")
+        .groupBy(p => p.product.name)
         .map((pmts, productName) => ({
           productName,
           amount: _.round(_.sumBy(pmts, "amount"), 2),
@@ -547,7 +547,7 @@ export const db = router({
       const totalAmount = _.round(_.sum(payments.map((p) => p.amount)), 2);
 
       const topDoctors = _(payments)
-        .groupBy("doctor.lastName")
+        .groupBy(d => d.doctor.firstName)
         .map((pmts, doctorName) => ({
           doctorName,
           amount: _.round(_.sumBy(pmts, "amount"), 2),
@@ -557,7 +557,7 @@ export const db = router({
         .value()
 
       const topManufacturers = _(payments)
-        .groupBy("manufacturer.name")
+        .groupBy(m => m.manufacturer.name)
         .map((pmts, manufacturerName) => ({
           manufacturerName,
           amount: _.round(_.sumBy(pmts, "amount"), 2),
