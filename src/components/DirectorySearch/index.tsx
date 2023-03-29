@@ -7,7 +7,7 @@ export default function DirectorySearch({search, setSearch}: {search: string, se
 
   const { query: querySearch } = useRouter();
   const { data: searchResults, refetch: fetchSearchResults } = trpc.db.search.useQuery(search ?? "", { enabled: false });
-  console.log(searchResults);
+  // console.log(searchResults);
 
 
   return (

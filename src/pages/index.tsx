@@ -107,6 +107,9 @@ const dataDir = [
 ];
 
 export default function Home() {
+  const [drugType, setDrugType] = useState<string>();
+  const { data: allStates } = trpc.db.allStates.useQuery({ drugType });
+  //   console.log(data)
   const FirstSection = () => (
     <div className="mx-10 flex items-center justify-center pb-20 pt-10 sm:flex-row">
       <div className="flex flex-col sm:w-[50%]">

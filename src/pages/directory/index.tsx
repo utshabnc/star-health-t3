@@ -9,7 +9,7 @@ import { AiOutlineLoading3Quarters } from "react-icons/ai/index";
 
 import type { Observable } from "rxjs";
 import { forkJoin } from "rxjs";
-import { finalize, tap } from "rxjs/operators";
+import { finalize, tap, catchError } from "rxjs/operators";
 import { Tab } from "../../utils/Enums/Tab.enum";
 import ClinicalTrialsComponent from "../../components/ClinicalTrials";
 import {
@@ -32,6 +32,12 @@ import cms from "../../assets/logos/cms.png";
 import openPayments from "../../assets/logos/open-payments.png";
 import clinicalTrials from "../../assets/logos/clinical-trials.png";
 import Image from "next/image";
+import {
+  getHealthPlans,
+  searchLocationByZipcode,
+} from "../../components/HealthPlans/httpsRequests";
+import HealthPlansFilters from "../../components/HealthPlans/HealthPlansFilters";
+import HealthPlansList from "../../components/HealthPlans/HealthPlansList";
 
 interface PriceFilter {
   min: number;
@@ -101,6 +107,11 @@ export default function Directory() {
     drugRoute: filterParams.drugRoute,
     // name: filterParams.name
   });
+  const [zipcode, setZipcode] = useState<string>("");
+  const [healthPlansData, setHealthPlansData] = useState<Array<any>>();
+  const [displayHealthPlansData, setDisplayHealthPlansData] =
+    useState<Array<any>>();
+  const [healthPlansDataError, setHealthPlansDataError] = useState<string>("");
   const [search, setSearch] = useState<string>();
   const [selectedTab, setSelectedTab] = useState<Tab>(Tab.Transactions);
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
@@ -240,7 +251,11 @@ export default function Directory() {
   useEffect(() => {
     let searchExpr = "";
     if (clinicalTrialSearchKeywordExpr.length > 1) {
-      searchExpr = `${clinicalTrialSearchKeywordExpr} AND ${clinicalTrialSearchExpr}`;
+      if (clinicalTrialSearchExpr.length > 1) {
+        searchExpr = `${clinicalTrialSearchKeywordExpr} AND ${clinicalTrialSearchExpr}`;
+      } else {
+        searchExpr = clinicalTrialSearchKeywordExpr;
+      }
     } else {
       searchExpr = clinicalTrialSearchExpr;
     }
@@ -261,6 +276,49 @@ export default function Directory() {
   );
 
   useEffect(() => {
+    if (zipcode.length === 5) {
+      setHealthPlansDataError("");
+      setIsProcessing(true);
+      searchLocationByZipcode(zipcode)
+        .pipe(
+          catchError((error) => {
+            console.error("Error fetching searchStateByZipcode data:", error);
+            return [];
+          })
+        )
+        .pipe(finalize(() => setIsProcessing(false)))
+        .subscribe((resp: any) => {
+          // console.log(resp?.response?.counties[0], ">>>");
+          if (!resp?.response?.counties.length) {
+            setHealthPlansDataError("does not exist");
+            return [];
+          }
+
+          const { fips, state, zipcode } = resp?.response?.counties[0];
+          getHealthPlans(fips, state, zipcode)
+            .pipe(
+              catchError((err) => {
+                setHealthPlansDataError(err?.response?.message);
+                return [];
+              })
+            )
+            .subscribe((resp: any) => {
+              if (resp?.status == 200) {
+                setHealthPlansData(resp?.response?.plans);
+                setDisplayHealthPlansData(resp?.response?.plans);
+              }
+            });
+        });
+    }
+
+    // reset if no zipcode was entered
+    if (zipcode.length === 0) {
+      setHealthPlansData(undefined);
+      setDisplayHealthPlansData(undefined);
+    }
+  }, [zipcode]);
+
+  useEffect(() => {
     debouncedSearch(filterParams.name ?? "");
   }, [
     filterParams.name,
@@ -268,6 +326,7 @@ export default function Directory() {
     filterParams.drugManufacturer,
     filterParams.drugRoute,
     filterParams.drugType,
+    debouncedSearch,
   ]);
 
   const handleMinPrice = (e: any) => {
@@ -585,52 +644,116 @@ export default function Directory() {
                 </button>
 
                 {/* insurance plans tab goes here */}
+                <button
+                  onClick={() => {
+                    setSelectedTab(Tab.Plans);
+                    setFilterParams((prev) => {
+                      return {
+                        ...prev,
+                        subject: "plans",
+                        cursor: "",
+                      };
+                    });
+                    setFilterParams((prev) => {
+                      return {
+                        ...prev,
+                        name: "",
+                      };
+                    });
+                    setHealthPlansData(undefined);
+                    setDisplayHealthPlansData(undefined);
+                    setZipcode("");
+                    // searchLocationByZipcode(zipcode)
+                    //   .pipe(
+                    //     catchError((error) => {
+                    //       console.error(
+                    //         "Error fetching searchStateByZipcode data:",
+                    //         error
+                    //       );
+                    //       return [];
+                    //     })
+                    //   )
+                    //   .pipe(finalize(() => setIsProcessing(false)))
+                    //   .subscribe((resp: any) => {
+                    //     const { fips, state, zipcode } =
+                    //       resp?.response?.counties[0];
+                    //     getHealthPlans(fips, state, zipcode).subscribe(
+                    //       (resp: any) => {
+                    //         if (resp?.status == 200) {
+                    //           setHealthPlansData(resp?.response?.plans);
+                    //           setDisplayHealthPlansData(resp?.response?.plans);
+                    //         }
+                    //       }
+                    //     );
+                    //   });
+                  }}
+                  className={`border-b-2 hover:border-zinc-500 ${
+                    selectedTab === Tab.Plans
+                      ? "border-violet-600"
+                      : "border-zinc-200"
+                  }`}
+                >
+                  Insurance
+                </button>
               </div>
             </div>
             <div className="my-1">
               <hr />
             </div>
-            {selectedTab === Tab.ClinicalTrials ? (
-              <>
-                <div className="relative">
-                  <ClinicalTrialsFilters
-                    Gender={clinicalTrialGenderFilters}
-                    HealthyVolunteers={clinicalTrialHealthyVolunteersFilters}
-                    MinimumAge={clinicalTrialMinimumAgeFilters}
-                    MaximumAge={clinicalTrialMaximumAgeFilters}
-                    OverallStatus={clinicalTrialOverallStatusFilters}
-                    OnSearchExprChange={(expr: string) => {
-                      setClinicalTrialSearchExpr(expr);
+            {selectedTab === Tab.ClinicalTrials && (
+              <div className="relative">
+                <ClinicalTrialsFilters
+                  Gender={clinicalTrialGenderFilters}
+                  HealthyVolunteers={clinicalTrialHealthyVolunteersFilters}
+                  MinimumAge={clinicalTrialMinimumAgeFilters}
+                  MaximumAge={clinicalTrialMaximumAgeFilters}
+                  OverallStatus={clinicalTrialOverallStatusFilters}
+                  OnSearchExprChange={(expr: string) => {
+                    setClinicalTrialSearchExpr(expr);
+                  }}
+                />
+                <div className="my-1">
+                  <hr />
+                </div>
+                <p className="p-1 text-xs font-semibold text-violet-900">
+                  Search for clinical trials
+                </p>
+                <div className="flex w-[100%] items-center gap-3">
+                  <input
+                    type="text"
+                    placeholder={`Search`}
+                    className={`
+                          my-2 mx-1 w-[30%] cursor-pointer rounded-lg border border-violet-900 bg-violet-100 p-1 text-slate-900 placeholder:text-violet-800 hover:bg-violet-300 hover:text-violet-900`}
+                    value={clinicalTrialSearchKeywordExpr}
+                    onChange={(e) => {
+                      setClinicalTrialSearchKeywordExpr(e.target.value);
                     }}
                   />
-                  <div className="my-1">
-                    <hr />
-                  </div>
-                  <p className="p-1 text-xs font-semibold text-violet-900">
-                    Search for clinical trials
-                  </p>
-                  <div className="flex w-[100%] items-center gap-3">
-                    <input
-                      type="text"
-                      placeholder={`Search`}
-                      className={`
-                              my-2 mx-1 w-[30%] cursor-pointer rounded-lg border border-violet-900 bg-violet-100 p-1 text-slate-900 placeholder:text-violet-800 hover:bg-violet-300 hover:text-violet-900`}
-                      value={clinicalTrialSearchKeywordExpr}
-                      onChange={(e) => {
-                        setClinicalTrialSearchKeywordExpr(e.target.value);
-                      }}
-                    />
-                  </div>
-                  <Image
-                    src={clinicalTrials}
-                    alt=""
-                    width={128}
-                    height={128}
-                    className="absolute -bottom-10 right-0 object-contain"
-                  />
                 </div>
-              </>
-            ) : (
+                <Image
+                  src={clinicalTrials}
+                  alt=""
+                  width={128}
+                  height={128}
+                  className="absolute -bottom-10 right-0 object-contain"
+                />
+              </div>
+            )}
+            {selectedTab == Tab.Plans && (
+              <div>
+                <HealthPlansFilters
+                  params={{
+                    zipcode,
+                    setZipcode,
+                    healthPlansDataError,
+                    healthPlansData,
+                    setHealthPlansData,
+                    setDisplayHealthPlansData,
+                  }}
+                />
+              </div>
+            )}
+            {selectedTab !== Tab.ClinicalTrials && selectedTab !== Tab.Plans && (
               <>
                 <Filters
                   search={search}
@@ -768,16 +891,21 @@ export default function Directory() {
         </div>
         <div className="flex h-[90%] w-full justify-center">
           <div className="ml-5 flex min-h-[100%] w-[95%] flex-col overflow-scroll p-1">
-            {selectedTab === Tab.ClinicalTrials ? (
+            {selectedTab === Tab.ClinicalTrials && (
               <ClinicalTrialsComponent data={clinicalTrialsData} />
-            ) : (
-              <DirectoryCards
-                search={search as string}
-                searchResults={searchResults}
-                filterParams={filterParams}
-                data={data}
-              />
             )}
+            {selectedTab === Tab.Plans && (
+              <HealthPlansList plans={displayHealthPlansData} />
+            )}
+            {selectedTab !== Tab.ClinicalTrials &&
+              selectedTab !== Tab.Plans && (
+                <DirectoryCards
+                  search={search as string}
+                  searchResults={searchResults}
+                  filterParams={filterParams}
+                  data={data}
+                />
+              )}
           </div>
         </div>
       </div>

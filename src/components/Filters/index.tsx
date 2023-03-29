@@ -20,10 +20,10 @@ export const formatSpecialties = (str: string) => {
 export default function Filters({data, filterParams, setFilterParams, search, setSearch }: {data: any, filterParams: any, setFilterParams: any, search: string | undefined, setSearch: Dispatch<SetStateAction<string | undefined>>}) {  
     
     const {data: listData, isLoading} = trpc.db.nameList.useQuery()
-    console.log(listData);
+    // console.log(data,">>>>>>>>>");
     const [price, setPrice] = useState<number>(1000)
-    console.log(price)
-    console.log(data.manufacturerNames)
+    // console.log(price)
+    // console.log(data.manufacturerNames)
     // const filterList = (arr: any[]) => {
     //     if(arr){
     //         if(filterParams.doctorFilter || filterParams.manufacturerFilter || filterParams.productFilter){
@@ -113,7 +113,6 @@ export default function Filters({data, filterParams, setFilterParams, search, se
                                 <option key={index} value={item}>{item.charAt(0).toUpperCase() + item.slice(1, item.length).toLowerCase()}</option>
                             ))}
                         </select>}
-                        
                         {data && data?.zipCodes && <select value={filterParams.zipCode} onChange={(e) => {setFilterParams((prev: FilterParams) => {
                             return {
                                 ...prev,
@@ -174,7 +173,7 @@ export default function Filters({data, filterParams, setFilterParams, search, se
                         </select>}
                         {/* fix bug of e.target.value console logging out as [onject Object] rather than its actual value*/}
                         {data && data?.payments && listData?.doctorNames && <select onChange={(e) => {
-                            console.log("val", e.target.value);
+                            // console.log("val", e.target.value);
                             
                             setFilterParams((prev: FilterParams) => {
                                 return {
@@ -237,7 +236,7 @@ export default function Filters({data, filterParams, setFilterParams, search, se
                         </select>}
 
                         {data && data?.drugs && <select onChange={(e) => {
-                            console.log(e.target.value)
+                            // console.log(e.target.value)
                             setFilterParams((prev: FilterParams) => {
                                 return {
                                     ...prev,
@@ -252,9 +251,8 @@ export default function Filters({data, filterParams, setFilterParams, search, se
                                 return <option key={item.id} value={item.name}>{item.name === "NULL" ? "" : item.name}</option>
                                 })}
                         </select>}
-
                         {data && data?.drugs && <select onChange={(e) => {
-                            console.log(e.target.value)
+                            // console.log(e.target.value)
                             setFilterParams((prev: FilterParams) => {
                                 return {
                                     ...prev,
@@ -269,9 +267,8 @@ export default function Filters({data, filterParams, setFilterParams, search, se
                                 <option key={item.id} value={item.name}>{item.name === "NULL" ? "" : item.name}</option>
                             ))}
                         </select>}
-
                         {data && data?.drugs && <select onChange={(e) => {
-                            console.log(e.target.value)
+                            // console.log(e.target.value)
                             setFilterParams((prev: FilterParams) => {
                                 return {
                                     ...prev,

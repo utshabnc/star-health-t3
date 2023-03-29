@@ -3,7 +3,7 @@ import { router, publicProcedure } from "../trpc";
 import _ from "lodash";
 import type { inferRouterOutputs } from "@trpc/server";
 import type { AppRouter } from "./_app";
-import { Doctor, Prisma, Review } from "@prisma/client";
+import { Doctor, Payment, Prisma, Product, Review } from "@prisma/client";
 import { filterDuplicateObjArr, filterDuplicates } from "../../../utils";
 import { useSession } from "next-auth/react";
 
@@ -243,7 +243,7 @@ export const db = router({
       const totalAmount = _.round(_.sum(payments.map((p) => p.amount)), 2);
 
       const topProducts = _(payments)
-        .groupBy("product.name")
+        .groupBy(p => p.product.name)
         .map((pmts, productName) => ({
           productName,
           amount: _.round(_.sumBy(pmts, "amount"), 2),
@@ -547,7 +547,7 @@ export const db = router({
       const totalAmount = _.round(_.sum(payments.map((p) => p.amount)), 2);
 
       const topDoctors = _(payments)
-        .groupBy("doctor.lastName")
+        .groupBy(d => d.doctor.firstName)
         .map((pmts, doctorName) => ({
           doctorName,
           amount: _.round(_.sumBy(pmts, "amount"), 2),
@@ -557,7 +557,7 @@ export const db = router({
         .value()
 
       const topManufacturers = _(payments)
-        .groupBy("manufacturer.name")
+        .groupBy(m => m.manufacturer.name)
         .map((pmts, manufacturerName) => ({
           manufacturerName,
           amount: _.round(_.sumBy(pmts, "amount"), 2),
@@ -581,7 +581,7 @@ export const db = router({
   directory: publicProcedure
     .input(directoryInput)
     .query(async ({ctx: {prisma}, input}) => {
-      console.log(input.name?.split(" "));
+      // console.log(input.name?.split(" "));
       
 
       if(input.subject?.toLowerCase().trim() === "doctors"){
@@ -589,7 +589,7 @@ export const db = router({
         let doctors: any = []
 
         if(names && names?.length === 1) {
-          console.log("HITTT")
+          // console.log("HITTT")
           doctors = await prisma.doctor.findMany({
             where: {
               AND: [
@@ -901,8 +901,8 @@ export const db = router({
       }
 
       if (input.subject?.toLowerCase() === 'drugs') {
-        console.log('hello input')
-        console.log(input)
+        // console.log('hello input')
+        // console.log(input)
         let drugs = []
         if (input.name) {
           drugs = await prisma.drugs.findMany({
@@ -998,14 +998,14 @@ export const db = router({
           drugs = drugs.filter(drug => drug?.brand_name?.toLowerCase()?.includes(input?.name?.toLowerCase() || ''))
         }
       
-        console.log(drugs.length)
+        // console.log(drugs.length)
         let manufacturerNames = drugs.map(item => {
           return {
             id: item.id,
             name: item?.manufacturer_name
           }
         })
-        console.log(manufacturerNames.length)
+        // console.log(manufacturerNames.length)
         manufacturerNames = manufacturerNames.filter(manu => manu?.name)
         manufacturerNames = manufacturerNames.sort()
 
