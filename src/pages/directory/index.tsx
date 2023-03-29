@@ -634,13 +634,13 @@ export default function Directory() {
                   onClick={(e) => {
                     handleTabClick(Tab.Products, "products");
                   }}
-                  className={`border-b-2 hover:border-zinc-500 ${
+                  className={`w-max border-b-2 hover:border-zinc-500 ${
                     selectedTab === Tab.Products
                       ? "border-violet-600"
                       : "border-zinc-200"
                   }`}
                 >
-                  Medical Devices
+                  <span>Medical</span> <span>Devices</span>
                 </button>
 
                 {/* insurance plans tab goes here */}

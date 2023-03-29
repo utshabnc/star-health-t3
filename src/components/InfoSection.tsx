@@ -111,7 +111,7 @@ const InfoSection = ({
                 }}
               >
                 <p
-                  className={`justify-center text-xs font-semibold capitalize lg:text-lg ${
+                  className={`justify-center pb-5 text-center text-xs font-semibold capitalize lg:text-lg ${
                     "text-" + textColor ?? "text-violet-700"
                   }          ${itemTextSpacing && "mt-0"}`}
                 >
@@ -120,7 +120,7 @@ const InfoSection = ({
               </Link>
             ) : (
               <p
-                className={`justify-center text-xs font-semibold capitalize lg:text-lg ${
+                className={`justify-center pb-5 text-center text-xs font-semibold capitalize lg:text-lg ${
                   "text-" + textColor ?? "text-violet-700"
                 }          ${itemTextSpacing && "mt-0"}`}
               >
