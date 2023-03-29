@@ -199,7 +199,11 @@ export default function Directory() {
   useEffect(() => {
     let searchExpr = "";
     if (clinicalTrialSearchKeywordExpr.length > 1) {
-      searchExpr = `${clinicalTrialSearchKeywordExpr} AND ${clinicalTrialSearchExpr}`;
+      if (clinicalTrialSearchExpr.length > 1) {
+        searchExpr = `${clinicalTrialSearchKeywordExpr} AND ${clinicalTrialSearchExpr}`;
+      } else {
+        searchExpr = clinicalTrialSearchKeywordExpr;
+      }
     } else {
       searchExpr = clinicalTrialSearchExpr;
     }
@@ -433,8 +437,8 @@ export default function Directory() {
                   (filterParams.subject === "transactions" ||
                     filterParams.name !== "")) ||
                   isProcessing) && (
-                  <AiOutlineLoading3Quarters className="spinner font-semibold text-violet-600" />
-                )}
+                    <AiOutlineLoading3Quarters className="spinner font-semibold text-violet-600" />
+                  )}
               </div>
               <div className="flex gap-2">
                 <button
@@ -454,11 +458,10 @@ export default function Directory() {
                       };
                     });
                   }}
-                  className={`border-b-2 hover:border-zinc-500 ${
-                    selectedTab === Tab.Transactions
-                      ? "border-violet-600"
-                      : "border-zinc-200"
-                  }`}
+                  className={`border-b-2 hover:border-zinc-500 ${selectedTab === Tab.Transactions
+                    ? "border-violet-600"
+                    : "border-zinc-200"
+                    }`}
                 >
                   Transactions
                 </button>
@@ -479,11 +482,10 @@ export default function Directory() {
                       };
                     });
                   }}
-                  className={`border-b-2 hover:border-zinc-500 ${
-                    selectedTab === Tab.Manufacturers
-                      ? "border-violet-600"
-                      : "border-zinc-200"
-                  }`}
+                  className={`border-b-2 hover:border-zinc-500 ${selectedTab === Tab.Manufacturers
+                    ? "border-violet-600"
+                    : "border-zinc-200"
+                    }`}
                 >
                   Manufacturers
                 </button>
@@ -504,11 +506,10 @@ export default function Directory() {
                       };
                     });
                   }}
-                  className={`border-b-2 hover:border-zinc-500 ${
-                    selectedTab === Tab.Doctors
-                      ? "border-violet-600"
-                      : "border-zinc-200"
-                  }`}
+                  className={`border-b-2 hover:border-zinc-500 ${selectedTab === Tab.Doctors
+                    ? "border-violet-600"
+                    : "border-zinc-200"
+                    }`}
                 >
                   Doctors
                 </button>
@@ -529,11 +530,10 @@ export default function Directory() {
                       };
                     });
                   }}
-                  className={`border-b-2 hover:border-zinc-500 ${
-                    selectedTab === Tab.Products
-                      ? "border-violet-600"
-                      : "border-zinc-200"
-                  }`}
+                  className={`border-b-2 hover:border-zinc-500 ${selectedTab === Tab.Products
+                    ? "border-violet-600"
+                    : "border-zinc-200"
+                    }`}
                 >
                   Products
                 </button>
@@ -554,11 +554,10 @@ export default function Directory() {
                       };
                     });
                   }}
-                  className={`border-b-2 hover:border-zinc-500 ${
-                    selectedTab === Tab.Drugs
-                      ? "border-violet-600"
-                      : "border-zinc-200"
-                  }`}
+                  className={`border-b-2 hover:border-zinc-500 ${selectedTab === Tab.Drugs
+                    ? "border-violet-600"
+                    : "border-zinc-200"
+                    }`}
                 >
                   Drugs
                 </button>
@@ -633,11 +632,10 @@ export default function Directory() {
                       .pipe(finalize(() => setIsProcessing(false)))
                       .subscribe();
                   }}
-                  className={`border-b-2 hover:border-zinc-500 ${
-                    selectedTab === Tab.ClinicalTrials
-                      ? "border-violet-600"
-                      : "border-zinc-200"
-                  }`}
+                  className={`border-b-2 hover:border-zinc-500 ${selectedTab === Tab.ClinicalTrials
+                    ? "border-violet-600"
+                    : "border-zinc-200"
+                    }`}
                 >
                   Clinical Trials
                 </button>
@@ -684,11 +682,10 @@ export default function Directory() {
                     //     );
                     //   });
                   }}
-                  className={`border-b-2 hover:border-zinc-500 ${
-                    selectedTab === Tab.Plans
-                      ? "border-violet-600"
-                      : "border-zinc-200"
-                  }`}
+                  className={`border-b-2 hover:border-zinc-500 ${selectedTab === Tab.Plans
+                    ? "border-violet-600"
+                    : "border-zinc-200"
+                    }`}
                 >
                   Insurance
                 </button>
@@ -755,11 +752,9 @@ export default function Directory() {
                 {"data" && (
                   <>
                     <div className="">
-                      <p className="p-1 text-xs font-semibold text-violet-900">{`Search for ${
-                        filterParams.subject
-                      } by ${
-                        filterParams.subject === "payment" ? "product" : "name"
-                      }`}</p>
+                      <p className="p-1 text-xs font-semibold text-violet-900">{`Search for ${filterParams.subject
+                        } by ${filterParams.subject === "payment" ? "product" : "name"
+                        }`}</p>
                       <div className="flex w-[100%] items-center gap-3">
                         <input
                           type="text"

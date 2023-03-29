@@ -29,7 +29,7 @@ const ClinicalTrialDetails = () => {
 
   const SummaryJSX = clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.DescriptionModule?.BriefSummary ?
     <div className="text-purp-5 pt-1 sm:text-xs lg:text-lg whitespace-pre-wrap">
-      {clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.DescriptionModule.BriefSummary || '-'}
+      {clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.DescriptionModule?.BriefSummary || '-'}
     </div> :
     <div>-</div>;
 
@@ -37,7 +37,7 @@ const ClinicalTrialDetails = () => {
     clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.DescriptionModule ?
       <div className="flex-col">
         <div className="whitespace-pre-wrap text-purp-5 pt-1 sm:text-xs lg:text-lg">
-          {clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.DescriptionModule.DetailedDescription || '-'}
+          {clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.DescriptionModule?.DetailedDescription || '-'}
         </div>
       </div> :
       <div>-</div>;
@@ -46,13 +46,13 @@ const ClinicalTrialDetails = () => {
     clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.EligibilityModule ?
       <div className="flex flex-col whitespace-pre-wrap text-purp-5 pt-1 sm:text-xs lg:text-lg">
         <div className="mb-2 flex flex-col">
-          <div>Gender: {clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.EligibilityModule.Gender || '-'}</div>
-          <div>Healthy Volunteers: {clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.EligibilityModule.HealthyVolunteers || '-'}</div>
-          <div>Min Age: {clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.EligibilityModule.MinimumAge || '-'}</div>
-          <div>Min Age: {clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.EligibilityModule.MaximumAge || '-'}</div>
+          <div>Gender: {clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.EligibilityModule?.Gender || '-'}</div>
+          <div>Healthy Volunteers: {clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.EligibilityModule?.HealthyVolunteers || '-'}</div>
+          <div>Min Age: {clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.EligibilityModule?.MinimumAge || '-'}</div>
+          <div>Min Age: {clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.EligibilityModule?.MaximumAge || '-'}</div>
         </div>
         <div>
-          {clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.EligibilityModule.EligibilityCriteria || '-'}
+          {clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.EligibilityModule?.EligibilityCriteria || '-'}
         </div>
       </div> :
       <div>-</div>;
@@ -65,7 +65,7 @@ const ClinicalTrialDetails = () => {
         <div><span className="font-semibold">Primary Purpose:</span> {clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.DesignModule.DesignInfo?.DesignPrimaryPurpose || '-'}</div>
         <div><span className="font-semibold">Allocation:</span> {clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.DesignModule.DesignInfo?.DesignAllocation || '-'}</div>
         <div><span className="font-semibold">Intervention Model:</span> {clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.DesignModule.DesignInfo?.DesignInterventionModel || '-'}</div>
-        <div><span className="font-semibold">Masking:</span> {clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.DesignModule.DesignInfo.DesignMaskingInfo?.DesignMasking || '-'}</div>
+        <div><span className="font-semibold">Masking:</span> {clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.DesignModule.DesignInfo?.DesignMaskingInfo?.DesignMasking || '-'}</div>
         <div><span className="font-semibold">Enrollment Count:</span> {clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.DesignModule.EnrollmentInfo?.EnrollmentCount || '-'}</div>
         <div><span className="font-semibold">Enrollment Type:</span> {clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.DesignModule.EnrollmentInfo?.EnrollmentType || '-'}</div>
         <div><span className="font-semibold">Phase:</span> {clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.DesignModule.PhaseList?.Phase.join(', ') || '-'}</div>
@@ -151,7 +151,7 @@ const ClinicalTrialDetails = () => {
             </div>
             <div className="flex flex-col justify-end sm:px-2 lg:px-28">
               <p className="text-2xl font-semibold text-violet-700">
-                {clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.IdentificationModule.BriefTitle || '-'}
+                {clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.IdentificationModule?.BriefTitle || '-'}
               </p>
               <div className="my-1">
                 <hr />
@@ -165,19 +165,19 @@ const ClinicalTrialDetails = () => {
                     <hr />
                   </div>
                   <p className="text-purp-2 font-semibold sm:text-sm lg:text-xl mt-2 mb-2">
-                    Organization: <span className="font-normal">{clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.IdentificationModule.Organization.OrgFullName || '-'}</span>
+                    Organization: <span className="font-normal">{clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.IdentificationModule?.Organization?.OrgFullName || '-'}</span>
                   </p>
                   <p className="text-purp-2 font-semibold sm:text-sm lg:text-xl mt-2 mb-2">
-                    Status: <span className="font-normal">{clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.StatusModule.OverallStatus || '-'}</span>
+                    Status: <span className="font-normal">{clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.StatusModule?.OverallStatus || '-'}</span>
                   </p>
                   <p className="text-purp-2 font-semibold sm:text-sm lg:text-xl mt-2 mb-2">
-                    Start Date: <span className="font-normal">{clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.StatusModule.StartDateStruct.StartDate || '-'}</span>
+                    Start Date: <span className="font-normal">{clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.StatusModule?.StartDateStruct?.StartDate || '-'}</span>
                   </p>
                   <p className="text-purp-2 font-semibold sm:text-sm lg:text-xl mt-2 mb-2">
-                    Completion Date: <span className="font-normal">{clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.StatusModule.PrimaryCompletionDateStruct.PrimaryCompletionDate || '-'}</span>
+                    Completion Date: <span className="font-normal">{clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.StatusModule?.PrimaryCompletionDateStruct?.PrimaryCompletionDate || '-'}</span>
                   </p>
                   <p className="text-purp-2 font-semibold sm:text-sm lg:text-xl mt-2 mb-2">
-                    Completion Date Status: <span className="font-normal">{clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.StatusModule.PrimaryCompletionDateStruct.PrimaryCompletionDateType || '-'}</span>
+                    Completion Date Status: <span className="font-normal">{clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.StatusModule?.PrimaryCompletionDateStruct?.PrimaryCompletionDateType || '-'}</span>
                   </p>
                   <p className="text-purp-2 font-semibold sm:text-sm lg:text-xl mt-2 mb-2">
                     Conditions: {
