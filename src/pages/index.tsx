@@ -73,6 +73,7 @@ const data = [
   { label: "1,000,000+ Doctors", img: doctor },
   { label: "3,000+ Companies", img: manufacturer },
   { label: "$100,000,000+ Transactions", img: transactions },
+  { label: "50 States", img: states, linkparam: "" },
 ];
 
 const partners = [
@@ -85,12 +86,10 @@ const partners = [
   { label: "", img: goodRx }, */
 ];
 
-const understand = [
+/* const understand = [
   { label: "Doctors", img: doctors, linkparam: "doctors" },
   { label: "Companies", img: companies, linkparam: "manufacturers" },
-  { label: "States", img: states, linkparam: "" },
-  { label: "1,500+ Drugs", img: drugs, linkparam: "products" },
-];
+]; */
 
 const dataDir = [
   {
@@ -104,11 +103,7 @@ const dataDir = [
     linkparam: "products",
   },
   { label: "700+ insurance plans", img: insurance, linkparam: "" },
-  {
-    label: "1,500+ transactions",
-    img: payments,
-    linkparam: "transactions",
-  },
+  { label: "1,500+ Drugs", img: drugs, linkparam: "products" },
 ];
 
 export default function Home() {
@@ -191,13 +186,13 @@ export default function Home() {
         boxStyle="bg-white"
         itemTextSpacing={true}
       />
-      <InfoSection
+      {/* <InfoSection
         items={understand}
         textColor="font-custom"
         boxStyle="bg-white"
         itemTextSpacing={true}
         linkable={true}
-      />
+      /> */}
       <InfoSection
         items={dataDir}
         textColor="font-custom"
