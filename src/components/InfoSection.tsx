@@ -94,20 +94,12 @@ const InfoSection = ({
                 }}
               >
                 <div className="group absolute bottom-0 translate-y-[2rem] translate-x-[-2rem]">
-                  {arrowButton ? (
-                    <IoIosArrowDroprightCircle color="#0e1936" size={60} />
-                  ) : (
-                    ""
-                  )}
+                  <IoIosArrowDroprightCircle color="#0e1936" size={60} />
                 </div>
               </Link>
             ) : (
               <div className="group absolute bottom-0 translate-y-[2rem]">
-                {arrowButton ? (
-                  <IoIosArrowDroprightCircle color="#0e1936" size={60} />
-                ) : (
-                  ""
-                )}
+                <IoIosArrowDroprightCircle color="#0e1936" size={60} />
               </div>
             )}
 
