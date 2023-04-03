@@ -902,7 +902,7 @@ export default function Directory() {
           </div>
         </div>
         <div className="flex h-[90%] w-full justify-center relative">
-          {!session?.data?.user && <PayWall/>}
+          <PayWall/>
           
           <div className="ml-5 flex min-h-[100%] w-[95%] flex-col overflow-scroll p-1">
             {selectedTab === Tab.ClinicalTrials && (
