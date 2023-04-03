@@ -38,6 +38,8 @@ import {
 } from "../../components/HealthPlans/httpsRequests";
 import HealthPlansFilters from "../../components/HealthPlans/HealthPlansFilters";
 import HealthPlansList from "../../components/HealthPlans/HealthPlansList";
+import { PayWall } from "../../components/PayWall/PayWall";
+import { useSession } from 'next-auth/react';
 
 interface PriceFilter {
   min: number;
@@ -147,6 +149,7 @@ export default function Directory() {
     Field.NCTId,
     Field.OverallStatus,
   ];
+  const session = useSession();
 
   const {
     data: searchResults,
@@ -898,7 +901,9 @@ export default function Directory() {
             )}
           </div>
         </div>
-        <div className="flex h-[90%] w-full justify-center">
+        <div className="flex h-[90%] w-full justify-center relative">
+          {!session?.data?.user && <PayWall/>}
+          
           <div className="ml-5 flex min-h-[100%] w-[95%] flex-col overflow-scroll p-1">
             {selectedTab === Tab.ClinicalTrials && (
               <ClinicalTrialsComponent data={clinicalTrialsData} />
