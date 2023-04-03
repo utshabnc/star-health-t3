@@ -94,7 +94,7 @@ function Footer() {
 						</Link> */}
 
           <div>
-            <p className="">StarHealth Inc. | All Rights Reserved 2022</p>
+            <p className="">StarHealth Inc. | All Rights Reserved 2023</p>
           </div>
         </div>
       </div>
