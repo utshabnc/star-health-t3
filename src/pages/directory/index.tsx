@@ -740,7 +740,7 @@ export default function Directory() {
               </div>
             )}
             {selectedTab == Tab.Plans && (
-              <div>
+              <div className="flex flex-col items-end">
                 <HealthPlansFilters
                   params={{
                     zipcode,
@@ -751,7 +751,16 @@ export default function Directory() {
                     setDisplayHealthPlansData,
                   }}
                 />
+                
+                <Image
+                  src={cms}
+                  alt=""
+                  width={128}
+                  height={128}
+                  className=" object-contain"
+                />
               </div>
+              
             )}
             {selectedTab !== Tab.ClinicalTrials && selectedTab !== Tab.Plans && (
               <>
