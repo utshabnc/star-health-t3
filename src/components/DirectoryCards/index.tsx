@@ -1,6 +1,6 @@
 import Link from "next/link";
 import React from "react";
-import { formatMoney, formatDate } from "../../utils";
+import { formatMoney, formatDate, capitalizeWords } from "../../utils";
 import type { DirectoryResponse } from "../../server/trpc/router/db";
 import { Manufacturer, ManufacturerSummary, Product } from "@prisma/client";
 import { formatSpecialties } from "../Filters";
@@ -50,7 +50,7 @@ export default function DirectoryCards({
                     <div className="flex flex-row justify-between">
                       <h5 className="text-md mb-2 font-medium text-violet-700 underline">
                         <Link href={`/doctor/${item.id}`}>
-                          {item.firstName} {item.lastName}
+                          {capitalizeWords(`${item.firstName} ${item.lastName}`)}
                         </Link>
                       </h5>
                       <p className="mb-1 text-xs text-gray-600">
@@ -59,15 +59,7 @@ export default function DirectoryCards({
                     </div>
                     <div className="flex flex-row justify-between">
                       <h5 className="text-md mb-2 text-gray-900">
-                        {item.city
-                          .split(" ")
-                          .map(
-                            (word: string, index: number) =>
-                              word.charAt(0).toUpperCase() +
-                              word.slice(1, word.length).toLowerCase() +
-                              " "
-                          )}
-                        , {item.state}
+                        {capitalizeWords(`${item.city}, ${item.state}`)}
                       </h5>
                       <p className="mb-1 text-base text-gray-700"> </p>
                     </div>

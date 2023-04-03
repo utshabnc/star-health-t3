@@ -21,6 +21,18 @@ const formatMoney = (amount: number, decimals = 2) => {
   return formatter.format(amount);
 };
 
+const capitalizeWords = (str: string) => {
+  let capitalized = "";
+
+  str.split(" ").forEach((word: string) => {
+      capitalized += word.charAt(0).toUpperCase() 
+      + word.slice(1, word.length).toLowerCase()
+      + " ";
+    });
+
+  return capitalized.trim();
+};
+
 const formatDate = (date: string, type: string | null) => {
   date = date.replace(/[^0-9 ]/g, '');
   date = date.substring(0, 8)
@@ -116,6 +128,7 @@ export {
   addAlpha,
   colorGradient,
   availableYears,
+  capitalizeWords,
   formatMoney,
   formatNumber,
   formatName,
