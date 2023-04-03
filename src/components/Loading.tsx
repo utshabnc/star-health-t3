@@ -5,10 +5,10 @@ const LoadingStarHealth = () => {
         style={{
           height: "800px",
         }}
-        className="rounded bg-white p-5"
+        className="rounded bg-white p-5 w-screen flex justify-center"
       >
         <div className="flex flex-row">
-          <div className="flex w-11/12 justify-center">
+          <div className="flex justify-center">
             <div className="flex flex-col">
               <p className="p-1 text-2xl font-semibold text-violet-700"></p>
 
