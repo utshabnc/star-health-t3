@@ -21,53 +21,19 @@ type Props = {
 
 const Dropdown = ({ items, label, placeholder, onChange, value }: Props) => {
   return (
-    <div className="flex justify-center">
-      <div className="flex flex-row font-custom text-lg font-semibold text-white">
+    <div className="flex items-center">
+      <div className="flex flex-row font-custom text-lg text-violet-700">
         {label}:&nbsp;
-        <p className="text-white">
-          {value
-            ? items.find((item) => item.value === value)?.label
-            : placeholder}
-        </p>
       </div>
-      <Menu as="div" className="relative text-left">
-        <div>
-          <Menu.Button className="mt-1 ml-1 inline-flex w-full justify-center rounded-md text-sm font-medium text-white">
-            <ChevronDownIcon className="h-5 w-5" aria-hidden="true" />
-          </Menu.Button>
-        </div>
-
-        <Transition
-          as={Fragment}
-          enter="transition ease-out duration-100"
-          enterFrom="transform opacity-0 scale-95"
-          enterTo="transform opacity-100 scale-100"
-          leave="transition ease-in duration-75"
-          leaveFrom="transform opacity-100 scale-100"
-          leaveTo="transform opacity-0 scale-95"
-        >
-          <Menu.Items className="absolute right-0 mt-2 h-56 w-56 origin-top-right divide-y divide-gray-100 overflow-y-auto rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
-            {items.map((item, i) => (
-              <div key={i} className="flex justify-center py-1">
-                <Menu.Item>
-                  {({ active }) => (
-                    <button
-                      value={item.value}
-                      className={classNames(
-                        active ? "bg-gray-100 text-gray-900" : "text-gray-700",
-                        "block w-full overflow-y-auto px-4 py-2 text-sm "
-                      )}
-                      onClick={() => onChange(item.value)}
-                    >
-                      {item.label}
-                    </button>
-                  )}
-                </Menu.Item>
-              </div>
-            ))}
-          </Menu.Items>
-        </Transition>
-      </Menu>
+      <select 
+        onChange={(e) => onChange(e.target.value)} 
+        value={value}
+        className='bg-violet-500 my-2 text-white p-1 rounded-lg mx-1 hover:bg-violet-400 hover:text-violet-900 cursor-pointer' name="state-filter" id="state-filter">
+          <option value={""}>{placeholder}</option>
+          {items.map((item, index) => (
+              <option key={index} value={item.value}>{item.label}</option>
+          ))}
+      </select>
     </div>
   );
 };
