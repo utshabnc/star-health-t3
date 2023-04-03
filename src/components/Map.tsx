@@ -7,6 +7,7 @@ import _ from "lodash";
 import { trpc } from "../utils/trpc";
 import LoadingStarHealth from "./Loading";
 import { Tab } from "../utils/Enums/Tab.enum";
+import { PayWall } from "./PayWall/PayWall";
 
 const Map = () => {
   const [drugType, setDrugType] = useState<string>();
@@ -79,8 +80,9 @@ const Map = () => {
           />
         </div>
       </div>
-      {selectedTab == Tab.Map &&
-        <div className="w-1/2 m-auto">
+      <div className="w-1/2 m-auto relative">
+        <PayWall />
+        {selectedTab == Tab.Map &&
           <UnitedStatesHeatmap
             data={
               allStates
@@ -92,8 +94,8 @@ const Map = () => {
                 })) ?? []
             }
           />
-        </div>
-      }
+        }
+      </div>
     </div>
   );
 };
