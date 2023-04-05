@@ -22,17 +22,22 @@ const formatMoney = (amount: number, decimals = 2) => {
 };
 
 const capitalizeWords = (str: string) => {
-  let capitalized = "";
+  let capitalizedWord = "";
 
-  if (!str) return capitalized;
-  
+  if (!str) return capitalizedWord;
+
   str.split(" ").forEach((word: string) => {
-      capitalized += word.charAt(0).toUpperCase() 
-      + word.slice(1, word.length).toLowerCase()
-      + " ";
-    });
+    // The word OTC should always be uppercase
+    if (word.toUpperCase() == "OTC") {
+      capitalizedWord += "OTC "
+    } else {
+      capitalizedWord += word.charAt(0).toUpperCase()
+        + word.slice(1, word.length).toLowerCase()
+        + " ";
+    }
+  });
 
-  return capitalized.trim();
+  return capitalizedWord.trim();
 };
 
 const formatDate = (date: string, type: string | null) => {
