@@ -13,7 +13,7 @@ const Map = () => {
   const [drugType, setDrugType] = useState<string>();
   const { data: allStates } = trpc.db.allStates.useQuery({ drugType });
   const navigate = useRouter();
-  const [selectedTab, setSelectedTab] = useState<Tab>(Tab.Map);
+  const [selectedTab, setSelectedTab] = useState<Tab>(Tab.PaymentsToDoctors);
 
 
   if (!allStates) {
@@ -49,19 +49,19 @@ const Map = () => {
         <div className="flex w-full flex-col justify-end px-8 pb-10">
           <div className="flex justify-between">
             <p className="flex text-2xl font-semibold text-violet-700">
-              Heatmap of Company Payments to Doctors
+              StarHealth Data Visualization
             </p>
             <div className="flex gap-2">
               {/* Map tab */}
               <button
-                onClick={() => setSelectedTab(Tab.Map)}
+                onClick={() => setSelectedTab(Tab.PaymentsToDoctors)}
                 className={`border-b-2 hover:border-zinc-500 ${
-                  selectedTab === Tab.Map
+                  selectedTab === Tab.PaymentsToDoctors
                     ? "border-violet-600"
                     : "border-zinc-200"
                 }`}
               >
-                Map
+                Company Payments to Doctors
               </button>
             </div>
           </div>
@@ -82,7 +82,7 @@ const Map = () => {
       </div>
       <div className="w-1/2 m-auto relative">
         <PayWall />
-        {selectedTab == Tab.Map &&
+        {selectedTab == Tab.PaymentsToDoctors &&
           <UnitedStatesHeatmap
             data={
               allStates

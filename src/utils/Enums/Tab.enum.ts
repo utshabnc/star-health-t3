@@ -6,5 +6,5 @@ export enum Tab {
   Drugs,
   ClinicalTrials,
   Plans,
-  Map,
+  PaymentsToDoctors,
 }
