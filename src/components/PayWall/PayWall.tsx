@@ -4,7 +4,7 @@ import React from "react";
 export const PayWall = () => {
   const session = useSession();
 
-  if (session?.data?.user) {
+  if (!session?.data?.user) {
     return (<div className="absolute bottom-0 left-0 w-full h-full backdrop-blur-sm flex justify-center items-center">
       {/* Sign in block */}
       <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4 shadow-lg rounded-lg border">
