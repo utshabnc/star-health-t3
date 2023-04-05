@@ -4,6 +4,7 @@ import { formatMoney, formatDate, capitalizeWords } from "../../utils";
 import type { DirectoryResponse } from "../../server/trpc/router/db";
 import { Manufacturer, ManufacturerSummary, Product } from "@prisma/client";
 import { formatSpecialties } from "../Filters";
+import _ from "lodash";
 
 type FilterParams = {
   subject: string;
@@ -59,7 +60,7 @@ export default function DirectoryCards({
                     </div>
                     <div className="flex flex-row justify-between">
                       <h5 className="text-md mb-2 text-gray-900">
-                        {capitalizeWords(`${item.city}, ${item.state}`)}
+                        {capitalizeWords(item.city)}, {item.state}
                       </h5>
                       <p className="mb-1 text-base text-gray-700"> </p>
                     </div>
@@ -330,14 +331,14 @@ export default function DirectoryCards({
                   </div>
                   <div className="flex flex-row justify-between text-sm">
                     <p className="mb-1 text-xs text-violet-400">
-                      product type: {item.product_type}
+                      Product Type: {_.capitalize(item.product_type)}
                     </p>
 
                     <div className="border-gray-300 text-gray-600"></div>
                   </div>
                   <div className="flex flex-row justify-between text-sm">
                     <p className="mb-1 text-xs text-violet-400">
-                      route: {item.route}
+                      Route: {_.capitalize(item.route)}
                     </p>
                   </div>
                 </div>
