@@ -331,14 +331,14 @@ export default function DirectoryCards({
                   </div>
                   <div className="flex flex-row justify-between text-sm">
                     <p className="mb-1 text-xs text-violet-400">
-                      Product Type: {_.capitalize(item.product_type)}
+                      Product Type: {capitalizeWords(item.product_type)}
                     </p>
 
                     <div className="border-gray-300 text-gray-600"></div>
                   </div>
                   <div className="flex flex-row justify-between text-sm">
                     <p className="mb-1 text-xs text-violet-400">
-                      Route: {_.capitalize(item.route)}
+                      Route: {capitalizeWords(item.route)}
                     </p>
                   </div>
                 </div>
