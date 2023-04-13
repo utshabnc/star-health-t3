@@ -1,6 +1,6 @@
 const LoadingStarHealth = () => {
   return (
-    <div className="bgColor">
+    <div className="flex bgColor">
       <div
         style={{
           height: "800px",
