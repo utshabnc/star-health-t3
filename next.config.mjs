@@ -16,5 +16,8 @@ const config = {
   images: {
     domains: ["lh3.googleusercontent.com"],
   },
+  publicRuntimeConfig: {
+    baseUrl: process.env.BASE_URL || "http://localhost:3000",
+  },
 };
 export default config;

@@ -40,6 +40,10 @@ import HealthPlansFilters from "../../components/HealthPlans/HealthPlansFilters"
 import HealthPlansList from "../../components/HealthPlans/HealthPlansList";
 import { PayWall } from "../../components/PayWall/PayWall";
 import { useSession } from 'next-auth/react';
+import { Hospital } from "../../components/Hospitals/Hospital.model";
+import HospitalsComponent from "../../components/Hospitals/Hospitals";
+import LoadingStarHealth from "../../components/Loading";
+import HospitalsFilters from "../../components/Hospitals/HospitalsFilters";
 
 interface PriceFilter {
   min: number;
@@ -113,6 +117,7 @@ export default function Directory() {
   const [healthPlansData, setHealthPlansData] = useState<Array<any>>();
   const [displayHealthPlansData, setDisplayHealthPlansData] =
     useState<Array<any>>();
+  const [ isApiProcessing, setIsApiProcessing ] = useState<boolean>(false);
   const [healthPlansDataError, setHealthPlansDataError] = useState<string>("");
   const [search, setSearch] = useState<string>();
   const [selectedTab, setSelectedTab] = useState<Tab>(Tab.Transactions);
@@ -120,6 +125,7 @@ export default function Directory() {
   const [clinicalTrialsData, setClinicalTrialsData] = useState<
     ClinicalTrialsStudyFieldsResponse<ClinicalTrialsListItem>
   >({} as ClinicalTrialsStudyFieldsResponse<ClinicalTrialsListItem>);
+  const [ hospitalsData, setHospitalsData] = useState<Hospital[]>([] as Hospital[]);
   const [clinicalTrialSearchKeywordExpr, setClinicalTrialSearchKeywordExpr] =
     useState<string>("");
   const [clinicalTrialSearchExpr, setClinicalTrialSearchExpr] =
@@ -207,7 +213,7 @@ export default function Directory() {
   }, []);
 
   const handleTabClick = (tab: Tab, subject: string) => {
-    if (tab !== Tab.ClinicalTrials) {
+    if (tab !== Tab.ClinicalTrials && tab !== Tab.Hospitals) {
       setFilterParams((prev) => {
         return {
           ...prev,
@@ -250,6 +256,27 @@ export default function Directory() {
     }, 1000),
     []
   );
+
+  useEffect(() => {
+    if (selectedTab == Tab.Hospitals) {
+      const fetchHospitals = async () => {
+        try {
+          setIsApiProcessing(true);
+          const response = await fetch('/api/hospitals/getAll');
+          const data = await response.json();
+          setHospitalsData(data.hospitals);
+          setIsApiProcessing(false);
+        } catch (error) {
+          console.log("Hospitals fetch error:" + error)
+          setIsApiProcessing(false);
+        } finally {
+          setIsApiProcessing(false);
+        }
+      };
+      fetchHospitals();
+    }
+
+  }, [selectedTab]);
 
   useEffect(() => {
     let searchExpr = "";
@@ -422,7 +449,7 @@ export default function Directory() {
                   </svg>
                 </button>
               </div>
-
+              {/* Loading Component */}
               <div className="flex w-11/12 justify-center">
                 <div className="flex flex-col">
                   <p className="p-1 text-2xl font-semibold text-violet-700"></p>
@@ -632,6 +659,20 @@ export default function Directory() {
                   Transactions
                 </button>
 
+                {/* Hospitals Tab */}
+                <button
+                  onClick={() => {
+                    handleTabClick(Tab.Hospitals, "hospitals");
+                  }}
+                  className={`border-b-2 hover:border-zinc-500 ${
+                    selectedTab === Tab.Hospitals
+                      ? "border-violet-600"
+                      : "border-zinc-200"
+                  }`}
+                >
+                  Hospitals
+                </button>
+
                 {/* medical devices tab */}
                 <button
                   onClick={(e) => {
@@ -765,7 +806,22 @@ export default function Directory() {
               </div>
               
             )}
-            {selectedTab !== Tab.ClinicalTrials && selectedTab !== Tab.Plans && (
+            {selectedTab == Tab.Hospitals && (
+              <div className="flex flex-col items-end">
+                <HospitalsFilters
+                  params={{ 
+                    hospitalsData,
+                    setHospitalsData,
+                    setIsApiProcessing,
+                  }}
+                />
+                
+              </div>
+              
+            )}
+            {selectedTab !== Tab.ClinicalTrials 
+            && selectedTab !== Tab.Plans 
+            && selectedTab !== Tab.Hospitals && (
               <>
                 <Filters
                   search={search}
@@ -905,14 +961,19 @@ export default function Directory() {
           <PayWall/>
           
           <div className="ml-5 flex min-h-[100%] w-[95%] flex-col overflow-scroll p-1">
+            {isApiProcessing && <LoadingStarHealth />}
             {selectedTab === Tab.ClinicalTrials && (
               <ClinicalTrialsComponent data={clinicalTrialsData} />
             )}
+            {selectedTab === Tab.Hospitals &&
+              <HospitalsComponent data={hospitalsData} />
+            }
             {selectedTab === Tab.Plans && (
               <HealthPlansList plans={displayHealthPlansData} />
             )}
             {selectedTab !== Tab.ClinicalTrials &&
-              selectedTab !== Tab.Plans && (
+              selectedTab !== Tab.Plans && 
+              selectedTab !== Tab.Hospitals && (
                 <DirectoryCards
                   search={search as string}
                   searchResults={searchResults}
@@ -920,6 +981,7 @@ export default function Directory() {
                   data={data}
                 />
               )}
+
           </div>
         </div>
       </div>
