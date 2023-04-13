@@ -44,6 +44,7 @@ import { Hospital } from "../../components/Hospitals/Hospital.model";
 import HospitalsComponent from "../../components/Hospitals/Hospitals";
 import LoadingStarHealth from "../../components/Loading";
 import HospitalsFilters from "../../components/Hospitals/HospitalsFilters";
+import ErrorComponent from "../../components/ErrorComponent";
 
 interface PriceFilter {
   min: number;
@@ -114,6 +115,7 @@ export default function Directory() {
     // name: filterParams.name
   });
   const [zipcode, setZipcode] = useState<string>("");
+  const [error, setError] = useState<any>();
   const [healthPlansData, setHealthPlansData] = useState<Array<any>>();
   const [displayHealthPlansData, setDisplayHealthPlansData] =
     useState<Array<any>>();
@@ -264,11 +266,13 @@ export default function Directory() {
           setIsApiProcessing(true);
           const response = await fetch('/api/hospitals/getAll');
           const data = await response.json();
-          setHospitalsData(data.hospitals);
-          setIsApiProcessing(false);
+          if (response.status != 200) {
+            setError(data);
+          } else {
+            setHospitalsData(data.hospitals);
+          }
         } catch (error) {
-          console.log("Hospitals fetch error:" + error)
-          setIsApiProcessing(false);
+          setError(error);
         } finally {
           setIsApiProcessing(false);
         }
@@ -967,6 +971,9 @@ export default function Directory() {
             )}
             {selectedTab === Tab.Hospitals &&
               <HospitalsComponent data={hospitalsData} />
+            }
+            {selectedTab === Tab.Hospitals && error?.service === "Hospitals" &&
+              <ErrorComponent>{error.msg}</ErrorComponent>
             }
             {selectedTab === Tab.Plans && (
               <HealthPlansList plans={displayHealthPlansData} />

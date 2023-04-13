@@ -1,16 +1,17 @@
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { finalize } from "rxjs";
-import { getClinicalTrialByNCTId } from "../../components/ClinicalTrials/helpers";
-import type { ClinicalTrialsFullStudyResponse } from '../../components/ClinicalTrials/ClinicalTrialsFullStudyResponse.model';
 import ExpansionPanel from "../../components/ExpansionPanel";
-import { MailIcon, OfficeBuildingIcon, PhoneIcon, UserIcon } from '@heroicons/react/solid';
-import { HospitalData } from "../../components/Hospitals/HospitalData.model";
 import LoadingStarHealth from "../../components/Loading";
+import type { HospitalData } from "../../components/Hospitals/HospitalData.model";
+import type { Hospital } from "../../components/Hospitals/Hospital.model";
+import ErrorComponent from "../../components/ErrorComponent";
+
 
 const HospitalDetails = () => {
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
-  const [hospitalData, setHospitalData] = useState<HospitalData[]>();
+  const [hospitalDetails, setHospitalDetails] = useState<HospitalData[]>();
+  const [hospitalData, setHospitalData] = useState<Hospital>();
+  const [error, setError] = useState<any>();
 
   const navigate = useRouter();
   const hospitalId = navigate.query?.hospital_id as string;
@@ -337,17 +338,22 @@ const HospitalDetails = () => {
 
   useEffect(() => {
     if (hospitalId) {
+      const hospitalDataParsed: Hospital = JSON.parse(localStorage.getItem(hospitalId) || '');
+      setHospitalData(hospitalDataParsed);
+
       setIsProcessing(true);
       const fetchHospitalData = async (hospitalId: string) => {
         try {
           setIsProcessing(true);
           const response = await fetch(`/api/hospitals/${hospitalId}`);
           const data = await response.json();
-          setHospitalData(data.hospitalData);
-          setIsProcessing(false);
+          if (response.status != 200) {
+            setError(data);
+          } else {
+            setHospitalDetails(data.hospitalData);
+          }
         } catch (error) {
-          console.log("Hospitals fetch error:" + error)
-          setIsProcessing(false);
+          setError(error);
         } finally {
           setIsProcessing(false);
         }
@@ -365,9 +371,13 @@ const HospitalDetails = () => {
     </div>
   }
 
+  if (error.service === "Hospitals") {
+    return <ErrorComponent>{error.msg}</ErrorComponent>
+  }
+
 
   return (
-    hospitalData && isProcessing ? (
+    !hospitalDetails || isProcessing ? (
       <LoadingStarHealth />
     ) : (
       <>
@@ -376,6 +386,7 @@ const HospitalDetails = () => {
             <div className="flex flex-row">
               <div>
                 <button
+                  title="goBack"
                   onClick={navigate.back}
                   className="ease focus:shadow-outline select-none rounded-md border border-violet-700 bg-violet-700 px-4 py-2 text-white transition duration-500 hover:bg-violet-900 focus:outline-none"
                 >
@@ -398,14 +409,32 @@ const HospitalDetails = () => {
             </div>
             <div className="flex flex-col justify-end sm:px-2 lg:px-28">
               <p className="text-2xl font-semibold text-violet-700">
-                {hospitalData?.at(0)?.data_name}
+                {hospitalDetails?.at(0)?.data_name}
               </p>
 
               <div className="my-1">
                 <hr />
               </div>
+              <div>ID: {hospitalData?.hospital_id}</div>
+              <div className="mt-4 flex flex-row">
+                <div className="pr-10">
+                  <p className="pt-1 text-xl font-semibold">Issuer Overview</p>
+                  <div className="my-1 mr-8"><hr /></div>
+                  <p className="text-purp-2 mt-2 mb-2 font-semibold sm:text-sm lg:text-xl">Name: <span className="font-normal">Ambetter from Superior HealthPlan</span></p>
+                  <p className="text-purp-2 mt-2 mb-2 font-semibold sm:text-sm lg:text-xl">State: <span className="font-normal">TX</span></p>
+                  <p className="break-all text-purp-2 mt-2 mb-2 font-semibold sm:text-sm lg:text-xl">Shop URL: <span className="font-normal" /></p>
+                  <p className="text-purp-2 mt-2 mb-2 font-semibold sm:text-sm lg:text-xl">Toll free: <span className="font-normal">-</span></p>
+                </div>
+                <div className="">
+                  <p className="pt-1 text-xl font-semibold">Product Overview</p>
+                  <div className="my-1 mr-8"><hr /></div>
+                  <p className="break-all text-purp-2 mt-2 mb-2 font-semibold sm:text-sm lg:text-xl">Benefit URL: </p>
+                  <p className="break-all text-purp-2 mt-2 mb-2 font-semibold sm:text-sm lg:text-xl">Brochure URL:</p>
+                  <p className="break-all text-purp-2 mt-2 mb-2 font-semibold sm:text-sm lg:text-xl">Formulary URL: </p>
+                </div>
+              </div>
               <h2 className="text-bold text-lg">Data by fiscal year</h2>
-              {hospitalData?.map((data) => {
+              {hospitalDetails?.map((data) => {
                 if (data) {
                   return (
                     <ExpansionPanel key={`${data.hospital_data_id}`} title={`${data?.fiscal_yr}` || null} content={hospitalContent(data)} />

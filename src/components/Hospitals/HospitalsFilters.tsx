@@ -9,7 +9,7 @@ interface HospitalsFiltersProps {
   params: {
     state?: string;
     name?: string;
-    hospitalsData: Hospital[];
+    hospitalsData?: Hospital[];
     setHospitalsData: Dispatch<SetStateAction<Hospital[]>>;
     setIsApiProcessing: Dispatch<SetStateAction<boolean>>;
   };
@@ -75,11 +75,11 @@ export default function HospitalsFilters({ params }: HospitalsFiltersProps) {
   const [selectedState, setSelectedState] = useState("");
   const [searchStr, setSearchStr] = useState("");
   const [dataIsAvailable, setDataIsAvailable] = useState(false);
-  const [error, setError] = useState<string | unknown>("");
+  const [error, setError] = useState<any>("");
   // const [hospitalIds, setHospitalIds] = useState<string[]>([]);
 
   useEffect(() => {
-    if (hospitalsData.length > 1) {
+    if (hospitalsData && hospitalsData.length > 1) {
       setDataIsAvailable(true);
     }
   }, [hospitalsData])
@@ -182,7 +182,7 @@ export default function HospitalsFilters({ params }: HospitalsFiltersProps) {
 
   const hospitalIds = useMemo(() => {
     if (dataIsAvailable)
-      return hospitalsData.map(hospital => hospital.hospital_id)
+      return hospitalsData?.map(hospital => hospital.hospital_id)
     }, [dataIsAvailable]); 
 
   return (
