@@ -1,6 +1,9 @@
 import { Dispatch, SetStateAction, useMemo} from "react";
 import { useEffect, useState } from "react";
 import type { Hospital } from "./Hospital.model";
+import Image from "next/image";
+
+import cbi from '../../assets/logos/community-benefits.png';
 
 interface HospitalsFiltersProps {
   params: {
@@ -70,6 +73,7 @@ export default function HospitalsFilters({ params }: HospitalsFiltersProps) {
 
   const [cities, setCities] = useState<string[]>([]);
   const [selectedState, setSelectedState] = useState("");
+  const [searchStr, setSearchStr] = useState("");
   const [dataIsAvailable, setDataIsAvailable] = useState(false);
   const [error, setError] = useState<string | unknown>("");
   // const [hospitalIds, setHospitalIds] = useState<string[]>([]);
@@ -79,6 +83,29 @@ export default function HospitalsFilters({ params }: HospitalsFiltersProps) {
       setDataIsAvailable(true);
     }
   }, [hospitalsData])
+
+  useEffect(() => {
+    if (searchStr) {
+      const delayDebounceFn = setTimeout(() => {
+        setIsApiProcessing(true);
+        fetchAllHospitals()
+          .then(allHospitalData => {
+            const matchedHospitals = allHospitalData.filter(hospital =>
+              hospital.name.toLowerCase().includes(searchStr.toLowerCase())
+            );
+  
+            setHospitalsData(matchedHospitals);
+            setIsApiProcessing(false);
+          })
+          .catch(error => {
+            setError(error);
+            setIsApiProcessing(false);
+          })
+      }, 3000)
+
+      return () => clearTimeout(delayDebounceFn)
+    }
+  }, [searchStr])
 
   const fetchDataByState = async (state: string): Promise<Hospital[]> => {
     const response = await fetch(`/api/hospitals/getByState?state=${state}`);
@@ -152,9 +179,6 @@ export default function HospitalsFilters({ params }: HospitalsFiltersProps) {
     }
   };
 
-  // if (hospitalsData.length > 0) {
-  //   setHospitalIds(hospitalsData.map(hospital => hospital.hospital_id));
-  // }
 
   const hospitalIds = useMemo(() => {
     if (dataIsAvailable)
@@ -165,9 +189,9 @@ export default function HospitalsFilters({ params }: HospitalsFiltersProps) {
     <>
       <div className="w-full">
         <div>
-          <div className="flex">
-            <p className="w-[10%] text-lg  text-violet-700">Search by:</p>
-            <div className="wrap-filters flex w-full items-center">
+          <div className="filters flex w-full items-center">
+            <p className="my-2 w-20 text-lg text-violet-700">Filter By:</p>
+            <div className="wrap-filters flex w-full items-center py-2">
               <select
                 title="State"
                 className="my-2 mr-5 w-[20%] cursor-pointer rounded-lg bg-violet-500 p-1 text-white hover:bg-violet-400 hover:text-violet-900"
@@ -214,6 +238,29 @@ export default function HospitalsFilters({ params }: HospitalsFiltersProps) {
                 ))}
               </select>
             </div>
+          </div>
+          <div className="my-1">
+            <hr />
+          </div>
+          <p className="p-1 text-xs font-semibold text-violet-900">
+            Search for hospitals
+          </p>
+          <div className="flex justify-between w-[100%] items-center gap-3">
+            <input
+              type="text"
+              placeholder="Search"
+              className="mx-1 my-2 w-[30%] cursor-pointer rounded-lg border border-violet-900 bg-violet-100 p-1 text-slate-900 placeholder:text-violet-800 hover:bg-violet-300 hover:text-violet-900"
+              value={searchStr}
+              onChange={(e) => setSearchStr(e.target.value)}
+            />
+
+            <Image
+              src={cbi}
+              alt=""
+              width={128}
+              height={128}
+              className="bottom-0 right-0 object-contain"
+            />
           </div>
         </div>
       </div>
