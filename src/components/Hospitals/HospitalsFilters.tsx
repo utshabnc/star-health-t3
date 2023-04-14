@@ -135,7 +135,8 @@ export default function HospitalsFilters({ params }: HospitalsFiltersProps) {
           cities.add(hospital.city);
         }
       }
-      setCities(Array.from(cities));
+      // Sort cities alphabetically
+      setCities(Array.from(cities).sort((a, b) => (a < b ? -1 : 1)));
 
     } catch (error) {
       setIsApiProcessing(false);
