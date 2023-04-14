@@ -2,6 +2,7 @@ import Link from "next/link";
 import type { Hospital } from "./Hospital.model";
 
 export default function HospitalsComponent({ data }: { data: Hospital[] }) {
+
   return (
     <>
       {data?.map((hospital: Hospital, index: number) => {
@@ -12,6 +13,7 @@ export default function HospitalsComponent({ data }: { data: Hospital[] }) {
                 <div className="flex-auto">
                   <h5 className="text-md mb-2 font-medium text-violet-700 underline w-[75%]">
                     <Link
+                      onClick={() => localStorage.setItem(`${hospital?.hospital_id}`, JSON.stringify(hospital))}
                       href={`/hospital?hospital_id=${hospital?.hospital_id || ''}`}
                     >{hospital?.name || '-'}</Link>
                   </h5>
