@@ -16,13 +16,12 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<HospitalRespons
   } catch(error: any) {
     if (error?.type == "invalid-json") { // This error means that the current user reached the limit of requests for the api
       return res.status(503).send({
-        msg: "There was an error fetching hospitals data. If the error persists, contact the administrator.",
+        msg: "Hospital Data is not available -- please check back in 24 hours for an update",
         service: "Hospitals"
       });
     }
     return res.status(400).send({msg: "There was an error"})
   }
-
 };
 
 
