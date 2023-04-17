@@ -1,9 +1,13 @@
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { ChevronDownIcon } from '@heroicons/react/solid';
+import { Menu, Transition } from '@headlessui/react';
+import { Fragment, useEffect, useState } from "react";
 import ExpansionPanel from "../../components/ExpansionPanel";
 import LoadingStarHealth from "../../components/Loading";
 import type { HospitalData } from "../../components/Hospitals/HospitalData.model";
 import ErrorComponent from "../../components/ErrorComponent";
+import type { HospitalDataResponse } from "../api/hospitals/[hospital_id]";
+import { delay } from "../../utils";
 
 enum Section {
   overview = "Overview",
@@ -14,9 +18,14 @@ enum Section {
   incomeMetrics = "Income Metrics",
 }
 
+enum FieldType {
+  currency = "currency"
+}
+
 type Field = {
   code: string,
   description: string;
+  type?: FieldType;
 }
 
 interface Sections {
@@ -29,11 +38,13 @@ interface Sections {
 }
 
 const HospitalDetails = () => {
-  const router = useRouter();
-  const { hospital_id } = router.query;
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
   const [hospitalDetails, setHospitalDetails] = useState<HospitalData[]>();
+  const [currentHospitalDetails, setCurrentHospitalDetails] = useState<HospitalData>();
   const [error, setError] = useState<any>();
+  const [year, setYear] = useState<string | undefined>("");
+  const [availableYears, setAvailableYears] = useState<string[]>([]);
+
 
   const navigate = useRouter();
   const hospitalId = navigate.query?.hospital_id as string;
@@ -43,14 +54,16 @@ const HospitalDetails = () => {
       {
         code: "tot_revenue",
         description: "Total revenue",
+        type: FieldType.currency,
       },
       {
         code: "tot_func_exp",
         description: "Total functional expenses",
+        type: FieldType.currency,
       },
       {
-        code: "hospital_id",
-        description: "Hospital Id",
+        code: "hospital_data_id",
+        description: "Internal hospital data ID",
       },
       {
         code: "data_ein",
@@ -409,11 +422,14 @@ const HospitalDetails = () => {
         try {
           setIsProcessing(true);
           const response = await fetch(`/api/hospitals/${hospitalId}`);
-          const data = await response.json();
+          const data: HospitalDataResponse = await response.json();
           if (response.status != 200) {
             setError(data);
           } else {
             setHospitalDetails(data.hospitalData);
+            setAvailableYears(data.hospitalData.map(hospital => hospital.fiscal_yr))
+            setYear(data.hospitalData.at(-1)?.fiscal_yr); // Get last year
+            setCurrentHospitalDetails(data.hospitalData.at(-1)); // Get data for last year
           }
         } catch (error) {
           setError(error);
@@ -426,42 +442,52 @@ const HospitalDetails = () => {
     
   }, [hospitalId]);
 
-  const formatData = (section: Section, str: string): string => {
-
-    const sign = (num: number): string => num < 0 ? '-' : '';
-    const formatNumber = (num: number): string => Math.abs(num).toFixed(2)
+  const formatData = (data: HospitalData, field: Field, section: Section): string => {
     
-    if (!str) {
+    const fieldValue = data[field.code] ? String(data[field.code]) : '';
+
+    if (!fieldValue) {
       return "";
     }
+
+    // Create our currency formatter.
+    const currencyFormatter = 
+      new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD'}); 
+    // Create our number formatter.
+    const numberFormatter = 
+      new Intl.NumberFormat('en-US', {maximumFractionDigits: 2, minimumFractionDigits: 2})
     
     switch (section) {
       case Section.financialsAndTaxes:
-        return `${sign(parseFloat(str))}$${formatNumber(parseFloat(str))}`;
+        return `${currencyFormatter.format(parseFloat(fieldValue))}`;
       case Section.statistics:
-        return `${sign(parseFloat(str))}${formatNumber(parseFloat(str))}%`;
+        return `${numberFormatter.format(parseFloat(fieldValue))}%`;
     
       default:
-        const lowerStr = str.toLowerCase();
+        const lowerStr = fieldValue.toLowerCase();
         if (lowerStr === 'y') {
           return "Yes";
         } else if (lowerStr === 'n') {
           return "No";
+        } else if (field.type == FieldType.currency) {
+          return `${currencyFormatter.format(parseFloat(fieldValue))}`
         }
         break;
     }
     
-    return str;
+    return fieldValue;
   }
 
   const generateUiField = (data: HospitalData, field: Field, section: Section) => {
     return (
-      <p key={`${section}-${field.code}`} className="text-purp-2 mb-2 mt-2 font-semibold">
+      <p 
+        key={`${section}-${field.code}`} 
+        className={section == Section.overview 
+          ? 'text-purp-2 font-semibold sm:text-sm lg:text-xl mt-2 mb-2' 
+          : 'text-purp-5 pt-1 sm:text-xs lg:text-lg font-semibold'}>
         {`${field.description}: `}
         <span className="font-normal">
-          {field.code === "hospital_id"
-            ? hospital_id
-            : formatData(section, data[field.code])}
+          {formatData(data, field, section)}
         </span>
       </p>
     );
@@ -483,38 +509,51 @@ const HospitalDetails = () => {
     );
   }
 
-  const generateSection = (data: HospitalData, index: number, section: Section): JSX.Element => {
-    if (hospitalDetails && index !== hospitalDetails?.length - 1) return <></> // This way I only return the data for latest fiscal year
+  const generateSection = (section: Section): JSX.Element => {
+    // if (hospitalDetails && index !== hospitalDetails?.length - 1) return <></> // This way I only return the data for latest fiscal year
+    if (!currentHospitalDetails) return <></>
     switch (section) {
       case Section.overview:
         return (
           <div className="mt-4 flex">
             <div className="pr-10">
-              <p className="pt-1 text-xl font-semibold">{section}</p>
+              <p className="pt-1 text-2xl font-semibold">{section}</p>
               <div className="my-1 mr-8">
                 <hr />
               </div>
 
               {hospitalDataTemplate[section].map((field) => {
-                return generateUiField(data, field, section);
+                return generateUiField(currentHospitalDetails, field, section);
               })}
             </div>
           </div>
         );
 
       case Section.medicaid:
-        return generateExpansionPanel(data, section)
+        return generateExpansionPanel(currentHospitalDetails, section)
       case Section.summary:
-        return generateExpansionPanel(data, section)
+        return generateExpansionPanel(currentHospitalDetails, section)
       case Section.financialsAndTaxes:
-          return generateExpansionPanel(data, section)
+          return generateExpansionPanel(currentHospitalDetails, section)
       case Section.statistics:
-        return generateExpansionPanel(data, section)
+        return generateExpansionPanel(currentHospitalDetails, section)
       case Section.incomeMetrics:
-        return generateExpansionPanel(data, section)
+        return generateExpansionPanel(currentHospitalDetails, section)
 
     }
   };
+
+  const onChangeYear = async (year: string): Promise<void> => {
+    setYear(year);
+    setIsProcessing(true);
+    await delay(500); // Fake a delay to simulat data loading
+    setCurrentHospitalDetails(hospitalDetails?.filter((hospitalData) => hospitalData.fiscal_yr === year).at(0))
+    setIsProcessing(false);
+  }
+
+  const classNames = (...classes: string[]): string => {
+    return classes.filter(Boolean).join(' ');
+  }
 
   if (error && error.service === "Hospitals") {
     return <ErrorComponent>{error.msg}</ErrorComponent>;
@@ -555,16 +594,69 @@ const HospitalDetails = () => {
               {hospitalDetails?.at(0)?.data_name}
             </p>
 
-            <div className="my-1">
-              <hr />
+            <div className="my-1"><hr /></div>
+
+            <div className="flex justify-center items-center py-2">
+              <div className="flex flex-row text-lg font-semibold">
+                Hospital for:&nbsp;
+                <div className="text-violet-700">
+                  {year}
+                </div>
+              </div>
+            
+
+              <Menu as="div" className="relative text-left">
+                <div>
+                  <Menu.Button className="inline-flex w-full justify-center bg-white text-sm font-medium text-gray-700">
+                    <ChevronDownIcon
+                      className="ml-1 mt-1 h-5 w-5"
+                      aria-hidden="true"
+                    />
+                  </Menu.Button>
+                </div>
+
+                <Transition
+                  as={Fragment}
+                  enter="transition ease-out duration-100"
+                  enterFrom="transform opacity-0 scale-95"
+                  enterTo="transform opacity-100 scale-100"
+                  leave="transition ease-in duration-75"
+                  leaveFrom="transform opacity-100 scale-100"
+                  leaveTo="transform opacity-0 scale-95"
+                >
+                  <Menu.Items className="absolute right-0 mt-2 h-56 w-56 origin-top-right divide-y divide-gray-100 overflow-y-auto rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+                    {availableYears.map((year, i) => (
+                      <div key={i} className="flex justify-center py-1">
+                        <Menu.Item>
+                          {({ active }) => (
+                            <button
+                              value={year}
+                              className={classNames(
+                                active
+                                  ? "bg-gray-100 text-gray-900"
+                                  : "text-gray-700",
+                                "block w-full overflow-y-auto px-4 py-2 text-sm "
+                              )}
+                              onClick={() => onChangeYear(year)}
+                            >
+                              {year}
+                            </button>
+                          )}
+                        </Menu.Item>
+                      </div>
+                    ))}
+                  </Menu.Items>
+                </Transition>
+              </Menu>
             </div>
 
-            {hospitalDetails.map((data, index) => generateSection(data, index, Section.overview))}
-            {hospitalDetails.map((data, index) => generateSection(data, index, Section.medicaid))}
-            {hospitalDetails.map((data, index) => generateSection(data, index, Section.summary))}
-            {hospitalDetails.map((data, index) => generateSection(data, index, Section.financialsAndTaxes))}
-            {hospitalDetails.map((data, index) => generateSection(data, index, Section.statistics))}
-            {hospitalDetails.map((data, index) => generateSection(data, index, Section.incomeMetrics))}
+            {generateSection(Section.overview)}
+            <div className="my-1"><hr /></div>
+            {generateSection(Section.medicaid)}
+            {generateSection(Section.summary)}
+            {generateSection(Section.financialsAndTaxes)}
+            {generateSection(Section.statistics)}
+            {generateSection(Section.incomeMetrics)}
 
           </div>
         </div>

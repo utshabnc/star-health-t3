@@ -1,7 +1,7 @@
 export interface HospitalData {
   [key: string]: any;
   hospital_data_id: number;
-  fiscal_yr: number;
+  fiscal_yr: string;
   data_ein: number;
   data_name: string;
   form_990_filed_part_grp_ret_f: string;
