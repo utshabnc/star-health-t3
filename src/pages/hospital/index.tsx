@@ -517,7 +517,7 @@ const HospitalDetails = () => {
         return (
           <div className="mt-4 flex">
             <div className="pr-10">
-              <p className="pt-1 text-xl font-semibold">{section}</p>
+              <p className="pt-1 text-2xl font-semibold">{section}</p>
               <div className="my-1 mr-8">
                 <hr />
               </div>
