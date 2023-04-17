@@ -21,6 +21,10 @@ const formatMoney = (amount: number, decimals = 2) => {
   return formatter.format(amount);
 };
 
+const delay = (ms: number) => {
+  return new Promise( resolve => setTimeout(resolve, ms) );
+}
+
 const capitalizeWords = (str: string) => {
   let capitalizedWord = "";
 
@@ -140,6 +144,7 @@ export {
   formatNumber,
   formatName,
   formatLocation,
+  delay,
   formatProductType,
   formatProductName,
   drugTypes,
