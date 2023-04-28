@@ -44,6 +44,9 @@ import type { Hospital } from "../../components/Hospitals/Hospital.model";
 import HospitalsComponent from "../../components/Hospitals/Hospitals";
 import LoadingStarHealth from "../../components/Loading";
 import HospitalsFilters from "../../components/Hospitals/HospitalsFilters";
+import { OpioidTreatmentProvider } from "../../components/OpioidTreatmentProviders/OpioidTreatmentProvider.model";
+import OpioidTreatmentProvidersComponent from "../../components/OpioidTreatmentProviders/OpioidTreatmentProviders";
+import OpioidTreatmentProvidersFilters from '../../components/OpioidTreatmentProviders/OpioidTreatmentProviderFilters';
 import ErrorComponent from "../../components/ErrorComponent";
 import type { Genetic } from "../../components/Genetics/Genetic.model";
 import GeneticsComponent from "../../components/Genetics/Genetics";
@@ -134,6 +137,7 @@ export default function Directory() {
   const [hospitalsData, setHospitalsData] = useState<Hospital[]>(
     [] as Hospital[]
   );
+  const [ opioidTreatmentProvidersData, setOpioidTreatmentProvidersData] = useState<OpioidTreatmentProvider[]>([] as OpioidTreatmentProvider[]);
   const [clinicalTrialSearchKeywordExpr, setClinicalTrialSearchKeywordExpr] =
     useState<string>("");
   const [clinicalTrialSearchExpr, setClinicalTrialSearchExpr] =
@@ -820,6 +824,20 @@ export default function Directory() {
                   Hospitals
                 </button>
 
+                {/* Opioid Treatment Providers Tab */}
+                <button
+                  onClick={() => {
+                    handleTabClick(Tab.OpioidTreatmentProviders, "opioid treatment providers");
+                  }}
+                  className={`border-b-2 hover:border-zinc-500 ${
+                    selectedTab === Tab.OpioidTreatmentProviders
+                      ? "border-violet-600"
+                      : "border-zinc-200"
+                  }`}
+                >
+                  Opioid Treatment
+                </button>
+
                 {/* medical devices tab */}
                 <button
                   onClick={(e) => {
@@ -986,12 +1004,26 @@ export default function Directory() {
                 />
               </div>
             )}
+            {selectedTab == Tab.OpioidTreatmentProviders && (
+              <div className="flex flex-col items-end">
+                <OpioidTreatmentProvidersFilters
+                  params={{ 
+                    opioidTreatmentProvidersData,
+                    setOpioidTreatmentProvidersData,
+                    setIsApiProcessing,
+                  }}
+                />
+                
+              </div>
+              
+            )}
 
             {selectedTab !== Tab.ClinicalTrials &&
               selectedTab !== Tab.Plans &&
               selectedTab !== Tab.Hospitals &&
               selectedTab !== Tab.Genetics && 
               selectedTab !== Tab.Diseases && 
+              selectedTab !== Tab.OpioidTreatmentProviders &&
               (
                 <>
                   <Filters
@@ -1145,6 +1177,9 @@ export default function Directory() {
               error?.service === "Hospitals" && (
                 <ErrorComponent>{error.msg}</ErrorComponent>
               )}
+            {selectedTab === Tab.OpioidTreatmentProviders &&
+              <OpioidTreatmentProvidersComponent data={opioidTreatmentProvidersData} />
+            }
             {selectedTab === Tab.Plans && (
               <HealthPlansList plans={displayHealthPlansData} />
             )}
