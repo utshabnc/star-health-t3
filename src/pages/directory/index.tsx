@@ -42,6 +42,7 @@ import { PayWall } from "../../components/PayWall/PayWall";
 import { useSession } from 'next-auth/react';
 import { Hospital } from "../../components/Hospitals/Hospital.model";
 import HospitalsComponent from "../../components/Hospitals/Hospitals";
+import HospitalOwnersComponent from "../../components/HospitalOwners/HospitalOwners"
 import LoadingStarHealth from "../../components/Loading";
 import HospitalsFilters from "../../components/Hospitals/HospitalsFilters";
 import ErrorComponent from "../../components/ErrorComponent";
@@ -677,6 +678,20 @@ export default function Directory() {
                   Hospitals
                 </button>
 
+                {/* Hospital Owners Tab */}
+                <button
+                  onClick={() => {
+                    handleTabClick(Tab.HospitalOwners, "hospitals");
+                  }}
+                  className={`border-b-2 hover:border-zinc-500 ${
+                    selectedTab === Tab.HospitalOwners
+                      ? "border-violet-600"
+                      : "border-zinc-200"
+                  }`}
+                >
+                  Hospital Owners
+                </button>
+
                 {/* medical devices tab */}
                 <button
                   onClick={(e) => {
@@ -977,6 +992,9 @@ export default function Directory() {
             }
             {selectedTab === Tab.Plans && (
               <HealthPlansList plans={displayHealthPlansData} />
+            )}
+            {selectedTab === Tab.HospitalOwners && (
+              <HospitalOwnersComponent />
             )}
             {selectedTab !== Tab.ClinicalTrials &&
               selectedTab !== Tab.Plans && 
