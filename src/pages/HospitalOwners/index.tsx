@@ -1,0 +1,299 @@
+import { useRouter } from "next/router";
+import { Fragment, useEffect, useState } from "react";
+import ExpansionPanel from "../../components/ExpansionPanel";
+import ErrorComponent from "../../components/ErrorComponent";
+import {HospitalOwners} from "../../components/HospitalOwners/HospitalOwners.model";
+import {Owners} from "../../components/HospitalOwners/Owners.model";
+
+console.log("made it to this page")
+
+enum Section {
+  hospital = "Hospital",
+  owner = "Owner",
+}
+
+enum FieldType {
+  currency = "currency"
+}
+
+type Field = {
+  code: string,
+  description: string;
+  type?: FieldType;
+}
+
+interface Sections {
+  [Section.hospital]: Field[];
+  [Section.owner]: Field[];
+}
+
+const HospitalDetails = () => {
+  const navigate = useRouter();
+  const index = navigate.query?.index as string;
+  const str: string = localStorage.getItem(index) as string;
+  const data: HospitalOwners = JSON.parse(str);
+
+  const hospitalDataTemplate: Sections = {
+    [Section.hospital]: [
+      {
+        code: "ORGANIZATION_NAME",
+        description: "Organization_Name",
+      },
+      {
+        code: "ENROLLMENT_ID",
+        description: "ENROLLMENT ID",
+      },
+      {
+        code: "ASSOCIATE_ID",
+        description: "ASSOCIATE ID",
+      },
+    ],
+    [Section.owner]: [
+      {
+        code: "ASSOCIATE_ID_OWNER",
+        description: "Associate ID",
+      },
+      {
+        code: "TYPE_OWNER",
+        description: "Type",
+      },
+      {
+        code: "ROLE_TEXT_OWNER",
+        description: "Role",
+      },
+      {
+        code: "ROLE_CODE_OWNER",
+        description: "Role Code",
+      },
+      {
+        code: "ASSOCIATION_DATE_OWNER",
+        description: "Association Date",
+      },
+      {
+        code: "FIRST_NAME_OWNER",
+        description: "First Name",
+      },
+      {
+        code: "MIDDLE_NAME_OWNER",
+        description: "Middle Name",
+      },
+      {
+        code: "LAST_NAME_OWNER",
+        description: "Last Name",
+      },
+      {
+        code: "TITLE_OWNER",
+        description: "Title",
+      },
+      {
+        code: "ORGANIZATION_NAME_OWNER",
+        description: "Organization Name",
+      },
+      {
+        code: "DOING_BUSINESS_AS_NAME_OWNER",
+        description: "Doing Business As Name",
+      },
+      {
+        code: "ADDRESS_LINE_1_OWNER",
+        description: "Address Line 1",
+      },
+      {
+        code: "ADDRESS_LINE_2_OWNER",
+        description: "Address Line 2",
+      },
+      {
+        code: "CITY_OWNER",
+        description: "City",
+      },
+      {
+        code: "STATE_OWNER",
+        description: "State",
+      },
+      {
+        code: "ZIP_OWNER",
+        description: "Zip Code",
+      },
+      {
+        code: "PERCENTAGE_OWNERSHIP",
+        description: "Percentage Ownership",
+      },
+      {
+        code: "CREATED_FOR_ACQUISITION_OWNER",
+        description: "Created For Acquisition",
+      },
+      {
+        code: "CORPORATION_OWNER",
+        description: "Corporation",
+      },
+      {
+        code: "LLC_OWNER",
+        description: "LLC",
+      },
+      {
+        code: "MEDICAL_PROVIDER_SUPPLIER_OWNER",
+        description: "Medical Provider Supplier",
+      },
+      {
+        code: "MANAGEMENT_SERVICES_COMPANY_OWNER",
+        description: "Management Services Company",
+      },
+      {
+        code: "MEDICAL_STAFFING_COMPANY_OWNER",
+        description: "Medical Staffing Company",
+      },
+      {
+        code: "HOLDING_COMPANY_OWNER",
+        description: "Holding Company",
+      },
+      {
+        code: "INVESTMENT_FIRM_OWNER",
+        description: "Investment Firm",
+      },
+      {
+        code: "FINANCIAL_INSTITUTION_OWNER",
+        description: "Financial Institution",
+      },
+      {
+        code: "CONSULTING_FIRM_OWNER",
+        description: "Consulting Firm",
+      },
+      {
+        code: "FOR_PROFIT_OWNER",
+        description: "For-Profit",
+      },
+      {
+        code: "NON_PROFIT_OWNER",
+        description: "Non-Profit",
+      },
+      {
+        code: "OTHER_TYPE_OWNER",
+        description: "Has Other Type",
+      },
+      {
+        code: "OTHER_TYPE_TEXT_OWNER",
+        description: "Other Type",
+      },
+    ],
+  };
+
+  const formatData = (data: HospitalOwners, field: Field, section: Section): string => {
+    
+    const fieldValue = data[field.code] ? String(data[field.code]) : '';
+
+    if (!fieldValue) {
+      return "";
+    }    
+    switch (section) {
+      default:
+        const lowerStr = fieldValue.toLowerCase();
+        if (lowerStr === 'y') {
+          return "Yes";
+        } else if (lowerStr === 'n') {
+          return "No";
+        }
+        break;
+    }
+    return fieldValue;
+  }
+
+  const generateUiField = (data: any, field: Field, section: Section) => {
+    return (
+      <p 
+        key={`${section}-${field.code}`} 
+        className={section == Section.hospital 
+          ? 'text-purp-2 font-semibold sm:text-sm lg:text-xl mt-2 mb-2' 
+          : 'text-purp-5 pt-1 sm:text-xs lg:text-lg font-semibold'}>
+        {`${field.description}: `}
+        <span className="font-normal">
+          {formatData(data, field, section)}
+        </span>
+      </p>
+    );
+  };
+
+  const generateExpansionPanel = (data: Owners, section: Section): JSX.Element  => {
+    return (
+      <ExpansionPanel
+        key={section}
+        title={section}
+        content={
+          <>
+            {hospitalDataTemplate[section].map((field) => {
+              return generateUiField(data, field, section);
+            })}
+          </>
+        }
+      />
+    );
+  }
+
+  const generateSection = (section: Section): JSX.Element => {
+    switch (section) {
+      case Section.hospital:
+        return (
+          <div className="mt-4 flex">
+            <div className="pr-10">
+              <p className="pt-1 text-2xl font-semibold">{section}</p>
+              <div className="my-1 mr-8">
+                <hr />
+              </div>
+
+              {hospitalDataTemplate[section].map((field) => {
+                return generateUiField(data, field, section);
+              })}
+            </div>
+          </div>
+        );
+
+      default:
+        return (
+          <div>
+            {data.OWNERS.map((count: Owners) => {
+              return generateExpansionPanel(count, section)
+            })}
+          </div>
+        )
+    }
+    
+  };
+
+  return (
+    <>
+      <div className="bgColor">
+        <div className="rounded bg-white p-5">
+          <div className="flex flex-row">
+            <div>
+              <button
+                title="goBack"
+                onClick={navigate.back}
+                className="ease focus:shadow-outline select-none rounded-md border border-violet-700 bg-violet-700 px-4 py-2 text-white transition duration-500 hover:bg-violet-900 focus:outline-none"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={1.5}
+                  stroke="currentColor"
+                  className="h-6 w-6 "
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18"
+                  />
+                </svg>
+              </button>
+            </div>
+          </div>
+          <div className="flex flex-col justify-end sm:px-2 lg:px-28">
+            {generateSection(Section.hospital)}
+            <div className="my-1"><hr /></div>
+            {generateSection(Section.owner)}
+          </div>
+        </div>
+      </div>
+    </>
+  );
+};
+
+export default HospitalDetails;
