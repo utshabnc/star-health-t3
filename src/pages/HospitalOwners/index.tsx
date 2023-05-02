@@ -1,11 +1,11 @@
 import { useRouter } from "next/router";
-import { Fragment, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import ExpansionPanel from "../../components/ExpansionPanel";
 import ErrorComponent from "../../components/ErrorComponent";
 import {HospitalOwners} from "../../components/HospitalOwners/HospitalOwners.model";
 import {Owners} from "../../components/HospitalOwners/Owners.model";
 
-console.log("made it to this page")
+
 
 enum Section {
   hospital = "Hospital",
@@ -30,8 +30,8 @@ interface Sections {
 const HospitalDetails = () => {
   const navigate = useRouter();
   const index = navigate.query?.index as string;
-  const str: string = localStorage.getItem(index) as string;
-  const data: HospitalOwners = JSON.parse(str);
+  const blank: HospitalOwners = {"ENROLLMENT_ID": "", "ASSOCIATE_ID": "", "ORGANIZATION_NAME": "","OWNERS": []}
+  const [data, setData] = useState<HospitalOwners>(blank)
 
   const hospitalDataTemplate: Sections = {
     [Section.hospital]: [
@@ -197,18 +197,23 @@ const HospitalDetails = () => {
   }
 
   const generateUiField = (data: any, field: Field, section: Section) => {
-    return (
-      <p 
-        key={`${section}-${field.code}`} 
-        className={section == Section.hospital 
-          ? 'text-purp-2 font-semibold sm:text-sm lg:text-xl mt-2 mb-2' 
-          : 'text-purp-5 pt-1 sm:text-xs lg:text-lg font-semibold'}>
-        {`${field.description}: `}
-        <span className="font-normal">
-          {formatData(data, field, section)}
-        </span>
-      </p>
-    );
+    switch (data.length) {
+      case 0:
+        return (<></>)
+      default:
+        return (
+          <p 
+            key={`${section}-${field.code}`} 
+            className={section == Section.hospital 
+              ? 'text-purp-2 font-semibold sm:text-sm lg:text-xl mt-2 mb-2' 
+              : 'text-purp-5 pt-1 sm:text-xs lg:text-lg font-semibold'}>
+            {`${field.description}: `}
+            <span className="font-normal">
+              {formatData(data, field, section)}
+            </span>
+          </p>
+        );
+    }
   };
 
   const generateExpansionPanel = (data: Owners, section: Section): JSX.Element  => {
@@ -248,14 +253,21 @@ const HospitalDetails = () => {
       default:
         return (
           <div>
-            {data.OWNERS.map((count: Owners) => {
-              return generateExpansionPanel(count, section)
-            })}
+            {
+              data.OWNERS.map((count: Owners) => {
+                return generateExpansionPanel(count, section)
+              })
+            }
           </div>
         )
     }
     
   };
+
+  useEffect(() => { 
+    const str: string = localStorage.getItem(index) as string;
+    setData(JSON.parse(str))
+  })
 
   return (
     <>
