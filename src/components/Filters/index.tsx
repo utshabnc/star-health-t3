@@ -1,6 +1,7 @@
 import { Doctor } from '@prisma/client'
-import React, { Dispatch, SetStateAction, useEffect, useState } from 'react'
-import { FilterParams } from '../../pages/directory'
+import type { Dispatch, SetStateAction} from 'react';
+import React, { useEffect, useState } from 'react'
+import type { FilterParams } from '../../pages/directory'
 import SearchPage from '../../pages/SearchPage'
 import type { DirectoryResponse, NameListResponse } from '../../server/trpc/router/db'
 import { allStates, capitalizeWords, formatMoney } from '../../utils'
