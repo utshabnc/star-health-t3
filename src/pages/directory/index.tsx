@@ -4,7 +4,7 @@ import { formatMoney } from "../../utils";
 import { trpc } from "../../utils/trpc";
 import Filters from "../../components/Filters";
 import DirectoryCards from "../../components/DirectoryCards";
-import { debounce } from "lodash";
+import { cond, debounce } from "lodash";
 import { AiOutlineLoading3Quarters } from "react-icons/ai/index";
 
 import type { Observable } from "rxjs";
@@ -39,12 +39,15 @@ import {
 import HealthPlansFilters from "../../components/HealthPlans/HealthPlansFilters";
 import HealthPlansList from "../../components/HealthPlans/HealthPlansList";
 import { PayWall } from "../../components/PayWall/PayWall";
-import { useSession } from 'next-auth/react';
-import { Hospital } from "../../components/Hospitals/Hospital.model";
+import { useSession } from "next-auth/react";
+import type { Hospital } from "../../components/Hospitals/Hospital.model";
 import HospitalsComponent from "../../components/Hospitals/Hospitals";
 import LoadingStarHealth from "../../components/Loading";
 import HospitalsFilters from "../../components/Hospitals/HospitalsFilters";
 import ErrorComponent from "../../components/ErrorComponent";
+import type { Genetic } from "../../components/Genetics/Genetic.model";
+import GeneticsComponent from "../../components/Genetics/Genetics";
+import GeneticsFilters from "../../components/Genetics/GeneticsFilters";
 
 interface PriceFilter {
   min: number;
@@ -119,7 +122,7 @@ export default function Directory() {
   const [healthPlansData, setHealthPlansData] = useState<Array<any>>();
   const [displayHealthPlansData, setDisplayHealthPlansData] =
     useState<Array<any>>();
-  const [ isApiProcessing, setIsApiProcessing ] = useState<boolean>(false);
+  const [isApiProcessing, setIsApiProcessing] = useState<boolean>(false);
   const [healthPlansDataError, setHealthPlansDataError] = useState<string>("");
   const [search, setSearch] = useState<string>();
   const [selectedTab, setSelectedTab] = useState<Tab>(Tab.Transactions);
@@ -127,7 +130,9 @@ export default function Directory() {
   const [clinicalTrialsData, setClinicalTrialsData] = useState<
     ClinicalTrialsStudyFieldsResponse<ClinicalTrialsListItem>
   >({} as ClinicalTrialsStudyFieldsResponse<ClinicalTrialsListItem>);
-  const [ hospitalsData, setHospitalsData] = useState<Hospital[]>([] as Hospital[]);
+  const [hospitalsData, setHospitalsData] = useState<Hospital[]>(
+    [] as Hospital[]
+  );
   const [clinicalTrialSearchKeywordExpr, setClinicalTrialSearchKeywordExpr] =
     useState<string>("");
   const [clinicalTrialSearchExpr, setClinicalTrialSearchExpr] =
@@ -147,6 +152,8 @@ export default function Directory() {
     useState<FieldValue[]>([] as FieldValue[]);
   const [clinicalTrialMaximumAgeFilters, setClinicalTrialMaximumAgeFilters] =
     useState<FieldValue[]>([] as FieldValue[]);
+  const [genetics, setGenetics] = useState<Genetic[]>([] as Genetic[]);
+  const [filteredGenetics, setFilteredGenetics] = useState<Genetic[]>([] as Genetic[]);
   const { query: querySearch } = useRouter();
   const defaultClinicalTrialFields: Field[] = [
     Field.BriefTitle,
@@ -260,11 +267,80 @@ export default function Directory() {
   );
 
   useEffect(() => {
+    if (selectedTab == Tab.Genetics) {
+      const fetchGenetics = async () => {
+        try {
+          setIsApiProcessing(true);
+          const response = await fetch("/api/genetics/getAll");
+          const data = await response.json();
+          const conditions = data["topic"].filter(
+            (topic: any) => topic["title"]["_text"] == "Conditions"
+          )[0]["topics"]["topic"];
+          const genes = data["topic"].filter(
+            (topic: any) => topic["title"]["_text"] == "Genes"
+          )[0]["topics"]["topic"];
+          const chromosomes = data["topic"].filter(
+            (topic: any) => topic["title"]["_text"] == "Chromosomes"
+          )[0]["topics"]["topic"];
+          conditions.forEach((condition: any) => {
+            condition["url"] = condition["url"]
+              ? condition["url"]["_text"]
+              : "";
+            condition["title"] = condition["title"]
+              ? condition["title"]["_text"]
+              : "";
+            condition["type"] = "condition";
+            condition["other_names"] = condition["other_names"]
+              ? condition["other_names"]["other_name"]
+              : [];
+          });
+          genes.forEach((gene: any) => {
+            gene["url"] = gene["url"] ? gene["url"]["_text"] : "";
+            gene["title"] = gene["title"] ? gene["title"]["_text"] : "";
+            gene["type"] = "gene";
+            gene["other_names"] = gene["other_names"]
+              ? gene["other_names"]["other_name"]
+              : [];
+          });
+          chromosomes.forEach((chromosome: any) => {
+            chromosome["url"] = chromosome["url"]
+              ? chromosome["url"]["_text"]
+              : "";
+            chromosome["title"] = chromosome["title"]
+              ? chromosome["title"]["_text"].length < 13 ? chromosome["title"]["_text"].replace("Chromosome ", "Chromosome 0") : chromosome["title"]["_text"]
+              : "";
+            chromosome["type"] = "chromosome";
+            chromosome["other_names"] = chromosome["other_names"]
+              ? chromosome["other_names"]["other_name"]
+              : [];
+          });
+
+          let allGenetics = conditions.concat(genes).concat(chromosomes);
+          allGenetics = allGenetics.sort((a: any, b: any) => {
+            if (a["title"] < b["title"]) {
+              return -1;
+            } else {
+              return 1;
+            }
+          });
+          setGenetics(allGenetics);
+          setFilteredGenetics(allGenetics);
+        } catch (error) {
+          console.log(error);
+        } finally {
+          setIsApiProcessing(false);
+        }
+      };
+      fetchGenetics();
+    }
+  }, [selectedTab]);
+
+  useEffect(() => {
     if (selectedTab == Tab.Hospitals) {
       const fetchHospitals = async () => {
         try {
           setIsApiProcessing(true);
-          const response = await fetch('/api/hospitals/getAll');
+          const response = await fetch("/api/hospitals/getAll");
           const data = await response.json();
           if (response.status != 200) {
             setError(data);
@@ -279,7 +355,6 @@ export default function Directory() {
       };
       fetchHospitals();
     }
-
   }, [selectedTab]);
 
   useEffect(() => {
@@ -527,6 +602,20 @@ export default function Directory() {
                 )}
               </div>
               <div className="flex gap-2">
+                {/* genetics tab */}
+                <button
+                  onClick={() => {
+                    handleTabClick(Tab.Genetics, "genetics");
+                  }}
+                  className={`border-b-2 hover:border-zinc-500 ${
+                    selectedTab === Tab.Genetics
+                      ? "border-violet-600"
+                      : "border-zinc-200"
+                  }`}
+                >
+                  Genetics
+                </button>
+
                 {/* doctors tab */}
                 <button
                   onClick={() => {
@@ -771,7 +860,7 @@ export default function Directory() {
                     type="text"
                     placeholder={`Search`}
                     className={`
-                          my-2 mx-1 w-[30%] cursor-pointer rounded-lg border border-violet-900 bg-violet-100 p-1 text-slate-900 placeholder:text-violet-800 hover:bg-violet-300 hover:text-violet-900`}
+                          mx-1 my-2 w-[30%] cursor-pointer rounded-lg border border-violet-900 bg-violet-100 p-1 text-slate-900 placeholder:text-violet-800 hover:bg-violet-300 hover:text-violet-900`}
                     value={clinicalTrialSearchKeywordExpr}
                     onChange={(e) => {
                       setClinicalTrialSearchKeywordExpr(e.target.value);
@@ -799,7 +888,7 @@ export default function Directory() {
                     setDisplayHealthPlansData,
                   }}
                 />
-                
+
                 <Image
                   src={cms}
                   alt=""
@@ -808,179 +897,196 @@ export default function Directory() {
                   className=" object-contain"
                 />
               </div>
-              
             )}
             {selectedTab == Tab.Hospitals && (
               <div className="flex flex-col items-end">
                 <HospitalsFilters
-                  params={{ 
+                  params={{
                     hospitalsData,
                     setHospitalsData,
                     setIsApiProcessing,
                   }}
                 />
-                
               </div>
-              
             )}
-            {selectedTab !== Tab.ClinicalTrials 
-            && selectedTab !== Tab.Plans 
-            && selectedTab !== Tab.Hospitals && (
-              <>
-                <Filters
-                  search={search}
-                  setSearch={setSearch}
-                  data={data}
-                  filterParams={filterParams}
-                  setFilterParams={setFilterParams}
+            {selectedTab == Tab.Genetics && (
+              <div className="flex flex-col items-end">
+                <GeneticsFilters
+                  params={{
+                    genetics,
+                    setFilteredGenetics,
+                    setIsApiProcessing,
+                  }}
                 />
-                {"data" && (
-                  <>
-                    <div className="relative">
-                      <p className="p-1 text-xs font-semibold text-violet-900">{`Search for ${
-                        filterParams.subject
-                      } by ${
-                        filterParams.subject === "payment" ? "product" : "name"
-                      }`}</p>
-                      <div className="flex w-[100%] items-center gap-3">
-                        <input
-                          type="text"
-                          placeholder={`Search`}
-                          className={`
-                          my-2 mx-1 w-[30%] cursor-pointer rounded-lg border border-violet-900 bg-violet-100 p-1 text-slate-900 placeholder:text-violet-800 hover:bg-violet-300 hover:text-violet-900`}
-                          value={filterParams.name}
-                          onChange={(e) => {
-                            setFilterParams((prev) => {
-                              return {
-                                ...prev,
-                                name: e.target.value,
-                              };
-                            });
-                          }}
-                        />
+              </div>
+            )}
 
-                        <div className="ml-5 flex flex-col items-center">
+            {selectedTab !== Tab.ClinicalTrials &&
+              selectedTab !== Tab.Plans &&
+              selectedTab !== Tab.Hospitals &&
+              selectedTab !== Tab.Genetics && (
+                <>
+                  <Filters
+                    search={search}
+                    setSearch={setSearch}
+                    data={data}
+                    filterParams={filterParams}
+                    setFilterParams={setFilterParams}
+                  />
+                  {"data" && (
+                    <>
+                      <div className="relative">
+                        <p className="p-1 text-xs font-semibold text-violet-900">{`Search for ${
+                          filterParams.subject
+                        } by ${
+                          filterParams.subject === "payment"
+                            ? "product"
+                            : "name"
+                        }`}</p>
+                        <div className="flex w-[100%] items-center gap-3">
+                          <input
+                            type="text"
+                            placeholder={`Search`}
+                            className={`
+                          mx-1 my-2 w-[30%] cursor-pointer rounded-lg border border-violet-900 bg-violet-100 p-1 text-slate-900 placeholder:text-violet-800 hover:bg-violet-300 hover:text-violet-900`}
+                            value={filterParams.name}
+                            onChange={(e) => {
+                              setFilterParams((prev) => {
+                                return {
+                                  ...prev,
+                                  name: e.target.value,
+                                };
+                              });
+                            }}
+                          />
+
+                          <div className="ml-5 flex flex-col items-center">
+                            {filterParams.subject === "transactions" && (
+                              <div className="mb-4 mt-5 w-80">
+                                <div className="slider relative h-1 rounded-md bg-violet-100">
+                                  <div
+                                    ref={progressRef}
+                                    className="progress absolute h-2  rounded"
+                                  ></div>
+                                </div>
+                                <div className="range-input relative">
+                                  <input
+                                    type="range"
+                                    value={filterParams.price.min}
+                                    onChange={handleMinPrice}
+                                    min={0}
+                                    step={10}
+                                    max={5000}
+                                    name="price-range"
+                                    id="price-range-low"
+                                    className="range-min pointer-events-none absolute -top-1 h-1 w-full cursor-pointer appearance-none bg-transparent accent-violet-500"
+                                  />
+                                  <input
+                                    type="range"
+                                    value={filterParams.price.max}
+                                    onChange={handleMaxPrice}
+                                    min={0}
+                                    step={10}
+                                    max={5000}
+                                    name="price-range"
+                                    id="price-range-high"
+                                    className="range-max pointer-events-none absolute -top-1 h-1 w-full cursor-pointer appearance-none bg-transparent accent-violet-500"
+                                  />
+                                </div>
+                              </div>
+                            )}
+                          </div>
                           {filterParams.subject === "transactions" && (
-                            <div className="mb-4 mt-5 w-80">
-                              <div className="slider relative h-1 rounded-md bg-violet-100">
-                                <div
-                                  ref={progressRef}
-                                  className="progress absolute h-2  rounded"
-                                ></div>
-                              </div>
-                              <div className="range-input relative">
-                                <input
-                                  type="range"
-                                  value={filterParams.price.min}
-                                  onChange={handleMinPrice}
-                                  min={0}
-                                  step={10}
-                                  max={5000}
-                                  name="price-range"
-                                  id="price-range-low"
-                                  className="range-min pointer-events-none absolute -top-1 h-1 w-full cursor-pointer appearance-none bg-transparent accent-violet-500"
-                                />
-                                <input
-                                  type="range"
-                                  value={filterParams.price.max}
-                                  onChange={handleMaxPrice}
-                                  min={0}
-                                  step={10}
-                                  max={5000}
-                                  name="price-range"
-                                  id="price-range-high"
-                                  className="range-max pointer-events-none absolute -top-1 h-1 w-full cursor-pointer appearance-none bg-transparent accent-violet-500"
-                                />
-                              </div>
+                            <div className="flex gap-5 text-violet-400">
+                              <p>{formatMoney(filterParams.price.min)}</p>
+                              <p>To</p>
+                              <p>{formatMoney(filterParams.price.max)}</p>
                             </div>
                           )}
                         </div>
-                        {filterParams.subject === "transactions" && (
-                          <div className="flex gap-5 text-violet-400">
-                            <p>{formatMoney(filterParams.price.min)}</p>
-                            <p>To</p>
-                            <p>{formatMoney(filterParams.price.max)}</p>
+                        {(selectedTab === Tab.Doctors ||
+                          selectedTab === Tab.Manufacturers ||
+                          selectedTab === Tab.Transactions ||
+                          selectedTab === Tab.Products) && (
+                          <div className="absolute bottom-0 right-0 flex gap-10">
+                            <Image
+                              src={cms}
+                              alt=""
+                              width={128}
+                              height={128}
+                              className=" object-contain"
+                            />
+                            <Image
+                              src={openPayments}
+                              alt=""
+                              width={128}
+                              height={128}
+                              className=" object-contain"
+                            />
                           </div>
                         )}
+                        {(selectedTab === Tab.Doctors ||
+                          selectedTab === Tab.Manufacturers ||
+                          selectedTab === Tab.Transactions ||
+                          selectedTab === Tab.Products) && (
+                          <div className="absolute bottom-0 right-0 flex gap-10">
+                            <Image
+                              src={cms}
+                              alt=""
+                              width={128}
+                              height={128}
+                              className=" object-contain"
+                            />
+                            <Image
+                              src={openPayments}
+                              alt=""
+                              width={128}
+                              height={128}
+                              className=" object-contain"
+                            />
+                          </div>
+                        )}
+                        {selectedTab === Tab.Drugs && (
+                          <Image
+                            src={fda}
+                            alt=""
+                            width={128}
+                            height={128}
+                            className="absolute bottom-0 right-0 object-contain"
+                          />
+                        )}
                       </div>
-                      {(selectedTab === Tab.Doctors ||
-                        selectedTab === Tab.Manufacturers ||
-                        selectedTab === Tab.Transactions ||
-                        selectedTab === Tab.Products) && (
-                        <div className="absolute bottom-0 right-0 flex gap-10">
-                          <Image
-                            src={cms}
-                            alt=""
-                            width={128}
-                            height={128}
-                            className=" object-contain"
-                          />
-                          <Image
-                            src={openPayments}
-                            alt=""
-                            width={128}
-                            height={128}
-                            className=" object-contain"
-                          />
-                        </div>
-                      )}
-                      {(selectedTab === Tab.Doctors ||
-                        selectedTab === Tab.Manufacturers ||
-                        selectedTab === Tab.Transactions ||
-                        selectedTab === Tab.Products) && (
-                        <div className="absolute bottom-0 right-0 flex gap-10">
-                          <Image
-                            src={cms}
-                            alt=""
-                            width={128}
-                            height={128}
-                            className=" object-contain"
-                          />
-                          <Image
-                            src={openPayments}
-                            alt=""
-                            width={128}
-                            height={128}
-                            className=" object-contain"
-                          />
-                        </div>
-                      )}
-                      {selectedTab === Tab.Drugs && (
-                        <Image
-                          src={fda}
-                          alt=""
-                          width={128}
-                          height={128}
-                          className="absolute bottom-0 right-0 object-contain"
-                        />
-                      )}
-                    </div>
-                  </>
-                )}
-              </>
-            )}
+                    </>
+                  )}
+                </>
+              )}
           </div>
         </div>
-        <div className="flex h-[90%] w-full justify-center relative">
-          <PayWall/>
-          
+        <div className="relative flex h-[90%] w-full justify-center">
+          <PayWall />
+
           <div className="ml-5 flex min-h-[100%] w-[95%] flex-col overflow-scroll p-1">
             {isApiProcessing && <LoadingStarHealth />}
             {selectedTab === Tab.ClinicalTrials && (
               <ClinicalTrialsComponent data={clinicalTrialsData} />
             )}
-            {selectedTab === Tab.Hospitals &&
+            {selectedTab === Tab.Hospitals && (
               <HospitalsComponent data={hospitalsData} />
-            }
-            {selectedTab === Tab.Hospitals && error?.service === "Hospitals" &&
-              <ErrorComponent>{error.msg}</ErrorComponent>
-            }
+            )}
+            {selectedTab === Tab.Hospitals &&
+              error?.service === "Hospitals" && (
+                <ErrorComponent>{error.msg}</ErrorComponent>
+              )}
             {selectedTab === Tab.Plans && (
               <HealthPlansList plans={displayHealthPlansData} />
             )}
+            {selectedTab === Tab.Genetics && (
+              <GeneticsComponent data={filteredGenetics} />
+            )}
             {selectedTab !== Tab.ClinicalTrials &&
-              selectedTab !== Tab.Plans && 
-              selectedTab !== Tab.Hospitals && (
+              selectedTab !== Tab.Plans &&
+              selectedTab !== Tab.Hospitals &&
+              selectedTab !== Tab.Genetics && (
                 <DirectoryCards
                   search={search as string}
                   searchResults={searchResults}
@@ -988,7 +1094,6 @@ export default function Directory() {
                   data={data}
                 />
               )}
-
           </div>
         </div>
       </div>
