@@ -114,7 +114,7 @@ function conditionRelatedGenes(conditionData: GeneticData) {
                     href={`/genetic/${type}?name=${url}`}
                     className="my-1 text-md text-violet-700 underline"
                   >
-                    {gene.gene}
+                    {upperCaseAllWords(gene.gene)}
                   </a>
                 </div>
               );
