@@ -1,15 +1,28 @@
 export interface OpioidTreatmentProvider {
-    id?:                        string | undefined;
-    npi?:                       string | undefined;
-    provider_name?:             string | undefined;
-    address_line_1?:            string | undefined;
-    address_line_2?:            string | null | undefined;
-    city?:                      string | undefined;
-    state?:                     string | undefined;
-    zip?:                       string | undefined;
-    medicare_id_effective_date?:  Date | null | undefined;
-    phone?:                     string | null | undefined;
-  }
+  id?:                        string;
+  npi?:                       string;
+  provider_name?:             string;
+  address_line_1?:            string;
+  address_line_2?:            string | null;
+  city?:                      string;
+  state?:                     string;
+  zip?:                       string;
+  medicare_id_effective_date?:  Date | null;
+  phone?:                     string | null;
+}
+
+// export interface OpioidTreatmentProvider {
+//     id?:                        string | undefined;
+//     npi?:                       string | undefined;
+//     provider_name?:             string | undefined;
+//     address_line_1?:            string | undefined;
+//     address_line_2?:            string | null | undefined;
+//     city?:                      string | undefined;
+//     state?:                     string | undefined;
+//     zip?:                       string | undefined;
+//     medicare_id_effective_date?:  Date | null | undefined;
+//     phone?:                     string | null | undefined;
+//   }
 
 //   const data: {
 //     state?: string | undefined;

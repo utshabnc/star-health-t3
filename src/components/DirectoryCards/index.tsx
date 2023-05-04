@@ -5,7 +5,7 @@ import type { DirectoryResponse } from "../../server/trpc/router/db";
 import { Manufacturer, ManufacturerSummary, Product } from "@prisma/client";
 import { formatSpecialties } from "../Filters";
 import _ from "lodash";
-import { parsePhoneNumber } from 'awesome-phonenumber';
+import PhoneNumber from "../PhoneNumber";
 
 type FilterParams = {
   subject: string;
@@ -26,24 +26,6 @@ type FilterParams = {
   drugRoute: string;
 };
 
-interface PhoneNumberProps {
-  phone: string
-}
-
-function PhoneNumber({ phone} : PhoneNumberProps ) {
-  const formattedPhoneNumber = parsePhoneNumber(phone,  { regionCode: 'US' });
-
-  if (formattedPhoneNumber.valid) {
-    return (
-      <div>
-        <b>Phone:</b> <Link href={`tel:${formattedPhoneNumber.number.e164}`}
-        >{formattedPhoneNumber.number.international}</Link>
-      </div>
-    )  
-  } else {
-    return <></>
-  }
-}
 
 export default function DirectoryCards({
   data,
@@ -181,9 +163,6 @@ export default function DirectoryCards({
                           {item.provider_name}
                         </Link>
                       </h5>
-                      {/* <p className="mb-1 text-xs text-gray-600">
-                        Rank: {item.rank}
-                      </p> */}
                     </div>
                     <div>
                       <div className="flex flex-row justify-between">

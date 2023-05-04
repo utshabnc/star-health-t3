@@ -90,7 +90,7 @@ export default function OpioidTreatmentProvidersFilters({ params }: OpioidTreatm
       const delayDebounceFn = setTimeout(() => {
         const filteredData = opioidTreatmentProvidersData?.filter((opioidTreatmentProvider: OpioidTreatmentProvider) => {
           return (
-            opioidTreatmentProvider.provider_name.toLowerCase().includes(searchStr.toLowerCase())
+            opioidTreatmentProvider.provider_name?.toLowerCase().includes(searchStr.toLowerCase())
           );
         });
         setOpioidTreatmentProvidersData(filteredData || []);
@@ -149,7 +149,7 @@ export default function OpioidTreatmentProvidersFilters({ params }: OpioidTreatm
       const cities = new Set<string>();
       for (const opioidTreatmentProvider of opioidTreatmentProviderDataByState) {
         if (opioidTreatmentProvider.state === state) {
-          cities.add(opioidTreatmentProvider.city);
+          cities.add(opioidTreatmentProvider.city?.toLowerCase() || "");
         }
       }
       // Sort cities alphabetically
@@ -168,7 +168,7 @@ export default function OpioidTreatmentProvidersFilters({ params }: OpioidTreatm
       const opioidTreatmentProviderDataByState = await fetchDataByState(selectedState);
       const opioidTreatmentProviderDataByCity = opioidTreatmentProviderDataByState.filter(
         (opioidTreatmentProviders: OpioidTreatmentProvider) =>
-        opioidTreatmentProviders.city.toLowerCase() === city.toLowerCase()
+        opioidTreatmentProviders.city?.toLowerCase() === city.toLowerCase()
       );
       setOpioidTreatmentProvidersData(opioidTreatmentProviderDataByCity);
       setIsApiProcessing(false);
@@ -187,7 +187,7 @@ export default function OpioidTreatmentProvidersFilters({ params }: OpioidTreatm
       const allOpioidTreatmentProviderData = await fetchAllOpioidTreatmentProviders();
       const OpioidTreatmentProviderDataById = allOpioidTreatmentProviderData.filter(
         (opioidTreatmentProvider: OpioidTreatmentProvider) =>
-        opioidTreatmentProvider.id.toLowerCase() === opioidTreatmentProviderId.toLowerCase()
+        opioidTreatmentProvider.id?.toLowerCase() === opioidTreatmentProviderId.toLowerCase()
       );
       setOpioidTreatmentProvidersData(OpioidTreatmentProviderDataById);
       setIsApiProcessing(false);

@@ -3,24 +3,25 @@ import _ from 'lodash';
 import { useRouter } from 'next/router';
 import { trpc } from '../../utils/trpc';
 import type { OpioidTreatmentProvider } from '../../components/OpioidTreatmentProviders/OpioidTreatmentProvider.model';
+import PhoneNumber from "../../components/PhoneNumber";
 
 const OpioidTreatmentProviderDetails = () => {
   const navigate = useRouter();
   const id = navigate.query.id as string;
 
   console.log('RENDER OpioidTreatmentProviderDetails')
-  console.log('id', id)
+  console.log('OpioidTreatmentProviderDetails id', id)
 //   const [year, setYear] = useState<string>();
 //   const { data: opioidTreatmentProvider } = trpc.db.opioidTreatment.useQuery({ id });
 
 const [opioidTreatmentProvider, setOpioidTreatmentProvider] = useState<OpioidTreatmentProvider | null | undefined>(null);
 
-// const query = useMemo(() => ({ id }), [id]);
-// const { data } = trpc.db.opioidTreatment.useQuery(query);
+const query = useMemo(() => ({ id }), [id]);
+const { data } = trpc.db.opioidTreatment.useQuery(query);
 
-// useEffect(() => {
-//   setOpioidTreatmentProvider(data);
-// }, [data]);
+useEffect(() => {
+  setOpioidTreatmentProvider(data);
+}, [data]);
 
 
   // Loading Screen
@@ -116,8 +117,39 @@ const [opioidTreatmentProvider, setOpioidTreatmentProvider] = useState<OpioidTre
               </button>
             </div>
           </div>
-
-          
+          <div className='flex flex-col justify-end lg:px-24'>
+            <p className='text-violet-700 text-2xl font-semibold'>
+                {opioidTreatmentProvider.provider_name}
+            </p>
+            <p className='text-gray-500 text-sm'>
+            <div>
+                      <div className="flex flex-row justify-between">
+                        <div className="flex flex-col">
+                        <h5 className="text-md mb-2 text-gray-900">
+                        {opioidTreatmentProvider.address_line_1}
+                        <br />
+                        {opioidTreatmentProvider.address_line_2 !== "" &&
+                          opioidTreatmentProvider.address_line_2 !== undefined &&
+                          opioidTreatmentProvider.address_line_2 !== null && (
+                            <>
+                              {opioidTreatmentProvider.address_line_2}
+                              <br />
+                            </>
+                        )}
+                        {opioidTreatmentProvider.city}, {opioidTreatmentProvider.state} {opioidTreatmentProvider.zip}
+                      </h5>
+                            <div className="text-md mb-2 text-gray-900 text-left">
+                              <PhoneNumber phone={opioidTreatmentProvider.phone} />
+                            </div>
+                            <div className="text-md mb-2 text-gray-900 text-left">
+                              NPI: {opioidTreatmentProvider.npi}
+                            </div>
+                          </div>
+                        {/* </div> */}
+                      </div>
+                    </div>
+            </p>
+          </div>
         </div>
       </div>
     </>

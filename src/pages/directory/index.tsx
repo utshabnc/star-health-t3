@@ -45,7 +45,6 @@ import HospitalsComponent from "../../components/Hospitals/Hospitals";
 import LoadingStarHealth from "../../components/Loading";
 import HospitalsFilters from "../../components/Hospitals/HospitalsFilters";
 import { OpioidTreatmentProvider } from "../../components/OpioidTreatmentProviders/OpioidTreatmentProvider.model";
-import OpioidTreatmentProvidersComponent from "../../components/OpioidTreatmentProviders/OpioidTreatmentProviders";
 import OpioidTreatmentProvidersFilters from '../../components/OpioidTreatmentProviders/OpioidTreatmentProviderFilters';
 import ErrorComponent from "../../components/ErrorComponent";
 import type { Genetic } from "../../components/Genetics/Genetic.model";
