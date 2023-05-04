@@ -144,6 +144,8 @@ export default function DirectoryCards({
 
   if (data?.opioidTreatmentProviders) {
 
+    console.log('Filter Params: ', filterParams)
+
     return (
       <>
         {data &&

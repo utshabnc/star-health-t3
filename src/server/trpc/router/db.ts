@@ -911,7 +911,6 @@ export const db = router({
         let doctorNames = [];
         let manufacturerNames = [];
         let productNameList = [];
-        let opioidTreatmentProviders = [];
 
         doctorNames = payments.map(item => {
           return {

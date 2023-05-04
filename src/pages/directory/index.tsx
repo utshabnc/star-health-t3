@@ -1179,9 +1179,6 @@ export default function Directory() {
               error?.service === "Hospitals" && (
                 <ErrorComponent>{error.msg}</ErrorComponent>
               )}
-            {selectedTab === Tab.OpioidTreatmentProviders &&
-              <OpioidTreatmentProvidersComponent data={opioidTreatmentProvidersData} />
-            }
             {selectedTab === Tab.Plans && (
               <HealthPlansList plans={displayHealthPlansData} />
             )}
