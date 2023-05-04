@@ -7,16 +7,14 @@ import cms from "../../assets/logos/cms.png";
 
 interface OpioidTreatmentProvidersFiltersProps {
   params: {
-    state?: string;
-    provider_name?: string;
-    OpioidTreatmentProvidersData?: OpioidTreatmentProvider[];
+    opioidTreatmentProvidersData?: OpioidTreatmentProvider[];
     setOpioidTreatmentProvidersData: Dispatch<SetStateAction<OpioidTreatmentProvider[]>>;
     setIsApiProcessing: Dispatch<SetStateAction<boolean>>;
   };
 }
 
 export default function OpioidTreatmentProvidersFilters({ params }: OpioidTreatmentProvidersFiltersProps) {
-  const { OpioidTreatmentProvidersData, setOpioidTreatmentProvidersData, setIsApiProcessing } = params;
+  const { opioidTreatmentProvidersData, setOpioidTreatmentProvidersData, setIsApiProcessing } = params;
 
   const allZipCodes: string[] = []
   
@@ -81,33 +79,50 @@ export default function OpioidTreatmentProvidersFilters({ params }: OpioidTreatm
   // const [OpioidTreatmentProviderIds, setOpioidTreatmentProviderIds] = useState<string[]>([]);
 
   useEffect(() => {
-    if (OpioidTreatmentProvidersData && OpioidTreatmentProvidersData.length > 1) {
+    if (opioidTreatmentProvidersData && opioidTreatmentProvidersData.length > 1) {
       setDataIsAvailable(true);
     }
-  }, [OpioidTreatmentProvidersData])
+  }, [opioidTreatmentProvidersData])
+
 
   useEffect(() => {
     if (searchStr) {
       const delayDebounceFn = setTimeout(() => {
-        setIsApiProcessing(true);
-        fetchAllOpioidTreatmentProviders()
-          .then(allOpioidTreatmentProviderData => {
-            const matchedOpioidTreatmentProviders = allOpioidTreatmentProviderData.filter(opioidTreatmentProvider =>
-              opioidTreatmentProvider.provider_name.toLowerCase().includes(searchStr.toLowerCase())
-            );
-  
-            setOpioidTreatmentProvidersData(matchedOpioidTreatmentProviders);
-            setIsApiProcessing(false);
-          })
-          .catch(error => {
-            setError(error);
-            setIsApiProcessing(false);
-          })
-      }, 3000)
-
-      return () => clearTimeout(delayDebounceFn)
+        const filteredData = opioidTreatmentProvidersData?.filter((opioidTreatmentProvider: OpioidTreatmentProvider) => {
+          return (
+            opioidTreatmentProvider.provider_name.toLowerCase().includes(searchStr.toLowerCase())
+          );
+        });
+        setOpioidTreatmentProvidersData(filteredData || []);
+      }, 250);
+      return () => clearTimeout(delayDebounceFn);
+    } else {
+      setOpioidTreatmentProvidersData(opioidTreatmentProvidersData || []);
     }
-  }, [searchStr])
+  }, [searchStr]);
+
+  // useEffect(() => {
+  //   if (searchStr) {
+  //     const delayDebounceFn = setTimeout(() => {
+  //       setIsApiProcessing(true);
+  //       fetchAllOpioidTreatmentProviders()
+  //         .then(allOpioidTreatmentProviderData => {
+  //           const matchedOpioidTreatmentProviders = allOpioidTreatmentProviderData.filter(opioidTreatmentProvider =>
+  //             opioidTreatmentProvider.provider_name.toLowerCase().includes(searchStr.toLowerCase())
+  //           );
+  
+  //           setOpioidTreatmentProvidersData(matchedOpioidTreatmentProviders);
+  //           setIsApiProcessing(false);
+  //         })
+  //         .catch(error => {
+  //           setError(error);
+  //           setIsApiProcessing(false);
+  //         })
+  //     }, 3000)
+
+  //     return () => clearTimeout(delayDebounceFn)
+  //   }
+  // }, [searchStr])
 
   const fetchDataByState = async (state: string): Promise<OpioidTreatmentProvider[]> => {
     const response = await fetch(`/api/opioid-treatment-providers/getByState?state=${state}`);
@@ -185,7 +200,7 @@ export default function OpioidTreatmentProvidersFilters({ params }: OpioidTreatm
 
   const opioidTreatmentProviderIds = useMemo(() => {
     if (dataIsAvailable)
-      return OpioidTreatmentProvidersData?.map(opioidTreatmentProviderIds => opioidTreatmentProviderIds.id)
+      return opioidTreatmentProvidersData?.map(opioidTreatmentProviderIds => opioidTreatmentProviderIds.id)
     }, [dataIsAvailable]); 
 
   return (
@@ -241,21 +256,6 @@ export default function OpioidTreatmentProvidersFilters({ params }: OpioidTreatm
                   </option>
                 ))}
               </select>
-
-              {/* <select
-                className="my-2 mr-5 w-[20%] cursor-pointer rounded-lg bg-violet-500 p-1 text-white hover:bg-violet-400 hover:text-violet-900"
-                onChange={(e) => onSelectOpioidTreatmentProviderId(e.target.value)}
-                placeholder="Issuer"
-              >
-                <option selected disabled value="">
-                  OpioidTreatmentProvider ID
-                </option>
-                {opioidTreatmentProviderIds?.map((opioidTreatmentProviderId, index: number) => (
-                  <option key={index} value={opioidTreatmentProviderId}>
-                    {opioidTreatmentProviderId}
-                  </option>
-                ))}
-              </select> */}
             </div>
           </div>
           <div className="my-1">

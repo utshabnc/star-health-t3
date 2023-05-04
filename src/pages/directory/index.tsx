@@ -69,6 +69,7 @@ export interface FilterParams {
   doctorFilter: string;
   manufacturerFilter: string;
   productFilter: string;
+  opioidTreatmentProviderFilter: string;
   cursor: string;
   year: string;
   price: PriceFilter;
@@ -94,6 +95,7 @@ export default function Directory() {
     doctorFilter: "",
     manufacturerFilter: "",
     productFilter: "",
+    opioidTreatmentProviderFilter: "",
     cursor: "",
     year: "",
     price: { min: 0, max: 5000 },
@@ -114,6 +116,7 @@ export default function Directory() {
     doctorFilter: filterParams.doctorFilter,
     manufacturerFilter: filterParams.manufacturerFilter,
     productFilter: filterParams.productFilter,
+    opioidTreatmentProviderFilter: filterParams.opioidTreatmentProviderFilter,
     cursor: filterParams.cursor,
     year: filterParams.year,
     drugManufacturer: filterParams.drugManufacturer,
@@ -827,7 +830,7 @@ export default function Directory() {
                 {/* Opioid Treatment Providers Tab */}
                 <button
                   onClick={() => {
-                    handleTabClick(Tab.OpioidTreatmentProviders, "opioid treatment providers");
+                    handleTabClick(Tab.OpioidTreatmentProviders, "opioidTreatmentProviders");
                   }}
                   className={`border-b-2 hover:border-zinc-500 ${
                     selectedTab === Tab.OpioidTreatmentProviders

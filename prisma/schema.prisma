@@ -281,7 +281,8 @@ model Drugs {
 }
 
 model OpioidTreatment {
-  npi                        String    @id
+  id                         String    @id
+  npi                        String
   provider_name              String
   address_line_1             String
   address_line_2             String?

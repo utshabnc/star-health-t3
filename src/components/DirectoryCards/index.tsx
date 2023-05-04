@@ -5,6 +5,7 @@ import type { DirectoryResponse } from "../../server/trpc/router/db";
 import { Manufacturer, ManufacturerSummary, Product } from "@prisma/client";
 import { formatSpecialties } from "../Filters";
 import _ from "lodash";
+import { parsePhoneNumber } from 'awesome-phonenumber';
 
 type FilterParams = {
   subject: string;
@@ -17,12 +18,32 @@ type FilterParams = {
   doctorFilter: string;
   manufacturerFilter: string;
   productFilter: string;
+  opioidTreatmentProviderFilter: string;
   cursor: string;
   year: string;
   drugManufacturer: string;
   drugType: string;
   drugRoute: string;
 };
+
+interface PhoneNumberProps {
+  phone: string
+}
+
+function PhoneNumber({ phone} : PhoneNumberProps ) {
+  const formattedPhoneNumber = parsePhoneNumber(phone,  { regionCode: 'US' });
+
+  if (formattedPhoneNumber.valid) {
+    return (
+      <div>
+        <b>Phone:</b> <Link href={`tel:${formattedPhoneNumber.number.e164}`}
+        >{formattedPhoneNumber.number.international}</Link>
+      </div>
+    )  
+  } else {
+    return <></>
+  }
+}
 
 export default function DirectoryCards({
   data,
@@ -129,6 +150,67 @@ export default function DirectoryCards({
                               )}
                             </p>
                           )}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </>
+            ))}
+      </>
+    );
+  }
+
+  if (data?.opioidTreatmentProviders) {
+
+    return (
+      <>
+        {data &&
+          data?.opioidTreatmentProviders &&
+          (!searchResults ? data?.opioidTreatmentProviders : searchResults?.opioidTreatmentProviders)
+            .sort((a: any) => a.state)
+            .map((item: any, index: number) => (
+              <>
+                <div
+                  key={item.id}
+                  className="mb-2 w-[100%] rounded-lg bg-white text-center shadow-lg"
+                >
+                  <div className="p-2">
+                    <div className="flex flex-row justify-between">
+                      <h5 className="text-md mb-2 font-medium text-violet-700 underline">
+                        <Link href={`/opioidTreatment/${item.id}`}>
+                          {item.provider_name}
+                        </Link>
+                      </h5>
+                      {/* <p className="mb-1 text-xs text-gray-600">
+                        Rank: {item.rank}
+                      </p> */}
+                    </div>
+                    <div>
+                      <div className="flex flex-row justify-between">
+                        <div className="flex flex-col">
+                          <h5 className="text-md mb-2 text-gray-900">
+                          {item.address_line_1}, 
+                          {item.address_line_2 !== "" &&
+                                item.address_line_2 !== undefined &&
+                                item.address_line_2 !== null
+                                  ? item.address_line_2 + ', '
+                                  : ' '}
+
+                          {item.city}, {item.state} {item.zip}
+                          
+                          
+                          </h5>
+                            <div className="text-md mb-2 text-gray-900 text-left">
+                              <PhoneNumber phone={item.phone} />
+                            </div>
+                          </div>
+                        {/* </div> */}
+                        <p className="mb-1 text-base text-gray-700"> NPI: {item.npi}</p>
+                      </div>
+                      <div className="flex flex-row justify-between text-sm">
+                        <p className="mb-1 text-xs text-violet-400">
+                          {item.country}
+                        </p>
                       </div>
                     </div>
                   </div>
