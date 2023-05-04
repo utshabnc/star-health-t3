@@ -24,8 +24,10 @@ function chromosomeDescription(chromosomeData: ChromosomeData) {
     finalString += '</p>';
     return (finalString);
   } catch (error) {
-    console.log(error);
-    return "";
+    const description = chromosomeData["text-list"].find((text: any) => {
+      return text["text"]["text-role"] === "description";
+    })["text"]["html"];
+    return description.replaceAll("</p><p>", "</p><br/><p>");
   }
 }
 
@@ -66,8 +68,41 @@ function chromosomeRelatedConditions(chromosomeData: ChromosomeData) {
       </div>
     );
   } catch (error) {
-    console.log(error);
-    return [];
+    let relatedConditions = chromosomeData["related-health-condition-list"];
+    if (!Array.isArray(relatedConditions)) {
+      relatedConditions = [relatedConditions];
+    }
+    relatedConditions = relatedConditions.map((relatedCondition: any) => {
+      return {
+        condition: relatedCondition["related-health-condition"]["name"],
+        url: relatedCondition["related-health-condition"]["ghr-page"],
+      };
+    });
+
+    return (
+      <div>
+        {relatedConditions.map((gene: any, index: number) => {
+          const urlSplit = gene.url.split("/");
+          const url = urlSplit[urlSplit.length - 1];
+          const type = urlSplit[urlSplit.length - 2];
+          const medline = urlSplit[2] === "medlineplus.gov";
+
+          // For now, only showing medlineplus.gov links - we need to add alternate data sources later.
+          if (medline) {
+            return (
+              <div key={index} className="flex flex-row">
+                <a
+                  href={`/genetic/${type}?name=${url}`}
+                  className="text-md mb-1 text-violet-700 underline"
+                >
+                  {upperCaseAllWords(gene.condition)}
+                </a>
+              </div>
+            );
+          }
+        })}
+      </div>
+    );
   }
 }
 
@@ -88,7 +123,11 @@ const ChromosomeDetails = () => {
             `/api/genetics/chromosome/${chromosomeName}`
           );
           const data = await response.json();
-          setChromosomeData(data["chromosome"]["chromosome-summary"]);
+          if ('chromosome-summary' in data['chromosome']) {
+            setChromosomeData(data["chromosome"]["chromosome-summary"]);
+          } else {
+            setChromosomeData(data["chromosome"]);
+          }
         } catch (error) {
           console.log(error);
         } finally {
@@ -131,16 +170,16 @@ const ChromosomeDetails = () => {
           <div className="flex flex-col justify-end sm:px-2 lg:px-28">
             <p className="text-2xl font-semibold text-violet-700">
               {chromosomeData.name
-                ? upperCaseAllWords(chromosomeData.name["_text"])
+                ? upperCaseAllWords(chromosomeData.name["_text"] ? chromosomeData.name["_text"] : chromosomeData.name)
                 : ""}
             </p>
             <p className="text-purp-5 pt-1 text-violet-700 sm:text-xs">
               Reviewed:{" "}
-              {chromosomeData.reviewed ? chromosomeData.reviewed["_text"] : "-"}
+              {chromosomeData.reviewed ? chromosomeData.reviewed["_text"] ? chromosomeData.reviewed["_text"] : chromosomeData.reviewed : "-"}
             </p>
             <p className="text-purp-5 pt-1 text-violet-700 sm:text-xs">
               Published:{" "}
-              {chromosomeData.published ? chromosomeData.published["_text"] : "-"}
+              {chromosomeData.published ? chromosomeData.published["_text"] ? chromosomeData.published["_text"] : chromosomeData.published : "-"}
             </p>
             <div className="my-1">
               <hr />

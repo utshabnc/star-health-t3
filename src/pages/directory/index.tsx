@@ -48,6 +48,7 @@ import ErrorComponent from "../../components/ErrorComponent";
 import type { Genetic } from "../../components/Genetics/Genetic.model";
 import GeneticsComponent from "../../components/Genetics/Genetics";
 import GeneticsFilters from "../../components/Genetics/GeneticsFilters";
+import DiseasesFilters from "../../components/Genetics/DiseasesFilter";
 
 interface PriceFilter {
   min: number;
@@ -153,7 +154,13 @@ export default function Directory() {
   const [clinicalTrialMaximumAgeFilters, setClinicalTrialMaximumAgeFilters] =
     useState<FieldValue[]>([] as FieldValue[]);
   const [genetics, setGenetics] = useState<Genetic[]>([] as Genetic[]);
-  const [filteredGenetics, setFilteredGenetics] = useState<Genetic[]>([] as Genetic[]);
+  const [filteredGenetics, setFilteredGenetics] = useState<Genetic[]>(
+    [] as Genetic[]
+  );
+  const [diseases, setDiseases] = useState<Genetic[]>([] as Genetic[]);
+  const [filteredDiseases, setFilteredDiseases] = useState<Genetic[]>(
+    [] as Genetic[]
+  );
   const { query: querySearch } = useRouter();
   const defaultClinicalTrialFields: Field[] = [
     Field.BriefTitle,
@@ -267,6 +274,34 @@ export default function Directory() {
   );
 
   useEffect(() => {
+    if (selectedTab == Tab.Diseases) {
+      const fetchDiseases = async () => {
+        try {
+          setIsApiProcessing(true);
+          const response = await fetch("/api/genetics/getAll");
+          const data = await response.json();
+          const diseases = data["topic"].filter(
+            (topic: any) => topic["title"]["_text"] == "Conditions"
+          )[0]["topics"]["topic"];
+          diseases.forEach((disease: any) => {
+            disease["url"] = disease["url"] ? disease["url"]["_text"] : "";
+            disease["title"] = disease["title"] ? disease["title"]["_text"] : "";
+            disease["type"] = "condition";
+            disease["other_names"] = disease["other_names"] ? disease["other_names"]["other_name"] : [];
+          });
+          setDiseases(diseases);
+          setFilteredDiseases(diseases);
+        } catch (error) {
+          console.log(error);
+        } finally {
+          setIsApiProcessing(false);
+        }
+      };
+      fetchDiseases();
+    }
+  }, [selectedTab]);
+
+  useEffect(() => {
     if (selectedTab == Tab.Genetics) {
       const fetchGenetics = async () => {
         try {
@@ -307,7 +342,12 @@ export default function Directory() {
               ? chromosome["url"]["_text"]
               : "";
             chromosome["title"] = chromosome["title"]
-              ? chromosome["title"]["_text"].length < 13 ? chromosome["title"]["_text"].replace("Chromosome ", "Chromosome 0") : chromosome["title"]["_text"]
+              ? chromosome["title"]["_text"].length < 13
+                ? chromosome["title"]["_text"].replace(
+                    "Chromosome ",
+                    "Chromosome 0"
+                  )
+                : chromosome["title"]["_text"]
               : "";
             chromosome["type"] = "chromosome";
             chromosome["other_names"] = chromosome["other_names"]
@@ -315,7 +355,7 @@ export default function Directory() {
               : [];
           });
 
-          let allGenetics = conditions.concat(genes).concat(chromosomes);
+          let allGenetics = genes.concat(chromosomes);
           allGenetics = allGenetics.sort((a: any, b: any) => {
             if (a["title"] < b["title"]) {
               return -1;
@@ -614,6 +654,20 @@ export default function Directory() {
                   }`}
                 >
                   Genetics
+                </button>
+
+                {/* diseases tab */}
+                <button
+                  onClick={() => {
+                    handleTabClick(Tab.Diseases, "diseases");
+                  }}
+                  className={`border-b-2 hover:border-zinc-500 ${
+                    selectedTab === Tab.Diseases
+                      ? "border-violet-600"
+                      : "border-zinc-200"
+                  }`}
+                >
+                  Diseases
                 </button>
 
                 {/* doctors tab */}
@@ -921,10 +975,24 @@ export default function Directory() {
               </div>
             )}
 
+            {selectedTab == Tab.Diseases && (
+              <div className="flex flex-col items-end">
+                <DiseasesFilters
+                  params={{
+                    diseases,
+                    setFilteredDiseases,
+                    setIsApiProcessing,
+                  }}
+                />
+              </div>
+            )}
+
             {selectedTab !== Tab.ClinicalTrials &&
               selectedTab !== Tab.Plans &&
               selectedTab !== Tab.Hospitals &&
-              selectedTab !== Tab.Genetics && (
+              selectedTab !== Tab.Genetics && 
+              selectedTab !== Tab.Diseases && 
+              (
                 <>
                   <Filters
                     search={search}
@@ -1083,10 +1151,15 @@ export default function Directory() {
             {selectedTab === Tab.Genetics && (
               <GeneticsComponent data={filteredGenetics} />
             )}
+            {selectedTab === Tab.Diseases && (
+              <GeneticsComponent data={filteredDiseases} />
+            )}
             {selectedTab !== Tab.ClinicalTrials &&
               selectedTab !== Tab.Plans &&
               selectedTab !== Tab.Hospitals &&
-              selectedTab !== Tab.Genetics && (
+              selectedTab !== Tab.Genetics && 
+              selectedTab !== Tab.Diseases &&
+              (
                 <DirectoryCards
                   search={search as string}
                   searchResults={searchResults}

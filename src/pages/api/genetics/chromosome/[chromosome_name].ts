@@ -14,12 +14,20 @@ const handler = async (
 ) => {
     const { chromosome_name } = req.query;
     const url = `${chromosomeURL}/${chromosome_name}.json`;
-    const response = await fetch(url);
-    const chromosomeXML = await response.text();
-    const chromosomeJSON: any = xml2json(chromosomeXML, { compact: true, spaces: 0 });
-    const chromosome = JSON.parse(chromosomeJSON);
-    const apiResponse: ChromosomeDataResponse = { chromosome };
-    res.status(200).json(apiResponse);
+    try {
+        const response = await fetch(url);
+        const chromosomeXML = await response.text();
+        const chromosomeJSON: any = xml2json(chromosomeXML, { compact: true, spaces: 0 });
+        const chromosome = JSON.parse(chromosomeJSON);
+        const apiResponse: ChromosomeDataResponse = { chromosome };
+        res.status(200).json(apiResponse);
+    } catch (error) {
+        const response = await fetch(url);
+        const chromosomeJSON = await response.json();
+        const apiResponse: ChromosomeDataResponse = { chromosome: chromosomeJSON };
+        res.status(200).json(apiResponse);
+    }
+
 }
 
 export default handler;
