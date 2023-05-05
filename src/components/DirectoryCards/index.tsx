@@ -18,7 +18,7 @@ type FilterParams = {
   doctorFilter: string;
   manufacturerFilter: string;
   productFilter: string;
-  opioidTreatmentProviderFilter: string;
+  // opioidTreatmentProviderFilter: string;
   cursor: string;
   year: string;
   drugManufacturer: string;
@@ -153,7 +153,7 @@ export default function DirectoryCards({
             .map((item: any, index: number) => (
               <>
                 <div
-                  key={item.id}
+                  key={index}
                   className="mb-2 w-[100%] rounded-lg bg-white text-center shadow-lg"
                 >
                   <div className="p-2">

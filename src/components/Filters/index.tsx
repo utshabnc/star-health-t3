@@ -1,7 +1,6 @@
 import { Doctor } from '@prisma/client'
-import type { Dispatch, SetStateAction} from 'react';
-import React, { useEffect, useState } from 'react'
-import type { FilterParams } from '../../pages/directory'
+import React, { Dispatch, SetStateAction, useEffect, useState } from 'react'
+import { FilterParams } from '../../pages/directory'
 import SearchPage from '../../pages/SearchPage'
 import type { DirectoryResponse, NameListResponse } from '../../server/trpc/router/db'
 import { allStates, capitalizeWords, formatMoney } from '../../utils'
@@ -19,7 +18,7 @@ export const formatSpecialties = (str: string) => {
 
 
 export default function Filters({data, filterParams, setFilterParams, search, setSearch }: {data: any, filterParams: any, setFilterParams: any, search: string | undefined, setSearch: Dispatch<SetStateAction<string | undefined>>}) {  
-    
+
     const {data: listData, isLoading} = trpc.db.nameList.useQuery()
     // console.log(data,">>>>>>>>>");
     const [price, setPrice] = useState<number>(1000)
@@ -81,7 +80,7 @@ export default function Filters({data, filterParams, setFilterParams, search, se
                     </p>
                     
                     <div className="wrap-filters flex w-full items-center py-2">
-                        {data && (data?.doctors || data?.manufacturers) && <select onChange={(e) => {
+                        {data && (data?.doctors || data?.manufacturers || data?.opioidTreatmentProviders) && <select onChange={(e) => {
                             setFilterParams((prev: FilterParams) => {
                                 return {
                                     ...prev,

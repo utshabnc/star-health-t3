@@ -85,7 +85,6 @@ const defaultOpioidTreatmentSelect = Prisma.validator<Prisma.OpioidTreatmentSele
     state: true,
     zip: true,
     phone: true,
-    medicare_id_effective_date: true,
   }
 );
 
@@ -230,7 +229,6 @@ export const db = router({
             contains: search,
             mode: "insensitive"
           },
-
         },
         select: {
           id: true,
@@ -838,11 +836,37 @@ export const db = router({
 
       if(input.subject?.toLowerCase() === "opioidtreatmentproviders"){
         const opioidTreatmentProviders = await prisma.opioidTreatment.findMany({
-          where: {},
+          where: {
+            AND: [
+              {
+                provider_name: {
+                  contains: input.name,
+                  mode: "insensitive"
+                }
+              },
+              {
+                state: input.state !== '' ? input.state : {not: ""}
+              },
+              {
+                city: input.city !== "" ? input.city : {not: ""}
+              },
+              {
+                zip: input.zipCode !== "" ? input.zipCode : {not: ""}
+              }]},
           take: 2000
         });
 
-        return {opioidTreatmentProviders}
+
+        const cities = opioidTreatmentProviders.map((item: any) => {
+          return item.city
+        })
+
+        const zipCodes = opioidTreatmentProviders.map((item: any) => {
+          return item.zip
+        })
+
+
+        return {opioidTreatmentProviders, cities: filterDuplicates(cities), zipCodes: filterDuplicates(zipCodes)}
       }
 
       if(input.subject === "transactions"){
@@ -932,7 +956,12 @@ export const db = router({
 
 
 
-        return {payments: payments.sort((a:any,b: any) => b.date - a.date), manufacturerList: filterDuplicateObjArr(manufacturerNames, "id"), doctorList: filterDuplicateObjArr(doctorNames, "id"), productNameList: filterDuplicateObjArr(productNameList, "id")}
+        return {
+          payments: payments.sort((a:any,b: any) => b.date - a.date),
+          manufacturerList: filterDuplicateObjArr(manufacturerNames, "id"),
+          doctorList: filterDuplicateObjArr(doctorNames, "id"),
+          productNameList: filterDuplicateObjArr(productNameList, "id"),
+        }
 
       }
 

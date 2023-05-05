@@ -25,7 +25,7 @@ const HealthPlansDetails = () => {
         )
         .pipe(finalize(() => setIsProcessing(false)))
         .subscribe((resp: any) => {
-          console.log(resp?.response, "hpd-data;;;;;");
+          // console.log(resp?.response, "hpd-data;;;;;");
           setHealthPlanDetail(resp?.response?.plan);
         });
     }
