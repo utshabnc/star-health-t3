@@ -6,6 +6,7 @@ import { Manufacturer, ManufacturerSummary, Product } from "@prisma/client";
 import { formatSpecialties } from "../Filters";
 import _ from "lodash";
 import PhoneNumber from "../PhoneNumber";
+import { titleCase } from "title-case";
 
 type FilterParams = {
   subject: string;
@@ -158,24 +159,24 @@ export default function DirectoryCards({
                 >
                   <div className="p-2">
                     <div className="flex flex-row justify-between">
-                      <h5 className="text-md mb-2 font-medium text-violet-700 underline">
+                      <h4 className="text-md mb-2 font-medium text-violet-700 underline">
                         <Link href={`/opioidTreatment/${item.id}`}>
-                          {item.provider_name}
+                          {titleCase(item.provider_name.toLowerCase())}
                         </Link>
-                      </h5>
+                      </h4>
                     </div>
                     <div>
                       <div className="flex flex-row justify-between">
                         <div className="flex flex-col">
                           <h5 className="text-md mb-2 text-gray-900">
-                          {item.address_line_1}, 
+                          {titleCase(item.address_line_1.toLowerCase())},
                           {item.address_line_2 !== "" &&
                                 item.address_line_2 !== undefined &&
                                 item.address_line_2 !== null
-                                  ? item.address_line_2 + ', '
+                                  ? titleCase(item.address_line_2.toLowerCase()) + ', '
                                   : ' '}
 
-                          {item.city}, {item.state} {item.zip}
+                          {titleCase(item.city.toLowerCase())}, {item.state} {item.zip}
                           
                           
                           </h5>
