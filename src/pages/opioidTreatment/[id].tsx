@@ -9,20 +9,14 @@ const OpioidTreatmentProviderDetails = () => {
   const navigate = useRouter();
   const id = navigate.query.id as string;
 
-  console.log('RENDER OpioidTreatmentProviderDetails')
-  console.log('OpioidTreatmentProviderDetails id', id)
-//   const [year, setYear] = useState<string>();
-//   const { data: opioidTreatmentProvider } = trpc.db.opioidTreatment.useQuery({ id });
+  const [opioidTreatmentProvider, setOpioidTreatmentProvider] = useState<OpioidTreatmentProvider | null | undefined>(null);
 
-const [opioidTreatmentProvider, setOpioidTreatmentProvider] = useState<OpioidTreatmentProvider | null | undefined>(null);
+  const query = useMemo(() => ({ id }), [id]);
+  const { data } = trpc.db.opioidTreatment.useQuery(query);
 
-const query = useMemo(() => ({ id }), [id]);
-const { data } = trpc.db.opioidTreatment.useQuery(query);
-
-useEffect(() => {
-  setOpioidTreatmentProvider(data);
-}, [data]);
-
+  useEffect(() => {
+    setOpioidTreatmentProvider(data);
+  }, [data]);
 
   // Loading Screen
   if (!opioidTreatmentProvider) {

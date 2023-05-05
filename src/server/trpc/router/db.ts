@@ -639,9 +639,6 @@ export const db = router({
   directory: publicProcedure
     .input(directoryInput)
     .query(async ({ctx: {prisma}, input}) => {
-      console.log(input);
-      
-
 
       if(input.subject?.toLowerCase().trim() === "doctors"){
         const names = input.name?.split(" ")
@@ -969,8 +966,7 @@ export const db = router({
       }
 
       if (input.subject?.toLowerCase() === 'drugs') {
-        // console.log('hello input')
-        // console.log(input)
+
         let drugs = []
         if (input.name) {
           drugs = await prisma.drugs.findMany({

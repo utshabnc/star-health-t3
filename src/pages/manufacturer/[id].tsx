@@ -17,9 +17,6 @@ const ManufacturerDetails = () => {
   const [year, setYear] = useState<string>();
   const { data: manufacturer } = trpc.db.manufacturer.useQuery({ id, year });
 
-  console.log('RENDER ManufacturerDetails')
-  console.log('ManufacturerDetails id', id)
-
   function classNames(...classes: string[]) {
     return classes.filter(Boolean).join(' ');
   }
