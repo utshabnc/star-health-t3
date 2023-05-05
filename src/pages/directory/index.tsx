@@ -825,7 +825,7 @@ export default function Directory() {
                   onClick={() => {
                     handleTabClick(Tab.OpioidTreatmentProviders, "opioidTreatmentProviders");
                   }}
-                  className={`border-b-2 hover:border-zinc-500 ${
+                  className={`border-b-2 hover:border-zinc-500 w-max ${
                     selectedTab === Tab.OpioidTreatmentProviders
                       ? "border-violet-600"
                       : "border-zinc-200"
@@ -1018,14 +1018,18 @@ export default function Directory() {
                   {"data" && (
                     <>
                       <div className="relative">
-                        <p className="p-1 text-xs font-semibold text-violet-900">{`Search for ${
-                          filterParams.subject
-                        } by ${
-                          filterParams.subject === "payment"
-                            ? "product"
-                            : "name"
-                        }`}</p>
-                        <div className="flex w-[100%] items-center gap-3">
+                      <p className="p-1 text-xs font-semibold text-violet-900">{`Search for
+                            ${
+                              filterParams.subject === "opioidTreatmentProviders"
+                                ? "Opioid Treatment Providers"
+                                : filterParams.subject
+                            } by ${
+                            filterParams.subject === "opioidTreatmentProviders" ||
+                            filterParams.subject === "payment"
+                              ? "name"
+                              : "product"
+                          }`}</p>
+                          <div className="flex w-[100%] items-center gap-3">
                           <input
                             type="text"
                             placeholder={`Search`}

@@ -4,22 +4,23 @@ import { useRouter } from 'next/router';
 import { trpc } from '../../utils/trpc';
 import type { OpioidTreatmentProvider } from '../../components/OpioidTreatmentProviders/OpioidTreatmentProvider.model';
 import PhoneNumber from "../../components/PhoneNumber";
+import { titleCase } from "title-case";
 
 const OpioidTreatmentProviderDetails = () => {
   const navigate = useRouter();
   const id = navigate.query.id as string;
 
-  const [opioidTreatmentProvider, setOpioidTreatmentProvider] = useState<OpioidTreatmentProvider | null | undefined>(null);
+  const [provider, setProvider] = useState<OpioidTreatmentProvider | null | undefined>(null);
 
   const query = useMemo(() => ({ id }), [id]);
   const { data } = trpc.db.opioidTreatment.useQuery(query);
 
   useEffect(() => {
-    setOpioidTreatmentProvider(data);
+    setProvider(data);
   }, [data]);
 
   // Loading Screen
-  if (!opioidTreatmentProvider) {
+  if (!provider) {
     return (
       <>
         <div className='bgColor'>
@@ -113,30 +114,30 @@ const OpioidTreatmentProviderDetails = () => {
           </div>
           <div className='flex flex-col justify-end lg:px-24'>
             <p className='text-violet-700 text-2xl font-semibold'>
-                {opioidTreatmentProvider.provider_name}
+                {titleCase((provider?.provider_name?.toLowerCase()) ?? "")}
             </p>
             <p className='text-gray-500 text-sm'>
             <div>
                       <div className="flex flex-row justify-between">
                         <div className="flex flex-col">
                         <h5 className="text-md mb-2 text-gray-900">
-                        {opioidTreatmentProvider.address_line_1}
+                        {provider.address_line_1}
                         <br />
-                        {opioidTreatmentProvider.address_line_2 !== "" &&
-                          opioidTreatmentProvider.address_line_2 !== undefined &&
-                          opioidTreatmentProvider.address_line_2 !== null && (
+                        {provider.address_line_2 !== "" &&
+                          provider.address_line_2 !== undefined &&
+                          provider.address_line_2 !== null && (
                             <>
-                              {opioidTreatmentProvider.address_line_2}
+                              {titleCase(provider.address_line_2.toLowerCase())}
                               <br />
                             </>
                         )}
-                        {opioidTreatmentProvider.city}, {opioidTreatmentProvider.state} {opioidTreatmentProvider.zip}
+                        {titleCase((provider?.city?.toLowerCase()) ?? "")}, {provider.state} {provider.zip}
                       </h5>
                             <div className="text-md mb-2 text-gray-900 text-left">
-                              <PhoneNumber phone={opioidTreatmentProvider.phone} />
+                              <PhoneNumber phone={provider.phone} />
                             </div>
                             <div className="text-md mb-2 text-gray-900 text-left">
-                              NPI: {opioidTreatmentProvider.npi}
+                              NPI: {provider.npi}
                             </div>
                           </div>
                         {/* </div> */}
