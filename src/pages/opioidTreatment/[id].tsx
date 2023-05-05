@@ -121,7 +121,7 @@ const OpioidTreatmentProviderDetails = () => {
                       <div className="flex flex-row justify-between">
                         <div className="flex flex-col">
                         <h5 className="text-md mb-2 text-gray-900">
-                        {titleCase(provider.address_line_1.toLowerCase())}
+                        {titleCase((provider?.address_line_1?.toLowerCase()) ?? "")}
                         <br />
                         {provider.address_line_2 !== "" &&
                           provider.address_line_2 !== undefined &&
