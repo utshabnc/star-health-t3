@@ -839,6 +839,12 @@ export const db = router({
           where: {
             AND: [
               {
+                provider_name: {
+                  contains: input.name,
+                  mode: "insensitive"
+                }
+              },
+              {
                 state: input.state !== '' ? input.state : {not: ""}
               },
               {
