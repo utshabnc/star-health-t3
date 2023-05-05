@@ -279,3 +279,16 @@ model Drugs {
   overdosage            String?
   microbiology          String?
 }
+
+model OpioidTreatment {
+  id                         String    @id
+  npi                        String
+  provider_name              String
+  address_line_1             String
+  address_line_2             String?
+  city                       String
+  state                      String
+  zip                        String
+  medicare_id_effective_date DateTime?
+  phone                      String?
+}
