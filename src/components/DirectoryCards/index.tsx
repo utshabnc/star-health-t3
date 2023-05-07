@@ -6,7 +6,7 @@ import { Manufacturer, ManufacturerSummary, Product } from "@prisma/client";
 import { formatSpecialties } from "../Filters";
 import _ from "lodash";
 import PhoneNumber from "../PhoneNumber";
-import { titleCase } from "title-case";
+import { toTitleCase } from "../../utils";
 
 type FilterParams = {
   subject: string;
@@ -19,7 +19,6 @@ type FilterParams = {
   doctorFilter: string;
   manufacturerFilter: string;
   productFilter: string;
-  // opioidTreatmentProviderFilter: string;
   cursor: string;
   year: string;
   drugManufacturer: string;
@@ -161,7 +160,7 @@ export default function DirectoryCards({
                     <div className="flex flex-row justify-between">
                       <h4 className="text-md mb-2 font-medium text-violet-700 underline">
                         <Link href={`/opioidTreatment/${item.id}`}>
-                          {titleCase(item.provider_name.toLowerCase())}
+                          {toTitleCase(item.provider_name.toLowerCase())}
                         </Link>
                       </h4>
                     </div>
@@ -169,14 +168,14 @@ export default function DirectoryCards({
                       <div className="flex flex-row justify-between">
                         <div className="flex flex-col">
                           <h5 className="text-md mb-2 text-gray-900">
-                          {titleCase(item.address_line_1.toLowerCase())},
+                          {toTitleCase(item.address_line_1.toLowerCase())},
                           {item.address_line_2 !== "" &&
                                 item.address_line_2 !== undefined &&
                                 item.address_line_2 !== null
-                                  ? titleCase(item.address_line_2.toLowerCase()) + ', '
+                                  ? ' ' + toTitleCase(item.address_line_2.toLowerCase()) + ', '
                                   : ' '}
 
-                          {titleCase(item.city.toLowerCase())}, {item.state} {item.zip}
+                          {toTitleCase(item.city.toLowerCase())}, {item.state} {item.zip}
                           
                           
                           </h5>

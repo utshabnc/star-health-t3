@@ -42,7 +42,6 @@
     "react-tooltip": "^4.2.21",
     "rxjs": "^7.8.0",
     "superjson": "1.9.1",
-    "title-case": "^3.0.3",
     "topojson-client": "^3.1.0",
     "xml-js": "^1.6.11",
     "zod": "^3.18.0"
