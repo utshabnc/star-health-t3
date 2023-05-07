@@ -29,6 +29,7 @@ import type {
 
 import fda from "../../assets/logos/fda.png";
 import cms from "../../assets/logos/cms.png";
+import cmsDataLogo from "../../assets/logos/cms_data.svg";
 import openPayments from "../../assets/logos/open-payments.png";
 import clinicalTrials from "../../assets/logos/clinical-trials.png";
 import Image from "next/image";
@@ -1131,6 +1132,15 @@ export default function Directory() {
                               className=" object-contain"
                             />
                           </div>
+                        )}
+                        {selectedTab === Tab.OpioidTreatmentProviders && (
+                          <Image
+                            src={cmsDataLogo}
+                            alt=""
+                            width={128}
+                            height={128}
+                            className="absolute bottom-0 right-0 object-contain"
+                          />
                         )}
                         {selectedTab === Tab.Drugs && (
                           <Image
