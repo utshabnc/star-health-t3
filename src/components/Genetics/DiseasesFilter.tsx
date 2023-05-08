@@ -27,17 +27,7 @@ function mapOtherNames(other_names: any[]) {
 
 export default function DiseasesFilters({ params }: DiseasesFiltersProps) {
   const { diseases, setFilteredDiseases, setIsApiProcessing } = params;
-  const [selectedCategory, setSelectedCategory] = useState<string>("");
-  const [dataIsAvailable, setDataIsAvailable] = useState<boolean>(false);
   const [searchStr, setSearchStr] = useState<string>("");
-
-  const allCategories: string[] = ["Genes", "Chromosomes"];
-
-  useEffect(() => {
-    if (diseases && diseases.length > 0) {
-      setDataIsAvailable(true);
-    }
-  }, [diseases]);
 
   useEffect(() => {
     if (searchStr) {
