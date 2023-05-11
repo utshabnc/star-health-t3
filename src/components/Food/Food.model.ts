@@ -21,4 +21,7 @@ export interface FoodNutrient {
     unitName: string;
     derivationCode: string;
     derivationDescription: string;
+    nutrient: any;
+    nutrientNumber: string;
+    value: string;
 }

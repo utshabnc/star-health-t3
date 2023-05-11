@@ -166,7 +166,7 @@ export default function Directory() {
     [] as Genetic[]
   );
   const [food, setFood] = useState<Food[]>([] as Food[]);
-  const [currFoodPage, setCurrFoodPage] = useState<number>(1);
+  const [filteredFood, setFilteredFood] = useState<Food[]>([] as Food[]);
   const { query: querySearch } = useRouter();
   const defaultClinicalTrialFields: Field[] = [
     Field.BriefTitle,
@@ -403,6 +403,7 @@ export default function Directory() {
             setError(data);
           } else {
             setFood(data['foods']);
+            setFilteredFood(data['foods']);
           }
         } catch (error) {
           setError(error);
@@ -412,7 +413,7 @@ export default function Directory() {
       };
       fetchFood();
     }
-  }, [selectedTab, currFoodPage]);
+  }, [selectedTab]);
 
   useEffect(() => {
     let searchExpr = "";
@@ -1039,8 +1040,10 @@ export default function Directory() {
               <div className="flex flex-col items-end">
                 <FoodsFilters
                   params={{
+                    setFilteredFood,
                     setFood,
-                    setIsApiProcessing
+                    setIsApiProcessing,
+                    food
                   }}
                 />
               </div>
@@ -1229,7 +1232,7 @@ export default function Directory() {
             )}
             {selectedTab === Tab.Food && (
               <>
-                <FoodsComponent data={food} />
+                <FoodsComponent data={filteredFood} />
               </>
             )}
             {selectedTab !== Tab.ClinicalTrials &&
