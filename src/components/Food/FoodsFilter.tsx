@@ -30,9 +30,9 @@ export default function FoodsFilters({ params }: FoodsFiltersProps) {
       return () => clearTimeout(delayDebounceFn);
     } else {
       setIsApiProcessing(true);
-      fetch("/api/food/getAll/1").then((response) => {
+      fetch("/api/food/search/apple").then((response) => {
         response.json().then((data) => {
-          setFood(data);
+          setFood(data['foods']);
           setIsApiProcessing(false);
         });
       });

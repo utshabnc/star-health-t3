@@ -28,19 +28,36 @@ function foodAttributes(foodData: FoodData) {
     }).filter((attr: any) => attr['name'] !== undefined)
     .filter((attr: any) => acceptableAttributes.includes(attr['desc']));
     if (foodData.scientificName) {
-        foodAttrs.push({
-            'name': upperCaseAllWords(foodData.scientificName),
-            'desc': 'Scientific Name',
-        });
-    }
-    if (foodData.footnote) {
-        foodAttrs.push({
-            'name': (foodData.footnote),
-            'desc': 'Note',
-        });
-    }
-    console.log(foodAttrs);
-    if (foodAttrs.length === 0) {
+      foodAttrs.push({
+          'name': upperCaseAllWords(foodData.scientificName),
+          'desc': 'Scientific Name',
+      });
+  }
+  if (foodData.footnote) {
+      foodAttrs.push({
+          'name': (foodData.footnote),
+          'desc': 'Note',
+      });
+  }
+  if (foodData.brandOwner) {
+      foodAttrs.push({
+          'name': (upperCaseAllWords(foodData.brandOwner.toLocaleLowerCase())),
+          'desc': 'Brand',
+      });
+  }
+  if (foodData.ingredients) {
+      foodAttrs.push({
+          'name': (upperCaseAllWords(foodData.ingredients.toLocaleLowerCase())),
+          'desc': 'Ingredients',
+      });
+  }
+  if (foodData.additionalDescriptions) {
+      foodAttrs.push({
+          'name': (upperCaseAllWords(foodData.additionalDescriptions.toLocaleLowerCase())),
+          'desc': 'Additional Description',
+      });
+  }
+  if (foodAttrs.length === 0) {
         return;
     }
     return (
@@ -65,24 +82,48 @@ function foodNutrients(foodData: FoodData) {
     }
     const convertedNutrients = foodNutrients.map((nutrient: any) => {
       return {
-        name: upperCaseAllWords(nutrient["nutrient"]["name"]),
-        amount: nutrient["nutrient"]["number"] + " " + nutrient["nutrient"]["unitName"],
+        name: upperCaseAllWords(nutrient["nutrient"] ? nutrient["nutrient"]["name"] : nutrient["nutrientName"]),
+        number: nutrient["nutrient"] ? nutrient["nutrient"]["number"] : nutrient["nutrientNumber"],
+        unitName: nutrient["nutrient"] ? nutrient["nutrient"]["unitName"] : nutrient["unitName"],
       };
     });
+    console.log(convertedNutrients);
     return (
       <div>
         {convertedNutrients.map((nutrient: any, index: number) => {
           return (
-            <div key={index} className="flex flex-row">
-              <p className="text-md mb-1 text-violet-700 ml-1">
-                {nutrient.name + ": " + nutrient.amount}
-              </p>
-            </div>
+            <tr key={index} className={index % 2 == 0 ? "bg-violet-100" : ""}>
+              <td className="px-4 py-1 whitespace-nowrap text-md text-gray-800">
+                {nutrient.name}
+              </td>
+              <td className="px-4 py-1 whitespace-nowrap text-md text-gray-800">
+                {nutrient.number + " " + nutrient.unitName}
+              </td>
+            </tr>
           );
         })}
       </div>
     );
-  } catch {}
+  } catch (error) {
+    console.log("error", error);
+  }
+}
+
+async function enrichFoodData(foodData: FoodData) {
+  const foodName = foodData.description;
+  const fdcID = foodData.fdcID;
+  const enrichedData = await fetch(`/api/food/search/${foodName}`).then((response) => {
+    return response.json().then((data) => {
+      const enrichedFoodData = data.foods.find((food: any) => food.fdcID === fdcID);
+      if (enrichedFoodData) {
+        const totalFoodData = { ...foodData, ...enrichedFoodData };
+        return totalFoodData;
+      } else {
+        return foodData;
+      }
+    });
+  });
+  return enrichedData;
 }
 
 const FoodDetails = () => {
@@ -98,7 +139,9 @@ const FoodDetails = () => {
         try {
           const response = await fetch(`/api/food/${foodID}`);
           const data = await response.json();
-          setFoodData(data);
+          enrichFoodData(data).then((enrichedData) => {
+            setFoodData(enrichedData);
+          });
         } catch (error) {
           console.log(error);
         } finally {
@@ -150,7 +193,7 @@ const FoodDetails = () => {
             </p>
             <p className="text-purp-5 pt-1 text-violet-700 sm:text-xs">
               Category:{" "}
-              {foodData.foodCategory ? foodData.foodCategory.description : "-"}
+              {foodData.foodCategory ? foodData.foodCategory.description ? foodData.foodCategory.description : foodData.foodCategory : "-"}
             </p>
             <div className="my-1">
               <hr />
