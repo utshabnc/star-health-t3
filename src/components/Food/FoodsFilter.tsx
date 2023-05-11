@@ -14,6 +14,29 @@ interface FoodsFiltersProps {
   };
 }
 
+const NUTRIENT_DESIGNATIONS = {
+  "203": "Protein",
+  "204": "Fat",
+  "205": "Carbohydrates",
+  "208": "Calories",
+  "303": "Iron",
+  "291": "Fiber",
+  "269": "Sugar",
+  "301": "Calcium",
+  "307": "Sodium",
+  "306": "Potassium",
+  "401": "Vitamin C",
+  "328": "Vitamin D",
+  "320": "Vitamin A",
+  "415": "Vitamin B6",
+  "418": "Vitamin B12",
+  "255": "Water",
+  "305": "Phosphorus",
+  "304": "Magnesium",
+  "309": "Zinc",
+  "601": "Cholesterol",
+};
+
 export default function FoodsFilters({ params }: FoodsFiltersProps) {
   const { setFilteredFood, setFood, setIsApiProcessing, food } = params;
   const [searchStr, setSearchStr] = useState<string>("");
@@ -21,6 +44,9 @@ export default function FoodsFilters({ params }: FoodsFiltersProps) {
   const [minCalories, setMinCalories] = useState<number>(0);
   const [minCarbs, setMinCarbs] = useState<number>(0);
   const [minFat, setMinFat] = useState<number>(0);
+  const [inclusiveNutrients, setInclusiveNutrients] = useState<string[]>([]);
+  const [exclusiveNutrients, setExclusiveNutrients] = useState<string[]>([]);
+  const [selectedNutrient, setSelectedNutrient] = useState<string>("203");
 
   useEffect(() => {
     if (searchStr) {
@@ -35,6 +61,8 @@ export default function FoodsFilters({ params }: FoodsFiltersProps) {
             setMinCalories(0);
             setMinCarbs(0);
             setMinFat(0);
+            setInclusiveNutrients([]);
+            setExclusiveNutrients([]);
           });
         });
       }, 250);
@@ -49,7 +77,9 @@ export default function FoodsFilters({ params }: FoodsFiltersProps) {
           setMinCalories(0);
           setMinCarbs(0);
           setMinFat(0);
-      });
+          setInclusiveNutrients([]);
+          setExclusiveNutrients([]);
+        });
       });
     }
   }, [searchStr]);
@@ -76,6 +106,11 @@ export default function FoodsFilters({ params }: FoodsFiltersProps) {
         });
         setFilteredFood(currFood);
         setIsApiProcessing(false);
+        if (exclusiveNutrients.includes("203")) {
+          setExclusiveNutrients(
+            exclusiveNutrients.filter((nutrient) => nutrient !== "203")
+          );
+        }
       }, 250);
       return () => clearTimeout(delayDebounceFn);
     }
@@ -103,6 +138,11 @@ export default function FoodsFilters({ params }: FoodsFiltersProps) {
         });
         setFilteredFood(currFood);
         setIsApiProcessing(false);
+        if (exclusiveNutrients.includes("208")) {
+          setExclusiveNutrients(
+            exclusiveNutrients.filter((nutrient) => nutrient !== "208")
+          );
+        }
       }, 250);
       return () => clearTimeout(delayDebounceFn);
     }
@@ -120,9 +160,7 @@ export default function FoodsFilters({ params }: FoodsFiltersProps) {
           if (carbs) {
             return (
               parseInt(
-                carbs["nutrient"]
-                  ? carbs["nutrient"]["value"]
-                  : carbs["value"]
+                carbs["nutrient"] ? carbs["nutrient"]["value"] : carbs["value"]
               ) >= minCarbs
             );
           }
@@ -130,6 +168,11 @@ export default function FoodsFilters({ params }: FoodsFiltersProps) {
         });
         setFilteredFood(currFood);
         setIsApiProcessing(false);
+        if (exclusiveNutrients.includes("205")) {
+          setExclusiveNutrients(
+            exclusiveNutrients.filter((nutrient) => nutrient !== "205")
+          );
+        }
       }, 250);
       return () => clearTimeout(delayDebounceFn);
     }
@@ -155,10 +198,67 @@ export default function FoodsFilters({ params }: FoodsFiltersProps) {
         });
         setFilteredFood(currFood);
         setIsApiProcessing(false);
+        if (exclusiveNutrients.includes("204")) {
+          setExclusiveNutrients(
+            exclusiveNutrients.filter((nutrient) => nutrient !== "204")
+          );
+        }
       }, 250);
       return () => clearTimeout(delayDebounceFn);
     }
   }, [minFat]);
+
+  useEffect(() => {
+    const delayDebounceFn = setTimeout(() => {
+      setIsApiProcessing(true);
+      let currFood = food;
+      currFood = currFood.filter((food) => {
+        let found = true;
+        inclusiveNutrients.forEach((nutrient) => {
+          const nutrientObj = food.foodNutrients.find(
+            (nutrientObj) => nutrientObj["nutrientNumber"] === nutrient
+          );
+          if (nutrientObj) {
+            if (
+              parseFloat(
+                nutrientObj["nutrient"]
+                  ? nutrientObj["nutrient"]["value"]
+                  : nutrientObj["value"]
+              ) <= 0
+            ) {
+              found = false;
+            } else {
+            }
+          } else {
+            found = false;
+          }
+        });
+        exclusiveNutrients.forEach((nutrient) => {
+          const nutrientObj = food.foodNutrients.find(
+            (nutrientObj) => nutrientObj["nutrientNumber"] === nutrient
+          );
+          if (nutrientObj) {
+            if (
+              parseFloat(
+                nutrientObj["nutrient"]
+                  ? nutrientObj["nutrient"]["value"]
+                  : nutrientObj["value"]
+              ) > 0
+            ) {
+              found = false;
+            }
+          } else {
+            found = false;
+          }
+        });
+        return found;
+      });
+      console.log(currFood);
+      setFilteredFood(currFood);
+      setIsApiProcessing(false);
+    }, 250);
+    return () => clearTimeout(delayDebounceFn);
+  }, [inclusiveNutrients, exclusiveNutrients]);
 
   return (
     <>
@@ -236,6 +336,145 @@ export default function FoodsFilters({ params }: FoodsFiltersProps) {
                 onChange={(e) => setMinFat(parseInt(e.target.value))}
                 className="w-[100%] cursor-pointer rounded-lg border border-violet-900 border-violet-900 bg-transparent accent-violet-500"
               />
+            </div>
+          </div>
+          <div className="my-2 flex w-[100%] flex-row">
+            <div className="mx-2">
+              <p className="p-1 text-xs font-semibold text-violet-900">
+                Include/Exclude by Nutrients
+              </p>
+              <div className="flex flex-row">
+                <select
+                  className="mr-1 w-[100%] cursor-pointer rounded-lg border border-violet-900 bg-transparent p-1 text-sm text-slate-900 placeholder:text-violet-800 hover:bg-violet-300 hover:text-violet-900"
+                  onChange={(e) => setSelectedNutrient(e.target.value)}
+                  defaultValue={selectedNutrient}
+                >
+                  {Object.keys(NUTRIENT_DESIGNATIONS).map(
+                    (nutrient: string) => (
+                      <option key={nutrient} value={nutrient}>
+                        {
+                          NUTRIENT_DESIGNATIONS[
+                            nutrient as keyof typeof NUTRIENT_DESIGNATIONS
+                          ]
+                        }
+                      </option>
+                    )
+                  )}
+                </select>
+                <button
+                  className="mx-1 cursor-pointer rounded-lg border border-violet-900 bg-transparent p-1 text-sm text-slate-900 placeholder:text-violet-800 hover:bg-violet-300 hover:text-violet-900"
+                  onClick={() => {
+                    if (exclusiveNutrients.includes(selectedNutrient)) {
+                      setExclusiveNutrients(
+                        exclusiveNutrients.filter(
+                          (nutrient) => nutrient !== selectedNutrient
+                        )
+                      );
+                    }
+                    setInclusiveNutrients([
+                      ...inclusiveNutrients,
+                      selectedNutrient,
+                    ]);
+                  }}
+                >
+                  Include
+                </button>
+                <button
+                  className="ml-1 mr-2 cursor-pointer rounded-lg border border-violet-900 bg-transparent p-1 text-sm text-slate-900 placeholder:text-violet-800 hover:bg-violet-300 hover:text-violet-900"
+                  onClick={() => {
+                    if (inclusiveNutrients.includes(selectedNutrient)) {
+                      setInclusiveNutrients(
+                        inclusiveNutrients.filter(
+                          (nutrient) => nutrient !== selectedNutrient
+                        )
+                      );
+                    }
+                    setExclusiveNutrients([
+                      ...exclusiveNutrients,
+                      selectedNutrient,
+                    ]);
+                    if (selectedNutrient === "203") {
+                      setMinProtein(0);
+                    } else if (selectedNutrient === "208") {
+                      setMinCalories(0);
+                    } else if (selectedNutrient === "205") {
+                      setMinCarbs(0);
+                    } else if (selectedNutrient === "204") {
+                      setMinFat(0);
+                    }
+                  }}
+                >
+                  Exclude
+                </button>
+                {inclusiveNutrients.length > 0 && (
+                  <div
+                    className="flex flex-row"
+                    style={{ alignItems: "center" }}
+                  >
+                    {inclusiveNutrients.map((nutrient) => (
+                      <button
+                        key={nutrient}
+                        style={{ width: "110px", height: "25px" }}
+                        className="hover:text-white-900 mx-1 cursor-pointer rounded-xl border border-green-900 bg-green-100 p-1 text-xs text-green-900 hover:bg-green-300"
+                        onClick={() => {
+                          setInclusiveNutrients(
+                            inclusiveNutrients.filter(
+                              (nutrient_) => nutrient_ !== nutrient
+                            )
+                          );
+                        }}
+                      >
+                        <div className="flex items-center justify-between">
+                          <div className="w-40%">
+                            {
+                              NUTRIENT_DESIGNATIONS[
+                                nutrient as keyof typeof NUTRIENT_DESIGNATIONS
+                              ]
+                            }
+                          </div>
+                          <div className="w-10% text-xxs">
+                            <p>X</p>
+                          </div>
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                )}
+                {exclusiveNutrients.length > 0 && (
+                  <div
+                    className="flex flex-row"
+                    style={{ alignItems: "center" }}
+                  >
+                    {exclusiveNutrients.map((nutrient) => (
+                      <button
+                        key={nutrient}
+                        style={{ width: "110px", height: "25px" }}
+                        className="hover:text-white-900 mx-1 cursor-pointer rounded-xl border border-red-900 bg-red-100 p-1 text-xs text-red-900 hover:bg-red-300"
+                        onClick={() => {
+                          setExclusiveNutrients(
+                            exclusiveNutrients.filter(
+                              (nutrient_) => nutrient_ !== nutrient
+                            )
+                          );
+                        }}
+                      >
+                        <div className="flex items-center justify-between">
+                          <div className="w-40%">
+                            {
+                              NUTRIENT_DESIGNATIONS[
+                                nutrient as keyof typeof NUTRIENT_DESIGNATIONS
+                              ]
+                            }
+                          </div>
+                          <div className="w-10% text-xxs">
+                            <p>X</p>
+                          </div>
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </div>
