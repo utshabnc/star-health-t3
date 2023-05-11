@@ -195,7 +195,7 @@ export default function FoodsFilters({ params }: FoodsFiltersProps) {
                 max="30"
                 value={minProtein}
                 onChange={(e) => setMinProtein(parseInt(e.target.value))}
-                className="w-[100%] cursor-pointer rounded-lg border border-violet-900 border-violet-900 bg-violet-900 hover:bg-violet-300"
+                className="w-[100%] cursor-pointer rounded-lg border border-violet-900 border-violet-900 bg-transparent accent-violet-500"
               />
             </div>
             <div className="mx-2">
@@ -208,7 +208,7 @@ export default function FoodsFilters({ params }: FoodsFiltersProps) {
                 max="300"
                 value={minCalories}
                 onChange={(e) => setMinCalories(parseInt(e.target.value))}
-                className="w-[100%] cursor-pointer rounded-lg border border-violet-900 border-violet-900 bg-violet-900 hover:bg-violet-300"
+                className="w-[100%] cursor-pointer rounded-lg border border-violet-900 border-violet-900 bg-transparent accent-violet-500"
               />
             </div>
             <div className="mx-2">
@@ -221,7 +221,7 @@ export default function FoodsFilters({ params }: FoodsFiltersProps) {
                 max="30"
                 value={minCarbs}
                 onChange={(e) => setMinCarbs(parseInt(e.target.value))}
-                className="w-[100%] cursor-pointer rounded-lg border border-violet-900 border-violet-900 bg-violet-900 hover:bg-violet-300"
+                className="w-[100%] cursor-pointer rounded-lg border border-violet-900 border-violet-900 bg-transparent accent-violet-500"
               />
             </div>
             <div className="mx-2">
@@ -234,7 +234,7 @@ export default function FoodsFilters({ params }: FoodsFiltersProps) {
                 max="30"
                 value={minFat}
                 onChange={(e) => setMinFat(parseInt(e.target.value))}
-                className="w-[100%] cursor-pointer rounded-lg border border-violet-900 border-violet-900 bg-violet-900 hover:bg-violet-300"
+                className="w-[100%] cursor-pointer rounded-lg border border-violet-900 border-violet-900 bg-transparent accent-violet-500"
               />
             </div>
           </div>

@@ -39,18 +39,18 @@ function foodAttributes(foodData: FoodData) {
           'desc': 'Note',
       });
   }
-  if (foodData.brandOwner) {
-      foodAttrs.push({
-          'name': (upperCaseAllWords(foodData.brandOwner.toLocaleLowerCase())),
-          'desc': 'Brand',
-      });
-  }
-  if (foodData.ingredients) {
-      foodAttrs.push({
-          'name': (upperCaseAllWords(foodData.ingredients.toLocaleLowerCase())),
-          'desc': 'Ingredients',
-      });
-  }
+  // if (foodData.brandOwner) {
+  //     foodAttrs.push({
+  //         'name': (upperCaseAllWords(foodData.brandOwner.toLocaleLowerCase())),
+  //         'desc': 'Brand',
+  //     });
+  // }
+  // if (foodData.ingredients) {
+  //     foodAttrs.push({
+  //         'name': (upperCaseAllWords(foodData.ingredients.toLocaleLowerCase())),
+  //         'desc': 'Ingredients',
+  //     });
+  // }
   if (foodData.additionalDescriptions) {
       foodAttrs.push({
           'name': (upperCaseAllWords(foodData.additionalDescriptions.toLocaleLowerCase())),
@@ -72,6 +72,26 @@ function foodAttributes(foodData: FoodData) {
         </div>
     );
   } catch {}
+}
+
+function foodIngredients(ingredients: string) {
+  let foodIngredients = ingredients.split(",");
+  foodIngredients = foodIngredients.map((ingredient: string) => {
+    return upperCaseAllWords(ingredient.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,"").replace(/\s{2,}/g," ").trim().toLocaleLowerCase());
+  }
+  );
+  return (
+    <div>
+      {foodIngredients.map((ingredient: string, index: number) => {
+        return (
+          <div key={index} className="flex flex-row">
+            <p className="text-md mb-1 text-violet-700 ml-1">{"• " + ingredient}</p>
+          </div>
+        );
+      }
+      )}
+    </div>
+  );
 }
 
 function foodNutrients(foodData: FoodData) {
@@ -190,13 +210,17 @@ const FoodDetails = () => {
                 ? upperCaseAllWords(foodData.description)
                 : ""}
             </p>
+            <p className="text-purp-5 pt-1 text-violet-700 sm:text-md">
+              Category:{" "}
+              {foodData.foodCategory ? foodData.foodCategory.description ? foodData.foodCategory.description : foodData.foodCategory : "-"}
+            </p>
+            <p className="text-purp-5 pt-1 text-violet-700 sm:text-md">
+              Brand:{" "}
+              {foodData.brandOwner ? foodData.brandOwner : "-"}
+            </p>
             <p className="text-purp-5 pt-1 text-violet-700 sm:text-xs">
               Published:{" "}
               {foodData.publicationDate ? foodData.publicationDate : "-"}
-            </p>
-            <p className="text-purp-5 pt-1 text-violet-700 sm:text-xs">
-              Category:{" "}
-              {foodData.foodCategory ? foodData.foodCategory.description ? foodData.foodCategory.description : foodData.foodCategory : "-"}
             </p>
             <div className="my-1">
               <hr />
@@ -216,6 +240,15 @@ const FoodDetails = () => {
                         key={"nutrients"}
                         title={"Nutrients"}
                         content={foodNutrients(foodData) as any}
+                    />
+                ) : (
+                    <></>
+                )}
+                {(foodData.ingredients !== undefined)  ? (
+                    <ExpansionPanel
+                        key={"ingredients"}
+                        title={"Ingredients"}
+                        content={foodIngredients(foodData.ingredients) as any}
                     />
                 ) : (
                     <></>
