@@ -54,12 +54,6 @@ function foodAttributes(foodData: Food) {
             'desc': 'Note',
         });
     }
-    if (foodData.brandOwner) {
-        foodAttrs.push({
-            'name': (upperCaseAllWords(foodData.brandOwner.toLocaleLowerCase())),
-            'desc': 'Brand',
-        });
-    }
     if (foodData.ingredients) {
         foodAttrs.push({
             'name': (upperCaseAllWords(foodData.ingredients.toLocaleLowerCase())),
@@ -114,10 +108,14 @@ export default function FoodsComponent({ data }: { data: Food[] }) {
                     <p className="mb-1 text-base text-gray-700"> </p>
                   </div>
                 </div>
-                <div className="w-[15%]">
+                <div className="w-[35%]">
                   <div className="flex flex-col">
                     <p className="mb-1 text-right text-sm text-gray-600">
                       {food.fdcId}
+                      <br />
+                    </p>
+                    <p className="mb-1 text-right text-md text-gray-600">
+                      {food.brandOwner ? "Brand: " + food.brandOwner : "Brand: N/A"}
                       <br />
                     </p>
                   </div>

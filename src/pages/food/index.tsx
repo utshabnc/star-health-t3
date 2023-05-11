@@ -80,27 +80,31 @@ function foodNutrients(foodData: FoodData) {
     if (!Array.isArray(foodNutrients)) {
       foodNutrients = [foodNutrients];
     }
+    console.log(foodNutrients);
     const convertedNutrients = foodNutrients.map((nutrient: any) => {
       return {
         name: upperCaseAllWords(nutrient["nutrient"] ? nutrient["nutrient"]["name"] : nutrient["nutrientName"]),
-        number: nutrient["nutrient"] ? nutrient["nutrient"]["number"] : nutrient["nutrientNumber"],
+        number: nutrient["nutrient"] ? nutrient["nutrient"]["value"] : nutrient["value"],
         unitName: nutrient["nutrient"] ? nutrient["nutrient"]["unitName"] : nutrient["unitName"],
       };
     });
-    console.log(convertedNutrients);
+    let count = 0;
     return (
       <div>
         {convertedNutrients.map((nutrient: any, index: number) => {
-          return (
-            <tr key={index} className={index % 2 == 0 ? "bg-violet-100" : ""}>
-              <td className="px-4 py-1 whitespace-nowrap text-md text-gray-800">
-                {nutrient.name}
-              </td>
-              <td className="px-4 py-1 whitespace-nowrap text-md text-gray-800">
-                {nutrient.number + " " + nutrient.unitName}
-              </td>
-            </tr>
-          );
+          if (nutrient.number !== 0) {
+            count++;
+            return (
+              <tr key={index} className={count % 2 == 0 ? "bg-violet-100" : ""}>
+                <td className="px-4 py-1 whitespace-nowrap text-md text-gray-800">
+                  {nutrient.name}
+                </td>
+                <td className="px-4 py-1 whitespace-nowrap text-md text-gray-800">
+                  {nutrient.number + " " + nutrient.unitName}
+                </td>
+              </tr>
+            );
+          }
         })}
       </div>
     );
