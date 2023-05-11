@@ -397,12 +397,12 @@ export default function Directory() {
       const fetchFood = async () => {
         try {
           setIsApiProcessing(true);
-          const response = await fetch(`/api/food/getAll/${currFoodPage}`);
+          const response = await fetch(`/api/food/search/apple`);
           const data = await response.json();
           if (response.status != 200) {
             setError(data);
           } else {
-            setFood(data);
+            setFood(data['foods']);
           }
         } catch (error) {
           setError(error);
@@ -1247,51 +1247,6 @@ export default function Directory() {
               )}
           </div>
         </div>
-        {/* Pagination for Food */}
-        {/* {selectedTab === Tab.Food && (
-                <div className="flex items-center justify-center gap-5 my-6">
-                <button
-                  className="rounded-lg bg-violet-900 p-2 text-white"
-                  onClick={() => {
-                    if (currFoodPage > 1) {
-                      setCurrFoodPage(1);
-                    }
-                  }}
-                >
-                  {"<<"}
-                </button>
-                <button
-                  className="rounded-lg bg-violet-900 p-2 text-white"
-                  onClick={() => {
-                    if (currFoodPage > 1) {
-                      setCurrFoodPage((prev) => prev - 1);
-                    }
-                  }}
-                >
-                  {"<"}
-                </button>
-                <button
-                  className="rounded-lg bg-violet-900 p-2 text-white"
-                  onClick={() => {
-                    if (currFoodPage < 200) {
-                      setCurrFoodPage((prev) => prev + 1);
-                    }
-                  }}
-                >
-                  {">"}
-                </button>
-                <button
-                  className="rounded-lg bg-violet-900 p-2 text-white"
-                  onClick={() => {
-                    if (currFoodPage < 200) {
-                      setCurrFoodPage(200);
-                    }
-                  }}
-                >
-                  {">>"}
-                </button>
-              </div>
-        )} */}
       </div>
     </>
   );

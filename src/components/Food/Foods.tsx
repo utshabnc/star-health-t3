@@ -21,6 +21,75 @@ function mapOtherNames(other_names: any[]) {
   }
 }
 
+const acceptableAttributes = ["Common Name"]
+
+function foodAttributes(foodData: Food) {
+  try {
+    let foodAttrs = foodData["foodAttributes"];
+    if (!Array.isArray(foodAttrs)) {
+      foodAttrs = [foodAttrs];
+    }
+    foodAttrs = foodAttrs.map((attr: any) => {
+        return {
+            'name': upperCaseAllWords(attr['value']),
+            'desc': attr['foodAttributeType']['name'],
+        };
+    }).filter((attr: any) => attr['name'] !== undefined)
+    .filter((attr: any) => acceptableAttributes.includes(attr['desc']));
+    if (foodData.foodCategory) {
+        foodAttrs.push({
+            'name': upperCaseAllWords(foodData.foodCategory),
+            'desc': 'Category',
+        });
+    }
+    if (foodData.scientificName) {
+        foodAttrs.push({
+            'name': upperCaseAllWords(foodData.scientificName),
+            'desc': 'Scientific Name',
+        });
+    }
+    if (foodData.footnote) {
+        foodAttrs.push({
+            'name': (foodData.footnote),
+            'desc': 'Note',
+        });
+    }
+    if (foodData.brandOwner) {
+        foodAttrs.push({
+            'name': (upperCaseAllWords(foodData.brandOwner.toLocaleLowerCase())),
+            'desc': 'Brand',
+        });
+    }
+    if (foodData.ingredients) {
+        foodAttrs.push({
+            'name': (upperCaseAllWords(foodData.ingredients.toLocaleLowerCase())),
+            'desc': 'Ingredients',
+        });
+    }
+    if (foodData.additionalDescriptions) {
+        foodAttrs.push({
+            'name': (upperCaseAllWords(foodData.additionalDescriptions.toLocaleLowerCase())),
+            'desc': 'Additional Description',
+        });
+    }
+
+    if (foodAttrs.length === 0) {
+        return;
+    }
+    return (
+        <div>
+            {foodAttrs.map((attr: any, index: number) => {
+                return (
+                    <div key={index} className="flex flex-row">
+                        <p className="text-md mb-1 text-violet-700 ml-1">{attr.desc + ": " + attr.name}</p>
+                    </div>
+                );
+            })}
+        </div>
+    );
+  } catch {}
+}
+
 export default function FoodsComponent({ data }: { data: Food[] }) {
   return (
     <>
@@ -38,14 +107,14 @@ export default function FoodsComponent({ data }: { data: Food[] }) {
                       {upperCaseAllWords(food?.description) || "-"}
                     </Link>
                   </h5>
-                  <div className="flex w-[75%] flex-row justify-between">
+                  <div className="flex w-[85%] flex-row justify-between">
                     <h5 className="mb-2 text-xs text-gray-500">
-                      {mapOtherNames(food.foodNutrients)}
+                    {foodAttributes(food)}
                     </h5>
                     <p className="mb-1 text-base text-gray-700"> </p>
                   </div>
                 </div>
-                <div className="w-[25%]">
+                <div className="w-[15%]">
                   <div className="flex flex-col">
                     <p className="mb-1 text-right text-sm text-gray-600">
                       {food.fdcId}

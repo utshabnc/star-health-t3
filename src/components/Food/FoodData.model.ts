@@ -8,6 +8,8 @@ export interface FoodData {
   foodAttributes: any;
   scientificName: string;
   footnote: string;
+  ingredients: string;
+  additionalDescriptions: string;
 }
 
 export interface FoodNutrient {

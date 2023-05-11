@@ -6,6 +6,12 @@ export interface Food {
     brandOwner: string;
     gtinUpc: string;
     foodNutrients: FoodNutrient[];
+    foodAttributes: any[];
+    scientificName: string;
+    footnote: string;
+    ingredients: string;
+    additionalDescriptions: string;
+    foodCategory: string;
 }
 
 export interface FoodNutrient {
