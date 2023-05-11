@@ -80,7 +80,6 @@ function foodNutrients(foodData: FoodData) {
     if (!Array.isArray(foodNutrients)) {
       foodNutrients = [foodNutrients];
     }
-    console.log(foodNutrients);
     const convertedNutrients = foodNutrients.map((nutrient: any) => {
       return {
         name: upperCaseAllWords(nutrient["nutrient"] ? nutrient["nutrient"]["name"] : nutrient["nutrientName"]),
