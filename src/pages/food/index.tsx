@@ -39,18 +39,6 @@ function foodAttributes(foodData: FoodData) {
           'desc': 'Note',
       });
   }
-  // if (foodData.brandOwner) {
-  //     foodAttrs.push({
-  //         'name': (upperCaseAllWords(foodData.brandOwner.toLocaleLowerCase())),
-  //         'desc': 'Brand',
-  //     });
-  // }
-  // if (foodData.ingredients) {
-  //     foodAttrs.push({
-  //         'name': (upperCaseAllWords(foodData.ingredients.toLocaleLowerCase())),
-  //         'desc': 'Ingredients',
-  //     });
-  // }
   if (foodData.additionalDescriptions) {
       foodAttrs.push({
           'name': (upperCaseAllWords(foodData.additionalDescriptions.toLocaleLowerCase())),
@@ -105,6 +93,7 @@ function foodNutrients(foodData: FoodData) {
         name: upperCaseAllWords(nutrient["nutrient"] ? nutrient["nutrient"]["name"] : nutrient["nutrientName"]),
         number: nutrient["nutrient"] ? nutrient["nutrient"]["value"] : nutrient["value"],
         unitName: nutrient["nutrient"] ? nutrient["nutrient"]["unitName"] : nutrient["unitName"],
+        designation: nutrient["nutrient"] ? nutrient["nutrient"]["number"] : nutrient["nutrientNumber"],
       };
     });
     let count = 0;
