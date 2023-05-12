@@ -411,6 +411,10 @@ export default function DirectoryCards({
     );
   }
 
+  if (data) {
+    return (<></>)
+  }
+
   return (
     <>
       <div>Try adjusting your search filter. No results were found.</div>

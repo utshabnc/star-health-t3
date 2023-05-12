@@ -10,5 +10,6 @@ export enum Tab {
   Plans,
   PaymentsToDoctors,
   Hospitals,
+  HospitalOwners,
   OpioidTreatmentProviders,
 }
