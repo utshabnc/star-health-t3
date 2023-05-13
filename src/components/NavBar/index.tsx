@@ -150,15 +150,15 @@ function NavBar() {
               </button>
             )}
             <button
-              className="p-2 pr-0 md:hidden"
+              className="p-2 pr-6 md:hidden"
               onClick={() => setNavbarOpen((prev) => !prev)}
             >
               <span className="sr-only">Open main menu</span>
 
               {navbarOpen ? (
-                <IoMdClose size={98} color="white" />
+                <IoMdClose size={110} color="white" />
               ) : (
-                <GoThreeBars size={98} color="white" />
+                <GoThreeBars size={110} color="white" />
               )}
             </button>
           </div>
@@ -192,6 +192,26 @@ function NavBar() {
                 >
                   Pricing
                 </Link>
+                {session?.data?.user ? (
+                  <div>
+                    <button
+                      className="h-[130px] w-[320px] rounded bg-emerald-400 px-3 py-1 font-custom text-[2.7rem] font-medium hover:bg-emerald-500 active:bg-emerald-600"
+                      type="button"
+                      onClick={() => signOut()}
+                    >
+                      Sign out
+                    </button>
+                  </div>
+                ) : (
+                  <div>
+                    <button
+                      className="h-[130px] w-[320px] rounded bg-emerald-400 px-3 py-1 font-custom text-[2.7rem] font-medium hover:bg-emerald-500 active:bg-emerald-600"
+                      onClick={() => signIn("google")}
+                    >
+                      Sign In
+                    </button>
+                  </div>
+                )}
               </>
             </div>
           ) : (
