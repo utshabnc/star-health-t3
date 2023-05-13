@@ -36,7 +36,7 @@ const InfoSection = ({
         <p
           className={`text-md flex justify-center text-center font-semibold ${textSize} pb-20 ${
             "text-" + textColor ?? "text-violet-700"
-          } my-2 mt-8 mb-4`}
+          } my-2 mb-4 mt-8`}
         >
           {header}
         </p>
@@ -93,7 +93,7 @@ const InfoSection = ({
                   query: { tab: item.linkparam },
                 }}
               >
-                <div className="group absolute bottom-0 translate-y-[2rem] translate-x-[-2rem]">
+                <div className="group absolute bottom-0 translate-x-[-2rem] translate-y-[2rem]">
                   <IoIosArrowDroprightCircle color="#0e1936" size={60} />
                 </div>
               </Link>

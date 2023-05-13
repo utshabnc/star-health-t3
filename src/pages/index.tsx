@@ -117,7 +117,7 @@ export default function Home() {
   const FirstSection = () => (
     <div className="mx-10 flex items-center justify-center pb-20 pt-10 sm:flex-row">
       <div className="flex flex-col sm:w-[50%]">
-        <h2 className="mt-10 mb-5 flex justify-center text-center font-custom font-bold leading-tight text-white sm:text-5xl md:text-xl xl:text-8xl ">
+        <h2 className="mb-5 mt-10 flex justify-center text-center font-custom font-bold leading-tight text-white sm:text-5xl md:text-xl xl:text-8xl ">
           Data-Driven Healthcare
         </h2>
         <p className="mb-12 text-center text-xl text-white md:text-4xl">
