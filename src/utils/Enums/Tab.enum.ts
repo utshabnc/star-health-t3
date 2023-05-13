@@ -1,6 +1,8 @@
 export enum Tab {
   Transactions,
   Manufacturers,
+  Genetics,
+  Diseases,
   Doctors,
   Products,
   Drugs,
@@ -8,5 +10,6 @@ export enum Tab {
   Plans,
   PaymentsToDoctors,
   Hospitals,
-  HospitalOwners
+  HospitalOwners,
+  OpioidTreatmentProviders,
 }

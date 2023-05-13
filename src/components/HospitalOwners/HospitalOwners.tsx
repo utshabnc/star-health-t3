@@ -1,13 +1,9 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import getData, {data} from "./processJSON"
+import {HospitalOwners} from "./HospitalOwners.model"
 
-export default function HospitalOwnersComponent() {
-
-  useEffect(() => {
-    getData();
-    console.log(data)
-  });
+export default function HospitalOwnersComponent(props: any) {
 
   return (
     <>
@@ -24,9 +20,6 @@ export default function HospitalOwnersComponent() {
                     >{hospital["ORGANIZATION_NAME"] || '-'}</Link>
                   </h5>
                   <div className="flex flex-row justify-between w-[75%]">
-                    <h5 className="text-md mb-2 text-gray-900">
-                      state {index}
-                    </h5>
                     <p className="mb-1 text-base text-gray-700"> </p>
                   </div>
                   <div className="flex flex-row justify-between text-sm">
@@ -34,15 +27,6 @@ export default function HospitalOwnersComponent() {
                       United States
                     </p>
                     <div className="border-gray-300 text-gray-600"></div>
-                  </div>
-                </div>
-                <div className="w-[25%]">
-                  <div className="flex flex-col">
-                    <p className="mb-1 text-gray-600 text-sm text-right">
-                      Hospital ID: {index}
-                      <br />
-                    </p>
-                    
                   </div>
                 </div>
               </div>

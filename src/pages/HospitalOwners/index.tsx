@@ -32,20 +32,17 @@ const HospitalDetails = () => {
   const index = navigate.query?.index as string;
   const blank: HospitalOwners = {"ENROLLMENT_ID": "", "ASSOCIATE_ID": "", "ORGANIZATION_NAME": "","OWNERS": []}
   const [data, setData] = useState<HospitalOwners>(blank)
+  let keyID = 0;
 
   const hospitalDataTemplate: Sections = {
     [Section.hospital]: [
       {
-        code: "ORGANIZATION_NAME",
-        description: "Organization_Name",
-      },
-      {
         code: "ENROLLMENT_ID",
-        description: "ENROLLMENT ID",
+        description: "Enrollment ID",
       },
       {
         code: "ASSOCIATE_ID",
-        description: "ASSOCIATE ID",
+        description: "Associate ID",
       },
     ],
     [Section.owner]: [
@@ -70,16 +67,8 @@ const HospitalDetails = () => {
         description: "Association Date",
       },
       {
-        code: "FIRST_NAME_OWNER",
-        description: "First Name",
-      },
-      {
-        code: "MIDDLE_NAME_OWNER",
-        description: "Middle Name",
-      },
-      {
-        code: "LAST_NAME_OWNER",
-        description: "Last Name",
+        code: "NAME_OWNER",
+        description: "Name",
       },
       {
         code: "TITLE_OWNER",
@@ -94,24 +83,8 @@ const HospitalDetails = () => {
         description: "Doing Business As Name",
       },
       {
-        code: "ADDRESS_LINE_1_OWNER",
-        description: "Address Line 1",
-      },
-      {
-        code: "ADDRESS_LINE_2_OWNER",
-        description: "Address Line 2",
-      },
-      {
-        code: "CITY_OWNER",
-        description: "City",
-      },
-      {
-        code: "STATE_OWNER",
-        description: "State",
-      },
-      {
-        code: "ZIP_OWNER",
-        description: "Zip Code",
+        code: "ADDRESS",
+        description: "Address",
       },
       {
         code: "PERCENTAGE_OWNERSHIP",
@@ -196,11 +169,23 @@ const HospitalDetails = () => {
     return fieldValue;
   }
 
-  const generateUiField = (data: any, field: Field, section: Section) => {
-    switch (data.length) {
-      case 0:
-        return (<></>)
-      default:
+  const generateUiField = (data: any, field: Field, section: Section, count: number) => {
+    if (data.length == 0) {
+      return (<></>)
+    }
+    switch (section == Section.hospital) {
+      case false:
+        return (
+          <tr key={`${section}-${field.code}`} className={count % 2 == 0 ? "bg-violet-100" : ""}>
+            <td className="px-4 py-1 whitespace-nowrap text-md text-gray-800">
+              {field.description}
+            </td>
+            <td className="px-4 py-1 whitespace-nowrap text-md text-gray-800">
+              {formatData(data, field, section)}
+            </td>
+          </tr>
+        );
+      case true:
         return (
           <p 
             key={`${section}-${field.code}`} 
@@ -217,14 +202,15 @@ const HospitalDetails = () => {
   };
 
   const generateExpansionPanel = (data: Owners, section: Section): JSX.Element  => {
+    keyID+=1;
     return (
       <ExpansionPanel
-        key={section}
+        key={section+keyID}
         title={section}
         content={
           <>
-            {hospitalDataTemplate[section].map((field) => {
-              return generateUiField(data, field, section);
+            {hospitalDataTemplate[section].map((field, count) => {
+              return generateUiField(data, field, section, count);
             })}
           </>
         }
@@ -238,13 +224,13 @@ const HospitalDetails = () => {
         return (
           <div className="mt-4 flex">
             <div className="pr-10">
-              <p className="pt-1 text-2xl font-semibold">{section}</p>
+              <p className="pt-1 text-2xl font-semibold">{data.ORGANIZATION_NAME}</p>
               <div className="my-1 mr-8">
                 <hr />
               </div>
 
               {hospitalDataTemplate[section].map((field) => {
-                return generateUiField(data, field, section);
+                return generateUiField(data, field, section, 0);
               })}
             </div>
           </div>
@@ -267,7 +253,7 @@ const HospitalDetails = () => {
   useEffect(() => { 
     const str: string = localStorage.getItem(index) as string;
     setData(JSON.parse(str))
-  })
+  },[index])
 
   return (
     <>

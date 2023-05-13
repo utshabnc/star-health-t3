@@ -1,5 +1,6 @@
 import {HospitalOwners} from "./HospitalOwners.model";
 import {Owners} from "./Owners.model";
+import { capitalizeWords } from "../../utils";
 
 import * as https from 'https';
 
@@ -8,6 +9,7 @@ const url = "https://data.cms.gov/data-api/v1/dataset/029c119f-f79c-49be-9100-34
 export let data: any;
 
 export default async function getData() {
+    data=""
     let jsonObj
     await https.get(url, (res: any) => {
         let body = "";
@@ -50,19 +52,13 @@ function processJSONObject(data: any) {
                     "ASSOCIATE_ID_OWNER": data[i]["ASSOCIATE ID - OWNER"],
                     "TYPE_OWNER": data[i]["TYPE - OWNER"],
                     "ROLE_CODE_OWNER": data[i]["ROLE CODE - OWNER"],
-                    "ROLE_TEXT_OWNER": data[i]["ROLE TEXT - OWNER"],
+                    "ROLE_TEXT_OWNER": capitalizeWords(data[i]["ROLE TEXT - OWNER"]),
                     "ASSOCIATION_DATE_OWNER": data[i]["ASSOCIATION DATE - OWNER"],
-                    "FIRST_NAME_OWNER": data[i]["FIRST NAME - OWNER"],
-                    "MIDDLE_NAME_OWNER": data[i]["MIDDLE NAME - OWNER"],
-                    "LAST_NAME_OWNER": data[i]["LAST NAME - OWNER"],
-                    "TITLE_OWNER": data[i]["TITLE - OWNER"],
-                    "ORGANIZATION_NAME_OWNER": data[i]["ORGANIZATION NAME - OWNER"],
-                    "DOING_BUSINESS_AS_NAME_OWNER": data[i]["DOING BUSINESS AS NAME - OWNER"],
-                    "ADDRESS_LINE_1_OWNER": data[i]["ADDRESS LINE 1 - OWNER"],
-                    "ADDRESS_LINE_2_OWNER": data[i]["ADDRESS LINE 2 - OWNER"],
-                    "CITY_OWNER": data[i]["CITY - OWNER"],
-                    "STATE_OWNER": data[i]["STATE - OWNER"],
-                    "ZIP_CODE_OWNER": data[i]["ZIP CODE - OWNER"],
+                    "NAME_OWNER": capitalizeWords(data[i]["FIRST NAME - OWNER"]+" "+data[i]["MIDDLE NAME - OWNER"]+" "+data[i]["LAST NAME - OWNER"]),
+                    "TITLE_OWNER": capitalizeWords(data[i]["TITLE - OWNER"]),
+                    "ORGANIZATION_NAME_OWNER": capitalizeWords(data[i]["ORGANIZATION NAME - OWNER"]),
+                    "DOING_BUSINESS_AS_NAME_OWNER": capitalizeWords(data[i]["DOING BUSINESS AS NAME - OWNER"]),
+                    "ADDRESS": data[i]["ADDRESS LINE 1 - OWNER"] == "" ? "" : capitalizeWords(data[i]["ADDRESS LINE 1 - OWNER"]+", "+data[i]["ADDRESS LINE 2 - OWNER"]+", "+data[i]["CITY - OWNER"]+", "+data[i]["STATE - OWNER"]+", "+data[i]["ZIP CODE - OWNER"]),
                     "PERCENTAGE_OWNERSHIP": data[i]["PERCENTAGE OWNERSHIP"],
                     "CREATED_FOR_ACQUISITION_OWNER": data[i]["CREATED FOR ACQUISITION - OWNER"],
                     "CORPORATION_OWNER": data[i]["CORPORATION - OWNER"],
@@ -87,7 +83,7 @@ function processJSONObject(data: any) {
                 restructuredData.push({
                     "ENROLLMENT_ID": data[i]["ENROLLMENT ID"],
                     "ASSOCIATE_ID": data[i]["ASSOCIATE ID"],
-                    "ORGANIZATION_NAME": data[i]["ORGANIZATION NAME"],
+                    "ORGANIZATION_NAME": capitalizeWords(data[i]["ORGANIZATION NAME"]),
                     "OWNERS": owners
                 });
                 break;

@@ -18,6 +18,7 @@ const directoryInput = z.object({
   doctorFilter: z.string().optional(),
   manufacturerFilter: z.string().optional(),
   productFilter: z.string().optional(),
+  opioidTreatmentProviderFilter: z.string().optional(),
   cursor: z.string().optional(),
   year: z.string().optional(),
   price: z.object({
@@ -70,6 +71,20 @@ const defaultManufacturerSelect = Prisma.validator<Prisma.ManufacturerSelect>()(
     state: true,
     country: true,
     rank: true,
+  }
+);
+
+const defaultOpioidTreatmentSelect = Prisma.validator<Prisma.OpioidTreatmentSelect>()(
+  {
+    id: true,
+    npi: true,
+    provider_name: true,
+    address_line_1: true,
+    address_line_2: true,
+    city: true,
+    state: true,
+    zip: true,
+    phone: true,
   }
 );
 
@@ -207,8 +222,31 @@ export const db = router({
         take: 10,
       
       }) 
+
+      const opioidTreatmentProviders = await prisma.opioidTreatment.findMany({
+        where: {
+          provider_name: {
+            contains: search,
+            mode: "insensitive"
+          },
+        },
+        select: {
+          id: true,
+          npi: true,
+          provider_name: true,
+          address_line_1: true,
+          address_line_2: true,
+          city: true,
+          state: true,
+          zip: true,
+          phone: true,
+          medicare_id_effective_date: true,
+        },
+        take: 10,
       
-      return { doctors, manufacturers, products };
+      }) 
+      
+      return { doctors, manufacturers, products, opioidTreatmentProviders };
     }),
 
   doctor: publicProcedure
@@ -237,6 +275,7 @@ export const db = router({
           }
         },
       });
+
       const payments =
         doctor?.payments.filter((p) => !year || p.year === year) ?? [];
 
@@ -357,6 +396,23 @@ export const db = router({
         items,
         topDoctors,
         topStates,
+      };
+    }),
+
+    opioidTreatment: publicProcedure
+    .input(
+      z.object({
+        id: z.string(),
+      })
+    )
+    .query(async ({ ctx: { prisma }, input: { id } }) => {
+      const opioidTreatmentprovider = await prisma.opioidTreatment.findFirst({
+        where: { id },
+        select: defaultOpioidTreatmentSelect,
+      });
+
+      return {
+        ...opioidTreatmentprovider,
       };
     }),
 
@@ -581,8 +637,6 @@ export const db = router({
   directory: publicProcedure
     .input(directoryInput)
     .query(async ({ctx: {prisma}, input}) => {
-      // console.log(input.name?.split(" "));
-      
 
       if(input.subject?.toLowerCase().trim() === "doctors"){
         const names = input.name?.split(" ")
@@ -780,6 +834,41 @@ export const db = router({
         return {products, productTypes: filterDuplicateObjArr(productTypes, "type")}
       }
 
+      if(input.subject?.toLowerCase() === "opioidtreatmentproviders"){
+        const opioidTreatmentProviders = await prisma.opioidTreatment.findMany({
+          where: {
+            AND: [
+              {
+                provider_name: {
+                  contains: input.name,
+                  mode: "insensitive"
+                }
+              },
+              {
+                state: input.state !== '' ? input.state : {not: ""}
+              },
+              {
+                city: input.city !== "" ? input.city : {not: ""}
+              },
+              {
+                zip: input.zipCode !== "" ? input.zipCode : {not: ""}
+              }]},
+          take: 2000
+        });
+
+
+        const cities = opioidTreatmentProviders.map((item: any) => {
+          return item.city
+        })
+
+        const zipCodes = opioidTreatmentProviders.map((item: any) => {
+          return item.zip
+        })
+
+
+        return {opioidTreatmentProviders, cities: filterDuplicates(cities), zipCodes: filterDuplicates(zipCodes)}
+      }
+
       if(input.subject === "transactions"){
                 
         const payments = await prisma.payment.findMany({
@@ -867,7 +956,12 @@ export const db = router({
 
 
 
-        return {payments: payments.sort((a:any,b: any) => b.date - a.date), manufacturerList: filterDuplicateObjArr(manufacturerNames, "id"), doctorList: filterDuplicateObjArr(doctorNames, "id"), productNameList: filterDuplicateObjArr(productNameList, "id")}
+        return {
+          payments: payments.sort((a:any,b: any) => b.date - a.date),
+          manufacturerList: filterDuplicateObjArr(manufacturerNames, "id"),
+          doctorList: filterDuplicateObjArr(doctorNames, "id"),
+          productNameList: filterDuplicateObjArr(productNameList, "id"),
+        }
 
       }
 
@@ -901,8 +995,7 @@ export const db = router({
       }
 
       if (input.subject?.toLowerCase() === 'drugs') {
-        // console.log('hello input')
-        // console.log(input)
+
         let drugs = []
         if (input.name) {
           drugs = await prisma.drugs.findMany({
@@ -1058,6 +1151,7 @@ export const db = router({
       let doctorNames = [];
       let productNameList = [];
       let drugNames = [];
+      let opioidTreatmentProviderNames = [];
       const manufacturers = await prisma.manufacturer.findMany({
         where: {
           payments: {none: undefined}
@@ -1084,6 +1178,14 @@ export const db = router({
         take: 1000
       })
 
+      const opioidTreatmentProviders = await prisma.opioidTreatment.findMany({
+        select: {
+          id: true,
+          provider_name: true
+        },
+        take: 1000
+      })
+
       const drugs = await prisma.drugs.findMany({
         select: {
           id: true,
@@ -1105,6 +1207,12 @@ export const db = router({
           name: `${item.firstName} ${item.lastName}`
         }
       })
+
+      opioidTreatmentProviderNames = opioidTreatmentProviders.map(item => {
+          return {
+            id: item.id,
+            name: item.provider_name
+          }})
 
       // manufacturerNames = manufacturers.map(item => {
       //   return {
@@ -1149,7 +1257,13 @@ export const db = router({
      
       
         
-      return {drugNames: filterDuplicateObjArr(drugNames, "id"), doctorNames: filterDuplicateObjArr(doctorNames, "id"), manufacturerNames: filterDuplicateObjArr(manufacturers, "id"), productNameList: filterDuplicateObjArr(products, "id")}
+      return {
+        drugNames: filterDuplicateObjArr(drugNames, "id"),
+        doctorNames: filterDuplicateObjArr(doctorNames, "id"),
+        manufacturerNames: filterDuplicateObjArr(manufacturers, "id"),
+        productNameList: filterDuplicateObjArr(products, "id"),
+        opioidTreatmentProviderNames: filterDuplicateObjArr(opioidTreatmentProviders, "id"),
+      }
       // return {}
     })
     ,
@@ -1192,6 +1306,7 @@ export const db = router({
 type RouterOutput = inferRouterOutputs<AppRouter>;
 export type SearchResponse = RouterOutput["db"]["search"];
 export type DoctorResponse = RouterOutput["db"]["doctor"];
+export type OpioidTreatmentProviderResponse = RouterOutput["db"]["opioidTreatment"];
 export type ManufacturerResponse = RouterOutput["db"]["manufacturer"];
 export type StateResponse = RouterOutput["db"]["state"];
 export type AllStatesResponse = RouterOutput["db"]["allStates"];
