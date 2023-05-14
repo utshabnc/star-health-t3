@@ -3,11 +3,14 @@ import { useEffect, useState } from "react";
 import getData, {data} from "./processJSON"
 import {HospitalOwners} from "./HospitalOwners.model"
 
-export default function HospitalOwnersComponent(props: any) {
+type Data = {
+  results: HospitalOwners[]
+}
 
+export default function HospitalOwnersComponent(props: Data) {
   return (
     <>
-      {data.map((hospital: any, index: any) => {
+      {props.results.map((hospital: any, index: any) => {
         return (
           <div key={index} className="mb-2 w-[100%] rounded-lg bg-white shadow-lg">
             <div className="p-2">

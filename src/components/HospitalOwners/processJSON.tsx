@@ -43,6 +43,7 @@ function processJSONObject(data: any) {
         }
         hospitalNames.push(data[i]["ORGANIZATION NAME"]);
     }
+    hospitalNames.sort()
 
     for (let x=0; x<hospitalNames.length; x+=1) {
         const owners = [];
@@ -58,7 +59,7 @@ function processJSONObject(data: any) {
                     "TITLE_OWNER": capitalizeWords(data[i]["TITLE - OWNER"]),
                     "ORGANIZATION_NAME_OWNER": capitalizeWords(data[i]["ORGANIZATION NAME - OWNER"]),
                     "DOING_BUSINESS_AS_NAME_OWNER": capitalizeWords(data[i]["DOING BUSINESS AS NAME - OWNER"]),
-                    "ADDRESS": data[i]["ADDRESS LINE 1 - OWNER"] == "" ? "" : capitalizeWords(data[i]["ADDRESS LINE 1 - OWNER"]+", "+data[i]["ADDRESS LINE 2 - OWNER"]+", "+data[i]["CITY - OWNER"]+", "+data[i]["STATE - OWNER"]+", "+data[i]["ZIP CODE - OWNER"]),
+                    "ADDRESS": data[i]["ADDRESS LINE 1 - OWNER"] == "" ? "-" : capitalizeWords(data[i]["ADDRESS LINE 1 - OWNER"]+", "+data[i]["ADDRESS LINE 2 - OWNER"]+", "+data[i]["CITY - OWNER"]+", "+data[i]["STATE - OWNER"]+", "+data[i]["ZIP CODE - OWNER"]),
                     "PERCENTAGE_OWNERSHIP": data[i]["PERCENTAGE OWNERSHIP"],
                     "CREATED_FOR_ACQUISITION_OWNER": data[i]["CREATED FOR ACQUISITION - OWNER"],
                     "CORPORATION_OWNER": data[i]["CORPORATION - OWNER"],
@@ -73,7 +74,7 @@ function processJSONObject(data: any) {
                     "FOR_PROFIT_OWNER": data[i]["FOR PROFIT - OWNER"],
                     "NON_PROFIT_OWNER": data[i]["NON PROFIT - OWNER"],
                     "OTHER_TYPE_OWNER": data[i]["OTHER TYPE - OWNER"],
-                    "OTHER_TYPE_TEXT_OWNER": data[i]["OTHER TYPE TEXT - OWNER"]
+                    "OTHER_TYPE_TEXT_OWNER": data[i]["OTHER TYPE TEXT - OWNER"] 
                 });
             }
         }
@@ -94,4 +95,4 @@ function processJSONObject(data: any) {
     return restructuredData;
 }
 
-console.log("data: "+getData())
+getData()

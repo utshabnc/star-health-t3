@@ -6,7 +6,6 @@ import Image from "next/image";
 import getData, {data} from "./processJSON"
 
 import cbi from '../../assets/logos/community-benefits.png';
-import { match } from "assert";
 
 interface HospitalOwnersFiltersProps {
   params: {
@@ -29,28 +28,27 @@ export default function HospitalsFilters({params}: HospitalOwnersFiltersProps) {
   }, [hospitalOwnersData])
 
   useEffect(() => {
+
     if (searchStr) {
       const delayDebounceFn = setTimeout(() => {
         setIsApiProcessing(true);
 
-        let matchedHospitals: HospitalOwners[] = [];
-        for (let i=0; i<data.length; i+=1) {
-          // console.log(JSON.stringify(data[i]).includes(searchStr.toUpperCase()))
-          if (JSON.stringify(data[i]).includes(searchStr.toUpperCase())) {
+        const matchedHospitals: HospitalOwners[] = [];
+      for (let i=0; i<data.length; i+=1) {
+          if (JSON.stringify(data[i]).toUpperCase().includes(searchStr.toUpperCase())) {
             matchedHospitals.push(data[i])
           }
         }
-  
         setHospitalOwnersData(matchedHospitals);
         setIsApiProcessing(false);
 
-      }, 3000)
+      }, 500)
 
       return () => clearTimeout(delayDebounceFn)
+    } else {
+      setHospitalOwnersData(data);
     }
   }, [searchStr])
-
-  
 
   return (
     <>

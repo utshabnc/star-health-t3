@@ -152,8 +152,9 @@ const HospitalDetails = () => {
   const formatData = (data: HospitalOwners, field: Field, section: Section): string => {
     
     const fieldValue = data[field.code] ? String(data[field.code]) : '';
-
-    if (!fieldValue) {
+    if (fieldValue === "") {
+      return "-";
+    } else if (!fieldValue) {
       return "";
     }    
     switch (section) {
@@ -206,7 +207,7 @@ const HospitalDetails = () => {
     return (
       <ExpansionPanel
         key={section+keyID}
-        title={section}
+        title={data.NAME_OWNER || data.ORGANIZATION_NAME_OWNER || section}
         content={
           <>
             {hospitalDataTemplate[section].map((field, count) => {
@@ -228,23 +229,22 @@ const HospitalDetails = () => {
               <div className="my-1 mr-8">
                 <hr />
               </div>
-
-              {hospitalDataTemplate[section].map((field) => {
-                return generateUiField(data, field, section, 0);
-              })}
+                {hospitalDataTemplate[section].map((field) => {
+                  return generateUiField(data, field, section, 0);
+                })}
             </div>
           </div>
         );
 
       default:
         return (
-          <div>
+          <table>
             {
               data.OWNERS.map((count: Owners) => {
                 return generateExpansionPanel(count, section)
               })
             }
-          </div>
+          </table>
         )
     }
     

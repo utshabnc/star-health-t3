@@ -54,6 +54,7 @@ import GeneticsFilters from "../../components/Genetics/GeneticsFilters";
 import DiseasesFilters from "../../components/Genetics/DiseasesFilter";
 import { HospitalOwners } from "../../components/HospitalOwners/HospitalOwners.model";
 
+
 interface PriceFilter {
   min: number;
   max: number;
@@ -136,7 +137,9 @@ export default function Directory() {
     ClinicalTrialsStudyFieldsResponse<ClinicalTrialsListItem>
   >({} as ClinicalTrialsStudyFieldsResponse<ClinicalTrialsListItem>);
   const [hospitalsData, setHospitalsData] = useState<Hospital[]>(
-    [] as Hospital[]
+    [
+
+    ] as Hospital[]
   );
   const [hospitalOwnersData, setHospitalOwnersData] = useState<HospitalOwners[]>(
     [] as HospitalOwners[]
@@ -404,15 +407,23 @@ export default function Directory() {
     }
   }, [selectedTab]);
 
-
   useEffect(() => {
-      if (selectedTab == Tab.HospitalOwners) {
-        const data = HospitalOwnerData.data
-        // setHospitalOwnersData(data);
-        console.log(hospitalOwnersData)
-        console.log()
-      }
-  }, [selectedTab, isApiProcessing, hospitalOwnersData]);
+    if (selectedTab == Tab.HospitalOwners) {
+      const fetchHospitals = async () => {
+        try {
+          setIsApiProcessing(true);
+          const response = await HospitalOwnerData.default();
+          const data: HospitalOwners[] = await HospitalOwnerData.data
+          setHospitalOwnersData(data);
+        } catch (error) {
+          setError(error);
+        } finally {
+          setIsApiProcessing(false);
+        }
+      };
+      fetchHospitals();
+    }
+  }, []);
 
   useEffect(() => {
     let searchExpr = "";
@@ -842,7 +853,7 @@ export default function Directory() {
                   onClick={() => {
                     handleTabClick(Tab.HospitalOwners, "hospitals");
                   }}
-                  className={`border-b-2 hover:border-zinc-500 ${
+                  className={`whitespace-nowrap border-b-2 hover:border-zinc-500 ${
                     selectedTab === Tab.HospitalOwners
                       ? "border-violet-600"
                       : "border-zinc-200"
@@ -1211,7 +1222,7 @@ export default function Directory() {
               <HealthPlansList plans={displayHealthPlansData} />
             )}
             {selectedTab === Tab.HospitalOwners && (
-              <HospitalOwnersComponent HospitalOwners={hospitalOwnersData} />
+              <HospitalOwnersComponent results={hospitalOwnersData} />
             )}
             {selectedTab === Tab.Genetics && (
               <GeneticsComponent data={filteredGenetics} />
