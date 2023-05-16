@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState, Dispatch, SetStateAction } from "react";
 import { formatMoney } from "../../utils";
 import { trpc } from "../../utils/trpc";
 import Filters from "../../components/Filters";
@@ -43,13 +43,17 @@ import { PayWall } from "../../components/PayWall/PayWall";
 import { useSession } from "next-auth/react";
 import type { Hospital } from "../../components/Hospitals/Hospital.model";
 import HospitalsComponent from "../../components/Hospitals/Hospitals";
+import HospitalOwnersComponent from "../../components/HospitalOwners/HospitalOwners"
+import * as HospitalOwnerData from "../../components/HospitalOwners/processJSON"
 import LoadingStarHealth from "../../components/Loading";
 import HospitalsFilters from "../../components/Hospitals/HospitalsFilters";
+import HospitalOwnersFilters from "../../components/HospitalOwners/HospitalOwnersFilters";
 import ErrorComponent from "../../components/ErrorComponent";
 import type { Genetic } from "../../components/Genetics/Genetic.model";
 import GeneticsComponent from "../../components/Genetics/Genetics";
 import GeneticsFilters from "../../components/Genetics/GeneticsFilters";
 import DiseasesFilters from "../../components/Genetics/DiseasesFilter";
+import { HospitalOwners } from "../../components/HospitalOwners/HospitalOwners.model";
 import type { Food } from "../../components/Food/Food.model";
 import FoodsComponent from "../../components/Food/Foods";
 import FoodsFilters from "../../components/Food/FoodsFilter";
@@ -137,6 +141,9 @@ export default function Directory() {
   >({} as ClinicalTrialsStudyFieldsResponse<ClinicalTrialsListItem>);
   const [hospitalsData, setHospitalsData] = useState<Hospital[]>(
     [] as Hospital[]
+  );
+  const [hospitalOwnersData, setHospitalOwnersData] = useState<HospitalOwners[]>(
+    [] as HospitalOwners[]
   );
   const [clinicalTrialSearchKeywordExpr, setClinicalTrialSearchKeywordExpr] =
     useState<string>("");
@@ -391,6 +398,34 @@ export default function Directory() {
       fetchHospitals();
     }
   }, [selectedTab]);
+
+
+  useEffect(() => {
+      if (selectedTab == Tab.HospitalOwners) {
+        const data = HospitalOwnerData.data
+        // setHospitalOwnersData(data);
+        console.log(hospitalOwnersData)
+        console.log()
+      }
+  }, [selectedTab, isApiProcessing, hospitalOwnersData]);
+
+  useEffect(() => {
+    if (selectedTab == Tab.HospitalOwners) {
+      const fetchHospitals = async () => {
+        try {
+          setIsApiProcessing(true);
+          const response = await HospitalOwnerData.default();
+          const data: HospitalOwners[] = await HospitalOwnerData.data
+          setHospitalOwnersData(data);
+        } catch (error) {
+          setError(error);
+        } finally {
+          setIsApiProcessing(false);
+        }
+      };
+      fetchHospitals();
+    }
+  }, []);
 
   useEffect(() => {
     if (selectedTab == Tab.Food) {
@@ -851,6 +886,21 @@ export default function Directory() {
                 >
                   Hospitals
                 </button>
+                
+                {/* Hospital Owners Tab */}
+                <button
+                  onClick={() => {
+                    handleTabClick(Tab.HospitalOwners, "hospitals");
+                  }}
+                  className={`whitespace-nowrap border-b-2 hover:border-zinc-500 ${
+                    selectedTab === Tab.HospitalOwners
+                      ? "border-violet-600"
+                      : "border-zinc-200"
+                  }`}
+                >
+                  Hospital Owners
+                </button>
+
 
                 {/* Opioid Treatment Providers Tab */}
                 <button
@@ -1012,6 +1062,17 @@ export default function Directory() {
                 />
               </div>
             )}
+            {selectedTab == Tab.HospitalOwners && (
+              <div className="flex flex-col items-end">
+                <HospitalOwnersFilters
+                  params={{
+                    hospitalOwnersData,
+                    setHospitalOwnersData,
+                    setIsApiProcessing,
+                  }}
+                />
+              </div>
+            )}
             {selectedTab == Tab.Genetics && (
               <div className="flex flex-col items-end">
                 <GeneticsFilters
@@ -1052,6 +1113,7 @@ export default function Directory() {
             {selectedTab !== Tab.ClinicalTrials &&
               selectedTab !== Tab.Plans &&
               selectedTab !== Tab.Hospitals &&
+              selectedTab !== Tab.HospitalOwners &&
               selectedTab !== Tab.Genetics &&
               selectedTab !== Tab.Diseases &&
               selectedTab !== Tab.Food && (
@@ -1224,6 +1286,9 @@ export default function Directory() {
             {selectedTab === Tab.Plans && (
               <HealthPlansList plans={displayHealthPlansData} />
             )}
+            {selectedTab === Tab.HospitalOwners && (
+              <HospitalOwnersComponent results={hospitalOwnersData} />
+            )}
             {selectedTab === Tab.Genetics && (
               <GeneticsComponent data={filteredGenetics} />
             )}
@@ -1238,7 +1303,8 @@ export default function Directory() {
             {selectedTab !== Tab.ClinicalTrials &&
               selectedTab !== Tab.Plans &&
               selectedTab !== Tab.Hospitals &&
-              selectedTab !== Tab.Genetics &&
+              selectedTab !== Tab.HospitalOwners &&
+              selectedTab !== Tab.Genetics && 
               selectedTab !== Tab.Diseases &&
               selectedTab !== Tab.Food && (
                 <DirectoryCards
