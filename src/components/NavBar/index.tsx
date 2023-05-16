@@ -12,7 +12,7 @@ import Link from "next/link";
 import { useSession, signIn, signOut } from "next-auth/react";
 import { HiOutlineSearch } from "react-icons/hi";
 import { IoMdClose } from "react-icons/io";
-import { GoThreeBars } from "react-icons/Go";
+import { GoThreeBars } from "react-icons/go";
 
 // --- index.module.css ---
 // .title {
