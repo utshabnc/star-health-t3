@@ -6,6 +6,7 @@ export enum Tab {
   Doctors,
   Products,
   Drugs,
+  Food,
   ClinicalTrials,
   Plans,
   PaymentsToDoctors,
