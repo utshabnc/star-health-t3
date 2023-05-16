@@ -23,11 +23,13 @@
     "@turf/bbox": "^6.5.0",
     "@turf/centroid": "^6.5.0",
     "@types/topojson-client": "^3.1.1",
+    "awesome-phonenumber": "^5.6.0",
     "chart.js": "^3.9.1",
     "d3-geo": "^3.0.1",
     "d3-geo-projection": "^4.0.0",
     "d3-scale": "^4.0.2",
     "dotenv": "^16.0.3",
+    "html-react-parser": "^3.0.16",
     "lodash": "^4.17.21",
     "next": "13.0.2",
     "next-auth": "^4.15.1",
@@ -41,7 +43,9 @@
     "react-tooltip": "^4.2.21",
     "rxjs": "^7.8.0",
     "superjson": "1.9.1",
+    "title-case": "^3.0.3",
     "topojson-client": "^3.1.0",
+    "xml-js": "^1.6.11",
     "zod": "^3.18.0"
   },
   "devDependencies": {

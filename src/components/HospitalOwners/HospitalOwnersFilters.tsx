@@ -28,7 +28,6 @@ export default function HospitalsFilters({params}: HospitalOwnersFiltersProps) {
   }, [hospitalOwnersData])
 
   useEffect(() => {
-
     if (searchStr) {
       const delayDebounceFn = setTimeout(() => {
         setIsApiProcessing(true);

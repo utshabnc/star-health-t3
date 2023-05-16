@@ -54,7 +54,6 @@ import GeneticsFilters from "../../components/Genetics/GeneticsFilters";
 import DiseasesFilters from "../../components/Genetics/DiseasesFilter";
 import { HospitalOwners } from "../../components/HospitalOwners/HospitalOwners.model";
 
-
 interface PriceFilter {
   min: number;
   max: number;
@@ -137,9 +136,7 @@ export default function Directory() {
     ClinicalTrialsStudyFieldsResponse<ClinicalTrialsListItem>
   >({} as ClinicalTrialsStudyFieldsResponse<ClinicalTrialsListItem>);
   const [hospitalsData, setHospitalsData] = useState<Hospital[]>(
-    [
-
-    ] as Hospital[]
+    [] as Hospital[]
   );
   const [hospitalOwnersData, setHospitalOwnersData] = useState<HospitalOwners[]>(
     [] as HospitalOwners[]
@@ -406,6 +403,16 @@ export default function Directory() {
       fetchHospitals();
     }
   }, [selectedTab]);
+
+
+  useEffect(() => {
+      if (selectedTab == Tab.HospitalOwners) {
+        const data = HospitalOwnerData.data
+        // setHospitalOwnersData(data);
+        console.log(hospitalOwnersData)
+        console.log()
+      }
+  }, [selectedTab, isApiProcessing, hospitalOwnersData]);
 
   useEffect(() => {
     if (selectedTab == Tab.HospitalOwners) {
