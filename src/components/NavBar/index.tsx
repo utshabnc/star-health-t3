@@ -29,7 +29,7 @@ function NavBar() {
     typeof window != "undefined" ? window?.innerWidth : 0
   );
 
-  var open = false;
+  const open = false;
 
   const onSearch = () => {
     navigate.push(`/?search=${search}`);
