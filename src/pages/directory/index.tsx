@@ -403,9 +403,6 @@ export default function Directory() {
   useEffect(() => {
       if (selectedTab == Tab.HospitalOwners) {
         const data = HospitalOwnerData.data
-        // setHospitalOwnersData(data);
-        console.log(hospitalOwnersData)
-        console.log()
       }
   }, [selectedTab, isApiProcessing, hospitalOwnersData]);
 

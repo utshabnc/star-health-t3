@@ -1,6 +1,4 @@
 import Link from "next/link";
-import { useEffect, useState } from "react";
-import getData, {data} from "./processJSON"
 import {HospitalOwners} from "./HospitalOwners.model"
 
 type Data = {
