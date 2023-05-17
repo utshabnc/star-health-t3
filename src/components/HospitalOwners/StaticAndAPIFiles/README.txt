@@ -26,3 +26,9 @@ Convert to Static Data:
 Convert to API data:
 1: Copy the file at StaticAndAPIFiles/processJSONModuleAPI.txt to the HospitalOwners folder and rename it processJSON.tsx.
 2: To finalize, delete the StaticAndAPIFiles folder and processedData.json from the hospital owners folder.
+
+
+Warnings:
+you will get errors if:
+1: you forget to rename the backup files to a .txt extension
+2: unneeded large files are not erased, eg. the data.json file.
