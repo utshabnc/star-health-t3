@@ -29,6 +29,7 @@ import type {
 
 import fda from "../../assets/logos/fda.png";
 import cms from "../../assets/logos/cms.png";
+import cmsDataLogo from "../../assets/logos/cms_data.svg";
 import openPayments from "../../assets/logos/open-payments.png";
 import clinicalTrials from "../../assets/logos/clinical-trials.png";
 import Image from "next/image";
@@ -53,6 +54,9 @@ import GeneticsComponent from "../../components/Genetics/Genetics";
 import GeneticsFilters from "../../components/Genetics/GeneticsFilters";
 import DiseasesFilters from "../../components/Genetics/DiseasesFilter";
 import { HospitalOwners } from "../../components/HospitalOwners/HospitalOwners.model";
+import type { Food } from "../../components/Food/Food.model";
+import FoodsComponent from "../../components/Food/Foods";
+import FoodsFilters from "../../components/Food/FoodsFilter";
 
 interface PriceFilter {
   min: number;
@@ -168,6 +172,8 @@ export default function Directory() {
   const [filteredDiseases, setFilteredDiseases] = useState<Genetic[]>(
     [] as Genetic[]
   );
+  const [food, setFood] = useState<Food[]>([] as Food[]);
+  const [filteredFood, setFilteredFood] = useState<Food[]>([] as Food[]);
   const { query: querySearch } = useRouter();
   const defaultClinicalTrialFields: Field[] = [
     Field.BriefTitle,
@@ -292,9 +298,13 @@ export default function Directory() {
           )[0]["topics"]["topic"];
           diseases.forEach((disease: any) => {
             disease["url"] = disease["url"] ? disease["url"]["_text"] : "";
-            disease["title"] = disease["title"] ? disease["title"]["_text"] : "";
+            disease["title"] = disease["title"]
+              ? disease["title"]["_text"]
+              : "";
             disease["type"] = "condition";
-            disease["other_names"] = disease["other_names"] ? disease["other_names"]["other_name"] : [];
+            disease["other_names"] = disease["other_names"]
+              ? disease["other_names"]["other_name"]
+              : [];
           });
           setDiseases(diseases);
           setFilteredDiseases(diseases);
@@ -315,27 +325,12 @@ export default function Directory() {
           setIsApiProcessing(true);
           const response = await fetch("/api/genetics/getAll");
           const data = await response.json();
-          const conditions = data["topic"].filter(
-            (topic: any) => topic["title"]["_text"] == "Conditions"
-          )[0]["topics"]["topic"];
           const genes = data["topic"].filter(
             (topic: any) => topic["title"]["_text"] == "Genes"
           )[0]["topics"]["topic"];
           const chromosomes = data["topic"].filter(
             (topic: any) => topic["title"]["_text"] == "Chromosomes"
           )[0]["topics"]["topic"];
-          conditions.forEach((condition: any) => {
-            condition["url"] = condition["url"]
-              ? condition["url"]["_text"]
-              : "";
-            condition["title"] = condition["title"]
-              ? condition["title"]["_text"]
-              : "";
-            condition["type"] = "condition";
-            condition["other_names"] = condition["other_names"]
-              ? condition["other_names"]["other_name"]
-              : [];
-          });
           genes.forEach((gene: any) => {
             gene["url"] = gene["url"] ? gene["url"]["_text"] : "";
             gene["title"] = gene["title"] ? gene["title"]["_text"] : "";
@@ -408,9 +403,6 @@ export default function Directory() {
   useEffect(() => {
       if (selectedTab == Tab.HospitalOwners) {
         const data = HospitalOwnerData.data
-        // setHospitalOwnersData(data);
-        console.log(hospitalOwnersData)
-        console.log()
       }
   }, [selectedTab, isApiProcessing, hospitalOwnersData]);
 
@@ -431,6 +423,29 @@ export default function Directory() {
       fetchHospitals();
     }
   }, []);
+
+  useEffect(() => {
+    if (selectedTab == Tab.Food) {
+      const fetchFood = async () => {
+        try {
+          setIsApiProcessing(true);
+          const response = await fetch(`/api/food/search/apple`);
+          const data = await response.json();
+          if (response.status != 200) {
+            setError(data);
+          } else {
+            setFood(data['foods']);
+            setFilteredFood(data['foods']);
+          }
+        } catch (error) {
+          setError(error);
+        } finally {
+          setIsApiProcessing(false);
+        }
+      };
+      fetchFood();
+    }
+  }, [selectedTab]);
 
   useEffect(() => {
     let searchExpr = "";
@@ -677,6 +692,20 @@ export default function Directory() {
                 )}
               </div>
               <div className="flex gap-2">
+                {/* food tab */}
+                <button
+                  onClick={() => {
+                    handleTabClick(Tab.Food, "food");
+                  }}
+                  className={`border-b-2 hover:border-zinc-500 ${
+                    selectedTab === Tab.Food
+                      ? "border-violet-600"
+                      : "border-zinc-200"
+                  }`}
+                >
+                  Food
+                </button>
+
                 {/* genetics tab */}
                 <button
                   onClick={() => {
@@ -873,9 +902,12 @@ export default function Directory() {
                 {/* Opioid Treatment Providers Tab */}
                 <button
                   onClick={() => {
-                    handleTabClick(Tab.OpioidTreatmentProviders, "opioidTreatmentProviders");
+                    handleTabClick(
+                      Tab.OpioidTreatmentProviders,
+                      "opioidTreatmentProviders"
+                    );
                   }}
-                  className={`border-b-2 hover:border-zinc-500 w-max ${
+                  className={`w-max border-b-2 hover:border-zinc-500 ${
                     selectedTab === Tab.OpioidTreatmentProviders
                       ? "border-violet-600"
                       : "border-zinc-200"
@@ -1060,15 +1092,28 @@ export default function Directory() {
                   }}
                 />
               </div>
-            )} 
+            )}
+
+            {selectedTab == Tab.Food && (
+              <div className="flex flex-col items-end">
+                <FoodsFilters
+                  params={{
+                    setFilteredFood,
+                    setFood,
+                    setIsApiProcessing,
+                    food
+                  }}
+                />
+              </div>
+            )}
 
             {selectedTab !== Tab.ClinicalTrials &&
               selectedTab !== Tab.Plans &&
               selectedTab !== Tab.Hospitals &&
               selectedTab !== Tab.HospitalOwners &&
-              selectedTab !== Tab.Genetics && 
-              selectedTab !== Tab.Diseases && 
-              (
+              selectedTab !== Tab.Genetics &&
+              selectedTab !== Tab.Diseases &&
+              selectedTab !== Tab.Food && (
                 <>
                   <Filters
                     search={search}
@@ -1080,18 +1125,19 @@ export default function Directory() {
                   {"data" && (
                     <>
                       <div className="relative">
-                      <p className="p-1 text-xs font-semibold text-violet-900">{`Search for
+                        <p className="p-1 text-xs font-semibold text-violet-900">{`Search for
                             ${
-                              filterParams.subject === "opioidTreatmentProviders"
+                              filterParams.subject ===
+                              "opioidTreatmentProviders"
                                 ? "Opioid Treatment Providers"
                                 : filterParams.subject
                             } by ${
-                            filterParams.subject === "opioidTreatmentProviders" ||
-                            filterParams.subject === "payment"
-                              ? "name"
-                              : "product"
-                          }`}</p>
-                          <div className="flex w-[100%] items-center gap-3">
+                          filterParams.subject === "opioidTreatmentProviders" ||
+                          filterParams.subject === "payment"
+                            ? "name"
+                            : "product"
+                        }`}</p>
+                        <div className="flex w-[100%] items-center gap-3">
                           <input
                             type="text"
                             placeholder={`Search`}
@@ -1194,6 +1240,15 @@ export default function Directory() {
                             />
                           </div>
                         )}
+                        {selectedTab === Tab.OpioidTreatmentProviders && (
+                          <Image
+                            src={cmsDataLogo}
+                            alt=""
+                            width={128}
+                            height={128}
+                            className="absolute bottom-0 right-0 object-contain"
+                          />
+                        )}
                         {selectedTab === Tab.Drugs && (
                           <Image
                             src={fda}
@@ -1237,13 +1292,18 @@ export default function Directory() {
             {selectedTab === Tab.Diseases && (
               <GeneticsComponent data={filteredDiseases} />
             )}
+            {selectedTab === Tab.Food && (
+              <>
+                <FoodsComponent data={filteredFood} />
+              </>
+            )}
             {selectedTab !== Tab.ClinicalTrials &&
               selectedTab !== Tab.Plans &&
               selectedTab !== Tab.Hospitals &&
               selectedTab !== Tab.HospitalOwners &&
               selectedTab !== Tab.Genetics && 
               selectedTab !== Tab.Diseases &&
-              (
+              selectedTab !== Tab.Food && (
                 <DirectoryCards
                   search={search as string}
                   searchResults={searchResults}

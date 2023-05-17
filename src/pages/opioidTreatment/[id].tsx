@@ -4,7 +4,7 @@ import { useRouter } from 'next/router';
 import { trpc } from '../../utils/trpc';
 import type { OpioidTreatmentProvider } from '../../components/OpioidTreatmentProviders/OpioidTreatmentProvider.model';
 import PhoneNumber from "../../components/PhoneNumber";
-import { titleCase } from "title-case";
+import { toTitleCase } from "../../utils";
 
 const OpioidTreatmentProviderDetails = () => {
   const navigate = useRouter();
@@ -114,24 +114,24 @@ const OpioidTreatmentProviderDetails = () => {
           </div>
           <div className='flex flex-col justify-end lg:px-24'>
             <p className='text-violet-700 text-2xl font-semibold'>
-                {titleCase((provider?.provider_name?.toLowerCase()) ?? "")}
+                {toTitleCase((provider?.provider_name?.toLowerCase()) ?? "")}
             </p>
             <p className='text-gray-500 text-sm'>
             <div>
                       <div className="flex flex-row justify-between">
                         <div className="flex flex-col">
                         <h5 className="text-md mb-2 text-gray-900">
-                        {titleCase((provider?.address_line_1?.toLowerCase()) ?? "")}
+                        {toTitleCase((provider?.address_line_1?.toLowerCase()) ?? "")}
                         <br />
                         {provider.address_line_2 !== "" &&
                           provider.address_line_2 !== undefined &&
                           provider.address_line_2 !== null && (
                             <>
-                              {titleCase(provider.address_line_2.toLowerCase())}
+                              {toTitleCase(provider.address_line_2.toLowerCase())}
                               <br />
                             </>
                         )}
-                        {titleCase((provider?.city?.toLowerCase()) ?? "")}, {provider.state} {provider.zip}
+                        {toTitleCase((provider?.city?.toLowerCase()) ?? "")}, {provider.state} {provider.zip}
                       </h5>
                             <div className="text-md mb-2 text-gray-900 text-left">
                               <PhoneNumber phone={provider.phone} />

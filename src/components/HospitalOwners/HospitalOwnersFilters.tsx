@@ -5,7 +5,7 @@ import type { Owners } from "./Owners.model";
 import Image from "next/image";
 import getData, {data} from "./processJSON"
 
-import cbi from '../../assets/logos/community-benefits.png';
+import cbi from '../../assets/logos/Data-CMS-gov.png';
 
 interface HospitalOwnersFiltersProps {
   params: {
