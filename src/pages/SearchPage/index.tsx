@@ -61,7 +61,7 @@ const SearchPage = ({ buttonPlaceholder, buttonSmall }: Props) => {
       <div style={{ marginLeft: 20 }} className="flex">
         <div
           onClick={() => setIsPopoverOpen(false)}
-          className="modal-close absolute top-1 right-0 z-50 mt-4 mr-1 flex cursor-pointer flex-col items-center text-sm"
+          className="modal-close absolute right-0 top-1 z-50 mr-1 mt-4 flex cursor-pointer flex-col items-center text-sm"
         >
           <svg
             className="fill-current"
@@ -95,11 +95,14 @@ const SearchPage = ({ buttonPlaceholder, buttonSmall }: Props) => {
             ),
             // products
             ...searchResults?.products
-              .filter((product) => product.type && product.type.toLowerCase() === "drug") // TODO - enable other products when we have somewhere to display them
+              .filter(
+                (product) =>
+                  product.type && product.type.toLowerCase() === "drug"
+              ) // TODO - enable other products when we have somewhere to display them
               .map(({ id, name }) => ({
                 id: id,
-                name: name ?? '',
-                location: '',
+                name: name ?? "",
+                location: "",
                 type: "drug" as const,
               })),
           ]}
@@ -121,7 +124,7 @@ const SearchPage = ({ buttonPlaceholder, buttonSmall }: Props) => {
         }
         className={`
               ${buttonSmall ? "max-w-[160px]" : ""}
-							 w-[390px] h-[2.488rem] mx-4 px-[2.2rem] rounded-full
+							 mx-20 h-[8rem] w-[65rem] rounded-full px-[8rem] text-[2.5rem] lg:h-[2.488rem] lg:w-[390px] lg:px-[2.2rem] lg:text-base
                `}
         value={search}
         onChange={(e) => setSearch(e.target.value)}

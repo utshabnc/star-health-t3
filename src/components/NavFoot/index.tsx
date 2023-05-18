@@ -7,7 +7,6 @@ import Footer from "../Footer";
 //   height: 100vh;
 // }
 
-
 interface Props {
   children: React.ReactNode;
 }
@@ -16,7 +15,7 @@ export const NavFoot = ({ children }: Props) => {
   return (
     <>
       <NavBar />
-        <div className="bg-[#f6f6f6] min-h-screen">{children}</div>
+      <div className="min-h-screen bg-[#f6f6f6]">{children}</div>
       <Footer />
     </>
   );

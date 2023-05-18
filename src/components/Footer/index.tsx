@@ -26,8 +26,8 @@ const year = new Date().getFullYear();
 
 function Footer() {
   return (
-    <div className="bg-nav bg-[#010139] p-1 font-custom leading-normal">
-      <div className="container mt-9 ml-auto	mr-auto flex flex-col items-center justify-center">
+    <div className="bg-nav w-[100%] bg-[#010139] p-1 font-custom leading-normal">
+      <div className="container ml-auto mr-auto	mt-9 flex flex-col items-center justify-center">
         <div className="grid auto-cols-custom grid-cols-custom grid-rows-custom font-custom text-white">
           <div className="node flex flex-col items-start justify-between">
             <div className="footer-column m-5 w-[50%]">
