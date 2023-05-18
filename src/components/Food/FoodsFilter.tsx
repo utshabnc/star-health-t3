@@ -15,27 +15,50 @@ interface FoodsFiltersProps {
 }
 
 const NUTRIENT_DESIGNATIONS = {
-  "203": "Protein",
-  "204": "Fat",
-  "205": "Carbohydrates",
-  "208": "Calories",
-  "303": "Iron",
-  "291": "Fiber",
-  "269": "Sugar",
   "301": "Calcium",
-  "307": "Sodium",
+  "208": "Calories",
+  "205": "Carbohydrates",
+  "601": "Cholesterol",
+  "204": "Fat",
+  "291": "Fiber",
+  "303": "Iron",
+  "304": "Magnesium",
+  "305": "Phosphorus",
   "306": "Potassium",
+  "203": "Protein",
+  "307": "Sodium",
+  "269": "Sugar",
+  "255": "Water",
+  "309": "Zinc",
+  "320": "Vitamin A",
   "401": "Vitamin C",
   "328": "Vitamin D",
-  "320": "Vitamin A",
   "415": "Vitamin B6",
   "418": "Vitamin B12",
-  "255": "Water",
-  "305": "Phosphorus",
-  "304": "Magnesium",
-  "309": "Zinc",
-  "601": "Cholesterol",
 };
+
+const NUTRIENT_ARRAY = [
+  "301",
+  "208",
+  "205",
+  "601",
+  "204",
+  "291",
+  "303",
+  "304",
+  "305",
+  "306",
+  "203",
+  "307",
+  "269",
+  "255",
+  "309",
+  "320",
+  "401",
+  "328",
+  "415",
+  "418"
+]
 
 export default function FoodsFilters({ params }: FoodsFiltersProps) {
   const { setFilteredFood, setFood, setIsApiProcessing, food } = params;
@@ -114,6 +137,7 @@ export default function FoodsFilters({ params }: FoodsFiltersProps) {
       fetch("/api/food/search/apple").then((response) => {
         response.json().then((data) => {
           setFilteredFood(data["foods"]);
+          setFood(data["foods"]);
           setIsApiProcessing(false);
           setMinProtein(0);
           setMinCalories(0);
@@ -407,33 +431,20 @@ export default function FoodsFilters({ params }: FoodsFiltersProps) {
           <div className="flex w-[100%] flex-row">
             <div className="mx-2">
               <p className="p-1 text-xs font-semibold text-violet-900">
-                Protein: {minProtein}g
+                Calcium: {minCalcium} MG
               </p>
               <input
                 type="range"
                 min="0"
-                max="30"
-                value={minProtein}
-                onChange={(e) => setMinProtein(parseInt(e.target.value))}
+                max="200"
+                value={minCalcium}
+                onChange={(e) => setMinCalcium(parseInt(e.target.value))}
                 className="w-[100%] cursor-pointer rounded-lg border border-violet-900 border-violet-900 bg-transparent accent-violet-500"
               />
             </div>
             <div className="mx-2">
               <p className="p-1 text-xs font-semibold text-violet-900">
-                Fat: {minFat}g
-              </p>
-              <input
-                type="range"
-                min="0"
-                max="30"
-                value={minFat}
-                onChange={(e) => setMinFat(parseInt(e.target.value))}
-                className="w-[100%] cursor-pointer rounded-lg border border-violet-900 border-violet-900 bg-transparent accent-violet-500"
-              />
-            </div>
-            <div className="mx-2">
-              <p className="p-1 text-xs font-semibold text-violet-900">
-                Carbohydrates: {minCarbs}g
+                Carbohydrates: {minCarbs} G
               </p>
               <input
                 type="range"
@@ -446,46 +457,30 @@ export default function FoodsFilters({ params }: FoodsFiltersProps) {
             </div>
             <div className="mx-2">
               <p className="p-1 text-xs font-semibold text-violet-900">
-                Calories: {minCalories} kcal
+                Cholesterol: {minCholesterol} MG
               </p>
               <input
                 type="range"
                 min="0"
-                max="300"
-                value={minCalories}
-                onChange={(e) => setMinCalories(parseInt(e.target.value))}
+                max="10"
+                value={minCholesterol}
+                onChange={(e) => setMinCholesterol(parseInt(e.target.value))}
                 className="w-[100%] cursor-pointer rounded-lg border border-violet-900 border-violet-900 bg-transparent accent-violet-500"
               />
             </div>
             <div className="mx-2">
               <p className="p-1 text-xs font-semibold text-violet-900">
-                Water: {minWater} G
+                Fat: {minFat} G
               </p>
               <input
                 type="range"
                 min="0"
-                max="100"
-                value={minWater}
-                onChange={(e) => setMinWater(parseInt(e.target.value))}
+                max="30"
+                value={minFat}
+                onChange={(e) => setMinFat(parseInt(e.target.value))}
                 className="w-[100%] cursor-pointer rounded-lg border border-violet-900 border-violet-900 bg-transparent accent-violet-500"
               />
             </div>
-            <div className="mx-2">
-              <p className="p-1 text-xs font-semibold text-violet-900">
-                Sugar: {minSugar} G
-              </p>
-              <input
-                type="range"
-                min="0"
-                max="100"
-                value={minSugar}
-                onChange={(e) => setMinSugar(parseInt(e.target.value))}
-                className="w-[100%] cursor-pointer rounded-lg border border-violet-900 border-violet-900 bg-transparent accent-violet-500"
-              />
-            </div>
-          </div>
-
-          <div className="flex w-[100%] flex-row">
             <div className="mx-2">
               <p className="p-1 text-xs font-semibold text-violet-900">
                 Fiber: {minFiber} G
@@ -496,19 +491,6 @@ export default function FoodsFilters({ params }: FoodsFiltersProps) {
                 max="100"
                 value={minFiber}
                 onChange={(e) => setMinFiber(parseInt(e.target.value))}
-                className="w-[100%] cursor-pointer rounded-lg border border-violet-900 border-violet-900 bg-transparent accent-violet-500"
-              />
-            </div>
-            <div className="mx-2">
-              <p className="p-1 text-xs font-semibold text-violet-900">
-                Calcium: {minCalcium} MG
-              </p>
-              <input
-                type="range"
-                min="0"
-                max="200"
-                value={minCalcium}
-                onChange={(e) => setMinCalcium(parseInt(e.target.value))}
                 className="w-[100%] cursor-pointer rounded-lg border border-violet-900 border-violet-900 bg-transparent accent-violet-500"
               />
             </div>
@@ -538,6 +520,8 @@ export default function FoodsFilters({ params }: FoodsFiltersProps) {
                 className="w-[100%] cursor-pointer rounded-lg border border-violet-900 border-violet-900 bg-transparent accent-violet-500"
               />
             </div>
+          </div>
+          <div className="flex w-[100%] flex-row">
             <div className="mx-2">
               <p className="p-1 text-xs font-semibold text-violet-900">
                 Phosphorus: {minPhosphorus} MG
@@ -564,8 +548,19 @@ export default function FoodsFilters({ params }: FoodsFiltersProps) {
                 className="w-[100%] cursor-pointer rounded-lg border border-violet-900 border-violet-900 bg-transparent accent-violet-500"
               />
             </div>
-          </div>
-          <div className="flex w-[100%] flex-row">
+            <div className="mx-2">
+              <p className="p-1 text-xs font-semibold text-violet-900">
+                Protein: {minProtein} G
+              </p>
+              <input
+                type="range"
+                min="0"
+                max="30"
+                value={minProtein}
+                onChange={(e) => setMinProtein(parseInt(e.target.value))}
+                className="w-[100%] cursor-pointer rounded-lg border border-violet-900 border-violet-900 bg-transparent accent-violet-500"
+              />
+            </div>
             <div className="mx-2">
               <p className="p-1 text-xs font-semibold text-violet-900">
                 Sodium: {minSodium} MG
@@ -576,6 +571,32 @@ export default function FoodsFilters({ params }: FoodsFiltersProps) {
                 max="200"
                 value={minSodium}
                 onChange={(e) => setMinSodium(parseInt(e.target.value))}
+                className="w-[100%] cursor-pointer rounded-lg border border-violet-900 border-violet-900 bg-transparent accent-violet-500"
+              />
+            </div>
+            <div className="mx-2">
+              <p className="p-1 text-xs font-semibold text-violet-900">
+                Sugar: {minSugar} G
+              </p>
+              <input
+                type="range"
+                min="0"
+                max="100"
+                value={minSugar}
+                onChange={(e) => setMinSugar(parseInt(e.target.value))}
+                className="w-[100%] cursor-pointer rounded-lg border border-violet-900 border-violet-900 bg-transparent accent-violet-500"
+              />
+            </div>
+            <div className="mx-2">
+              <p className="p-1 text-xs font-semibold text-violet-900">
+                Water: {minWater} G
+              </p>
+              <input
+                type="range"
+                min="0"
+                max="100"
+                value={minWater}
+                onChange={(e) => setMinWater(parseInt(e.target.value))}
                 className="w-[100%] cursor-pointer rounded-lg border border-violet-900 border-violet-900 bg-transparent accent-violet-500"
               />
             </div>
@@ -592,22 +613,9 @@ export default function FoodsFilters({ params }: FoodsFiltersProps) {
                 className="w-[100%] cursor-pointer rounded-lg border border-violet-900 border-violet-900 bg-transparent accent-violet-500"
               />
             </div>
-            <div className="mx-2">
-              <p className="p-1 text-xs font-semibold text-violet-900">
-                Cholesterol: {minCholesterol} MG
-              </p>
-              <input
-                type="range"
-                min="0"
-                max="10"
-                value={minCholesterol}
-                onChange={(e) => setMinCholesterol(parseInt(e.target.value))}
-                className="w-[100%] cursor-pointer rounded-lg border border-violet-900 border-violet-900 bg-transparent accent-violet-500"
-              />
-            </div>
           </div>
           <div className="flex w-[100%] flex-row">
-          <div className="mx-2">
+            <div className="mx-2">
               <p className="p-1 text-xs font-semibold text-violet-900">
                 Vitamin A: {minVitaminA} UG
               </p>
@@ -672,10 +680,7 @@ export default function FoodsFilters({ params }: FoodsFiltersProps) {
                 className="w-[100%] cursor-pointer rounded-lg border border-violet-900 border-violet-900 bg-transparent accent-violet-500"
               />
             </div>
-
-
           </div>
-          {/*   minVitaminA, minVitaminB6, minVitaminB12, minVitaminC, minVitaminD */}
 
           <div className="my-2 flex w-[100%] flex-row">
             <div className="mx-2">
@@ -688,7 +693,7 @@ export default function FoodsFilters({ params }: FoodsFiltersProps) {
                   onChange={(e) => setSelectedNutrient(e.target.value)}
                   defaultValue={selectedNutrient}
                 >
-                  {Object.keys(NUTRIENT_DESIGNATIONS).map(
+                  {NUTRIENT_ARRAY.map(
                     (nutrient: string) => (
                       <option key={nutrient} value={nutrient}>
                         {

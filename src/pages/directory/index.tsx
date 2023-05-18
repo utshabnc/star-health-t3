@@ -53,7 +53,7 @@ import type { Genetic } from "../../components/Genetics/Genetic.model";
 import GeneticsComponent from "../../components/Genetics/Genetics";
 import GeneticsFilters from "../../components/Genetics/GeneticsFilters";
 import DiseasesFilters from "../../components/Genetics/DiseasesFilter";
-import { HospitalOwners } from "../../components/HospitalOwners/HospitalOwners.model";
+import type { HospitalOwners } from "../../components/HospitalOwners/HospitalOwners.model";
 import type { Food } from "../../components/Food/Food.model";
 import FoodsComponent from "../../components/Food/Foods";
 import FoodsFilters from "../../components/Food/FoodsFilter";
@@ -1265,7 +1265,7 @@ export default function Directory() {
               )}
           </div>
         </div>
-        <div className="relative flex h-[90%] w-full justify-center">
+        <div className="relative flex h-[100%] w-full justify-center">
           <PayWall />
 
           <div className="ml-5 flex min-h-[100%] w-[95%] flex-col overflow-scroll p-1">
