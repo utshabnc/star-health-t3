@@ -86,7 +86,9 @@ function foodAttributes(foodData: Food) {
 
 export default function FoodsComponent({ data }: { data: Food[] }) {
   return (
-    <>
+    <div
+      className="h-[44vh] overflow-y-scroll scrollbar-show"
+    >
       {data?.map((food: Food, index: number) => {
         return (
           <div
@@ -125,6 +127,6 @@ export default function FoodsComponent({ data }: { data: Food[] }) {
           </div>
         );
       })}
-    </>
+    </div>
   );
 }
