@@ -1,6 +1,5 @@
 import { formatDate, formatName } from "../../utils";
 import type { DrugResponse } from "../../server/trpc/router/db";
-import FAQ from "../FAQ";
 import { useState } from "react";
 import ExpansionPanel from "../ExpansionPanel";
 import parse from "html-react-parser";
@@ -85,7 +84,7 @@ function cleanClinicalStudies(studies: string, studies_table: any[]) {
   if (shortenedStudies?.startsWith("14.1")) {
     shortenedStudies = "";
   }
-  if (shortenedStudies?.length > 800) {
+  if (shortenedStudies?.length && shortenedStudies?.length > 800) {
     shortenedStudies = shortenedStudies?.slice(0, 800) + "...";
   }
   return (
@@ -100,7 +99,7 @@ function cleanClinicalStudies(studies: string, studies_table: any[]) {
   );
 }
 
-function cleanDosage(dosage: string, dosage_table: any[]) {
+function cleanDosage(dosage: string, dosage_table: any[]): JSX.Element | null {
   if (!dosage) return null;
   if (!dosage[0]) return null;
   let dosageWithoutPrefix = dosage[0].replace(
@@ -122,18 +121,24 @@ function cleanDosage(dosage: string, dosage_table: any[]) {
   if (dosageWithoutPrefix.startsWith("Directions ")) {
     dosageWithoutPrefix = dosageWithoutPrefix.replace("Directions ", "");
   }
-  let shortenedDosage = dosageWithoutPrefix.split("( 2.1 )")[0];
-  shortenedDosage = shortenedDosage[0].toUpperCase() + shortenedDosage.slice(1);
-  return (
-    <div>
-      <p className="text-purp-2">{shortenedDosage}</p>
-      {dosage_table && (
-        <div className="mt-8">
-          {parse(dosage_table[0].replace(/Table [0-9]+\. /g, ""))}
-        </div>
-      )}
-    </div>
-  );
+  let shortenedDosage = dosageWithoutPrefix.split("( 2.1 )")[0] || "";
+  if (shortenedDosage === "" || !shortenedDosage) {
+    return null;
+  } else if (shortenedDosage && shortenedDosage[0]) {
+    shortenedDosage =
+      (shortenedDosage[0] ?? "").toUpperCase() + shortenedDosage.slice(1);
+    return (
+      <div>
+        <p className="text-purp-2">{shortenedDosage}</p>
+        {dosage_table && (
+          <div className="mt-8">
+            {parse(dosage_table[0].replace(/Table [0-9]+\. /g, ""))}
+          </div>
+        )}
+      </div>
+    );
+  }
+  return null;
 }
 
 function cleanPurpose(purpose: string) {
@@ -315,14 +320,10 @@ function cleanWarnings(
   return (
     <div>
       {children && (
-        <p className="text-purp-5 text-red-700 sm:text-xs">
-          {children}
-        </p>
+        <p className="text-purp-5 text-red-700 sm:text-xs">{children}</p>
       )}
       {ask_doctor && (
-        <p className="text-purp-5 text-red-700 sm:text-xs">
-          {ask_doctor}
-        </p>
+        <p className="text-purp-5 text-red-700 sm:text-xs">{ask_doctor}</p>
       )}
       {ask_doctor_pharmacist && (
         <p className="text-purp-5 text-red-700 sm:text-xs">
@@ -330,14 +331,10 @@ function cleanWarnings(
         </p>
       )}
       {pregnant && (
-        <p className="text-purp-5 text-red-700 sm:text-xs">
-          {pregnant}
-        </p>
+        <p className="text-purp-5 text-red-700 sm:text-xs">{pregnant}</p>
       )}
       {precautions && (
-        <p className="text-purp-5 text-red-700 sm:text-xs">
-          {precautions}
-        </p>
+        <p className="text-purp-5 text-red-700 sm:text-xs">{precautions.replace("PRECAUTIONS General ","")}</p>
       )}
       <p className="text-purp-2 pt-1">{shortenedWarnings}</p>
     </div>
@@ -349,8 +346,16 @@ function cleanIngredients(
   inactiveIngredients: string
 ) {
   if (!activeIngredients && !inactiveIngredients) return null;
-  const active = activeIngredients ? (activeIngredients[0] ? activeIngredients[0] : "") : "";
-  const inactive = inactiveIngredients ? (inactiveIngredients[0] ? inactiveIngredients[0] : "") : "";
+  const active = activeIngredients
+    ? activeIngredients[0]
+      ? activeIngredients[0]
+      : ""
+    : "";
+  const inactive = inactiveIngredients
+    ? inactiveIngredients[0]
+      ? inactiveIngredients[0]
+      : ""
+    : "";
   let activeIngredientsWithoutPrefix = active.replace(
     "1 ACTIVE INGREDIENT ",
     ""
@@ -561,7 +566,7 @@ export const DrugsDets = ({ data }: DrugSchema) => {
                   splData["ask_doctor_or_pharmacist"] || null,
                   splData["keep_out_of_reach_of_children"] || null,
                   splData["pregnancy_or_breast_feeding"] || null,
-                  splData["precautions"] ? splData["precautions"][0]?.replace("PRECAUTIONS General ", "") : null,
+                  splData["precautions"] || null
                 )}
               />
             )}
