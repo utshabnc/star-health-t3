@@ -57,7 +57,10 @@ function cleanAdverseReactions(reaction: string, reaction_table: any[]) {
       ""
     );
   }
-  const shortenedReaction = reactionWithoutPrefix.split("( 6.1 )")[0];
+  let shortenedReaction = reactionWithoutPrefix.split("( 6.1 )")[0];
+  if (shortenedReaction?.length && shortenedReaction?.length > 800) {
+    shortenedReaction = shortenedReaction?.slice(0, 800) + "...";
+  }
   return (
     <div>
       <p className="text-purp-2">{shortenedReaction}</p>
@@ -106,6 +109,12 @@ function cleanDosage(dosage: string, dosage_table: any[]): JSX.Element | null {
     "2 DOSAGE AND ADMINISTRATION ",
     ""
   );
+  if (dosageWithoutPrefix.startsWith("2 DOSAGE & ADMINISTRATION")) {
+    dosageWithoutPrefix = dosageWithoutPrefix.replace(
+      "2 DOSAGE & ADMINISTRATION",
+      ""
+    );
+  }
   if (dosageWithoutPrefix.startsWith("DOSAGE & ADMINISTRATION")) {
     dosageWithoutPrefix = dosageWithoutPrefix.replace(
       "DOSAGE & ADMINISTRATION",
@@ -151,6 +160,9 @@ function cleanDosage(dosage: string, dosage_table: any[]): JSX.Element | null {
         </div>
       );
     } else {
+      if (shortenedDosage.length > 800) {
+        shortenedDosage = shortenedDosage.slice(0, 800) + "...";
+      }
       return (
         <div>
           <p className="text-purp-2">{shortenedDosage}</p>
@@ -185,6 +197,12 @@ function cleanPurpose(purpose: string) {
   if (purposeWithoutPrefix.startsWith("Indications and Usage: ")) {
     purposeWithoutPrefix = purposeWithoutPrefix.replace(
       "Indications and Usage: ",
+      ""
+    );
+  }
+  if (purposeWithoutPrefix.startsWith("1 INDICATIONS & USAGE ")) {
+    purposeWithoutPrefix = purposeWithoutPrefix.replace(
+      "1 INDICATIONS & USAGE ",
       ""
     );
   }
@@ -355,6 +373,9 @@ function cleanWarnings(
   let shortenedWarnings = warningsWithoutPrefix.split("( 5.1 )")[0];
   if (shortenedWarnings === warningsWithoutPrefix) {
     shortenedWarnings = warningsWithoutPrefix.split("( 5.2 )")[0];
+  }
+  if (shortenedWarnings && shortenedWarnings.length && shortenedWarnings.length > 1000) {
+    shortenedWarnings = shortenedWarnings?.slice(0, 1000) + "...";
   }
   try {
     return (
