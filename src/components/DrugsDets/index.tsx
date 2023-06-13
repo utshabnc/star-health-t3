@@ -295,6 +295,7 @@ function cleanWarnings(
   pregnant: string,
   precautions: string
 ) {
+  console.log(precautions);
   if (!warnings) return null;
   if (!warnings[0]) return null;
   let warningsWithoutPrefix = warnings[0].replace(
@@ -317,28 +318,34 @@ function cleanWarnings(
   if (shortenedWarnings === warningsWithoutPrefix) {
     shortenedWarnings = warningsWithoutPrefix.split("( 5.2 )")[0];
   }
-  return (
-    <div>
-      {children && (
-        <p className="text-purp-5 text-red-700 sm:text-xs">{children}</p>
-      )}
-      {ask_doctor && (
-        <p className="text-purp-5 text-red-700 sm:text-xs">{ask_doctor}</p>
-      )}
-      {ask_doctor_pharmacist && (
-        <p className="text-purp-5 text-red-700 sm:text-xs">
-          {ask_doctor_pharmacist}
-        </p>
-      )}
-      {pregnant && (
-        <p className="text-purp-5 text-red-700 sm:text-xs">{pregnant}</p>
-      )}
-      {precautions && (
-        <p className="text-purp-5 text-red-700 sm:text-xs">{precautions.replace("PRECAUTIONS General ","")}</p>
-      )}
-      <p className="text-purp-2 pt-1">{shortenedWarnings}</p>
-    </div>
-  );
+  try {
+    return (
+      <div>
+        {children && (
+          <p className="text-purp-5 text-red-700 sm:text-xs">{children}</p>
+        )}
+        {ask_doctor && (
+          <p className="text-purp-5 text-red-700 sm:text-xs">{ask_doctor}</p>
+        )}
+        {ask_doctor_pharmacist && (
+          <p className="text-purp-5 text-red-700 sm:text-xs">
+            {ask_doctor_pharmacist}
+          </p>
+        )}
+        {pregnant && (
+          <p className="text-purp-5 text-red-700 sm:text-xs">{pregnant}</p>
+        )}
+        {precautions && (
+          <p className="text-purp-5 text-red-700 sm:text-xs">
+            {precautions.replace("PRECAUTIONS General ", "")}
+          </p>
+        )}
+        <p className="text-purp-2 pt-1">{shortenedWarnings}</p>
+      </div>
+    );
+  } catch (e) {
+    return <></>;
+  }
 }
 
 function cleanIngredients(
@@ -566,7 +573,7 @@ export const DrugsDets = ({ data }: DrugSchema) => {
                   splData["ask_doctor_or_pharmacist"] || null,
                   splData["keep_out_of_reach_of_children"] || null,
                   splData["pregnancy_or_breast_feeding"] || null,
-                  splData["precautions"] || null
+                  splData["precautions"][0] || splData["precautions"] || null
                 )}
               />
             )}
