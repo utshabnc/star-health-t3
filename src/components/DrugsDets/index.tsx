@@ -57,7 +57,10 @@ function cleanAdverseReactions(reaction: string, reaction_table: any[]) {
       ""
     );
   }
-  const shortenedReaction = reactionWithoutPrefix.split("( 6.1 )")[0];
+  let shortenedReaction = reactionWithoutPrefix.split("( 6.1 )")[0];
+  if (shortenedReaction?.length && shortenedReaction?.length > 800) {
+    shortenedReaction = shortenedReaction?.slice(0, 800) + "...";
+  }
   return (
     <div>
       <p className="text-purp-2">{shortenedReaction}</p>
@@ -106,6 +109,12 @@ function cleanDosage(dosage: string, dosage_table: any[]): JSX.Element | null {
     "2 DOSAGE AND ADMINISTRATION ",
     ""
   );
+  if (dosageWithoutPrefix.startsWith("2 DOSAGE & ADMINISTRATION")) {
+    dosageWithoutPrefix = dosageWithoutPrefix.replace(
+      "2 DOSAGE & ADMINISTRATION",
+      ""
+    );
+  }
   if (dosageWithoutPrefix.startsWith("DOSAGE & ADMINISTRATION")) {
     dosageWithoutPrefix = dosageWithoutPrefix.replace(
       "DOSAGE & ADMINISTRATION",
@@ -118,6 +127,12 @@ function cleanDosage(dosage: string, dosage_table: any[]): JSX.Element | null {
       ""
     );
   }
+  if (dosageWithoutPrefix.startsWith("Dosage and Administration: ")) {
+    dosageWithoutPrefix = dosageWithoutPrefix.replace(
+      "Dosage and Administration: ",
+      ""
+    );
+  }
   if (dosageWithoutPrefix.startsWith("Directions ")) {
     dosageWithoutPrefix = dosageWithoutPrefix.replace("Directions ", "");
   }
@@ -127,16 +142,38 @@ function cleanDosage(dosage: string, dosage_table: any[]): JSX.Element | null {
   } else if (shortenedDosage && shortenedDosage[0]) {
     shortenedDosage =
       (shortenedDosage[0] ?? "").toUpperCase() + shortenedDosage.slice(1);
-    return (
-      <div>
-        <p className="text-purp-2">{shortenedDosage}</p>
-        {dosage_table && (
-          <div className="mt-8">
-            {parse(dosage_table[0].replace(/Table [0-9]+\. /g, ""))}
-          </div>
-        )}
-      </div>
-    );
+    const findNumeralSteps = shortenedDosage.match(/[0-9]+\. /g);
+    if (
+      findNumeralSteps &&
+      findNumeralSteps.length > 0 &&
+      findNumeralSteps[0] == "1. "
+    ) {
+      const htmlString = formatString(shortenedDosage);
+      return (
+        <div>
+          {parse(htmlString)}
+          {dosage_table && (
+            <div className="mt-8">
+              {parse(dosage_table[0].replace(/Table [0-9]+\. /g, ""))}
+            </div>
+          )}
+        </div>
+      );
+    } else {
+      if (shortenedDosage.length > 800) {
+        shortenedDosage = shortenedDosage.slice(0, 800) + "...";
+      }
+      return (
+        <div>
+          <p className="text-purp-2">{shortenedDosage}</p>
+          {dosage_table && (
+            <div className="mt-8">
+              {parse(dosage_table[0].replace(/Table [0-9]+\. /g, ""))}
+            </div>
+          )}
+        </div>
+      );
+    }
   }
   return null;
 }
@@ -154,6 +191,18 @@ function cleanPurpose(purpose: string) {
   if (purposeWithoutPrefix.startsWith("INDICATIONS AND USAGE ")) {
     purposeWithoutPrefix = purposeWithoutPrefix.replace(
       "INDICATIONS AND USAGE ",
+      ""
+    );
+  }
+  if (purposeWithoutPrefix.startsWith("Indications and Usage: ")) {
+    purposeWithoutPrefix = purposeWithoutPrefix.replace(
+      "Indications and Usage: ",
+      ""
+    );
+  }
+  if (purposeWithoutPrefix.startsWith("1 INDICATIONS & USAGE ")) {
+    purposeWithoutPrefix = purposeWithoutPrefix.replace(
+      "1 INDICATIONS & USAGE ",
       ""
     );
   }
@@ -220,7 +269,11 @@ function formatString(str: string) {
       continue;
     }
     if (paragraph?.endsWith("1")) {
-      htmlString += `</p><br/><p>${paragraph.slice(0, -2)}:</p>`;
+      if (paragraph.slice(0, -2).trim().length === 0) {
+        htmlString += "</p><p>";
+      } else {
+        htmlString += `</p><br/><p>${paragraph.slice(0, -2)}:</p>`;
+      }
       let currNum = 1;
       htmlString += "<ol>\n" + `<li>${currNum}. `;
       let currCounter = 1;
@@ -295,6 +348,7 @@ function cleanWarnings(
   pregnant: string,
   precautions: string
 ) {
+  console.log(precautions);
   if (!warnings) return null;
   if (!warnings[0]) return null;
   let warningsWithoutPrefix = warnings[0].replace(
@@ -313,32 +367,44 @@ function cleanWarnings(
   if (warningsWithoutPrefix.startsWith("Warnings ")) {
     warningsWithoutPrefix = warningsWithoutPrefix.replace("Warnings ", "");
   }
+  if (warningsWithoutPrefix.startsWith("Warnings: ")) {
+    warningsWithoutPrefix = warningsWithoutPrefix.replace("Warnings: ", "");
+  }
   let shortenedWarnings = warningsWithoutPrefix.split("( 5.1 )")[0];
   if (shortenedWarnings === warningsWithoutPrefix) {
     shortenedWarnings = warningsWithoutPrefix.split("( 5.2 )")[0];
   }
-  return (
-    <div>
-      {children && (
-        <p className="text-purp-5 text-red-700 sm:text-xs">{children}</p>
-      )}
-      {ask_doctor && (
-        <p className="text-purp-5 text-red-700 sm:text-xs">{ask_doctor}</p>
-      )}
-      {ask_doctor_pharmacist && (
-        <p className="text-purp-5 text-red-700 sm:text-xs">
-          {ask_doctor_pharmacist}
-        </p>
-      )}
-      {pregnant && (
-        <p className="text-purp-5 text-red-700 sm:text-xs">{pregnant}</p>
-      )}
-      {precautions && (
-        <p className="text-purp-5 text-red-700 sm:text-xs">{precautions.replace("PRECAUTIONS General ","")}</p>
-      )}
-      <p className="text-purp-2 pt-1">{shortenedWarnings}</p>
-    </div>
-  );
+  if (shortenedWarnings && shortenedWarnings.length && shortenedWarnings.length > 1000) {
+    shortenedWarnings = shortenedWarnings?.slice(0, 1000) + "...";
+  }
+  try {
+    return (
+      <div>
+        {children && (
+          <p className="text-purp-5 text-red-700 sm:text-sm">{children}</p>
+        )}
+        {ask_doctor && (
+          <p className="text-purp-5 text-red-700 sm:text-sm">{ask_doctor}</p>
+        )}
+        {ask_doctor_pharmacist && (
+          <p className="text-purp-5 text-red-700 sm:text-sm">
+            {ask_doctor_pharmacist}
+          </p>
+        )}
+        {pregnant && (
+          <p className="text-purp-5 text-red-700 sm:text-sm">{pregnant}</p>
+        )}
+        {precautions && (
+          <p className="text-purp-5 text-red-700 sm:text-sm">
+            {precautions.replace("PRECAUTIONS General ", "")}
+          </p>
+        )}
+        <p className="text-purp-2 pt-1">{shortenedWarnings}</p>
+      </div>
+    );
+  } catch (e) {
+    return <></>;
+  }
 }
 
 function cleanIngredients(
@@ -566,7 +632,11 @@ export const DrugsDets = ({ data }: DrugSchema) => {
                   splData["ask_doctor_or_pharmacist"] || null,
                   splData["keep_out_of_reach_of_children"] || null,
                   splData["pregnancy_or_breast_feeding"] || null,
-                  splData["precautions"] || null
+                  (splData["precautions"]
+                    ? typeof splData["precations"] === "string"
+                      ? splData["precautions"]
+                      : splData["precautions"][0]
+                    : "") || ""
                 )}
               />
             )}
