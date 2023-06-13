@@ -133,16 +133,35 @@ function cleanDosage(dosage: string, dosage_table: any[]): JSX.Element | null {
   } else if (shortenedDosage && shortenedDosage[0]) {
     shortenedDosage =
       (shortenedDosage[0] ?? "").toUpperCase() + shortenedDosage.slice(1);
-    return (
-      <div>
-        <p className="text-purp-2">{shortenedDosage}</p>
-        {dosage_table && (
-          <div className="mt-8">
-            {parse(dosage_table[0].replace(/Table [0-9]+\. /g, ""))}
-          </div>
-        )}
-      </div>
-    );
+    const findNumeralSteps = shortenedDosage.match(/[0-9]+\. /g);
+    if (
+      findNumeralSteps &&
+      findNumeralSteps.length > 0 &&
+      findNumeralSteps[0] == "1. "
+    ) {
+      const htmlString = formatString(shortenedDosage);
+      return (
+        <div>
+          {parse(htmlString)}
+          {dosage_table && (
+            <div className="mt-8">
+              {parse(dosage_table[0].replace(/Table [0-9]+\. /g, ""))}
+            </div>
+          )}
+        </div>
+      );
+    } else {
+      return (
+        <div>
+          <p className="text-purp-2">{shortenedDosage}</p>
+          {dosage_table && (
+            <div className="mt-8">
+              {parse(dosage_table[0].replace(/Table [0-9]+\. /g, ""))}
+            </div>
+          )}
+        </div>
+      );
+    }
   }
   return null;
 }
@@ -232,7 +251,11 @@ function formatString(str: string) {
       continue;
     }
     if (paragraph?.endsWith("1")) {
-      htmlString += `</p><br/><p>${paragraph.slice(0, -2)}:</p>`;
+      if (paragraph.slice(0, -2).trim().length === 0) {
+        htmlString += "</p><p>";
+      } else {
+        htmlString += `</p><br/><p>${paragraph.slice(0, -2)}:</p>`;
+      }
       let currNum = 1;
       htmlString += "<ol>\n" + `<li>${currNum}. `;
       let currCounter = 1;
@@ -588,7 +611,11 @@ export const DrugsDets = ({ data }: DrugSchema) => {
                   splData["ask_doctor_or_pharmacist"] || null,
                   splData["keep_out_of_reach_of_children"] || null,
                   splData["pregnancy_or_breast_feeding"] || null,
-                  (splData["precautions"] ? (typeof splData["precations"] === "string" ? splData["precautions"] : splData["precautions"][0]) : '') || '',
+                  (splData["precautions"]
+                    ? typeof splData["precations"] === "string"
+                      ? splData["precautions"]
+                      : splData["precautions"][0]
+                    : "") || ""
                 )}
               />
             )}
