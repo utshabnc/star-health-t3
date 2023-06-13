@@ -118,6 +118,12 @@ function cleanDosage(dosage: string, dosage_table: any[]): JSX.Element | null {
       ""
     );
   }
+  if (dosageWithoutPrefix.startsWith("Dosage and Administration: ")) {
+    dosageWithoutPrefix = dosageWithoutPrefix.replace(
+      "Dosage and Administration: ",
+      ""
+    );
+  }
   if (dosageWithoutPrefix.startsWith("Directions ")) {
     dosageWithoutPrefix = dosageWithoutPrefix.replace("Directions ", "");
   }
@@ -154,6 +160,12 @@ function cleanPurpose(purpose: string) {
   if (purposeWithoutPrefix.startsWith("INDICATIONS AND USAGE ")) {
     purposeWithoutPrefix = purposeWithoutPrefix.replace(
       "INDICATIONS AND USAGE ",
+      ""
+    );
+  }
+  if (purposeWithoutPrefix.startsWith("Indications and Usage: ")) {
+    purposeWithoutPrefix = purposeWithoutPrefix.replace(
+      "Indications and Usage: ",
       ""
     );
   }
@@ -314,6 +326,9 @@ function cleanWarnings(
   if (warningsWithoutPrefix.startsWith("Warnings ")) {
     warningsWithoutPrefix = warningsWithoutPrefix.replace("Warnings ", "");
   }
+  if (warningsWithoutPrefix.startsWith("Warnings: ")) {
+    warningsWithoutPrefix = warningsWithoutPrefix.replace("Warnings: ", "");
+  }
   let shortenedWarnings = warningsWithoutPrefix.split("( 5.1 )")[0];
   if (shortenedWarnings === warningsWithoutPrefix) {
     shortenedWarnings = warningsWithoutPrefix.split("( 5.2 )")[0];
@@ -322,21 +337,21 @@ function cleanWarnings(
     return (
       <div>
         {children && (
-          <p className="text-purp-5 text-red-700 sm:text-xs">{children}</p>
+          <p className="text-purp-5 text-red-700 sm:text-sm">{children}</p>
         )}
         {ask_doctor && (
-          <p className="text-purp-5 text-red-700 sm:text-xs">{ask_doctor}</p>
+          <p className="text-purp-5 text-red-700 sm:text-sm">{ask_doctor}</p>
         )}
         {ask_doctor_pharmacist && (
-          <p className="text-purp-5 text-red-700 sm:text-xs">
+          <p className="text-purp-5 text-red-700 sm:text-sm">
             {ask_doctor_pharmacist}
           </p>
         )}
         {pregnant && (
-          <p className="text-purp-5 text-red-700 sm:text-xs">{pregnant}</p>
+          <p className="text-purp-5 text-red-700 sm:text-sm">{pregnant}</p>
         )}
         {precautions && (
-          <p className="text-purp-5 text-red-700 sm:text-xs">
+          <p className="text-purp-5 text-red-700 sm:text-sm">
             {precautions.replace("PRECAUTIONS General ", "")}
           </p>
         )}
@@ -573,7 +588,7 @@ export const DrugsDets = ({ data }: DrugSchema) => {
                   splData["ask_doctor_or_pharmacist"] || null,
                   splData["keep_out_of_reach_of_children"] || null,
                   splData["pregnancy_or_breast_feeding"] || null,
-                  splData["precautions"][0] || splData["precautions"] || null
+                  (splData["precautions"] ? (typeof splData["precations"] === "string" ? splData["precautions"] : splData["precautions"][0]) : '') || '',
                 )}
               />
             )}
