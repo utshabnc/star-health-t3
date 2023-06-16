@@ -1,13 +1,13 @@
 import Image, { StaticImageData } from "next/image";
 import Link from "next/link";
 import { IoIosArrowDroprightCircle } from "react-icons/io";
+import { Tab } from "../utils/Enums/Tab.enum";
 
 const InfoSection = ({
   items,
   header,
   boxStyle,
   itemTextSpacing = false,
-  arrowButton = true,
   textColor,
   textSize = "sm:text-5xl",
   linkable = false,
@@ -15,6 +15,7 @@ const InfoSection = ({
   items: {
     label: string | string[];
     img?: StaticImageData;
+    route?: string;
     linkparam?: string;
     count?: string;
   }[];
@@ -23,7 +24,6 @@ const InfoSection = ({
   textColor?: string;
   textSize?: string;
   itemTextSpacing?: boolean;
-  arrowButton?: boolean;
   linkable?: boolean;
 }) => {
   return (
@@ -55,23 +55,41 @@ const InfoSection = ({
             {item.img && (
               <>
                 {linkable ? (
-                  <Link
-                    href={{
-                      pathname: item.linkparam != "" ? "/directory" : "/",
-                      query: { tab: item.linkparam },
+                  <a
+                    onClick={() => {
+                      if (item?.linkparam) {
+                        localStorage.setItem(
+                          "curDirTab",
+                          JSON.stringify({
+                            tab: Tab[item?.linkparam as Tab],
+                            subject: item?.linkparam?.toLowerCase(),
+                          })
+                        );
+                      }
                     }}
                   >
-                    <Image
-                      src={item.img}
-                      alt={
-                        typeof item.label === "string"
-                          ? item.label
-                          : item.label.join(" ")
-                      }
-                      className=""
-                      style={{ height: 185, width: 185, objectFit: "contain" }}
-                    />
-                  </Link>
+                    <Link
+                      href={{
+                        pathname: item.route || "/directory",
+                        query: { tab: item.linkparam },
+                      }}
+                    >
+                      <Image
+                        src={item.img}
+                        alt={
+                          typeof item.label === "string"
+                            ? item.label
+                            : item.label.join(" ")
+                        }
+                        className=""
+                        style={{
+                          height: 185,
+                          width: 185,
+                          objectFit: "contain",
+                        }}
+                      />
+                    </Link>
+                  </a>
                 ) : (
                   <Image
                     src={item.img}
@@ -87,37 +105,63 @@ const InfoSection = ({
               </>
             )}
             {linkable ? (
-              <Link
-                href={{
-                  pathname: "/directory",
-                  query: { tab: item.linkparam },
+              <a
+                onClick={() => {
+                  if (item?.linkparam) {
+                    localStorage.setItem(
+                      "curDirTab",
+                      JSON.stringify({
+                        tab: Tab[item?.linkparam as Tab],
+                        subject: item?.linkparam?.toLowerCase(),
+                      })
+                    );
+                  }
                 }}
               >
-                <div className="group absolute bottom-0 translate-x-[-2rem] translate-y-[2rem]">
-                  <IoIosArrowDroprightCircle color="#0e1936" size={60} />
-                </div>
-              </Link>
+                <Link
+                  href={{
+                    pathname: item.linkparam != "" ? "/directory" : "/",
+                    query: { tab: item.linkparam },
+                  }}
+                >
+                  <div className="group absolute bottom-0 translate-x-[-2rem] translate-y-[2rem]">
+                    <IoIosArrowDroprightCircle color="#0e1936" size={60} />
+                  </div>
+                </Link>
+              </a>
             ) : (
-              <div className="group absolute bottom-0 translate-y-[2rem]">
-                <IoIosArrowDroprightCircle color="#0e1936" size={60} />
-              </div>
+              <></>
             )}
 
             {linkable ? (
-              <Link
-                href={{
-                  pathname: "/directory",
-                  query: { tab: item.linkparam },
+              <a
+                onClick={() => {
+                  if (item?.linkparam) {
+                    localStorage.setItem(
+                      "curDirTab",
+                      JSON.stringify({
+                        tab: Tab[item?.linkparam as Tab],
+                        subject: item?.linkparam?.toLowerCase(),
+                      })
+                    );
+                  }
                 }}
               >
-                <p
-                  className={`justify-center pb-10 text-center text-xs font-semibold capitalize lg:text-lg ${
-                    "text-" + textColor ?? "text-violet-700"
-                  }          ${itemTextSpacing && "mt-0"}`}
+                <Link
+                  href={{
+                    pathname: "/directory",
+                    query: { tab: item.linkparam },
+                  }}
                 >
-                  {item.label}
-                </p>
-              </Link>
+                  <p
+                    className={`justify-center pb-10 text-center text-xs font-semibold capitalize lg:text-lg ${
+                      "text-" + textColor ?? "text-violet-700"
+                    }          ${itemTextSpacing && "mt-0"}`}
+                  >
+                    {item.label}
+                  </p>
+                </Link>
+              </a>
             ) : (
               <p
                 className={`justify-center pb-10 text-center text-xs font-semibold capitalize lg:text-lg ${
