@@ -4,55 +4,35 @@
 // import { signIn, signOut, useSession } from "next-auth/react";
 // import { trpc } from "../utils/trpc";
 // ***********************************************************************************************************************************************
-import { useState } from "react";
 import { signIn } from "next-auth/react";
+import { useState } from "react";
 // import { useAllStatesQuery } from './api';
-import UnitedStatesHeatmap from "../components/charts/UnitedStatesHeatmap";
-import Dropdown from "../components/Dropdown";
-import SearchPage from "./SearchPage";
-import { drugTypes } from "../utils";
-import _ from "lodash";
-import data_analytics from "../assets/data_analytics.png";
-import ehr from "../assets/ehr.png";
-import care_recommender from "../assets/care_recommender.png";
 import api from "../assets/api.png";
+import data_analytics from "../assets/data_analytics.png";
 import ratings_and_reviews from "../assets/ratings_and_reviews.png";
-import community from "../assets/community.png";
 
 import doctor from "../assets/doctor.png";
 import manufacturer from "../assets/manufacturer.png";
 import transactions from "../assets/transactions.png";
 
-import doctors from "../assets/doctors.png";
-import companies from "../assets/companies.png";
-import states from "../assets/states.png";
-import drugs from "../assets/drugs.png";
-
-/* import goodRx from "../assets/GoodRx_logo.svg";
-import cms from "../assets/cms.svg";
-import fda from "../assets/fda.svg"; */
-import fda from "../assets/logos/fda.png";
-import cms from "../assets/logos/cms.png";
-import openPayments from "../assets/logos/open-payments.png";
-import clinicalTrials from "../assets/logos/clinical-trials.png";
-import type { StaticImageData } from "next/image";
 import Image from "next/image";
-import { trpc } from "../utils/trpc";
-import { IoIosArrowDroprightCircle, IoIosArrowDropright } from "react-icons/io";
-import { FaPencilRuler, FaPaintBrush } from "react-icons/fa";
-import { MdPedalBike, MdOutlineAirplanemodeActive } from "react-icons/md";
-import { TbLayoutGridAdd } from "react-icons/tb";
-import { BsCheck2 } from "react-icons/bs";
-import Link from "next/link";
-import InfoSection from "../components/InfoSection";
-import testTubes from "../assets/logos/test-tubes.png";
-import devices from "../assets/logos/devices.png";
-import insurance from "../assets/logos/insurance.png";
-import payments from "../assets/logos/payments.png";
-import insights from "../assets/logos/insights.png";
+import drugs from "../assets/drugs.png";
+import datacCms from "../assets/logos/Data-CMS-gov.png";
+import usda from "../assets/logos/USDA-Emblem.png";
+import clinicalTrials from "../assets/logos/clinical-trials.png";
+import cms from "../assets/logos/cms.png";
 import dashboard from "../assets/logos/dashboard.png";
+import devices from "../assets/logos/devices.png";
+import fda from "../assets/logos/fda.png";
 import healthcare from "../assets/logos/healthcare.png";
-import Map from "../components/Map";
+import insights from "../assets/logos/insights.png";
+import insurance from "../assets/logos/insurance.png";
+import medlinPlus from "../assets/logos/medlinePlus.png";
+import openPayments from "../assets/logos/open-payments.png";
+import testTubes from "../assets/logos/test-tubes.png";
+import states from "../assets/states.png";
+import InfoSection from "../components/InfoSection";
+import { trpc } from "../utils/trpc";
 
 const features = [
   { label: "Data Analytics", img: data_analytics },
@@ -73,21 +53,14 @@ const info = [
   { label: "Customizable dashboards", img: dashboard },
 ];
 
-const data = [
-  { label: "1,000,000+ Doctors", img: doctor },
-  { label: "3,000+ Companies", img: manufacturer },
-  { label: "$100,000,000+ Transactions", img: transactions },
-  { label: "50 States", img: states, linkparam: "" },
-];
-
 const partners = [
   { label: "", img: openPayments },
   { label: "", img: fda },
   { label: "", img: cms },
   { label: "", img: clinicalTrials },
-  /* { label: "", img: cms },
-  { label: "", img: fda },
-  { label: "", img: goodRx }, */
+  { label: "", img: usda },
+  { label: "", img: datacCms },
+  { label: "", img: medlinPlus },
 ];
 
 /* const understand = [
@@ -96,18 +69,26 @@ const partners = [
 ]; */
 
 const dataDir = [
+  { label: "1,000,000+ Doctors", img: doctor, linkparam: "Doctors" },
+  { label: "3,000+ Companies", img: manufacturer, linkparam: "Hospitals" },
+  {
+    label: "$100,000,000+ Transactions",
+    img: transactions,
+    linkparam: "Transactions",
+  },
+  { label: "50 States", img: states, route: "/visualization" },
   {
     label: "450,000+ clinical trials",
     img: testTubes,
-    linkparam: "clinical trials",
+    linkparam: "ClinicalTrials",
   },
   {
     label: "200+ medical devices",
     img: devices,
-    linkparam: "products",
+    linkparam: "Products",
   },
-  { label: "700+ insurance plans", img: insurance, linkparam: "" },
-  { label: "1,500+ Drugs", img: drugs, linkparam: "products" },
+  { label: "700+ insurance plans", img: insurance, linkparam: "Plans" },
+  { label: "1,500+ Drugs", img: drugs, linkparam: "" },
 ];
 
 export default function Home() {
@@ -116,14 +97,15 @@ export default function Home() {
   //   console.log(data)
   const FirstSection = () => (
     <div className="mx-10 flex items-center justify-center pb-20 pt-10 sm:flex-row">
-      <div className="flex flex-col sm:w-[50%]">
-        <h2 className="mb-5 mt-10 flex justify-center text-center font-custom font-bold leading-tight text-white sm:text-5xl md:text-xl xl:text-8xl ">
-          Data-Driven Healthcare
-        </h2>
-        <p className="mb-12 text-center text-xl text-white md:text-4xl">
-          Data - Insights - Statistics
-        </p>
-        {/* <div className='container-for-form mt-12 mb-11'>
+      <div className="flex flex-col items-center justify-center sm:w-[100%]">
+        <div className=" sm:w-[70%]">
+          <h2 className="mb-5 mt-10 flex justify-center text-center font-custom font-bold leading-tight text-white sm:text-5xl md:text-xl xl:text-8xl ">
+            Healthcare Intelligence Tool
+          </h2>
+          <p className="mb-12 text-center text-xl text-white md:text-4xl">
+            Data - Insights - Statistics
+          </p>
+          {/* <div className='container-for-form mt-12 mb-11'>
 							<form action="/" method="post">
 								<div className='relative flex items-center justify-center'>
 									<input className='w-44 h-14 mx-2 px-4 rounded-full' type="text" placeholder="Your Name" id="name" name="name" required />
@@ -134,22 +116,27 @@ export default function Home() {
 								</div>
 							</form>
 						</div> */}
-        <div className="relative flex items-center justify-center">
-          {/* <button type="submit" className='my-4 bg-blue-500 hover:bg-blue-700 text-white text-2xl font-custom py-2 px-4 rounded-full'>
+          <div className="relative flex items-center justify-center">
+            {/* <button type="submit" className='my-4 bg-blue-500 hover:bg-blue-700 text-white text-2xl font-custom py-2 px-4 rounded-full'>
 								Sign In
 							</button> */}
-          <button
-            className="lg:w-22 h-12 w-32 rounded bg-emerald-400 px-3 py-1 font-custom text-xl font-medium hover:bg-emerald-500 active:bg-emerald-600"
-            onClick={() => signIn("google")}
-          >
-            Sign In
-          </button>
+            <button
+              className="h-18 w-32 rounded bg-emerald-400 px-3 py-1 font-custom text-xl font-medium hover:bg-emerald-500 active:bg-emerald-600 lg:w-32"
+              onClick={() => signIn("google")}
+            >
+              Open Data Directory
+            </button>
+          </div>
         </div>
-        <div className="mx-auto mt-16 flex w-fit items-center justify-center gap-10 rounded-xl bg-white px-10">
-          <Image src={openPayments} alt="" width={128} height={128} />
-          <Image src={fda} alt="" width={128} height={128} />
-          <Image src={cms} alt="" width={128} height={128} />
-          <Image src={clinicalTrials} alt="" width={128} height={128} />
+
+        <div className="mx-auto mt-16 flex w-fit items-center justify-center gap-8 rounded-xl bg-white px-10">
+          <Image src={openPayments} alt="" width={108} height={128} />
+          <Image src={fda} alt="" width={108} height={128} />
+          <Image src={cms} alt="" width={108} height={128} />
+          <Image src={usda} alt="" width={108} height={128} />
+          <Image src={datacCms} alt="" width={108} height={128} />
+          <Image src={clinicalTrials} alt="" width={108} height={128} />
+          <Image src={medlinPlus} alt="" width={108} height={128} />
         </div>
       </div>
       {/* <Map /> */}
@@ -161,9 +148,32 @@ export default function Home() {
     <div className="z-0 bg-[#0e1936]">
       <FirstSection />
       <InfoSection
+        items={dataDir.slice(0, 4)}
+        header="StarHealth Data Directory"
+        textSize="sm:text-[5rem]"
+        textColor="font-custom"
+        boxStyle="bg-white"
+        itemTextSpacing={true}
+        linkable={true}
+      />
+      {/* <InfoSection
+        items={understand}
+        textColor="font-custom"
+        boxStyle="bg-white"
+        itemTextSpacing={true}
+        linkable={true}
+      /> */}
+      <InfoSection
+        items={dataDir.slice(4)}
+        textColor="font-custom"
+        boxStyle="bg-white"
+        itemTextSpacing={true}
+        linkable={true}
+      />
+      <Divider />
+      <InfoSection
         items={features}
         header="Features"
-        textSize="sm:text-[5rem]"
         boxStyle="bg-white"
         textColor="font-custom"
         itemTextSpacing={true}
@@ -176,35 +186,15 @@ export default function Home() {
       />
       <Divider />
       <InfoSection
-        items={data}
-        header="StarHealth Data Directory"
-        arrowButton={false}
-        textColor="font-custom"
-        boxStyle="bg-white"
-        itemTextSpacing={true}
-      />
-      {/* <InfoSection
-        items={understand}
-        textColor="font-custom"
-        boxStyle="bg-white"
-        itemTextSpacing={true}
-        linkable={true}
-      /> */}
-      <InfoSection
-        items={dataDir}
-        textColor="font-custom"
-        boxStyle="bg-white"
-        itemTextSpacing={true}
-        linkable={true}
-      />
-      <Divider />
-      <InfoSection
-        items={partners}
+        items={partners.slice(0, 4)}
         header="Data Partners"
         textColor="font-custom"
         boxStyle="bg-white"
-        linkable={false}
-        arrowButton={false}
+      />
+      <InfoSection
+        items={partners.slice(4)}
+        textColor="font-custom"
+        boxStyle="bg-white"
       />
       <Divider />
       {/* <div id='Features' className='section l4 wf-section text-customgrey [rgba(255, 255, 255, 0.65)] font-custom px-[80px] pt-[40px] pb-[150px]'>

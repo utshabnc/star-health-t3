@@ -1,62 +1,62 @@
+import { debounce } from "lodash";
 import { useRouter } from "next/router";
-import React, { useCallback, useEffect, useRef, useState, Dispatch, SetStateAction } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { AiOutlineLoading3Quarters } from "react-icons/ai/index";
+import DirectoryCards from "../../components/DirectoryCards";
+import Filters from "../../components/Filters";
 import { formatMoney } from "../../utils";
 import { trpc } from "../../utils/trpc";
-import Filters from "../../components/Filters";
-import DirectoryCards from "../../components/DirectoryCards";
-import { cond, debounce } from "lodash";
-import { AiOutlineLoading3Quarters } from "react-icons/ai/index";
 
 import type { Observable } from "rxjs";
 import { forkJoin } from "rxjs";
-import { finalize, tap, catchError } from "rxjs/operators";
-import { Tab } from "../../utils/Enums/Tab.enum";
+import { catchError, finalize, tap } from "rxjs/operators";
 import ClinicalTrialsComponent from "../../components/ClinicalTrials";
-import {
-  getClinicalTrialFieldValues,
-  getClinicalTrialsList,
-} from "../../components/ClinicalTrials/helpers";
-import { Field } from "../../components/ClinicalTrials/Fields.enum";
-import type {
-  ClinicalTrialsListItem,
-  ClinicalTrialsStudyFieldsResponse,
-} from "../../components/ClinicalTrials/ClinicalTrialsStudyFieldsResponse.model";
-import ClinicalTrialsFilters from "../../components/ClinicalTrials/ClinicalTrialsFilters";
 import type {
   ClinicalTrialsFieldValuesResponse,
   FieldValue,
 } from "../../components/ClinicalTrials/ClinicalTrialsFieldValuesResponse.model";
+import ClinicalTrialsFilters from "../../components/ClinicalTrials/ClinicalTrialsFilters";
+import type {
+  ClinicalTrialsListItem,
+  ClinicalTrialsStudyFieldsResponse,
+} from "../../components/ClinicalTrials/ClinicalTrialsStudyFieldsResponse.model";
+import { Field } from "../../components/ClinicalTrials/Fields.enum";
+import {
+  getClinicalTrialFieldValues,
+  getClinicalTrialsList,
+} from "../../components/ClinicalTrials/helpers";
+import { Tab } from "../../utils/Enums/Tab.enum";
 
-import fda from "../../assets/logos/fda.png";
+import { useSession } from "next-auth/react";
+import Image from "next/image";
+import clinicalTrials from "../../assets/logos/clinical-trials.png";
 import cms from "../../assets/logos/cms.png";
 import cmsDataLogo from "../../assets/logos/cms_data.svg";
+import fda from "../../assets/logos/fda.png";
 import openPayments from "../../assets/logos/open-payments.png";
-import clinicalTrials from "../../assets/logos/clinical-trials.png";
-import Image from "next/image";
+import ErrorComponent from "../../components/ErrorComponent";
+import type { Food } from "../../components/Food/Food.model";
+import FoodsComponent from "../../components/Food/Foods";
+import FoodsFilters from "../../components/Food/FoodsFilter";
+import DiseasesFilters from "../../components/Genetics/DiseasesFilter";
+import type { Genetic } from "../../components/Genetics/Genetic.model";
+import GeneticsComponent from "../../components/Genetics/Genetics";
+import GeneticsFilters from "../../components/Genetics/GeneticsFilters";
+import HealthPlansFilters from "../../components/HealthPlans/HealthPlansFilters";
+import HealthPlansList from "../../components/HealthPlans/HealthPlansList";
 import {
   getHealthPlans,
   searchLocationByZipcode,
 } from "../../components/HealthPlans/httpsRequests";
-import HealthPlansFilters from "../../components/HealthPlans/HealthPlansFilters";
-import HealthPlansList from "../../components/HealthPlans/HealthPlansList";
-import { PayWall } from "../../components/PayWall/PayWall";
-import { useSession } from "next-auth/react";
+import HospitalOwnersComponent from "../../components/HospitalOwners/HospitalOwners";
+import type { HospitalOwners } from "../../components/HospitalOwners/HospitalOwners.model";
+import HospitalOwnersFilters from "../../components/HospitalOwners/HospitalOwnersFilters";
+import * as HospitalOwnerData from "../../components/HospitalOwners/processJSON";
 import type { Hospital } from "../../components/Hospitals/Hospital.model";
 import HospitalsComponent from "../../components/Hospitals/Hospitals";
-import HospitalOwnersComponent from "../../components/HospitalOwners/HospitalOwners"
-import * as HospitalOwnerData from "../../components/HospitalOwners/processJSON"
-import LoadingStarHealth from "../../components/Loading";
 import HospitalsFilters from "../../components/Hospitals/HospitalsFilters";
-import HospitalOwnersFilters from "../../components/HospitalOwners/HospitalOwnersFilters";
-import ErrorComponent from "../../components/ErrorComponent";
-import type { Genetic } from "../../components/Genetics/Genetic.model";
-import GeneticsComponent from "../../components/Genetics/Genetics";
-import GeneticsFilters from "../../components/Genetics/GeneticsFilters";
-import DiseasesFilters from "../../components/Genetics/DiseasesFilter";
-import type { HospitalOwners } from "../../components/HospitalOwners/HospitalOwners.model";
-import type { Food } from "../../components/Food/Food.model";
-import FoodsComponent from "../../components/Food/Foods";
-import FoodsFilters from "../../components/Food/FoodsFilter";
+import LoadingStarHealth from "../../components/Loading";
+import { PayWall } from "../../components/PayWall/PayWall";
 
 interface PriceFilter {
   min: number;
@@ -142,9 +142,9 @@ export default function Directory() {
   const [hospitalsData, setHospitalsData] = useState<Hospital[]>(
     [] as Hospital[]
   );
-  const [hospitalOwnersData, setHospitalOwnersData] = useState<HospitalOwners[]>(
-    [] as HospitalOwners[]
-  );
+  const [hospitalOwnersData, setHospitalOwnersData] = useState<
+    HospitalOwners[]
+  >([] as HospitalOwners[]);
   const [clinicalTrialSearchKeywordExpr, setClinicalTrialSearchKeywordExpr] =
     useState<string>("");
   const [clinicalTrialSearchExpr, setClinicalTrialSearchExpr] =
@@ -399,11 +399,10 @@ export default function Directory() {
     }
   }, [selectedTab]);
 
-
   useEffect(() => {
-      if (selectedTab == Tab.HospitalOwners) {
-        const data = HospitalOwnerData.data
-      }
+    if (selectedTab == Tab.HospitalOwners) {
+      const data = HospitalOwnerData.data;
+    }
   }, [selectedTab, isApiProcessing, hospitalOwnersData]);
 
   useEffect(() => {
@@ -412,7 +411,7 @@ export default function Directory() {
         try {
           setIsApiProcessing(true);
           const response = await HospitalOwnerData.default();
-          const data: HospitalOwners[] = await HospitalOwnerData.data
+          const data: HospitalOwners[] = await HospitalOwnerData.data;
           setHospitalOwnersData(data);
         } catch (error) {
           setError(error);
@@ -434,8 +433,8 @@ export default function Directory() {
           if (response.status != 200) {
             setError(data);
           } else {
-            setFood(data['foods']);
-            setFilteredFood(data['foods']);
+            setFood(data["foods"]);
+            setFilteredFood(data["foods"]);
           }
         } catch (error) {
           setError(error);
@@ -692,90 +691,6 @@ export default function Directory() {
                 )}
               </div>
               <div className="flex gap-2">
-                {/* food tab */}
-                <button
-                  onClick={() => {
-                    handleTabClick(Tab.Food, "food");
-                  }}
-                  className={`border-b-2 hover:border-zinc-500 ${
-                    selectedTab === Tab.Food
-                      ? "border-violet-600"
-                      : "border-zinc-200"
-                  }`}
-                >
-                  Food
-                </button>
-
-                {/* genetics tab */}
-                <button
-                  onClick={() => {
-                    handleTabClick(Tab.Genetics, "genetics");
-                  }}
-                  className={`border-b-2 hover:border-zinc-500 ${
-                    selectedTab === Tab.Genetics
-                      ? "border-violet-600"
-                      : "border-zinc-200"
-                  }`}
-                >
-                  Genetics
-                </button>
-
-                {/* diseases tab */}
-                <button
-                  onClick={() => {
-                    handleTabClick(Tab.Diseases, "diseases");
-                  }}
-                  className={`border-b-2 hover:border-zinc-500 ${
-                    selectedTab === Tab.Diseases
-                      ? "border-violet-600"
-                      : "border-zinc-200"
-                  }`}
-                >
-                  Diseases
-                </button>
-
-                {/* doctors tab */}
-                <button
-                  onClick={() => {
-                    handleTabClick(Tab.Doctors, "doctors");
-                  }}
-                  className={`border-b-2 hover:border-zinc-500 ${
-                    selectedTab === Tab.Doctors
-                      ? "border-violet-600"
-                      : "border-zinc-200"
-                  }`}
-                >
-                  Doctors
-                </button>
-
-                {/* drugs tab */}
-                <button
-                  onClick={(e) => {
-                    handleTabClick(Tab.Drugs, "drugs");
-                  }}
-                  className={`border-b-2 hover:border-zinc-500 ${
-                    selectedTab === Tab.Drugs
-                      ? "border-violet-600"
-                      : "border-zinc-200"
-                  }`}
-                >
-                  Drugs
-                </button>
-
-                {/* manufactures tab */}
-                <button
-                  onClick={() => {
-                    handleTabClick(Tab.Manufacturers, "manufacturers");
-                  }}
-                  className={`border-b-2 hover:border-zinc-500 ${
-                    selectedTab === Tab.Manufacturers
-                      ? "border-violet-600"
-                      : "border-zinc-200"
-                  }`}
-                >
-                  Manufacturers
-                </button>
-
                 {/* clinical trials tab */}
                 <button
                   onClick={() => {
@@ -856,18 +771,74 @@ export default function Directory() {
                   <span>Clinical Trials</span>
                 </button>
 
-                {/* transactions tab */}
+                {/* diseases tab */}
                 <button
                   onClick={() => {
-                    handleTabClick(Tab.Transactions, "transactions");
+                    handleTabClick(Tab.Diseases, "diseases");
                   }}
                   className={`border-b-2 hover:border-zinc-500 ${
-                    selectedTab === Tab.Transactions
+                    selectedTab === Tab.Diseases
                       ? "border-violet-600"
                       : "border-zinc-200"
                   }`}
                 >
-                  Transactions
+                  Diseases
+                </button>
+
+                {/* doctors tab */}
+                <button
+                  onClick={() => {
+                    handleTabClick(Tab.Doctors, "doctors");
+                  }}
+                  className={`border-b-2 hover:border-zinc-500 ${
+                    selectedTab === Tab.Doctors
+                      ? "border-violet-600"
+                      : "border-zinc-200"
+                  }`}
+                >
+                  Doctors
+                </button>
+
+                {/* drugs tab */}
+                <button
+                  onClick={(e) => {
+                    handleTabClick(Tab.Drugs, "drugs");
+                  }}
+                  className={`border-b-2 hover:border-zinc-500 ${
+                    selectedTab === Tab.Drugs
+                      ? "border-violet-600"
+                      : "border-zinc-200"
+                  }`}
+                >
+                  Drugs
+                </button>
+
+                {/* food tab */}
+                <button
+                  onClick={() => {
+                    handleTabClick(Tab.Food, "food");
+                  }}
+                  className={`border-b-2 hover:border-zinc-500 ${
+                    selectedTab === Tab.Food
+                      ? "border-violet-600"
+                      : "border-zinc-200"
+                  }`}
+                >
+                  Food
+                </button>
+
+                {/* genetics tab */}
+                <button
+                  onClick={() => {
+                    handleTabClick(Tab.Genetics, "genetics");
+                  }}
+                  className={`border-b-2 hover:border-zinc-500 ${
+                    selectedTab === Tab.Genetics
+                      ? "border-violet-600"
+                      : "border-zinc-200"
+                  }`}
+                >
+                  Genetics
                 </button>
 
                 {/* Hospitals Tab */}
@@ -883,7 +854,7 @@ export default function Directory() {
                 >
                   Hospitals
                 </button>
-                
+
                 {/* Hospital Owners Tab */}
                 <button
                   onClick={() => {
@@ -896,38 +867,6 @@ export default function Directory() {
                   }`}
                 >
                   Hospital Owners
-                </button>
-
-
-                {/* Opioid Treatment Providers Tab */}
-                <button
-                  onClick={() => {
-                    handleTabClick(
-                      Tab.OpioidTreatmentProviders,
-                      "opioidTreatmentProviders"
-                    );
-                  }}
-                  className={`w-max border-b-2 hover:border-zinc-500 ${
-                    selectedTab === Tab.OpioidTreatmentProviders
-                      ? "border-violet-600"
-                      : "border-zinc-200"
-                  }`}
-                >
-                  Opioid Treatment
-                </button>
-
-                {/* medical devices tab */}
-                <button
-                  onClick={(e) => {
-                    handleTabClick(Tab.Products, "products");
-                  }}
-                  className={`w-max border-b-2 hover:border-zinc-500 ${
-                    selectedTab === Tab.Products
-                      ? "border-violet-600"
-                      : "border-zinc-200"
-                  }`}
-                >
-                  <span>Medical</span> <span>Devices</span>
                 </button>
 
                 {/* insurance plans tab goes here */}
@@ -981,6 +920,65 @@ export default function Directory() {
                   }`}
                 >
                   Insurance
+                </button>
+
+                {/* manufactures tab */}
+                <button
+                  onClick={() => {
+                    handleTabClick(Tab.Manufacturers, "manufacturers");
+                  }}
+                  className={`border-b-2 hover:border-zinc-500 ${
+                    selectedTab === Tab.Manufacturers
+                      ? "border-violet-600"
+                      : "border-zinc-200"
+                  }`}
+                >
+                  Manufacturers
+                </button>
+
+                {/* medical devices tab */}
+                <button
+                  onClick={(e) => {
+                    handleTabClick(Tab.Products, "products");
+                  }}
+                  className={`w-max border-b-2 hover:border-zinc-500 ${
+                    selectedTab === Tab.Products
+                      ? "border-violet-600"
+                      : "border-zinc-200"
+                  }`}
+                >
+                  <span>Medical</span> <span>Devices</span>
+                </button>
+
+                {/* Opioid Treatment Providers Tab */}
+                <button
+                  onClick={() => {
+                    handleTabClick(
+                      Tab.OpioidTreatmentProviders,
+                      "opioidTreatmentProviders"
+                    );
+                  }}
+                  className={`w-max border-b-2 hover:border-zinc-500 ${
+                    selectedTab === Tab.OpioidTreatmentProviders
+                      ? "border-violet-600"
+                      : "border-zinc-200"
+                  }`}
+                >
+                  Opioid Treatment
+                </button>
+
+                {/* transactions tab */}
+                <button
+                  onClick={() => {
+                    handleTabClick(Tab.Transactions, "transactions");
+                  }}
+                  className={`border-b-2 hover:border-zinc-500 ${
+                    selectedTab === Tab.Transactions
+                      ? "border-violet-600"
+                      : "border-zinc-200"
+                  }`}
+                >
+                  Transactions
                 </button>
               </div>
             </div>
@@ -1101,7 +1099,7 @@ export default function Directory() {
                     setFilteredFood,
                     setFood,
                     setIsApiProcessing,
-                    food
+                    food,
                   }}
                 />
               </div>
@@ -1301,7 +1299,7 @@ export default function Directory() {
               selectedTab !== Tab.Plans &&
               selectedTab !== Tab.Hospitals &&
               selectedTab !== Tab.HospitalOwners &&
-              selectedTab !== Tab.Genetics && 
+              selectedTab !== Tab.Genetics &&
               selectedTab !== Tab.Diseases &&
               selectedTab !== Tab.Food && (
                 <DirectoryCards
