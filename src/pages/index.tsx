@@ -99,9 +99,9 @@ const dataDir = [
   { label: "6,000+ diseases", img: diseases, linkparam: "Diseases" },
   { label: "26 genetics & chromosomes", img: genetics, linkparam: "Genetics" },
 
-  { label: "2,000 hospitals", img: hospital, linkparam: "Hospitals" },
+  { label: "2,000+ hospitals", img: hospital, linkparam: "Hospitals" },
   {
-    label: "10,000 opioid treatment centers",
+    label: "10,000+ opioid treatment centers",
     img: opioid,
     linkparam: "OpioidTreatmentProviders",
   },
