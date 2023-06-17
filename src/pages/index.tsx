@@ -21,19 +21,24 @@ import datacCms from "../assets/logos/Data-CMS-gov.png";
 import usda from "../assets/logos/USDA-Emblem.png";
 import clinicalTrials from "../assets/logos/clinical-trials.png";
 import cms from "../assets/logos/cms.png";
+import Cbenefits from "../assets/logos/community-benefits.png";
 import dashboard from "../assets/logos/dashboard.png";
 import devices from "../assets/logos/devices.png";
+import diseases from "../assets/logos/diseases.png";
 import fda from "../assets/logos/fda.png";
+import food from "../assets/logos/food.png";
+import genetics from "../assets/logos/genetics.png";
 import healthcare from "../assets/logos/healthcare.png";
+import hospital from "../assets/logos/hospital.png";
 import insights from "../assets/logos/insights.png";
 import insurance from "../assets/logos/insurance.png";
 import medlinPlus from "../assets/logos/medlinePlus.png";
 import openPayments from "../assets/logos/open-payments.png";
+import opioid from "../assets/logos/opioid-treatment.png";
 import testTubes from "../assets/logos/test-tubes.png";
 import states from "../assets/states.png";
 import InfoSection from "../components/InfoSection";
 import { trpc } from "../utils/trpc";
-
 const features = [
   { label: "Data Analytics", img: data_analytics },
   { label: "Healthcare Data", img: healthcare },
@@ -61,6 +66,7 @@ const partners = [
   { label: "", img: usda },
   { label: "", img: datacCms },
   { label: "", img: medlinPlus },
+  { label: "", img: Cbenefits },
 ];
 
 /* const understand = [
@@ -70,13 +76,13 @@ const partners = [
 
 const dataDir = [
   { label: "1,000,000+ Doctors", img: doctor, linkparam: "Doctors" },
-  { label: "3,000+ Companies", img: manufacturer, linkparam: "Hospitals" },
+  { label: "3,000+ Companies", img: manufacturer, linkparam: "Manufacturers" },
   {
     label: "$100,000,000+ Transactions",
     img: transactions,
     linkparam: "Transactions",
   },
-  { label: "50 States", img: states, route: "/visualization" },
+  { label: "50 States", img: states, linkparam: "PaymentsToDoctors" },
   {
     label: "450,000+ clinical trials",
     img: testTubes,
@@ -88,7 +94,17 @@ const dataDir = [
     linkparam: "Products",
   },
   { label: "700+ insurance plans", img: insurance, linkparam: "Plans" },
-  { label: "1,500+ Drugs", img: drugs, linkparam: "" },
+  { label: "1,500+ Drugs", img: drugs, linkparam: "Drugs" },
+  { label: "5,000+ foods", img: food, linkparam: "Food" },
+  { label: "6,000+ diseases", img: diseases, linkparam: "Diseases" },
+  { label: "26 genetics & chromosomes", img: genetics, linkparam: "Genetics" },
+
+  { label: "2,000 hospitals", img: hospital, linkparam: "Hospitals" },
+  {
+    label: "10,000 opioid treatment centers",
+    img: opioid,
+    linkparam: "OpioidTreatmentProviders",
+  },
 ];
 
 export default function Home() {
@@ -99,11 +115,11 @@ export default function Home() {
     <div className="mx-10 flex items-center justify-center pb-20 pt-10 sm:flex-row">
       <div className="flex flex-col items-center justify-center sm:w-[100%]">
         <div className=" sm:w-[70%]">
-          <h2 className="mb-5 mt-10 flex justify-center text-center font-custom font-bold leading-tight text-white sm:text-5xl md:text-xl xl:text-8xl ">
+          <h2 className="mb-5 mt-10 flex justify-center text-center font-custom font-bold leading-tight text-white sm:text-4xl md:text-xl xl:text-7xl ">
             Healthcare Intelligence Tool
           </h2>
           <p className="mb-12 text-center text-xl text-white md:text-4xl">
-            Data - Insights - Statistics
+            Data-Driven Healthcare
           </p>
           {/* <div className='container-for-form mt-12 mb-11'>
 							<form action="/" method="post">
@@ -121,7 +137,7 @@ export default function Home() {
 								Sign In
 							</button> */}
             <button
-              className="h-18 w-32 rounded bg-emerald-400 px-3 py-1 font-custom text-xl font-medium hover:bg-emerald-500 active:bg-emerald-600 lg:w-32"
+              className="w-62 lg:w-62 h-24 rounded bg-emerald-400 px-3 py-1 font-custom text-xl font-medium hover:bg-emerald-500 active:bg-emerald-600"
               onClick={() => signIn("google")}
             >
               Open Data Directory
@@ -137,6 +153,7 @@ export default function Home() {
           <Image src={datacCms} alt="" width={108} height={128} />
           <Image src={clinicalTrials} alt="" width={108} height={128} />
           <Image src={medlinPlus} alt="" width={108} height={128} />
+          <Image src={Cbenefits} alt="" width={108} height={128} />
         </div>
       </div>
       {/* <Map /> */}
@@ -148,7 +165,7 @@ export default function Home() {
     <div className="z-0 bg-[#0e1936]">
       <FirstSection />
       <InfoSection
-        items={dataDir.slice(0, 4)}
+        items={dataDir.slice(0, 6)}
         header="StarHealth Data Directory"
         textSize="sm:text-[5rem]"
         textColor="font-custom"
@@ -164,7 +181,7 @@ export default function Home() {
         linkable={true}
       /> */}
       <InfoSection
-        items={dataDir.slice(4)}
+        items={dataDir.slice(6)}
         textColor="font-custom"
         boxStyle="bg-white"
         itemTextSpacing={true}

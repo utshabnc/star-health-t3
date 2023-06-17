@@ -1,22 +1,23 @@
-import { Dispatch, SetStateAction, useMemo} from "react";
-import { useEffect, useState } from "react";
-import type { HospitalOwners } from "./HospitalOwners.model";
-import type { Owners } from "./Owners.model";
 import Image from "next/image";
-import getData, {data} from "./processJSON"
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import type { HospitalOwners } from "./HospitalOwners.model";
+import { data } from "./processJSON";
 
-import cbi from '../../assets/logos/Data-CMS-gov.png';
+import cbi from "../../assets/logos/Data-CMS-gov.png";
 
 interface HospitalOwnersFiltersProps {
   params: {
     hospitalOwnersData?: HospitalOwners[];
     setHospitalOwnersData: Dispatch<SetStateAction<HospitalOwners[]>>;
     setIsApiProcessing: Dispatch<SetStateAction<boolean>>;
-  }
+  };
 }
 
-export default function HospitalsFilters({params}: HospitalOwnersFiltersProps) {
-  const { hospitalOwnersData, setHospitalOwnersData, setIsApiProcessing } = params;
+export default function HospitalsFilters({
+  params,
+}: HospitalOwnersFiltersProps) {
+  const { hospitalOwnersData, setHospitalOwnersData, setIsApiProcessing } =
+    params;
   const [searchStr, setSearchStr] = useState("");
   const [dataIsAvailable, setDataIsAvailable] = useState(false);
   const [error, setError] = useState<any>("");
@@ -25,7 +26,7 @@ export default function HospitalsFilters({params}: HospitalOwnersFiltersProps) {
     if (hospitalOwnersData && hospitalOwnersData.length > 1) {
       setDataIsAvailable(true);
     }
-  }, [hospitalOwnersData])
+  }, [hospitalOwnersData]);
 
   useEffect(() => {
     if (searchStr) {
@@ -33,21 +34,24 @@ export default function HospitalsFilters({params}: HospitalOwnersFiltersProps) {
         setIsApiProcessing(true);
 
         const matchedHospitals: HospitalOwners[] = [];
-      for (let i=0; i<data.length; i+=1) {
-          if (JSON.stringify(data[i]).toUpperCase().includes(searchStr.toUpperCase())) {
-            matchedHospitals.push(data[i])
+        for (let i = 0; i < data.length; i += 1) {
+          if (
+            JSON.stringify(data[i])
+              .toUpperCase()
+              .includes(searchStr.toUpperCase())
+          ) {
+            matchedHospitals.push(data[i]);
           }
         }
         setHospitalOwnersData(matchedHospitals);
         setIsApiProcessing(false);
+      }, 500);
 
-      }, 500)
-
-      return () => clearTimeout(delayDebounceFn)
+      return () => clearTimeout(delayDebounceFn);
     } else {
       setHospitalOwnersData(data);
     }
-  }, [searchStr])
+  }, [searchStr]);
 
   return (
     <>
@@ -56,7 +60,7 @@ export default function HospitalsFilters({params}: HospitalOwnersFiltersProps) {
           <p className="p-1 text-xs font-semibold text-violet-900">
             Search for hospitals
           </p>
-          <div className="flex justify-between w-[100%] items-center gap-3">
+          <div className="flex w-[100%] items-center justify-between gap-3">
             <input
               type="text"
               placeholder="Search"
