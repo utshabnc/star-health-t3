@@ -47,7 +47,7 @@ export default function Modal({
                   </button>
                 </div>
                 <div className="relative flex-auto p-8 pt-0">
-                  <p className="text-lg font-bold leading-relaxed text-slate-500">
+                  <p className="text-2xl text-center font-bold leading-relaxed text-slate-500">
                     {message}
                   </p>
                   <div>{children}</div>
