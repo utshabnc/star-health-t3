@@ -36,7 +36,7 @@ export default function HospitalsComponent({ data }: { data: Hospital[] }) {
                       Hospital ID: {hospital.hospital_id}
                       <br />
                     </p>
-                    
+
                   </div>
                 </div>
               </div>

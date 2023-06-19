@@ -3,6 +3,7 @@ import type { DrugResponse } from "../../server/trpc/router/db";
 import { useState } from "react";
 import ExpansionPanel from "../ExpansionPanel";
 import parse from "html-react-parser";
+import Citation from "../Citation";
 
 interface DrugSchema {
   data: DrugResponse;
@@ -550,9 +551,12 @@ export const DrugsDets = ({ data }: DrugSchema) => {
       </style>
 
       <div className="flex flex-col justify-end sm:px-2 lg:px-28">
-        <p className="text-2xl font-semibold text-violet-700">
-          {formatName(data?.drug?.brand_name || "Unknown")}
-        </p>
+        <div className="flex flex-row justify-between	items-start">
+          <p className="text-2xl font-semibold text-violet-700">
+            {formatName(data?.drug?.brand_name || "Unknown")}
+          </p>
+          <Citation title={formatName(data?.drug?.brand_name || "Unknown")} />
+        </div>
         <p className="text-purp-2 font-semibold sm:text-sm lg:text-xl">
           Manufacturer: {data?.drug?.manufacturer_name}
         </p>

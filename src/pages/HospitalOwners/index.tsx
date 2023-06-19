@@ -2,8 +2,9 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import ExpansionPanel from "../../components/ExpansionPanel";
 import ErrorComponent from "../../components/ErrorComponent";
-import {HospitalOwners} from "../../components/HospitalOwners/HospitalOwners.model";
-import {Owners} from "../../components/HospitalOwners/Owners.model";
+import type { HospitalOwners } from "../../components/HospitalOwners/HospitalOwners.model";
+import type { Owners } from "../../components/HospitalOwners/Owners.model";
+import Citation from "../../components/Citation";
 
 
 
@@ -30,7 +31,7 @@ interface Sections {
 const HospitalDetails = () => {
   const navigate = useRouter();
   const index = navigate.query?.index as string;
-  const blank: HospitalOwners = {"ENROLLMENT_ID": "", "ASSOCIATE_ID": "", "ORGANIZATION_NAME": "","OWNERS": []}
+  const blank: HospitalOwners = { "ENROLLMENT_ID": "", "ASSOCIATE_ID": "", "ORGANIZATION_NAME": "", "OWNERS": [] }
   const [data, setData] = useState<HospitalOwners>(blank)
   let keyID = 0;
 
@@ -150,13 +151,13 @@ const HospitalDetails = () => {
   };
 
   const formatData = (data: HospitalOwners, field: Field, section: Section): string => {
-    
+
     const fieldValue = data[field.code] ? String(data[field.code]) : '';
     if (fieldValue === "") {
       return "-";
     } else if (!fieldValue) {
       return "";
-    }    
+    }
     switch (section) {
       default:
         const lowerStr = fieldValue.toLowerCase();
@@ -188,10 +189,10 @@ const HospitalDetails = () => {
         );
       case true:
         return (
-          <p 
-            key={`${section}-${field.code}`} 
-            className={section == Section.hospital 
-              ? 'text-purp-2 font-semibold sm:text-sm lg:text-xl mt-2 mb-2' 
+          <p
+            key={`${section}-${field.code}`}
+            className={section == Section.hospital
+              ? 'text-purp-2 font-semibold sm:text-sm lg:text-xl mt-2 mb-2'
               : 'text-purp-5 pt-1 sm:text-xs lg:text-lg font-semibold'}>
             {`${field.description}: `}
             <span className="font-normal">
@@ -202,11 +203,11 @@ const HospitalDetails = () => {
     }
   };
 
-  const generateExpansionPanel = (data: Owners, section: Section): JSX.Element  => {
-    keyID+=1;
+  const generateExpansionPanel = (data: Owners, section: Section): JSX.Element => {
+    keyID += 1;
     return (
       <ExpansionPanel
-        key={section+keyID}
+        key={section + keyID}
         title={data.NAME_OWNER || data.ORGANIZATION_NAME_OWNER || section}
         content={
           <>
@@ -224,14 +225,17 @@ const HospitalDetails = () => {
       case Section.hospital:
         return (
           <div className="mt-4 flex">
-            <div className="pr-10">
-              <p className="pt-1 text-2xl font-semibold">{data.ORGANIZATION_NAME}</p>
+            <div className="pr-10 w-full">
+              <div className="flex flex-row justify-between	items-start">
+                <p className="pt-1 text-2xl font-semibold">{data.ORGANIZATION_NAME}</p>
+                <Citation title={data.ORGANIZATION_NAME} />
+              </div>
               <div className="my-1 mr-8">
                 <hr />
               </div>
-                {hospitalDataTemplate[section].map((field) => {
-                  return generateUiField(data, field, section, 0);
-                })}
+              {hospitalDataTemplate[section].map((field) => {
+                return generateUiField(data, field, section, 0);
+              })}
             </div>
           </div>
         );
@@ -247,13 +251,13 @@ const HospitalDetails = () => {
           </table>
         )
     }
-    
+
   };
 
-  useEffect(() => { 
+  useEffect(() => {
     const str: string = localStorage.getItem(index) as string;
     setData(JSON.parse(str))
-  },[index])
+  }, [index])
 
   return (
     <>

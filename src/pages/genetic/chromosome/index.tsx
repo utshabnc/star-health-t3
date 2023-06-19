@@ -4,6 +4,7 @@ import ExpansionPanel from "../../../components/ExpansionPanel";
 import LoadingStarHealth from "../../../components/Loading";
 import type { ChromosomeData } from "../../../components/Genetics/GeneticData.model";
 import parse from "html-react-parser";
+import Citation from "../../../components/Citation";
 
 function upperCaseAllWords(name: string) {
   const words = name.split(" ");
@@ -54,15 +55,15 @@ function chromosomeRelatedConditions(chromosomeData: ChromosomeData) {
           // For now, only showing medlineplus.gov links - we need to add alternate data sources later.
           if (medline) {
             return (
-                <div key={index} className="flex flex-row">
-                  <a
-                    href={`/genetic/${type}?name=${url}`}
-                    className="text-md mb-1 text-violet-700 underline"
-                  >
-                    {upperCaseAllWords(chromosome.condition)}
-                  </a>
-                </div>
-              );    
+              <div key={index} className="flex flex-row">
+                <a
+                  href={`/genetic/${type}?name=${url}`}
+                  className="text-md mb-1 text-violet-700 underline"
+                >
+                  {upperCaseAllWords(chromosome.condition)}
+                </a>
+              </div>
+            );
           }
         })}
       </div>
@@ -168,19 +169,26 @@ const ChromosomeDetails = () => {
             </div>
           </div>
           <div className="flex flex-col justify-end sm:px-2 lg:px-28">
-            <p className="text-2xl font-semibold text-violet-700">
-              {chromosomeData.name
+            <div className="flex flex-row justify-between	items-start">
+              <div>
+                <p className="text-2xl font-semibold text-violet-700">
+                  {chromosomeData.name
+                    ? upperCaseAllWords(chromosomeData.name["_text"] ? chromosomeData.name["_text"] : chromosomeData.name)
+                    : ""}
+                </p>
+                <p className="text-purp-5 pt-1 text-violet-700 sm:text-xs">
+                  Reviewed:{" "}
+                  {chromosomeData.reviewed ? chromosomeData.reviewed["_text"] ? chromosomeData.reviewed["_text"] : chromosomeData.reviewed : "-"}
+                </p>
+                <p className="text-purp-5 pt-1 text-violet-700 sm:text-xs">
+                  Published:{" "}
+                  {chromosomeData.published ? chromosomeData.published["_text"] ? chromosomeData.published["_text"] : chromosomeData.published : "-"}
+                </p>
+              </div>
+              <Citation title={chromosomeData.name
                 ? upperCaseAllWords(chromosomeData.name["_text"] ? chromosomeData.name["_text"] : chromosomeData.name)
-                : ""}
-            </p>
-            <p className="text-purp-5 pt-1 text-violet-700 sm:text-xs">
-              Reviewed:{" "}
-              {chromosomeData.reviewed ? chromosomeData.reviewed["_text"] ? chromosomeData.reviewed["_text"] : chromosomeData.reviewed : "-"}
-            </p>
-            <p className="text-purp-5 pt-1 text-violet-700 sm:text-xs">
-              Published:{" "}
-              {chromosomeData.published ? chromosomeData.published["_text"] ? chromosomeData.published["_text"] : chromosomeData.published : "-"}
-            </p>
+                : ""} />
+            </div>
             <div className="my-1">
               <hr />
             </div>

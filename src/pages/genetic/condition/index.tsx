@@ -4,6 +4,7 @@ import ExpansionPanel from "../../../components/ExpansionPanel";
 import LoadingStarHealth from "../../../components/Loading";
 import type { GeneticData } from "../../../components/Genetics/GeneticData.model";
 import parse from "html-react-parser";
+import Citation from "../../../components/Citation";
 
 function upperCaseAllWords(name: string) {
   const words = name.split(" ");
@@ -19,7 +20,7 @@ function conditionDescription(conditionData: GeneticData) {
       return text["text"]["text-role"] === "description";
     })["text"]["html"];
     return description.replaceAll('</p><p>', '</p><br/><p>');
-} catch (error) {
+  } catch (error) {
     console.log(error);
     return "";
   }
@@ -30,10 +31,10 @@ function conditionInheritancePatternList(conditionData: GeneticData) {
 
     let inheritancePatternList = conditionData["inheritance-pattern-list"];
     if (!Array.isArray(inheritancePatternList)) {
-        inheritancePatternList = [inheritancePatternList];
+      inheritancePatternList = [inheritancePatternList];
     }
     inheritancePatternList = inheritancePatternList.map((inheritancePattern: any) => {
-        return inheritancePattern["inheritance-pattern"];
+      return inheritancePattern["inheritance-pattern"];
     });
 
     return (
@@ -61,10 +62,10 @@ function conditionSynonyms(conditionData: GeneticData) {
   try {
     let synonyms = conditionData["synonym-list"];
     if (!Array.isArray(synonyms)) {
-        synonyms = [synonyms];
+      synonyms = [synonyms];
     }
     synonyms = synonyms.map((synonym: any) => {
-        return synonym["synonym"];
+      return synonym["synonym"];
     });
 
     return (
@@ -89,13 +90,13 @@ function conditionRelatedGenes(conditionData: GeneticData) {
 
     let relatedGenes = conditionData["related-gene-list"];
     if (!Array.isArray(relatedGenes)) {
-        relatedGenes = [relatedGenes];
+      relatedGenes = [relatedGenes];
     }
     relatedGenes = relatedGenes.map((gene: any) => {
-        return {
-            gene: gene["related-gene"]["gene-symbol"],
-            url: gene["related-gene"]["ghr-page"],
-        };
+      return {
+        gene: gene["related-gene"]["gene-symbol"],
+        url: gene["related-gene"]["ghr-page"],
+      };
     });
 
     return (
@@ -106,19 +107,19 @@ function conditionRelatedGenes(conditionData: GeneticData) {
           const url = type === "gene" ? gene.gene.toLowerCase() : urlSplit[urlSplit.length - 1];
 
           // For now, only showing medlineplus.gov links - we need to add alternate data sources later.
-          const medline = urlSplit[2] === "medlineplus.gov";  
+          const medline = urlSplit[2] === "medlineplus.gov";
           if (medline) {
             return (
-                <div key={index} className="flex flex-row">
-                  <a
-                    href={`/genetic/${type}?name=${url}`}
-                    className="my-1 text-md text-violet-700 underline"
-                  >
-                    {upperCaseAllWords(gene.gene)}
-                  </a>
-                </div>
-              );
-          }     
+              <div key={index} className="flex flex-row">
+                <a
+                  href={`/genetic/${type}?name=${url}`}
+                  className="my-1 text-md text-violet-700 underline"
+                >
+                  {upperCaseAllWords(gene.gene)}
+                </a>
+              </div>
+            );
+          }
         })}
       </div>
     );
@@ -186,16 +187,21 @@ const ConditionDetails = () => {
             </div>
           </div>
           <div className="flex flex-col justify-end sm:px-2 lg:px-28">
-            <p className="text-2xl font-semibold text-violet-700">
-              {conditionData.name ? upperCaseAllWords(conditionData.name) : ""}
-            </p>
-            <p className="text-purp-5 pt-1 text-violet-700 sm:text-xs">
-              Reviewed: {conditionData.reviewed ? conditionData.reviewed : "-"}
-            </p>
-            <p className="text-purp-5 pt-1 text-violet-700 sm:text-xs">
-              Published:{" "}
-              {conditionData.published ? conditionData.published : "-"}
-            </p>
+            <div className="flex flex-row justify-between	items-start">
+              <div>
+                <p className="text-2xl font-semibold text-violet-700">
+                  {conditionData.name ? upperCaseAllWords(conditionData.name) : ""}
+                </p>
+                <p className="text-purp-5 pt-1 text-violet-700 sm:text-xs">
+                  Reviewed: {conditionData.reviewed ? conditionData.reviewed : "-"}
+                </p>
+                <p className="text-purp-5 pt-1 text-violet-700 sm:text-xs">
+                  Published:{" "}
+                  {conditionData.published ? conditionData.published : "-"}
+                </p>
+              </div>
+              <Citation title={conditionData.name ? upperCaseAllWords(conditionData.name) : ""} />
+            </div>
             <div className="my-1">
               <hr />
             </div>

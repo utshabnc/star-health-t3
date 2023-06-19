@@ -11,6 +11,7 @@ import {
 } from '../../utils';
 import Link from 'next/link';
 import type { ManufacturerResponse } from '../../server/trpc/router/db';
+import Citation from '../Citation';
 
 interface MenuSchema {
   name: string;
@@ -38,9 +39,12 @@ export const ManuDets = (schema: MenuSchema) => {
   return (
     <>
       <div className='flex flex-col justify-end lg:px-24'>
-        <p className='text-violet-700 text-2xl font-semibold'>
-          {schema.manufacturer.name}
-        </p>
+        <div className="flex flex-row justify-between	items-start">
+          <p className='text-violet-700 text-2xl font-semibold'>
+            {schema.manufacturer.name}
+          </p>
+          <Citation title={schema.manufacturer.name} />
+        </div>
         <p className='lg:text-xl sm:text-sm font-semibold text-purp-2'>
           Company Payments to Doctors: #
           {formatNumber(schema.manufacturer.rank ?? 0)} of{' '}
