@@ -1,3 +1,5 @@
+import React from 'react';
+
 /**
  * Simple modal that can be used to display a message to the user.
  * 
@@ -22,30 +24,34 @@ export default function Modal({
         <>
           <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto overflow-x-hidden outline-none focus:outline-none">
             <div className="relative my-6 mx-auto w-auto max-w-3xl">
-              {/*content*/}
               <div className="relative flex w-full flex-col rounded-lg border-0 bg-white shadow-lg outline-none focus:outline-none">
-                {/*header*/}
-                {/* <div className='flex items-start justify-between p-5 border-b border-solid border-slate-200 rounded-t'>
-                  <h3 className='text-3xl font-semibold'>Modal Title</h3>
+                <div className="flex justify-end">
                   <button
-                    className='p-1 ml-auto bg-transparent border-0 text-black opacity-5 float-right text-3xl leading-none font-semibold outline-none focus:outline-none'
-                    onClick={() => setShowModal(false)}
+                    className="p-2 text-red-500 hover:text-red-700 focus:outline-none"
+                    onClick={onClose}
                   >
-                    <span className='bg-transparent text-black opacity-5 h-6 w-6 text-2xl block outline-none focus:outline-none'>
-                      ×
-                    </span>
+                    <svg
+                      className="w-6 h-6"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M6 18L18 6M6 6l12 12"
+                      />
+                    </svg>
                   </button>
-                </div> */}
-                {/*body*/}
-                <div className="relative flex-auto p-8">
+                </div>
+                <div className="relative flex-auto p-8 pt-0">
                   <p className="text-lg font-bold leading-relaxed text-slate-500">
                     {message}
                   </p>
-                  <div>
-                    {children}
-                  </div>
+                  <div>{children}</div>
                 </div>
-                {/*footer*/}
                 <div className="flex justify-center rounded-b p-2">
                   <button
                     className="background-transparent mr-1 mb-1 px-6 py-2 text-sm font-bold uppercase text-red-500 outline-none transition-all duration-150 ease-linear focus:outline-none"
