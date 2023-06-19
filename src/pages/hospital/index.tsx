@@ -8,6 +8,7 @@ import type { HospitalData } from "../../components/Hospitals/HospitalData.model
 import ErrorComponent from "../../components/ErrorComponent";
 import type { HospitalDataResponse } from "../api/hospitals/[hospital_id]";
 import { delay } from "../../utils";
+import Citation from "../../components/Citation";
 
 enum Section {
   overview = "Overview",
@@ -439,11 +440,11 @@ const HospitalDetails = () => {
       };
       fetchHospitalData(hospitalId);
     }
-    
+
   }, [hospitalId]);
 
   const formatData = (data: HospitalData, field: Field, section: Section): string => {
-    
+
     const fieldValue = data[field.code] ? String(data[field.code]) : '';
 
     if (!fieldValue) {
@@ -451,18 +452,18 @@ const HospitalDetails = () => {
     }
 
     // Create our currency formatter.
-    const currencyFormatter = 
-      new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD'}); 
+    const currencyFormatter =
+      new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' });
     // Create our number formatter.
-    const numberFormatter = 
-      new Intl.NumberFormat('en-US', {maximumFractionDigits: 2, minimumFractionDigits: 2})
-    
+    const numberFormatter =
+      new Intl.NumberFormat('en-US', { maximumFractionDigits: 2, minimumFractionDigits: 2 })
+
     switch (section) {
       case Section.financialsAndTaxes:
         return `${currencyFormatter.format(parseFloat(fieldValue))}`;
       case Section.statistics:
         return `${numberFormatter.format(parseFloat(fieldValue))}%`;
-    
+
       default:
         const lowerStr = fieldValue.toLowerCase();
         if (lowerStr === 'y') {
@@ -474,16 +475,16 @@ const HospitalDetails = () => {
         }
         break;
     }
-    
+
     return fieldValue;
   }
 
   const generateUiField = (data: HospitalData, field: Field, section: Section) => {
     return (
-      <p 
-        key={`${section}-${field.code}`} 
-        className={section == Section.overview 
-          ? 'text-purp-2 font-semibold sm:text-sm lg:text-xl mt-2 mb-2' 
+      <p
+        key={`${section}-${field.code}`}
+        className={section == Section.overview
+          ? 'text-purp-2 font-semibold sm:text-sm lg:text-xl mt-2 mb-2'
           : 'text-purp-5 pt-1 sm:text-xs lg:text-lg font-semibold'}>
         {`${field.description}: `}
         <span className="font-normal">
@@ -493,7 +494,7 @@ const HospitalDetails = () => {
     );
   };
 
-  const generateExpansionPanel = (data:HospitalData, section: Section): JSX.Element  => {
+  const generateExpansionPanel = (data: HospitalData, section: Section): JSX.Element => {
     return (
       <ExpansionPanel
         key={section}
@@ -534,7 +535,7 @@ const HospitalDetails = () => {
       case Section.summary:
         return generateExpansionPanel(currentHospitalDetails, section)
       case Section.financialsAndTaxes:
-          return generateExpansionPanel(currentHospitalDetails, section)
+        return generateExpansionPanel(currentHospitalDetails, section)
       case Section.statistics:
         return generateExpansionPanel(currentHospitalDetails, section)
       case Section.incomeMetrics:
@@ -590,10 +591,12 @@ const HospitalDetails = () => {
             </div>
           </div>
           <div className="flex flex-col justify-end sm:px-2 lg:px-28">
-            <p className="text-2xl font-semibold text-violet-700">
-              {hospitalDetails?.at(0)?.data_name}
-            </p>
-
+            <div className="flex flex-row justify-between	items-start">
+              <p className="text-2xl font-semibold text-violet-700">
+                {hospitalDetails?.at(0)?.data_name}
+              </p>
+              <Citation title={hospitalDetails?.at(0)?.data_name || '-'} />
+            </div>
             <div className="my-1"><hr /></div>
 
             <div className="flex justify-center items-center py-2">
@@ -603,7 +606,7 @@ const HospitalDetails = () => {
                   {year}
                 </div>
               </div>
-            
+
 
               <Menu as="div" className="relative text-left">
                 <div>

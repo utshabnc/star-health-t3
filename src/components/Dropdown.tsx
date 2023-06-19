@@ -6,7 +6,7 @@ function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
 }
 
-type Item = {
+export type Item = {
   value: string;
   label: string;
 };
@@ -25,14 +25,14 @@ const Dropdown = ({ items, label, placeholder, onChange, value }: Props) => {
       <div className="flex flex-row font-custom text-lg text-violet-700">
         {label}:&nbsp;
       </div>
-      <select 
-        onChange={(e) => onChange(e.target.value)} 
+      <select
+        onChange={(e) => onChange(e.target.value)}
         value={value}
         className='bg-violet-500 my-2 text-white p-1 rounded-lg mx-1 hover:bg-violet-400 hover:text-violet-900 cursor-pointer' name="state-filter" id="state-filter">
-          <option value={""}>{placeholder}</option>
-          {items.map((item, index) => (
-              <option key={index} value={item.value}>{item.label}</option>
-          ))}
+        <option value={""}>{placeholder}</option>
+        {items.map((item, index) => (
+          <option key={index} value={item.value}>{item.label}</option>
+        ))}
       </select>
     </div>
   );

@@ -8,11 +8,13 @@
 export default function Modal({
   open,
   message,
+  children,
   onClose,
 }: {
   open: boolean;
   message: string;
   onClose: () => void;
+  children?: React.ReactNode;
 }) {
   return (
     <>
@@ -39,6 +41,9 @@ export default function Modal({
                   <p className="text-lg font-bold leading-relaxed text-slate-500">
                     {message}
                   </p>
+                  <div>
+                    {children}
+                  </div>
                 </div>
                 {/*footer*/}
                 <div className="flex justify-center rounded-b p-2">

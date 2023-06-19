@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import ExpansionPanel from "../../components/ExpansionPanel";
 import LoadingStarHealth from "../../components/Loading";
 import type { FoodData } from "../../components/Food/FoodData.model";
+import Citation from "../../components/Citation";
 
 function upperCaseAllWords(name: string) {
   const words = name.split(" ");
@@ -21,51 +22,51 @@ function foodAttributes(foodData: FoodData) {
       foodAttrs = [foodAttrs];
     }
     foodAttrs = foodAttrs.map((attr: any) => {
-        return {
-            'name': upperCaseAllWords(attr['value']),
-            'desc': attr['foodAttributeType']['name'],
-        };
+      return {
+        'name': upperCaseAllWords(attr['value']),
+        'desc': attr['foodAttributeType']['name'],
+      };
     }).filter((attr: any) => attr['name'] !== undefined)
-    .filter((attr: any) => acceptableAttributes.includes(attr['desc']));
+      .filter((attr: any) => acceptableAttributes.includes(attr['desc']));
     if (foodData.scientificName) {
       foodAttrs.push({
-          'name': upperCaseAllWords(foodData.scientificName),
-          'desc': 'Scientific Name',
+        'name': upperCaseAllWords(foodData.scientificName),
+        'desc': 'Scientific Name',
       });
-  }
-  if (foodData.footnote) {
+    }
+    if (foodData.footnote) {
       foodAttrs.push({
-          'name': (foodData.footnote),
-          'desc': 'Note',
+        'name': (foodData.footnote),
+        'desc': 'Note',
       });
-  }
-  if (foodData.additionalDescriptions) {
+    }
+    if (foodData.additionalDescriptions) {
       foodAttrs.push({
-          'name': (upperCaseAllWords(foodData.additionalDescriptions.toLocaleLowerCase())),
-          'desc': 'Additional Description',
+        'name': (upperCaseAllWords(foodData.additionalDescriptions.toLocaleLowerCase())),
+        'desc': 'Additional Description',
       });
-  }
-  if (foodAttrs.length === 0) {
-        return;
+    }
+    if (foodAttrs.length === 0) {
+      return;
     }
     return (
-        <div>
-            {foodAttrs.map((attr: any, index: number) => {
-                return (
-                    <div key={index} className="flex flex-row">
-                        <p className="text-md mb-1 text-violet-700 ml-1">{attr.desc + ": " + attr.name}</p>
-                    </div>
-                );
-            })}
-        </div>
+      <div>
+        {foodAttrs.map((attr: any, index: number) => {
+          return (
+            <div key={index} className="flex flex-row">
+              <p className="text-md mb-1 text-violet-700 ml-1">{attr.desc + ": " + attr.name}</p>
+            </div>
+          );
+        })}
+      </div>
     );
-  } catch {}
+  } catch { }
 }
 
 function foodIngredients(ingredients: string) {
   let foodIngredients = ingredients.split(",");
   foodIngredients = foodIngredients.map((ingredient: string) => {
-    return upperCaseAllWords(ingredient.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,"").replace(/\s{2,}/g," ").trim().toLocaleLowerCase());
+    return upperCaseAllWords(ingredient.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, "").replace(/\s{2,}/g, " ").trim().toLocaleLowerCase());
   }
   );
   return (
@@ -194,54 +195,61 @@ const FoodDetails = () => {
             </div>
           </div>
           <div className="flex flex-col justify-end sm:px-2 lg:px-28">
-            <p className="text-2xl font-semibold text-violet-700">
-              {foodData.description
+            <div className="flex flex-row justify-between	items-start">
+              <div>
+                <p className="text-2xl font-semibold text-violet-700">
+                  {foodData.description
+                    ? upperCaseAllWords(foodData.description)
+                    : ""}
+                </p>
+                <p className="text-purp-5 pt-1 text-violet-700 sm:text-md">
+                  Category:{" "}
+                  {foodData.foodCategory ? foodData.foodCategory.description ? foodData.foodCategory.description : foodData.foodCategory : "-"}
+                </p>
+                <p className="text-purp-5 pt-1 text-violet-700 sm:text-md">
+                  Brand:{" "}
+                  {foodData.brandOwner ? foodData.brandOwner : "-"}
+                </p>
+                <p className="text-purp-5 pt-1 text-violet-700 sm:text-xs">
+                  Published:{" "}
+                  {foodData.publicationDate ? foodData.publicationDate : "-"}
+                </p>
+              </div>
+              <Citation title={foodData.description
                 ? upperCaseAllWords(foodData.description)
-                : ""}
-            </p>
-            <p className="text-purp-5 pt-1 text-violet-700 sm:text-md">
-              Category:{" "}
-              {foodData.foodCategory ? foodData.foodCategory.description ? foodData.foodCategory.description : foodData.foodCategory : "-"}
-            </p>
-            <p className="text-purp-5 pt-1 text-violet-700 sm:text-md">
-              Brand:{" "}
-              {foodData.brandOwner ? foodData.brandOwner : "-"}
-            </p>
-            <p className="text-purp-5 pt-1 text-violet-700 sm:text-xs">
-              Published:{" "}
-              {foodData.publicationDate ? foodData.publicationDate : "-"}
-            </p>
+                : ""} />
+            </div>
             <div className="my-1">
               <hr />
             </div>
             <div className="flex flex-col">
-                {(foodAttributes(foodData) !== undefined)  ? (
-                    <ExpansionPanel
-                        key={"attributes"}
-                        title={"Attributes"}
-                        content={foodAttributes(foodData) as any}
-                    />
-                ) : (
-                    <></>
-                )}
-                {(foodNutrients(foodData) !== undefined)  ? (
-                    <ExpansionPanel
-                        key={"nutrients"}
-                        title={"Nutrients"}
-                        content={foodNutrients(foodData) as any}
-                    />
-                ) : (
-                    <></>
-                )}
-                {(foodData.ingredients !== undefined)  ? (
-                    <ExpansionPanel
-                        key={"ingredients"}
-                        title={"Ingredients"}
-                        content={foodIngredients(foodData.ingredients) as any}
-                    />
-                ) : (
-                    <></>
-                )}
+              {(foodAttributes(foodData) !== undefined) ? (
+                <ExpansionPanel
+                  key={"attributes"}
+                  title={"Attributes"}
+                  content={foodAttributes(foodData) as any}
+                />
+              ) : (
+                <></>
+              )}
+              {(foodNutrients(foodData) !== undefined) ? (
+                <ExpansionPanel
+                  key={"nutrients"}
+                  title={"Nutrients"}
+                  content={foodNutrients(foodData) as any}
+                />
+              ) : (
+                <></>
+              )}
+              {(foodData.ingredients !== undefined) ? (
+                <ExpansionPanel
+                  key={"ingredients"}
+                  title={"Ingredients"}
+                  content={foodIngredients(foodData.ingredients) as any}
+                />
+              ) : (
+                <></>
+              )}
             </div>
           </div>
         </div>

@@ -4,6 +4,7 @@ import ExpansionPanel from "../../../components/ExpansionPanel";
 import LoadingStarHealth from "../../../components/Loading";
 import type { GeneticData } from "../../../components/Genetics/GeneticData.model";
 import parse from "html-react-parser";
+import Citation from "../../../components/Citation";
 
 function upperCaseAllWords(name: string) {
   const words = name.split(" ");
@@ -177,20 +178,27 @@ const GeneDetails = () => {
             </div>
           </div>
           <div className="flex flex-col justify-end sm:px-2 lg:px-28">
-            <p className="text-2xl font-semibold text-violet-700">
-              {geneData["gene-symbol"]
+            <div className="flex flex-row justify-between	items-start">
+              <div>
+                <p className="text-2xl font-semibold text-violet-700">
+                  {geneData["gene-symbol"]
+                    ? geneData["gene-symbol"].toLocaleUpperCase()
+                    : ""}
+                </p>
+                <p className="flex flex-row text-lg font-semibold">
+                  {geneData["name"] ? upperCaseAllWords(geneData["name"]) : ""}
+                </p>
+                <p className="text-purp-5 pt-1 text-violet-700 sm:text-xs">
+                  Reviewed: {geneData.reviewed ? geneData.reviewed : "-"}
+                </p>
+                <p className="text-purp-5 pt-1 text-violet-700 sm:text-xs">
+                  Published: {geneData.published ? geneData.published : "-"}
+                </p>
+              </div>
+              <Citation title={geneData["gene-symbol"]
                 ? geneData["gene-symbol"].toLocaleUpperCase()
-                : ""}
-            </p>
-            <p className="flex flex-row text-lg font-semibold">
-              {geneData["name"] ? upperCaseAllWords(geneData["name"]) : ""}
-            </p>
-            <p className="text-purp-5 pt-1 text-violet-700 sm:text-xs">
-              Reviewed: {geneData.reviewed ? geneData.reviewed : "-"}
-            </p>
-            <p className="text-purp-5 pt-1 text-violet-700 sm:text-xs">
-              Published: {geneData.published ? geneData.published : "-"}
-            </p>
+                : ""} />
+            </div>
             <div className="my-1">
               <hr />
             </div>

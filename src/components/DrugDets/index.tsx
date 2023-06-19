@@ -5,6 +5,7 @@ import { Fragment, SetStateAction, useEffect, useState } from 'react';
 import { availableYears, formatMoney, formatName, formatNumber } from '../../utils';
 import _ from 'lodash';
 import type { ProductResponse } from '../../server/trpc/router/db';
+import Citation from '../Citation';
 
 
 interface DrugSchema {
@@ -27,9 +28,12 @@ export const DrugDets = ({ drug, onChangeYear }: DrugSchema) => {
   return (
     <>
       <div className="flex flex-col justify-end sm:px-2 lg:px-28">
-        <p className="text-2xl font-semibold text-violet-700">
-          {formatName(drug.name || "Unknown")}
-        </p>
+        <div className="flex flex-row justify-between	items-start">
+          <p className="text-2xl font-semibold text-violet-700">
+            {formatName(drug.name || "Unknown")}
+          </p>
+          <Citation title={formatName(drug.name || "Unknown")} />
+        </div>
 
         <div className="my-1">
           <hr />

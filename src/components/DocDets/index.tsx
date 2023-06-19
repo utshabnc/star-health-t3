@@ -6,6 +6,7 @@ import { availableYears, formatMoney, formatName, formatNumber } from '../../uti
 import _ from 'lodash';
 import type { DoctorResponse } from '../../server/trpc/router/db';
 import Link from 'next/link';
+import Citation from '../Citation';
 
 interface DocSchema {
   doctor: DoctorResponse;
@@ -35,11 +36,14 @@ export const DocDets = ({ doctor, onChangeYear }: DocSchema) => {
   return (
     <>
       <div className="flex flex-col justify-end sm:px-2 lg:px-28">
-        <p className="text-2xl font-semibold text-violet-700">
-          {formatName(doctor.firstName + " " + doctor.lastName)}
-        </p>
+        <div className="flex flex-row justify-between	items-start">
+          <p className="text-2xl font-semibold text-violet-700">
+            {formatName(doctor.firstName + " " + doctor.lastName)}
+          </p>
+          <Citation title={formatName(doctor.firstName + " " + doctor.lastName)} />
+        </div>
         <div className="flex flex-row items-center space-x-2">
-          { numReviews > 0 ?
+          {numReviews > 0 ?
             <ReactStars
               name="rating"
               editing={false}

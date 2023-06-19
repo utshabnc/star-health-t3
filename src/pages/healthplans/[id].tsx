@@ -2,6 +2,7 @@ import { capitalize } from "lodash";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { catchError, finalize } from "rxjs";
+import Citation from "../../components/Citation";
 import ExpansionPanel from "../../components/ExpansionPanel";
 import { getHealthPlanDetailById } from "../../components/HealthPlans/httpsRequests";
 import LoadingStarHealth from "../../components/Loading";
@@ -246,9 +247,13 @@ const HealthPlansDetails = () => {
             </div>
           </div>
           <div className="flex flex-col justify-end sm:px-2 lg:px-28">
-            <p className="text-2xl font-semibold text-violet-700">
-              {healthPlanDetail?.name || "-"}
-            </p>
+
+            <div className="flex flex-row justify-between	items-start">
+              <p className="text-2xl font-semibold text-violet-700">
+                {healthPlanDetail?.name || "-"}
+              </p>
+              <Citation title={healthPlanDetail?.name || "-"} />
+            </div>
             <div className="my-1">
               <hr />
             </div>

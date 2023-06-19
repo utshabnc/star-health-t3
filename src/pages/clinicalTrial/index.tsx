@@ -5,6 +5,7 @@ import { getClinicalTrialByNCTId } from "../../components/ClinicalTrials/helpers
 import type { ClinicalTrialsFullStudyResponse } from '../../components/ClinicalTrials/ClinicalTrialsFullStudyResponse.model';
 import ExpansionPanel from "../../components/ExpansionPanel";
 import { MailIcon, OfficeBuildingIcon, PhoneIcon, UserIcon } from '@heroicons/react/solid';
+import Citation from "../../components/Citation";
 
 const ClinicalTrialDetails = () => {
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
@@ -150,9 +151,12 @@ const ClinicalTrialDetails = () => {
               </div>
             </div>
             <div className="flex flex-col justify-end sm:px-2 lg:px-28">
-              <p className="text-2xl font-semibold text-violet-700">
-                {clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.IdentificationModule?.BriefTitle || '-'}
-              </p>
+              <div className="flex flex-row justify-between	items-start">
+                <p className="text-2xl font-semibold text-violet-700">
+                  {clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.IdentificationModule?.BriefTitle || '-'}
+                </p>
+                <Citation title={clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.IdentificationModule?.BriefTitle || '-'} />
+              </div>
               <div className="my-1">
                 <hr />
               </div>
