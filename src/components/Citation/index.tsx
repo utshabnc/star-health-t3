@@ -114,7 +114,7 @@ const Citation = ({ title }: { title?: string }) => {
 						<div className="rounded-lg border-solid border p-4 mt-2 bg-gray-50">
 							<div dangerouslySetInnerHTML={{ __html: citationHtml }} />
 							<button
-								className={`mt-8 ease focus:shadow-outline select-none rounded-md border ${isCitationCopied ? 'bg-purple-700 text-white' : 'text-violet-700 hover:bg-violet-100 border-violet-700'} px-4 py-2 transition duration-500 focus:outline-none`}
+								className={`mt-8 ease focus:shadow-outline select-none rounded-md border ${isCitationCopied ? 'bg-violet-700 text-white' : 'text-violet-700 hover:bg-violet-100 border-violet-700'} px-4 py-2 transition duration-500 focus:outline-none`}
 								onClick={() => {
 									setIsCitationCopied(true);
 									setTimeout(() => {
