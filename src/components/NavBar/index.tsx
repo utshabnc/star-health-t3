@@ -96,9 +96,8 @@ function NavBar() {
               position: "absolute",
               right: "10px",
             }}
-            className={`flex flex-row items-center justify-end space-x-2 ${
-              session?.status === "loading" && "opacity-0"
-            }`}
+            className={`flex flex-row items-center justify-end space-x-2 ${session?.status === "loading" && "opacity-0"
+              }`}
           >
             {(typeof window !== "undefined" && width) > 1000 &&
               session?.data?.user && (
@@ -132,6 +131,15 @@ function NavBar() {
             >
               Pricing
             </Link>
+            {session?.data?.user && (
+              <Link
+                href={"/profile"}
+                className="w-30 md:w-22 hidden rounded px-3 py-1 font-custom font-medium 
+							text-white hover:text-blue-300 md:block"
+              >
+                Profile
+              </Link>
+            )}
             {/* <Link href='/' className='w-30 lg:w-22 text-white font-custom font-medium hover:text-blue-600 rounded px-3 py-1'>Contact</Link>	 */}
             {session?.data?.user ? (
               <button
