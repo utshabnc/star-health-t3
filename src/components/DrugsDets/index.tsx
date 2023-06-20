@@ -23,21 +23,21 @@ function cleanDescription(description: string) {
   const sentences = descriptionWithoutPrefix
     .split(".")
     .filter((sentence) => sentence.length > 0);
-  const sentencesGroupedInThree: string[] = [];
+  const sentencesGroupedInFour: string[] = [];
   let currSentenceGroup = "";
   sentences.forEach((sentence, index) => {
     const wordSplit = sentence.split(" ");
     if (wordSplit.length > 7 && sentence[-1] != ":") {
       currSentenceGroup += sentence + ".";
     }
-    if (index % 3 === 0 && index !== 0) {
-      sentencesGroupedInThree.push(currSentenceGroup);
+    if (index % 4 === 0 && index !== 0) {
+      sentencesGroupedInFour.push(currSentenceGroup);
       currSentenceGroup = "";
     }
   });
   return (
     <div>
-      {sentencesGroupedInThree.map((sentence, index) => {
+      {sentencesGroupedInFour.slice(0,5).map((sentence, index) => {
         return (
           <p key={index} className="text-purp-2">
             {sentence}
@@ -161,12 +161,22 @@ function cleanDosage(dosage: string, dosage_table: any[]): JSX.Element | null {
         </div>
       );
     } else {
+      const findBulletSteps = shortenedDosage.match(/ • /g);
+      const findAltBulletSteps = shortenedDosage.match(/  /g);
+      const findAltBulletSteps2 = shortenedDosage.match(/ - /g);
+      if (findBulletSteps && findBulletSteps.length > 0) {
+        shortenedDosage = shortenedDosage.replace(/ • /g, "<br/>• ");
+      } else if (findAltBulletSteps && findAltBulletSteps.length > 0) {
+        shortenedDosage = shortenedDosage.replace(/  /g, "<br/>• ");
+      } else if (findAltBulletSteps2 && findAltBulletSteps2.length > 0) {
+        shortenedDosage = shortenedDosage.replace(/ - /g, "<br/>• ");
+      }
       if (shortenedDosage.length > 800) {
         shortenedDosage = shortenedDosage.slice(0, 800) + "...";
       }
       return (
         <div>
-          <p className="text-purp-2">{shortenedDosage}</p>
+          {parse(shortenedDosage)}
           {dosage_table && (
             <div className="mt-8">
               {parse(dosage_table[0].replace(/Table [0-9]+\. /g, ""))}
@@ -213,10 +223,23 @@ function cleanPurpose(purpose: string) {
   if (purposeWithoutPrefix.startsWith("PURPOSE ")) {
     purposeWithoutPrefix = purposeWithoutPrefix.replace("PURPOSE ", "");
   }
-  const shortenedPurpose = purposeWithoutPrefix.split("( 1.1 )")[0];
-  return (
+  let shortenedPurpose = purposeWithoutPrefix.split("( 1.1 )")[0] || "";
+  const findBulletSteps = shortenedPurpose.match(/ • /g);
+  const findAltBulletSteps = shortenedPurpose.match(/  /g);
+  const findAltBulletSteps2 = shortenedPurpose.match(/ - /g);
+  if (findBulletSteps && findBulletSteps.length > 0) {
+    shortenedPurpose = shortenedPurpose.replace(/ • /g, "<br/>• ");
+  } else if (findAltBulletSteps && findAltBulletSteps.length > 0) {
+    shortenedPurpose = shortenedPurpose.replace(/  /g, "<br/>• ");
+  } else if (findAltBulletSteps2 && findAltBulletSteps2.length > 0) {
+    shortenedPurpose = shortenedPurpose.replace(/ - /g, "<br/>• ");
+  }
+  if (shortenedPurpose.length > 800) {
+    shortenedPurpose = shortenedPurpose.slice(0, 800) + "...";
+  }
+return (
     <div>
-      <p className="text-purp-2">{shortenedPurpose}</p>
+      {parse(shortenedPurpose)}
     </div>
   );
 }
@@ -228,6 +251,18 @@ function cleanOverdosage(overdosage: string) {
   if (overdosageWithoutPrefix.startsWith("OVERDOSAGE ")) {
     overdosageWithoutPrefix = overdosageWithoutPrefix.replace(
       "OVERDOSAGE ",
+      ""
+    );
+  }
+  if (overdosageWithoutPrefix.startsWith("Overdosage: ")) {
+    overdosageWithoutPrefix = overdosageWithoutPrefix.replace(
+      "Overdosage: ",
+      ""
+    );
+  }
+  if (overdosageWithoutPrefix.startsWith(`Overdose warning `)) {
+    overdosageWithoutPrefix = overdosageWithoutPrefix.replace(
+      "Overdose warning ",
       ""
     );
   }
@@ -252,7 +287,10 @@ function cleanInteraction(interaction: string) {
       ""
     );
   }
-  const shortenedInteraction = interactionWithoutPrefix.split("( 7.1 )")[0];
+  let shortenedInteraction = interactionWithoutPrefix.split("( 7.1 )")[0];
+  if (shortenedInteraction?.length && shortenedInteraction.length > 2000) {
+    shortenedInteraction = shortenedInteraction.slice(0, 2000) + "...";
+  }
   return (
     <div>
       <p className="text-purp-2">{shortenedInteraction}</p>
@@ -304,8 +342,9 @@ function formatString(str: string) {
           currCounter += 1;
           continue;
         }
-
-        htmlString += `${paragraph}. `;
+        if (!paragraph.startsWith("See the section below") && !paragraph.startsWith("All registered trademarks") && !paragraph.startsWith("This Instructions for Use")  && !paragraph.startsWith("Food and Drug Administration") && !paragraph.startsWith("Manufactured by ")) {
+          htmlString += `${paragraph}. `;
+        }
         currCounter += 1;
       }
       htmlString += "</li></ol>\n";
@@ -349,7 +388,6 @@ function cleanWarnings(
   pregnant: string,
   precautions: string
 ) {
-  console.log(precautions);
   if (!warnings) return null;
   if (!warnings[0]) return null;
   let warningsWithoutPrefix = warnings[0].replace(
@@ -375,32 +413,44 @@ function cleanWarnings(
   if (shortenedWarnings === warningsWithoutPrefix) {
     shortenedWarnings = warningsWithoutPrefix.split("( 5.2 )")[0];
   }
-  if (shortenedWarnings && shortenedWarnings.length && shortenedWarnings.length > 1000) {
-    shortenedWarnings = shortenedWarnings?.slice(0, 1000) + "...";
+  shortenedWarnings = shortenedWarnings || "";
+  const findBulletSteps = shortenedWarnings.match(/ • /g);
+  const findAltBulletSteps = shortenedWarnings.match(/  /g);
+  const findAltBulletSteps2 = shortenedWarnings.match(/ - /g);
+  if (findBulletSteps && findBulletSteps.length > 0) {
+    shortenedWarnings = shortenedWarnings.replace(/ • /g, "<br/>• ");
+  } else if (findAltBulletSteps && findAltBulletSteps.length > 0) {
+    shortenedWarnings = shortenedWarnings.replace(/  /g, "<br/>• ");
+    shortenedWarnings = shortenedWarnings.replace(/ /g, "<br/>• ");
+  } else if (findAltBulletSteps2 && findAltBulletSteps2.length > 0) {
+    shortenedWarnings = shortenedWarnings.replace(/ - /g, "<br/>• ");
+  }
+if (shortenedWarnings && shortenedWarnings.length && shortenedWarnings.length > 2000) {
+    shortenedWarnings = shortenedWarnings?.slice(0, 2000) + "...";
   }
   try {
     return (
       <div>
-        {children && (
+        {children && (children.length < 2000)  && (
           <p className="text-purp-5 text-red-700 sm:text-sm">{children}</p>
         )}
-        {ask_doctor && (
+        {ask_doctor && (ask_doctor.length < 2000) && (
           <p className="text-purp-5 text-red-700 sm:text-sm">{ask_doctor}</p>
         )}
-        {ask_doctor_pharmacist && (
+        {ask_doctor_pharmacist && (ask_doctor_pharmacist.length < 2000) && (
           <p className="text-purp-5 text-red-700 sm:text-sm">
             {ask_doctor_pharmacist}
           </p>
         )}
-        {pregnant && (
+        {pregnant && (pregnant.length < 2000) && (
           <p className="text-purp-5 text-red-700 sm:text-sm">{pregnant}</p>
         )}
-        {precautions && (
+        {precautions && (precautions.length < 2000) && (
           <p className="text-purp-5 text-red-700 sm:text-sm">
             {precautions.replace("PRECAUTIONS General ", "")}
           </p>
         )}
-        <p className="text-purp-2 pt-1">{shortenedWarnings}</p>
+        {parse(shortenedWarnings)}
       </div>
     );
   } catch (e) {
