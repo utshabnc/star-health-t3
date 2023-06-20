@@ -76,33 +76,35 @@ const partners = [
 
 const dataDir = [
   {
-    label: "$100,000,000+ Transactions",
-    img: transactions,
-    linkparam: "Transactions",
+    label: "450,000+ clinical trials",
+    img: testTubes,
+    linkparam: "ClinicalTrials",
   },
   { label: "3,000+ Companies", img: manufacturer, linkparam: "Manufacturers" },
-  { label: "26 genetics & chromosomes", img: genetics, linkparam: "Genetics" },
   { label: "6,000+ diseases", img: diseases, linkparam: "Diseases" },
   { label: "1,000,000+ Doctors", img: doctor, linkparam: "Doctors" },
+  { label: "1,500+ Drugs", img: drugs, linkparam: "Drugs" },
+
+  { label: "5,000+ foods", img: food, linkparam: "Food" },
+
+  { label: "26 genetics & chromosomes", img: genetics, linkparam: "Genetics" },
+  { label: "2,000+ hospitals", img: hospital, linkparam: "Hospitals" },
+  { label: "700+ insurance plans", img: insurance, linkparam: "Plans" },
   {
     label: "200+ medical devices",
     img: devices,
     linkparam: "Products",
   },
-  { label: "1,500+ Drugs", img: drugs, linkparam: "Drugs" },
-  { label: "5,000+ foods", img: food, linkparam: "Food" },
-  {
-    label: "450,000+ clinical trials",
-    img: testTubes,
-    linkparam: "ClinicalTrials",
-  },
-  { label: "700+ insurance plans", img: insurance, linkparam: "Plans" },
-  { label: "50 States", img: states, linkparam: "PaymentsToDoctors" },
-  { label: "2,000+ hospitals", img: hospital, linkparam: "Hospitals" },
   {
     label: "10,000+ opioid treatment centers",
     img: opioid,
     linkparam: "OpioidTreatmentProviders",
+  },
+  { label: "50 States", img: states, linkparam: "PaymentsToDoctors" },
+  {
+    label: "$100,000,000+ Transactions",
+    img: transactions,
+    linkparam: "Transactions",
   },
 ];
 
