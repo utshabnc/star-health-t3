@@ -19,6 +19,7 @@ import Image from "next/image";
 import drugs from "../assets/drugs.png";
 import datacCms from "../assets/logos/Data-CMS-gov.png";
 import usda from "../assets/logos/USDA-Emblem.png";
+import citation from "../assets/logos/citations.png";
 import clinicalTrials from "../assets/logos/clinical-trials.png";
 import cms from "../assets/logos/cms.png";
 import Cbenefits from "../assets/logos/community-benefits.png";
@@ -28,7 +29,6 @@ import diseases from "../assets/logos/diseases.png";
 import fda from "../assets/logos/fda.png";
 import food from "../assets/logos/food.png";
 import genetics from "../assets/logos/genetics.png";
-import healthcare from "../assets/logos/healthcare.png";
 import hospital from "../assets/logos/hospital.png";
 import insights from "../assets/logos/insights.png";
 import insurance from "../assets/logos/insurance.png";
@@ -41,7 +41,7 @@ import InfoSection from "../components/InfoSection";
 import { trpc } from "../utils/trpc";
 const features = [
   { label: "Data Analytics", img: data_analytics },
-  { label: "Healthcare Data", img: healthcare },
+  { label: "Citation Generator", img: citation },
   /* {
     label: "Proprietary Insights &\n Clinical intelligence",
     img: insights,
@@ -115,10 +115,10 @@ export default function Home() {
     <div className="mx-10 flex items-center justify-center pb-20 pt-10 sm:flex-row">
       <div className="flex flex-col items-center justify-center sm:w-[100%]">
         <div className=" sm:w-[70%]">
-          <h2 className="mb-5 mt-10 flex justify-center text-center font-custom font-bold leading-tight text-white sm:text-4xl md:text-xl xl:text-7xl ">
+          <h2 className="mb-5 mt-10 flex justify-center text-center font-custom font-bold leading-tight text-white sm:text-4xl md:text-4xl xl:text-7xl ">
             Healthcare Intelligence Tool
           </h2>
-          <p className="mb-12 text-center text-xl text-white md:text-4xl">
+          <p className="mb-12 text-center text-xl text-white md:text-3xl xl:text-4xl">
             Data-Driven Healthcare
           </p>
           {/* <div className='container-for-form mt-12 mb-11'>
