@@ -1,6 +1,5 @@
 import Image, { StaticImageData } from "next/image";
 import Link from "next/link";
-import { IoIosArrowDroprightCircle } from "react-icons/io";
 import { Tab } from "../utils/Enums/Tab.enum";
 
 const InfoSection = ({
@@ -46,10 +45,12 @@ const InfoSection = ({
         {items.map((item, i) => (
           // <div key={i} className='relative w-full gap-4 rounded-md bg-white px-6 py-12'>
           <div
-            className={`relative flex w-full flex-col items-center rounded-[6px] rounded-md border-[1.5px] border-bordercolor bg-white px-6 py-8 shadow-md  ${
+            className={`relative ml-2 mr-2 flex w-full flex-col items-center rounded-[6px] rounded-md border-[1.5px] border-bordercolor bg-white px-6 py-8 shadow-md ${
               boxStyle ? "" : "rounded-lg bg-[#0e1936] "
             } ${itemTextSpacing ? "h-[17.188rem]" : "h-[13.8rem]"} 
-                p-1 sm:w-[27%] sm:p-3 md:w-[25.5%] xl:w-[21%]`}
+                p-1 sm:w-[27%] sm:p-3 md:w-[25.5%] xl:w-[21%] ${
+                  linkable ? "hover:bg-gray-200" : ""
+                }`}
             key={i}
           >
             {item.img && (
@@ -125,7 +126,7 @@ const InfoSection = ({
                   }}
                 >
                   <div className="group absolute bottom-0 translate-x-[-2rem] translate-y-[2rem]">
-                    <IoIosArrowDroprightCircle color="#0e1936" size={60} />
+                    {/* <IoIosArrowDroprightCircle color="#0e1936" size={50} /> */}
                   </div>
                 </Link>
               </a>
