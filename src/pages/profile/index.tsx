@@ -106,15 +106,16 @@ const ProfilePage: React.FC = () => {
           />
           <h2 className="text-lg font-semibold mb-2">Bookmarks:</h2>
           {bookmarks.map(bookmark => (
-            <Bookmark
-              key={bookmark.id}
-              createdAt={bookmark.createdAt}
-              id={bookmark.id}
-              notes={bookmark.notes || undefined}
-              title={bookmark.title}
-              url={bookmark.url}
-              onDelete={handleDelete}
-            />
+            <div className="mb-3" key={bookmark.id}>
+              <Bookmark
+                createdAt={bookmark.createdAt}
+                id={bookmark.id}
+                notes={bookmark.notes || undefined}
+                title={bookmark.title}
+                url={bookmark.url}
+                onDelete={handleDelete}
+              />
+            </div>
           ))}
         </div>
       </div>

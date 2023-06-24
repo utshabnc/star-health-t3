@@ -10,7 +10,6 @@ import BookmarkButton from "../../components/BookmarkButton";
 import { useSession } from 'next-auth/react';
 import { DataDirectoryCategory } from "../../utils/Enums/DataDirectoryCategory.enum";
 
-
 const ClinicalTrialDetails = () => {
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
   const [clinicalTrialData, setClinicalTrialData] = useState<ClinicalTrialsFullStudyResponse>();

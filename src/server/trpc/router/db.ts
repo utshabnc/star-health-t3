@@ -1471,6 +1471,25 @@ export const db = router({
 
       return { bookmark } as const;
     }),
+  updateBookmark: publicProcedure
+    .input(
+      z.object({
+        bookmarkId: z.number(),
+        notes: z.string().optional(),
+      })
+    )
+    .mutation(async ({ ctx: { prisma }, input }) => {
+      const updatedBookmark = await prisma.bookmark.update({
+        where: {
+          id: input.bookmarkId,
+        },
+        data: {
+          notes: input.notes,
+        },
+      });
+
+      return { bookmark: updatedBookmark } as const;
+    }),
 });
 
 type RouterOutput = inferRouterOutputs<AppRouter>;

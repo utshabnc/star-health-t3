@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { TrashIcon } from '@heroicons/react/solid';
+import { trpc } from "../../utils/trpc";
 
 interface BookmarkProps {
   id: number;
@@ -13,6 +14,22 @@ interface BookmarkProps {
 const Bookmarks: React.FC<BookmarkProps> = ({ id, title, url, notes, createdAt, onDelete }) => {
   const [editableNotes, setEditableNotes] = useState(notes);
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);
+  const [editing, setEditing] = useState(false);
+
+  const updateBookmark = trpc.db.updateBookmark.useMutation();
+
+  const handleSave = () => {
+    console.log('saving');
+    console.log(editableNotes);
+    updateBookmark
+      .mutateAsync({
+        bookmarkId: id,
+        notes: editableNotes,
+      })
+      .then(() => {
+        setEditing(false);
+      })
+  };
 
   const handleNotesChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     setEditableNotes(event.target.value);
@@ -49,7 +66,23 @@ const Bookmarks: React.FC<BookmarkProps> = ({ id, title, url, notes, createdAt, 
         placeholder="Enter notes..."
         rows={4}
         className="w-full resize-none border rounded-md mb-4"
+        disabled={!editing}
       />
+      {editing ? (
+        <button
+          className="bg-blue-500 text-white px-4 py-2 rounded-md mt-2"
+          onClick={handleSave}
+        >
+          Save
+        </button>
+      ) : (
+        <button
+          className="bg-gray-300 text-gray-700 px-4 py-2 rounded-md mt-2"
+          onClick={() => setEditing(true)}
+        >
+          Edit
+        </button>
+      )}
       {showConfirmationModal && (
         <div className="fixed inset-0 flex items-center justify-center bg-gray-500 bg-opacity-50">
           <div className="bg-white p-4 rounded-md">
