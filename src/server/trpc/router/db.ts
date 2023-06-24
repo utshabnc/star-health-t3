@@ -1375,6 +1375,102 @@ export const db = router({
       });
       return { review } as const;
     }),
+  addBookmark: publicProcedure
+    .input(
+      z.object({
+        title: z.string(),
+        url: z.string(),
+        userId: z.string(),
+        categoryId: z.number(),
+      })
+    )
+    .mutation(async ({ ctx: { prisma }, input }) => {
+      const bookmarkInput: Prisma.BookmarkUncheckedCreateInput = {
+        title: input.title,
+        url: input.url,
+        userId: input.userId,
+        categoryId: input.categoryId,
+      };
+
+      const existingBookmark = await prisma.bookmark.findFirst({
+        where: {
+          title: input.title,
+          url: input.url,
+          userId: input.userId,
+          categoryId: input.categoryId,
+        },
+      });
+
+      if (existingBookmark) {
+        return { error: "Bookmark already exists." } as const;
+      }
+
+      const bookmark = await prisma.bookmark.create({
+        data: bookmarkInput,
+      });
+
+      return { bookmark } as const;
+    }),
+  bookmarkExists: publicProcedure
+    .input(
+      z.object({
+        title: z.string(),
+        url: z.string(),
+        userId: z.string(),
+        categoryId: z.number(),
+      })
+    )
+    .query(async ({ ctx: { prisma }, input }) => {
+      const existingBookmark = await prisma.bookmark.findFirst({
+        where: {
+          title: input.title,
+          url: input.url,
+          userId: input.userId,
+          categoryId: input.categoryId,
+        },
+      });
+
+      return {
+        exists: !!existingBookmark,
+        id: existingBookmark?.id || null,
+      } as const;
+    }),
+  removeBookmark: publicProcedure
+    .input(
+      z.object({
+        title: z.string(),
+        url: z.string(),
+        userId: z.string(),
+        categoryId: z.number(),
+      })
+    )
+    .mutation(async ({ ctx: { prisma }, input }) => {
+      const bookmark = await prisma.bookmark.deleteMany({
+        where: {
+          title: input.title,
+          url: input.url,
+          userId: input.userId,
+          categoryId: input.categoryId,
+        },
+      });
+
+      return { bookmark } as const;
+    }),
+  removeBookmarkById: publicProcedure
+    .input(
+      z.object({
+        bookmarkId: z.number(),
+      })
+    )
+    .mutation(async ({ ctx: { prisma }, input }) => {
+      const bookmark = await prisma.bookmark.delete({
+        where: {
+          id: input.bookmarkId,
+        },
+      });
+
+      return { bookmark } as const;
+    }),
 });
 
 type RouterOutput = inferRouterOutputs<AppRouter>;

@@ -5,7 +5,7 @@ interface BookmarkProps {
   id: number;
   title: string;
   url: string;
-  notes: string;
+  notes: string | undefined;
   createdAt: Date;
   onDelete: (id: number) => void;
 }

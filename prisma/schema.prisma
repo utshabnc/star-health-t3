@@ -304,8 +304,7 @@ model Bookmark {
   id         Int      @id @default(autoincrement())
   title      String
   url        String
-  notes      String
-  date       DateTime
+  notes      String?
   userId     String
   categoryId Int
   createdAt  DateTime @default(now())

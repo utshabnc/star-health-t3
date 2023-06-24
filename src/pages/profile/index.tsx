@@ -10,7 +10,7 @@ interface BookmarkInterface {
   id: number;
   title: string;
   url: string;
-  notes: string;
+  notes: string | null;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -22,26 +22,8 @@ interface Category {
 
 const ProfilePage: React.FC = () => {
   const { data: session, status } = useSession();
-
-  enum Filter {
-    ClinicalTrials = 'Clinical Trials',
-    Diseases = 'Diseases',
-    Doctors = 'Doctors',
-    Drugs = 'Drugs',
-    Food = 'Food',
-    Genetics = 'Genetics',
-    Hospitals = 'Hospitals',
-    HospitalOwners = 'Hospital Owners',
-    Insurance = 'Insurance',
-    Manufacturers = 'Manufacturers',
-    MedicalDevices = 'Medical Devices',
-    OpioidTreatment = 'Opioid Treatment',
-    Transactions = 'Transactions'
-  }
   const name = session?.user?.name || '';
-
   const userPhoto = session?.user?.image || null;
-
   const [selectedFilter, setSelectedFilter] = useState<string>(() => {
     if (typeof localStorage !== 'undefined') {
       // Retrieve the selected category from local storage or set a default value
@@ -53,6 +35,7 @@ const ProfilePage: React.FC = () => {
   const [bookmarks, setBookmarks] = useState<BookmarkInterface[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
 
+  const removeBookmark = trpc.db.removeBookmarkById.useMutation();
   const { data: allCategories } = trpc.db.allCategories.useQuery();
   const { data: allBookmarks, refetch } = trpc.db.bookmarks.useQuery({
     categoryId: parseInt(selectedFilter),
@@ -79,9 +62,21 @@ const ProfilePage: React.FC = () => {
   }, [selectedFilter]);
 
   const handleFilterChange = (value: string | undefined) => {
-    refetch();
-    setSelectedFilter(value as Filter);
+    if (value) {
+      refetch();
+      setSelectedFilter(value);
+    }
   };
+
+  const handleDelete = (id: number) => {
+    removeBookmark
+      .mutateAsync({
+        bookmarkId: id
+      })
+      .then(() => {
+        refetch();
+      })
+  }
 
   return status === 'loading' ?
     (
@@ -115,10 +110,10 @@ const ProfilePage: React.FC = () => {
               key={bookmark.id}
               createdAt={bookmark.createdAt}
               id={bookmark.id}
-              notes={bookmark.notes}
+              notes={bookmark.notes || undefined}
               title={bookmark.title}
               url={bookmark.url}
-              onDelete={() => { console.log('I clicked delete oh no') }}
+              onDelete={handleDelete}
             />
           ))}
         </div>
