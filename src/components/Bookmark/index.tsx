@@ -6,11 +6,11 @@ interface BookmarkProps {
   title: string;
   url: string;
   notes: string;
-  date: string;
+  createdAt: Date;
   onDelete: (id: number) => void;
 }
 
-const Bookmarks: React.FC<BookmarkProps> = ({ id, title, url, notes, date, onDelete }) => {
+const Bookmarks: React.FC<BookmarkProps> = ({ id, title, url, notes, createdAt, onDelete }) => {
   const [editableNotes, setEditableNotes] = useState(notes);
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);
 
@@ -41,7 +41,7 @@ const Bookmarks: React.FC<BookmarkProps> = ({ id, title, url, notes, date, onDel
           <TrashIcon className="w-6 h-6" />
         </button>
       </div>
-      <h4 className="text-lg text-gray-500 mb-2">{`Bookmarked on ${date}`}</h4>
+      <h4 className="text-lg text-gray-500 mb-2">{`Bookmarked on ${createdAt.toLocaleDateString()}`}</h4>
       <h3 className="text-lg font-medium mb-2">Notes</h3>
       <textarea
         value={editableNotes}
