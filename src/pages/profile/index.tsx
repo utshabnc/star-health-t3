@@ -23,6 +23,7 @@ interface Category {
 const ProfilePage: React.FC = () => {
   const { data: session, status } = useSession();
   const name = session?.user?.name || '';
+  const email = session?.user?.email || '';
   const userPhoto = session?.user?.image || null;
   const [selectedFilter, setSelectedFilter] = useState<string>(() => {
     if (typeof localStorage !== 'undefined') {
@@ -93,10 +94,14 @@ const ProfilePage: React.FC = () => {
               height={128}
             />
           )}
-          <h1 className="text-xl font-bold">{name}</h1>
+          <div className="flex flex-col">
+            <h1 className="text-xl font-bold">{name}</h1>
+            <h1 className="text-xl">{email}</h1>
+          </div>
         </div>
         <hr className="my-4" />
         <div>
+          <h2 className="text-lg font-semibold mb-1">Bookmarks:</h2>
           <Dropdown
             items={categories.map((category) => ({ value: category.id.toString(), label: category.name }))}
             onChange={handleFilterChange}
@@ -104,7 +109,6 @@ const ProfilePage: React.FC = () => {
             placeholder={'-'}
             value={selectedFilter}
           />
-          <h2 className="text-lg font-semibold mb-2">Bookmarks:</h2>
           {bookmarks.map(bookmark => (
             <div className="mb-3" key={bookmark.id}>
               <Bookmark

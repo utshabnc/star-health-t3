@@ -159,7 +159,7 @@ const ClinicalTrialDetails = () => {
                 <p className="text-2xl font-semibold text-violet-700">
                   {clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.IdentificationModule?.BriefTitle || '-'}
                 </p>
-                <div className="flex flex-row">
+                <div className="flex justify-end min-w-[375px]">
                   <Citation title={clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.IdentificationModule?.BriefTitle || '-'} />
                   {session?.user?.id && <div className="ml-1">
                     <BookmarkButton title={clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.IdentificationModule?.BriefTitle || ''} categoryId={DataDirectoryCategory.ClinicalTrials} userId={session?.user?.id as string} authenticated={status === 'authenticated'} />

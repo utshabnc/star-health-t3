@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { trpc } from "../../utils/trpc";
 import { useRouter } from 'next/router'
+import { StarIcon } from '@heroicons/react/solid';
+import { StarIcon as StarOutlineIcon } from '@heroicons/react/outline';
 
 interface BookmarkButtonProps {
   title: string;
@@ -52,7 +54,18 @@ const BookmarkButton: React.FC<BookmarkButtonProps> = ({ title, categoryId, user
       onClick={handleClick}
       disabled={!authenticated || isProcessing}
     >
-      {isBookmarkExisting ? 'Un-Bookmark' : 'Bookmark'}
+      <div className="flex items-center justify-center">
+        {isBookmarkExisting ? (
+          <>
+            <StarIcon className="w-5 h-5 mr-2" />
+            Remove Bookmark
+          </>) :
+          (<>
+            <StarOutlineIcon className="w-5 h-5 mr-2" />
+            Bookmark
+          </>)
+        }
+      </div>
     </button>
   );
 };

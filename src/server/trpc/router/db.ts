@@ -439,6 +439,9 @@ export const db = router({
           createdAt: true,
           updatedAt: true,
         },
+        orderBy: {
+          updatedAt: "desc",
+        },
       });
 
       return bookmarkQueryResults;
