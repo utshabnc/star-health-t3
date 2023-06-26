@@ -7,7 +7,6 @@ import ExpansionPanel from "../../components/ExpansionPanel";
 import { MailIcon, OfficeBuildingIcon, PhoneIcon, UserIcon } from '@heroicons/react/solid';
 import Citation from "../../components/Citation";
 import BookmarkButton from "../../components/BookmarkButton";
-import { useSession } from 'next-auth/react';
 import { DataDirectoryCategory } from "../../utils/Enums/DataDirectoryCategory.enum";
 
 const ClinicalTrialDetails = () => {
@@ -16,8 +15,6 @@ const ClinicalTrialDetails = () => {
 
   const navigate = useRouter();
   const NCTId = navigate.query?.NCTId as string;
-  const { data: session, status } = useSession();
-
 
   useEffect(() => {
     if (NCTId) {
@@ -161,9 +158,9 @@ const ClinicalTrialDetails = () => {
                 </p>
                 <div className="flex justify-end min-w-[375px]">
                   <Citation title={clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.IdentificationModule?.BriefTitle || '-'} />
-                  {session?.user?.id && <div className="ml-1">
-                    <BookmarkButton title={clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.IdentificationModule?.BriefTitle || ''} categoryId={DataDirectoryCategory.ClinicalTrials} userId={session?.user?.id as string} authenticated={status === 'authenticated'} />
-                  </div>}
+                  <div className="ml-1">
+                    <BookmarkButton title={clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.IdentificationModule?.BriefTitle || ''} categoryId={DataDirectoryCategory.ClinicalTrials} />
+                  </div>
                 </div>
               </div>
               <div className="my-1">
