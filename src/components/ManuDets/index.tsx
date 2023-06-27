@@ -48,7 +48,7 @@ export const ManuDets = (schema: MenuSchema) => {
           <div className="flex justify-end min-w-[375px]">
             <Citation title={schema.manufacturer.name} />
             <div className="ml-1">
-              <BookmarkButton title={schema.manufacturer.name} categoryId={DataDirectoryCategory.Manufacturers} />
+              <BookmarkButton title={schema.manufacturer?.name || ''} categoryId={DataDirectoryCategory.Manufacturers} />
             </div>
           </div>
         </div>

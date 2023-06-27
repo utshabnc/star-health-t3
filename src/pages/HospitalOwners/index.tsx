@@ -244,64 +244,65 @@ const HospitalDetails = () => {
                 })}
               </div>
             </div>
-            );
+          </div>
+        );
 
-            default:
-            return (
-            <table>
-              {
-                data.OWNERS.map((count: Owners) => {
-                  return generateExpansionPanel(count, section)
-                })
-              }
-            </table>
-            )
+      default:
+        return (
+          <table>
+            {
+              data.OWNERS.map((count: Owners) => {
+                return generateExpansionPanel(count, section)
+              })
+            }
+          </table>
+        )
     }
 
   };
 
   useEffect(() => {
     const str: string = localStorage.getItem(index) as string;
-            setData(JSON.parse(str))
+    setData(JSON.parse(str))
   }, [index])
 
-            return (
-            <>
-              <div className="bgColor">
-                <div className="rounded bg-white p-5">
-                  <div className="flex flex-row">
-                    <div>
-                      <button
-                        title="goBack"
-                        onClick={navigate.back}
-                        className="ease focus:shadow-outline select-none rounded-md border border-violet-700 bg-violet-700 px-4 py-2 text-white transition duration-500 hover:bg-violet-900 focus:outline-none"
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          strokeWidth={1.5}
-                          stroke="currentColor"
-                          className="h-6 w-6 "
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18"
-                          />
-                        </svg>
-                      </button>
-                    </div>
-                  </div>
-                  <div className="flex flex-col justify-end sm:px-2 lg:px-28">
-                    {generateSection(Section.hospital)}
-                    <div className="my-1"><hr /></div>
-                    {generateSection(Section.owner)}
-                  </div>
-                </div>
-              </div>
-            </>
-            );
+  return (
+    <>
+      <div className="bgColor">
+        <div className="rounded bg-white p-5">
+          <div className="flex flex-row">
+            <div>
+              <button
+                title="goBack"
+                onClick={navigate.back}
+                className="ease focus:shadow-outline select-none rounded-md border border-violet-700 bg-violet-700 px-4 py-2 text-white transition duration-500 hover:bg-violet-900 focus:outline-none"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={1.5}
+                  stroke="currentColor"
+                  className="h-6 w-6 "
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18"
+                  />
+                </svg>
+              </button>
+            </div>
+          </div>
+          <div className="flex flex-col justify-end sm:px-2 lg:px-28">
+            {generateSection(Section.hospital)}
+            <div className="my-1"><hr /></div>
+            {generateSection(Section.owner)}
+          </div>
+        </div>
+      </div>
+    </>
+  );
 };
 
-            export default HospitalDetails;
+export default HospitalDetails;
