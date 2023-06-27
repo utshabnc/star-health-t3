@@ -12,6 +12,8 @@ import {
 import Link from 'next/link';
 import type { ManufacturerResponse } from '../../server/trpc/router/db';
 import Citation from '../Citation';
+import { DataDirectoryCategory } from '../../utils/Enums/DataDirectoryCategory.enum';
+import BookmarkButton from '../BookmarkButton';
 
 interface MenuSchema {
   name: string;
@@ -43,7 +45,12 @@ export const ManuDets = (schema: MenuSchema) => {
           <p className='text-violet-700 text-2xl font-semibold'>
             {schema.manufacturer.name}
           </p>
-          <Citation title={schema.manufacturer.name} />
+          <div className="flex justify-end min-w-[375px]">
+            <Citation title={schema.manufacturer.name} />
+            <div className="ml-1">
+              <BookmarkButton title={schema.manufacturer.name} categoryId={DataDirectoryCategory.Manufacturers} />
+            </div>
+          </div>
         </div>
         <p className='lg:text-xl sm:text-sm font-semibold text-purp-2'>
           Company Payments to Doctors: #

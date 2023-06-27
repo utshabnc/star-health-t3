@@ -12,5 +12,4 @@ export enum DataDirectoryCategory {
   Manufacturers = 11,
   MedicalDevices = 12,
   OpioidTreatment = 13,
-  Transactions = 14,
 }

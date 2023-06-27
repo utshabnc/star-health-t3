@@ -4,6 +4,10 @@ import ExpansionPanel from "../../components/ExpansionPanel";
 import LoadingStarHealth from "../../components/Loading";
 import type { FoodData } from "../../components/Food/FoodData.model";
 import Citation from "../../components/Citation";
+import BookmarkButton from "../../components/BookmarkButton";
+import { data } from "../../components/HospitalOwners/processJSON";
+import { formatName } from "../../utils";
+import { DataDirectoryCategory } from "../../utils/Enums/DataDirectoryCategory.enum";
 
 function upperCaseAllWords(name: string) {
   const words = name.split(" ");
@@ -215,9 +219,16 @@ const FoodDetails = () => {
                   {foodData.publicationDate ? foodData.publicationDate : "-"}
                 </p>
               </div>
-              <Citation title={foodData.description
-                ? upperCaseAllWords(foodData.description)
-                : ""} />
+              <div className="flex justify-end min-w-[375px]">
+                <Citation title={foodData.description
+                  ? upperCaseAllWords(foodData.description)
+                  : ""} />
+                <div className="ml-1">
+                  <BookmarkButton title={foodData.description
+                    ? upperCaseAllWords(foodData.description)
+                    : ""} categoryId={DataDirectoryCategory.Food} />
+                </div>
+              </div>
             </div>
             <div className="my-1">
               <hr />
