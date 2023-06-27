@@ -249,7 +249,6 @@ const HealthPlansDetails = () => {
             </div>
           </div>
           <div className="flex flex-col justify-end sm:px-2 lg:px-28">
-
             <div className="flex flex-row justify-between	items-start">
               <p className="text-2xl font-semibold text-violet-700">
                 {healthPlanDetail?.name || "-"}
@@ -260,109 +259,109 @@ const HealthPlansDetails = () => {
                   <BookmarkButton title={healthPlanDetail?.name || "-"} categoryId={DataDirectoryCategory.Insurance} />
                 </div>
               </div>
-              <div className="my-1">
-                <hr />
-              </div>
-              <div>ID: {healthPlanDetail?.id}</div>
-              <div className="mt-4 flex flex-row">
-                <div className="pr-10">
-                  <p className="pt-1 text-xl font-semibold">Issuer Overview</p>
-                  <div className="my-1 mr-8">
-                    <hr />
-                  </div>
-                  <p className="text-purp-2 mt-2 mb-2 font-semibold sm:text-sm lg:text-xl">
-                    Name:{" "}
-                    <span className="font-normal">
-                      {healthPlanDetail?.issuer?.name || "-"}
-                    </span>
-                  </p>
-                  <p className="text-purp-2 mt-2 mb-2 font-semibold sm:text-sm lg:text-xl">
-                    State:{" "}
-                    <span className="font-normal">
-                      {healthPlanDetail?.issuer?.state || "-"}
-                    </span>
-                  </p>
-                  <p className="break-all text-purp-2 mt-2 mb-2 font-semibold sm:text-sm lg:text-xl">
-                    Shop URL:{" "}
-                    <span className="font-normal">
-                      <a
-                        style={{ color: "blue" }}
-                        rel="noreferrer"
-                        target="_blank"
-                        href={healthPlanDetail?.issuer?.shop_url}
-                      >
-                        {healthPlanDetail?.issuer?.shop_url}
-                      </a>
-                    </span>
-                  </p>
-                  <p className="text-purp-2 mt-2 mb-2 font-semibold sm:text-sm lg:text-xl">
-                    Toll free:{" "}
-                    <span className="font-normal">
-                      {healthPlanDetail?.issuer?.toll_free || "-"}
-                    </span>
-                  </p>
-                </div>
-                <div className="">
-                  <p className="pt-1 text-xl font-semibold">Product Overview</p>
-                  <div className="my-1 mr-8">
-                    <hr />
-                  </div>
-                  <p className="break-all text-purp-2 mt-2 mb-2 font-semibold sm:text-sm lg:text-xl">
-                    Benefit URL:{" "}
-                    <span className="font-normal">
-                      <a
-                        style={{ color: "blue" }}
-                        rel="noreferrer"
-                        target="_blank"
-                        href={healthPlanDetail?.benefits_url}
-                      >
-                        {healthPlanDetail?.benefits_url}
-                      </a>
-                    </span>
-                  </p>
-                  <p className="break-all text-purp-2 mt-2 mb-2 font-semibold sm:text-sm lg:text-xl">
-                    Brochure URL:{" "}
-                    <span className="font-normal">
-                      <a
-                        style={{ color: "blue" }}
-                        rel="noreferrer"
-                        target="_blank"
-                        href={healthPlanDetail?.brochure_url}
-                      >
-                        {healthPlanDetail?.brochure_url}
-                      </a>
-                    </span>
-                  </p>
-                  <p className="break-all text-purp-2 mt-2 mb-2 font-semibold sm:text-sm lg:text-xl">
-                    Formulary URL:{" "}
-                    <span className="font-normal">
-                      <a
-                        style={{ color: "blue" }}
-                        rel="noreferrer"
-                        target="_blank"
-                        href={healthPlanDetail?.formulary_url}
-                      >
-                        {healthPlanDetail?.formulary_url}
-                      </a>
-                    </span>
-                  </p>
-                </div>
-              </div>
-              <div className="my-1">
-                <hr />
-              </div>
-              {expansionPanels.map((panel, index) => {
-                if (panel.content) {
-                  return (
-                    <ExpansionPanel
-                      key={`${panel.title}-${index}`}
-                      title={panel?.title || null}
-                      content={panel?.content || null}
-                    />
-                  );
-                }
-              })}
             </div>
+            <div className="my-1">
+              <hr />
+            </div>
+            <div>ID: {healthPlanDetail?.id}</div>
+            <div className="mt-4 flex flex-row">
+              <div className="pr-10">
+                <p className="pt-1 text-xl font-semibold">Issuer Overview</p>
+                <div className="my-1 mr-8">
+                  <hr />
+                </div>
+                <p className="text-purp-2 mt-2 mb-2 font-semibold sm:text-sm lg:text-xl">
+                  Name:{" "}
+                  <span className="font-normal">
+                    {healthPlanDetail?.issuer?.name || "-"}
+                  </span>
+                </p>
+                <p className="text-purp-2 mt-2 mb-2 font-semibold sm:text-sm lg:text-xl">
+                  State:{" "}
+                  <span className="font-normal">
+                    {healthPlanDetail?.issuer?.state || "-"}
+                  </span>
+                </p>
+                <p className="break-all text-purp-2 mt-2 mb-2 font-semibold sm:text-sm lg:text-xl">
+                  Shop URL:{" "}
+                  <span className="font-normal">
+                    <a
+                      style={{ color: "blue" }}
+                      rel="noreferrer"
+                      target="_blank"
+                      href={healthPlanDetail?.issuer?.shop_url}
+                    >
+                      {healthPlanDetail?.issuer?.shop_url}
+                    </a>
+                  </span>
+                </p>
+                <p className="text-purp-2 mt-2 mb-2 font-semibold sm:text-sm lg:text-xl">
+                  Toll free:{" "}
+                  <span className="font-normal">
+                    {healthPlanDetail?.issuer?.toll_free || "-"}
+                  </span>
+                </p>
+              </div>
+              <div className="">
+                <p className="pt-1 text-xl font-semibold">Product Overview</p>
+                <div className="my-1 mr-8">
+                  <hr />
+                </div>
+                <p className="break-all text-purp-2 mt-2 mb-2 font-semibold sm:text-sm lg:text-xl">
+                  Benefit URL:{" "}
+                  <span className="font-normal">
+                    <a
+                      style={{ color: "blue" }}
+                      rel="noreferrer"
+                      target="_blank"
+                      href={healthPlanDetail?.benefits_url}
+                    >
+                      {healthPlanDetail?.benefits_url}
+                    </a>
+                  </span>
+                </p>
+                <p className="break-all text-purp-2 mt-2 mb-2 font-semibold sm:text-sm lg:text-xl">
+                  Brochure URL:{" "}
+                  <span className="font-normal">
+                    <a
+                      style={{ color: "blue" }}
+                      rel="noreferrer"
+                      target="_blank"
+                      href={healthPlanDetail?.brochure_url}
+                    >
+                      {healthPlanDetail?.brochure_url}
+                    </a>
+                  </span>
+                </p>
+                <p className="break-all text-purp-2 mt-2 mb-2 font-semibold sm:text-sm lg:text-xl">
+                  Formulary URL:{" "}
+                  <span className="font-normal">
+                    <a
+                      style={{ color: "blue" }}
+                      rel="noreferrer"
+                      target="_blank"
+                      href={healthPlanDetail?.formulary_url}
+                    >
+                      {healthPlanDetail?.formulary_url}
+                    </a>
+                  </span>
+                </p>
+              </div>
+            </div>
+            <div className="my-1">
+              <hr />
+            </div>
+            {expansionPanels.map((panel, index) => {
+              if (panel.content) {
+                return (
+                  <ExpansionPanel
+                    key={`${panel.title}-${index}`}
+                    title={panel?.title || null}
+                    content={panel?.content || null}
+                  />
+                );
+              }
+            })}
           </div>
         </div>
       </div>

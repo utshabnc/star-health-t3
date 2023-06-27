@@ -6,6 +6,8 @@ import { availableYears, formatMoney, formatName, formatNumber } from '../../uti
 import _ from 'lodash';
 import type { ProductResponse } from '../../server/trpc/router/db';
 import Citation from '../Citation';
+import { DataDirectoryCategory } from '../../utils/Enums/DataDirectoryCategory.enum';
+import BookmarkButton from '../BookmarkButton';
 
 
 interface DrugSchema {
@@ -32,7 +34,12 @@ export const DrugDets = ({ drug, onChangeYear }: DrugSchema) => {
           <p className="text-2xl font-semibold text-violet-700">
             {formatName(drug.name || "Unknown")}
           </p>
-          <Citation title={formatName(drug.name || "Unknown")} />
+          <div className="flex justify-end min-w-[375px]">
+            <Citation title={formatName(drug.name || "Unknown")} />
+            <div className="ml-1">
+              <BookmarkButton title={formatName(drug.name || "Unknown")} categoryId={DataDirectoryCategory.MedicalDevices} />
+            </div>
+          </div>
         </div>
 
         <div className="my-1">
