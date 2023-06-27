@@ -365,8 +365,9 @@ const HealthPlansDetails = () => {
             </div>
           </div>
         </div>
-      </>
-      );
+      </div>
+    </>
+  );
 };
 
-      export default HealthPlansDetails;
+export default HealthPlansDetails;
