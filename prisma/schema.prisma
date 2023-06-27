@@ -292,3 +292,21 @@ model OpioidTreatment {
   medicare_id_effective_date DateTime?
   phone                      String?
 }
+
+model Category {
+  id        Int      @id @default(autoincrement())
+  name      String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Bookmark {
+  id         Int      @id @default(autoincrement())
+  title      String
+  url        String
+  notes      String?
+  userId     String
+  categoryId Int
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}

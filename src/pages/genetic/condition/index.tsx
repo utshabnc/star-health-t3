@@ -5,6 +5,8 @@ import LoadingStarHealth from "../../../components/Loading";
 import type { GeneticData } from "../../../components/Genetics/GeneticData.model";
 import parse from "html-react-parser";
 import Citation from "../../../components/Citation";
+import BookmarkButton from "../../../components/BookmarkButton";
+import { DataDirectoryCategory } from "../../../utils/Enums/DataDirectoryCategory.enum";
 
 function upperCaseAllWords(name: string) {
   const words = name.split(" ");
@@ -200,7 +202,12 @@ const ConditionDetails = () => {
                   {conditionData.published ? conditionData.published : "-"}
                 </p>
               </div>
-              <Citation title={conditionData.name ? upperCaseAllWords(conditionData.name) : ""} />
+              <div className="flex justify-end min-w-[375px]">
+                <Citation title={conditionData.name ? upperCaseAllWords(conditionData.name) : ""} />
+                <div className="ml-1">
+                  <BookmarkButton title={conditionData.name ? upperCaseAllWords(conditionData.name) : ""} categoryId={DataDirectoryCategory.Diseases} />
+                </div>
+              </div>
             </div>
             <div className="my-1">
               <hr />

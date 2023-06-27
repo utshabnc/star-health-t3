@@ -6,6 +6,8 @@ import type { OpioidTreatmentProvider } from '../../components/OpioidTreatmentPr
 import PhoneNumber from "../../components/PhoneNumber";
 import { toTitleCase } from "../../utils";
 import Citation from '../../components/Citation';
+import BookmarkButton from '../../components/BookmarkButton';
+import { DataDirectoryCategory } from '../../utils/Enums/DataDirectoryCategory.enum';
 
 const OpioidTreatmentProviderDetails = () => {
   const navigate = useRouter();
@@ -118,7 +120,12 @@ const OpioidTreatmentProviderDetails = () => {
               <p className='text-violet-700 text-2xl font-semibold'>
                 {toTitleCase((provider?.provider_name?.toLowerCase()) ?? "")}
               </p>
-              <Citation title={toTitleCase((provider?.provider_name?.toLowerCase()) ?? "")} />
+              <div className="flex justify-end min-w-[375px]">
+                <Citation title={toTitleCase((provider?.provider_name?.toLowerCase()) ?? "")} />
+                <div className="ml-1">
+                  <BookmarkButton title={toTitleCase((provider?.provider_name?.toLowerCase()) ?? "")} categoryId={DataDirectoryCategory.OpioidTreatment} />
+                </div>
+              </div>
             </div>
             <p className='text-gray-500 text-sm'>
               <div>

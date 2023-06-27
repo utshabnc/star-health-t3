@@ -4,6 +4,8 @@ import { useState } from "react";
 import ExpansionPanel from "../ExpansionPanel";
 import parse from "html-react-parser";
 import Citation from "../Citation";
+import { DataDirectoryCategory } from "../../utils/Enums/DataDirectoryCategory.enum";
+import BookmarkButton from "../BookmarkButton";
 
 interface DrugSchema {
   data: DrugResponse;
@@ -37,7 +39,7 @@ function cleanDescription(description: string) {
   });
   return (
     <div>
-      {sentencesGroupedInFour.slice(0,5).map((sentence, index) => {
+      {sentencesGroupedInFour.slice(0, 5).map((sentence, index) => {
         return (
           <p key={index} className="text-purp-2">
             {sentence}
@@ -237,7 +239,7 @@ function cleanPurpose(purpose: string) {
   if (shortenedPurpose.length > 800) {
     shortenedPurpose = shortenedPurpose.slice(0, 800) + "...";
   }
-return (
+  return (
     <div>
       {parse(shortenedPurpose)}
     </div>
@@ -342,7 +344,7 @@ function formatString(str: string) {
           currCounter += 1;
           continue;
         }
-        if (!paragraph.startsWith("See the section below") && !paragraph.startsWith("All registered trademarks") && !paragraph.startsWith("This Instructions for Use")  && !paragraph.startsWith("Food and Drug Administration") && !paragraph.startsWith("Manufactured by ")) {
+        if (!paragraph.startsWith("See the section below") && !paragraph.startsWith("All registered trademarks") && !paragraph.startsWith("This Instructions for Use") && !paragraph.startsWith("Food and Drug Administration") && !paragraph.startsWith("Manufactured by ")) {
           htmlString += `${paragraph}. `;
         }
         currCounter += 1;
@@ -425,13 +427,13 @@ function cleanWarnings(
   } else if (findAltBulletSteps2 && findAltBulletSteps2.length > 0) {
     shortenedWarnings = shortenedWarnings.replace(/ - /g, "<br/>• ");
   }
-if (shortenedWarnings && shortenedWarnings.length && shortenedWarnings.length > 2000) {
+  if (shortenedWarnings && shortenedWarnings.length && shortenedWarnings.length > 2000) {
     shortenedWarnings = shortenedWarnings?.slice(0, 2000) + "...";
   }
   try {
     return (
       <div>
-        {children && (children.length < 2000)  && (
+        {children && (children.length < 2000) && (
           <p className="text-purp-5 text-red-700 sm:text-sm">{children}</p>
         )}
         {ask_doctor && (ask_doctor.length < 2000) && (
@@ -605,7 +607,12 @@ export const DrugsDets = ({ data }: DrugSchema) => {
           <p className="text-2xl font-semibold text-violet-700">
             {formatName(data?.drug?.brand_name || "Unknown")}
           </p>
-          <Citation title={formatName(data?.drug?.brand_name || "Unknown")} />
+          <div className="flex justify-end min-w-[375px]">
+            <Citation title={formatName(data?.drug?.brand_name || "Unknown")} />
+            <div className="ml-1">
+              <BookmarkButton title={formatName(data?.drug?.brand_name || "Unknown")} categoryId={DataDirectoryCategory.Drugs} />
+            </div>
+          </div>
         </div>
         <p className="text-purp-2 font-semibold sm:text-sm lg:text-xl">
           Manufacturer: {data?.drug?.manufacturer_name}

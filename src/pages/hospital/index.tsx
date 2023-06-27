@@ -9,6 +9,8 @@ import ErrorComponent from "../../components/ErrorComponent";
 import type { HospitalDataResponse } from "../api/hospitals/[hospital_id]";
 import { delay } from "../../utils";
 import Citation from "../../components/Citation";
+import BookmarkButton from "../../components/BookmarkButton";
+import { DataDirectoryCategory } from "../../utils/Enums/DataDirectoryCategory.enum";
 
 enum Section {
   overview = "Overview",
@@ -595,7 +597,12 @@ const HospitalDetails = () => {
               <p className="text-2xl font-semibold text-violet-700">
                 {hospitalDetails?.at(0)?.data_name}
               </p>
-              <Citation title={hospitalDetails?.at(0)?.data_name || '-'} />
+              <div className="flex justify-end min-w-[375px]">
+                <Citation title={hospitalDetails?.at(0)?.data_name || '-'} />
+                <div className="ml-1">
+                  <BookmarkButton title={hospitalDetails?.at(0)?.data_name || '-'} categoryId={DataDirectoryCategory.Hospitals} />
+                </div>
+              </div>
             </div>
             <div className="my-1"><hr /></div>
 

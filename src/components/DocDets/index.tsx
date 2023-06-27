@@ -7,6 +7,8 @@ import _ from 'lodash';
 import type { DoctorResponse } from '../../server/trpc/router/db';
 import Link from 'next/link';
 import Citation from '../Citation';
+import { DataDirectoryCategory } from '../../utils/Enums/DataDirectoryCategory.enum';
+import BookmarkButton from '../BookmarkButton';
 
 interface DocSchema {
   doctor: DoctorResponse;
@@ -40,7 +42,12 @@ export const DocDets = ({ doctor, onChangeYear }: DocSchema) => {
           <p className="text-2xl font-semibold text-violet-700">
             {formatName(doctor.firstName + " " + doctor.lastName)}
           </p>
-          <Citation title={formatName(doctor.firstName + " " + doctor.lastName)} />
+          <div className="flex justify-end min-w-[375px]">
+            <Citation title={formatName(doctor.firstName + " " + doctor.lastName)} />
+            <div className="ml-1">
+              <BookmarkButton title={formatName(doctor.firstName + " " + doctor.lastName)} categoryId={DataDirectoryCategory.Doctors} />
+            </div>
+          </div>
         </div>
         <div className="flex flex-row items-center space-x-2">
           {numReviews > 0 ?

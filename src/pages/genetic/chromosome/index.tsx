@@ -5,6 +5,8 @@ import LoadingStarHealth from "../../../components/Loading";
 import type { ChromosomeData } from "../../../components/Genetics/GeneticData.model";
 import parse from "html-react-parser";
 import Citation from "../../../components/Citation";
+import BookmarkButton from "../../../components/BookmarkButton";
+import { DataDirectoryCategory } from "../../../utils/Enums/DataDirectoryCategory.enum";
 
 function upperCaseAllWords(name: string) {
   const words = name.split(" ");
@@ -185,9 +187,16 @@ const ChromosomeDetails = () => {
                   {chromosomeData.published ? chromosomeData.published["_text"] ? chromosomeData.published["_text"] : chromosomeData.published : "-"}
                 </p>
               </div>
-              <Citation title={chromosomeData.name
-                ? upperCaseAllWords(chromosomeData.name["_text"] ? chromosomeData.name["_text"] : chromosomeData.name)
-                : ""} />
+              <div className="flex justify-end min-w-[375px]">
+                <Citation title={chromosomeData.name
+                  ? upperCaseAllWords(chromosomeData.name["_text"] ? chromosomeData.name["_text"] : chromosomeData.name)
+                  : ""} />
+                <div className="ml-1">
+                  <BookmarkButton title={chromosomeData.name
+                    ? upperCaseAllWords(chromosomeData.name["_text"] ? chromosomeData.name["_text"] : chromosomeData.name)
+                    : ""} categoryId={DataDirectoryCategory.Genetics} />
+                </div>
+              </div>
             </div>
             <div className="my-1">
               <hr />

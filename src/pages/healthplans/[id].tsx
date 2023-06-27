@@ -7,6 +7,8 @@ import ExpansionPanel from "../../components/ExpansionPanel";
 import { getHealthPlanDetailById } from "../../components/HealthPlans/httpsRequests";
 import LoadingStarHealth from "../../components/Loading";
 import { formatMoney } from "../../utils";
+import BookmarkButton from "../../components/BookmarkButton";
+import { DataDirectoryCategory } from "../../utils/Enums/DataDirectoryCategory.enum";
 
 const HealthPlansDetails = () => {
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
@@ -247,12 +249,16 @@ const HealthPlansDetails = () => {
             </div>
           </div>
           <div className="flex flex-col justify-end sm:px-2 lg:px-28">
-
             <div className="flex flex-row justify-between	items-start">
               <p className="text-2xl font-semibold text-violet-700">
                 {healthPlanDetail?.name || "-"}
               </p>
-              <Citation title={healthPlanDetail?.name || "-"} />
+              <div className="flex justify-end min-w-[375px]">
+                <Citation title={healthPlanDetail?.name || "-"} />
+                <div className="ml-1">
+                  <BookmarkButton title={healthPlanDetail?.name || "-"} categoryId={DataDirectoryCategory.Insurance} />
+                </div>
+              </div>
             </div>
             <div className="my-1">
               <hr />

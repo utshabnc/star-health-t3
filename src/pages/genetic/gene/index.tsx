@@ -5,6 +5,8 @@ import LoadingStarHealth from "../../../components/Loading";
 import type { GeneticData } from "../../../components/Genetics/GeneticData.model";
 import parse from "html-react-parser";
 import Citation from "../../../components/Citation";
+import BookmarkButton from "../../../components/BookmarkButton";
+import { DataDirectoryCategory } from "../../../utils/Enums/DataDirectoryCategory.enum";
 
 function upperCaseAllWords(name: string) {
   const words = name.split(" ");
@@ -195,9 +197,17 @@ const GeneDetails = () => {
                   Published: {geneData.published ? geneData.published : "-"}
                 </p>
               </div>
-              <Citation title={geneData["gene-symbol"]
-                ? geneData["gene-symbol"].toLocaleUpperCase()
-                : ""} />
+
+              <div className="flex justify-end min-w-[375px]">
+                <Citation title={geneData["gene-symbol"]
+                  ? geneData["gene-symbol"].toLocaleUpperCase()
+                  : ""} />
+                <div className="ml-1">
+                  <BookmarkButton title={geneData["gene-symbol"]
+                    ? geneData["gene-symbol"].toLocaleUpperCase()
+                    : ""} categoryId={DataDirectoryCategory.Genetics} />
+                </div>
+              </div>
             </div>
             <div className="my-1">
               <hr />

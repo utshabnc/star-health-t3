@@ -5,6 +5,8 @@ import ErrorComponent from "../../components/ErrorComponent";
 import type { HospitalOwners } from "../../components/HospitalOwners/HospitalOwners.model";
 import type { Owners } from "../../components/HospitalOwners/Owners.model";
 import Citation from "../../components/Citation";
+import BookmarkButton from "../../components/BookmarkButton";
+import { DataDirectoryCategory } from "../../utils/Enums/DataDirectoryCategory.enum";
 
 
 
@@ -228,14 +230,19 @@ const HospitalDetails = () => {
             <div className="pr-10 w-full">
               <div className="flex flex-row justify-between	items-start">
                 <p className="pt-1 text-2xl font-semibold">{data.ORGANIZATION_NAME}</p>
-                <Citation title={data.ORGANIZATION_NAME} />
+                <div className="flex justify-end min-w-[375px]">
+                  <Citation title={data.ORGANIZATION_NAME} />
+                  <div className="ml-1">
+                    <BookmarkButton title={data.ORGANIZATION_NAME} categoryId={DataDirectoryCategory.HospitalOwners} />
+                  </div>
+                </div>
+                <div className="my-1 mr-8">
+                  <hr />
+                </div>
+                {hospitalDataTemplate[section].map((field) => {
+                  return generateUiField(data, field, section, 0);
+                })}
               </div>
-              <div className="my-1 mr-8">
-                <hr />
-              </div>
-              {hospitalDataTemplate[section].map((field) => {
-                return generateUiField(data, field, section, 0);
-              })}
             </div>
           </div>
         );

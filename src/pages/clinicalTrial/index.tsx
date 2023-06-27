@@ -6,6 +6,8 @@ import type { ClinicalTrialsFullStudyResponse } from '../../components/ClinicalT
 import ExpansionPanel from "../../components/ExpansionPanel";
 import { MailIcon, OfficeBuildingIcon, PhoneIcon, UserIcon } from '@heroicons/react/solid';
 import Citation from "../../components/Citation";
+import BookmarkButton from "../../components/BookmarkButton";
+import { DataDirectoryCategory } from "../../utils/Enums/DataDirectoryCategory.enum";
 
 const ClinicalTrialDetails = () => {
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
@@ -13,7 +15,6 @@ const ClinicalTrialDetails = () => {
 
   const navigate = useRouter();
   const NCTId = navigate.query?.NCTId as string;
-
 
   useEffect(() => {
     if (NCTId) {
@@ -155,7 +156,12 @@ const ClinicalTrialDetails = () => {
                 <p className="text-2xl font-semibold text-violet-700">
                   {clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.IdentificationModule?.BriefTitle || '-'}
                 </p>
-                <Citation title={clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.IdentificationModule?.BriefTitle || '-'} />
+                <div className="flex justify-end min-w-[375px]">
+                  <Citation title={clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.IdentificationModule?.BriefTitle || '-'} />
+                  <div className="ml-1">
+                    <BookmarkButton title={clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.IdentificationModule?.BriefTitle || ''} categoryId={DataDirectoryCategory.ClinicalTrials} />
+                  </div>
+                </div>
               </div>
               <div className="my-1">
                 <hr />
