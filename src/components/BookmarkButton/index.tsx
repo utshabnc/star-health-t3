@@ -59,26 +59,24 @@ const BookmarkButton: React.FC<BookmarkButtonProps> = ({ title, categoryId }) =>
   };
 
   return (
-    authenticated && (
-      <button
-        className="ease focus:shadow-outline select-none rounded-md border border-violet-700 bg-violet-700 px-4 py-2 text-white transition duration-500 hover:bg-violet-900 focus:outline-none"
-        onClick={handleClick}
-        disabled={!authenticated || isProcessing}
-      >
-        <div className="flex items-center justify-center">
-          {isBookmarkExisting ? (
-            <>
-              <StarIcon className="w-5 h-5 mr-2" />
-              Remove Bookmark
-            </>) :
-            (<>
-              <StarOutlineIcon className="w-5 h-5 mr-2" />
-              Bookmark
-            </>)
-          }
-        </div>
-      </button>)
-  );
+    <button
+      className="ease focus:shadow-outline select-none rounded-md border border-violet-700 bg-violet-700 px-4 py-2 text-white transition duration-500 hover:bg-violet-900 focus:outline-none"
+      onClick={handleClick}
+      disabled={!authenticated || isProcessing}
+    >
+      <div className="flex items-center justify-center">
+        {isBookmarkExisting ? (
+          <>
+            <StarIcon className="w-5 h-5 mr-2" />
+            Remove Bookmark
+          </>) :
+          (<>
+            <StarOutlineIcon className="w-5 h-5 mr-2" />
+            Bookmark
+          </>)
+        }
+      </div>
+    </button>);
 };
 
 export default BookmarkButton;
