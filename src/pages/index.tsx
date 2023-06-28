@@ -7,7 +7,7 @@
 import { signIn } from "next-auth/react";
 import { useState } from "react";
 // import { useAllStatesQuery } from './api';
-import api from "../assets/api.png";
+import bookmark from "../assets/logos/bookmark.png";
 import data_analytics from "../assets/data_analytics.png";
 import ratings_and_reviews from "../assets/ratings_and_reviews.png";
 
@@ -53,7 +53,7 @@ const features = [
 ];
 
 const info = [
-  { label: "API", img: api },
+  { label: "Bookmarks", img: bookmark },
   { label: "Ratings & Reviews", img: ratings_and_reviews },
   { label: "Customizable dashboards", img: dashboard },
 ];
