@@ -131,15 +131,13 @@ function NavBar() {
             >
               Pricing
             </Link>
-            {session?.data?.user && (
-              <Link
-                href={"/profile"}
-                className="w-30 md:w-22 hidden rounded px-3 py-1 font-custom font-medium 
-							text-white hover:text-blue-300 md:block"
-              >
-                Profile
-              </Link>
-            )}
+            <Link
+              href={"/profile"}
+              className="w-30 md:w-22 hidden rounded px-3 py-1 font-custom font-medium 
+            text-white hover:text-blue-300 md:block"
+            >
+              Profile
+            </Link>
             {/* <Link href='/' className='w-30 lg:w-22 text-white font-custom font-medium hover:text-blue-600 rounded px-3 py-1'>Contact</Link>	 */}
             {session?.data?.user ? (
               <button
@@ -199,6 +197,14 @@ function NavBar() {
                   onClick={() => setNavbarOpen((prev) => !prev)}
                 >
                   Pricing
+                </Link>
+                <Link
+                  href={"/profile"}
+                  className="text-[2.7rem] font-medium 
+												text-white hover:text-blue-300"
+                  onClick={() => setNavbarOpen((prev) => !prev)}
+                >
+                  Profile
                 </Link>
                 {session?.data?.user ? (
                   <div>
