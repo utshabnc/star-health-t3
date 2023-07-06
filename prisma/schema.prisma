@@ -310,3 +310,42 @@ model Bookmark {
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 }
+
+model PatientIntakeForm {
+  id                    Int      @id @default(autoincrement())
+  firstName             String
+  lastName              String
+  dateOfBirth           DateTime
+  sex                   String
+  maritialStatus        String
+  email                 String
+  phoneNumber           String
+  homePhone1            String?
+  cellPhone1            String
+  workPhone1            String?
+  homePhone2            String?
+  cellPhone2            String?
+  workPhone2            String?
+  homePhone3            String?
+  cellPhone3            String?
+  workPhone3            String?
+  medications           String?
+  allergies             String?
+  address               String
+  emergencyContact1     String
+  relationship1         String
+  emergencyContactPhone1 String
+  emergencyContact2     String?
+  relationship2         String?
+  emergencyContactPhone2 String?
+  insuranceCarried      String?
+  insurancePlan         String?
+  contactNumber         String?
+  policyNumber          String?
+  groupNumber           String?
+  ssn                   String?
+  underMedicalCare      String?
+  medicalCareReason     String?
+  primaryCarePhysician  String?
+  healthConcerns        String?
+}
