@@ -6,6 +6,8 @@ import Dropdown from "../../components/Dropdown";
 import { trpc } from "../../utils/trpc";
 import LoadingStarHealth from "../../components/Loading";
 import PatientIntakeForm from "../../components/PatientIntakeForm/PatientIntakeForm";
+import { PayWall } from "../../components/PayWall/PayWall";
+
 
 interface BookmarkInterface {
   id: number;
@@ -90,6 +92,7 @@ const ProfilePage: React.FC = () => {
     ) : (
       <div className="p-16">
         <div className="flex items-center mb-4">
+          <PayWall />
           {userPhoto && (
             <Image
               className="rounded-full mr-4"

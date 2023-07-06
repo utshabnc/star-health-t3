@@ -239,11 +239,7 @@ function cleanPurpose(purpose: string) {
   if (shortenedPurpose.length > 800) {
     shortenedPurpose = shortenedPurpose.slice(0, 800) + "...";
   }
-  return (
-    <div>
-      {parse(shortenedPurpose)}
-    </div>
-  );
+  return <div>{parse(shortenedPurpose)}</div>;
 }
 
 function cleanOverdosage(overdosage: string) {
@@ -289,9 +285,70 @@ function cleanInteraction(interaction: string) {
       ""
     );
   }
-  let shortenedInteraction = interactionWithoutPrefix.split("( 7.1 )")[0];
-  if (shortenedInteraction?.length && shortenedInteraction.length > 2000) {
-    shortenedInteraction = shortenedInteraction.slice(0, 2000) + "...";
+  let shortenedInteraction = interactionWithoutPrefix.split("( 7.1 )")[0] || "";
+
+  const shortenedInteractionSentences = shortenedInteraction.split(". ");
+  let newSentences = "";
+  console.log("--------------------");
+  shortenedInteractionSentences.forEach((sentence) => {
+    let newSentence = sentence;
+    while (
+      newSentence.startsWith("[") ||
+      newSentence.startsWith(" ") ||
+      newSentence.endsWith(")") ||
+      newSentence.endsWith("]") ||
+      newSentence.endsWith(" ") ||
+      newSentence.endsWith(".") ||
+      /^[0-9]+\.[0-9]+\s/.test(newSentence) ||
+      /^[0-9]+\.[0-9]+/.test(newSentence) ||
+      newSentence.startsWith("• ") ||
+      newSentence.startsWith(" •") ||
+      newSentence.startsWith("•")
+    ) {
+      while (newSentence.startsWith("(")) {
+        newSentence = newSentence.split(")").slice(1).join(")") || "";
+      }
+      while (newSentence.startsWith("[")) {
+        newSentence = newSentence.split("]")[1] || "";
+      }
+      while (newSentence.startsWith(" ")) {
+        newSentence = newSentence.slice(1);
+      }
+      while (newSentence.endsWith(")")) {
+        newSentence = newSentence.split("(")[0] || "";
+      }
+      while (newSentence.endsWith("]")) {
+        newSentence = newSentence.split("[")[0] || "";
+      }
+      while (newSentence.endsWith(" ")) {
+        newSentence = newSentence.slice(0, -1);
+      }
+      while (newSentence.endsWith(".")) {
+        newSentence = newSentence.slice(0, -1);
+      }
+      while (/^[0-9]+\.[0-9]+\s/.test(newSentence)) {
+        newSentence = newSentence.replace(/^[0-9]+\.[0-9]+\s/, "");
+      }
+      while (/^[0-9]+\.[0-9]+/.test(newSentence)) {
+        newSentence = newSentence.replace(/^[0-9]+\.[0-9]+/, "");
+      }
+      while (newSentence.startsWith("• ")) {
+        newSentence = newSentence.slice(2);
+      }
+      while (newSentence.startsWith("•")) {
+        newSentence = newSentence.slice(1);
+      }
+      while (newSentence.startsWith(" •")) {
+        newSentence = newSentence.slice(2);
+      }
+    }
+    console.log(sentence, "==>", newSentence);
+    newSentences += newSentence + ". ";
+  });
+  shortenedInteraction = newSentences;
+
+  if (shortenedInteraction?.length && shortenedInteraction.length > 3000) {
+    shortenedInteraction = shortenedInteraction.slice(0, 3000) + "...";
   }
   return (
     <div>
@@ -344,7 +401,13 @@ function formatString(str: string) {
           currCounter += 1;
           continue;
         }
-        if (!paragraph.startsWith("See the section below") && !paragraph.startsWith("All registered trademarks") && !paragraph.startsWith("This Instructions for Use") && !paragraph.startsWith("Food and Drug Administration") && !paragraph.startsWith("Manufactured by ")) {
+        if (
+          !paragraph.startsWith("See the section below") &&
+          !paragraph.startsWith("All registered trademarks") &&
+          !paragraph.startsWith("This Instructions for Use") &&
+          !paragraph.startsWith("Food and Drug Administration") &&
+          !paragraph.startsWith("Manufactured by ")
+        ) {
           htmlString += `${paragraph}. `;
         }
         currCounter += 1;
@@ -427,27 +490,31 @@ function cleanWarnings(
   } else if (findAltBulletSteps2 && findAltBulletSteps2.length > 0) {
     shortenedWarnings = shortenedWarnings.replace(/ - /g, "<br/>• ");
   }
-  if (shortenedWarnings && shortenedWarnings.length && shortenedWarnings.length > 2000) {
+  if (
+    shortenedWarnings &&
+    shortenedWarnings.length &&
+    shortenedWarnings.length > 2000
+  ) {
     shortenedWarnings = shortenedWarnings?.slice(0, 2000) + "...";
   }
   try {
     return (
       <div>
-        {children && (children.length < 2000) && (
+        {children && children.length < 2000 && (
           <p className="text-purp-5 text-red-700 sm:text-sm">{children}</p>
         )}
-        {ask_doctor && (ask_doctor.length < 2000) && (
+        {ask_doctor && ask_doctor.length < 2000 && (
           <p className="text-purp-5 text-red-700 sm:text-sm">{ask_doctor}</p>
         )}
-        {ask_doctor_pharmacist && (ask_doctor_pharmacist.length < 2000) && (
+        {ask_doctor_pharmacist && ask_doctor_pharmacist.length < 2000 && (
           <p className="text-purp-5 text-red-700 sm:text-sm">
             {ask_doctor_pharmacist}
           </p>
         )}
-        {pregnant && (pregnant.length < 2000) && (
+        {pregnant && pregnant.length < 2000 && (
           <p className="text-purp-5 text-red-700 sm:text-sm">{pregnant}</p>
         )}
-        {precautions && (precautions.length < 2000) && (
+        {precautions && precautions.length < 2000 && (
           <p className="text-purp-5 text-red-700 sm:text-sm">
             {precautions.replace("PRECAUTIONS General ", "")}
           </p>
@@ -603,14 +670,17 @@ export const DrugsDets = ({ data }: DrugSchema) => {
       </style>
 
       <div className="flex flex-col justify-end sm:px-2 lg:px-28">
-        <div className="flex flex-row justify-between	items-start">
+        <div className="flex flex-row items-start	justify-between">
           <p className="text-2xl font-semibold text-violet-700">
             {formatName(data?.drug?.brand_name || "Unknown")}
           </p>
-          <div className="flex justify-end min-w-[375px]">
+          <div className="flex min-w-[375px] justify-end">
             <Citation title={formatName(data?.drug?.brand_name || "Unknown")} />
             <div className="ml-1">
-              <BookmarkButton title={formatName(data?.drug?.brand_name || "Unknown")} categoryId={DataDirectoryCategory.Drugs} />
+              <BookmarkButton
+                title={formatName(data?.drug?.brand_name || "Unknown")}
+                categoryId={DataDirectoryCategory.Drugs}
+              />
             </div>
           </div>
         </div>
