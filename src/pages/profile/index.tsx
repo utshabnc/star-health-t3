@@ -5,7 +5,9 @@ import { useEffect, useState } from "react";
 import Dropdown from "../../components/Dropdown";
 import { trpc } from "../../utils/trpc";
 import LoadingStarHealth from "../../components/Loading";
+import PatientIntakeForm from "../../components/PatientIntakeForm/PatientIntakeForm";
 import { PayWall } from "../../components/PayWall/PayWall";
+
 
 interface BookmarkInterface {
   id: number;
@@ -36,6 +38,7 @@ const ProfilePage: React.FC = () => {
   });
   const [bookmarks, setBookmarks] = useState<BookmarkInterface[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
+  const [showForm, setShowForm] = useState<boolean>(false);
 
   const removeBookmark = trpc.db.removeBookmarkById.useMutation();
   const { data: allCategories } = trpc.db.allCategories.useQuery();
@@ -79,6 +82,9 @@ const ProfilePage: React.FC = () => {
         refetch();
       })
   }
+  const handleFormToggle = () => {
+    setShowForm(!showForm);
+  }
 
   return status === 'loading' ?
     (
@@ -102,7 +108,29 @@ const ProfilePage: React.FC = () => {
           </div>
         </div>
         <hr className="my-4" />
-        <div>
+        <div className="flex space-x-4 mb-4">
+        <button
+          className={`bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded ${showForm ? 'opacity-50' : ''}`}
+          onClick={handleFormToggle}
+          disabled={showForm}
+          style={{color: 'white', backgroundColor: "#885CF6"}}       
+
+        >
+          Form
+        </button>
+        <button
+          className={`bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded ${!showForm ? 'opacity-50' : ''}`}
+          onClick={handleFormToggle}
+          disabled={!showForm}
+          style={{color: 'white', backgroundColor: "#885CF6"}}       
+          >
+          Bookmarks
+        </button>
+      </div>
+      {showForm ? (
+        <PatientIntakeForm />
+      ) : (
+        <>
           <h2 className="text-lg font-semibold mb-1">Bookmarks:</h2>
           <Dropdown
             items={categories.map((category) => ({ value: category.id.toString(), label: category.name }))}
@@ -123,9 +151,10 @@ const ProfilePage: React.FC = () => {
               />
             </div>
           ))}
-        </div>
-      </div>
-    );
+        </>
+      )}
+    </div>
+  );
 };
 
 export default ProfilePage;
