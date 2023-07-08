@@ -4,9 +4,10 @@ import { useRouter } from 'next/router';
 import { trpc } from '../../utils/trpc';
 import type { OpioidTreatmentProvider } from '../../components/OpioidTreatmentProviders/OpioidTreatmentProvider.model';
 import PhoneNumber from "../../components/PhoneNumber";
-import { toTitleCase } from "../../utils";
+import { toTitleCase, formatFullAddress } from "../../utils";
 import Citation from '../../components/Citation';
 import BookmarkButton from '../../components/BookmarkButton';
+import LocalMapEmbed from '../../components/LocalMapEmbed';
 import { DataDirectoryCategory } from '../../utils/Enums/DataDirectoryCategory.enum';
 
 const OpioidTreatmentProviderDetails = () => {
@@ -21,6 +22,21 @@ const OpioidTreatmentProviderDetails = () => {
   useEffect(() => {
     setProvider(data);
   }, [data]);
+
+  const handleMap = () => {
+    if (provider !== undefined) {
+        const fullAddress = formatFullAddress(
+          provider?.address_line_1,
+          provider?.address_line_2,
+          provider?.city,
+          provider?.state, provider?.zip
+        )
+
+      return fullAddress;
+    }
+  }
+
+  const formatttedAddress = provider !== undefined && handleMap()
 
   // Loading Screen
   if (!provider) {
@@ -86,7 +102,6 @@ const OpioidTreatmentProviderDetails = () => {
       </>
     );
   }
-
 
   return (
     <>
@@ -157,6 +172,7 @@ const OpioidTreatmentProviderDetails = () => {
             </p>
           </div>
         </div>
+        <LocalMapEmbed address={formatttedAddress} />
       </div>
     </>
   );

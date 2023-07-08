@@ -70,6 +70,10 @@ const formatLocation = (country: string, state: string | null) => {
   return state ? state + ", " + formatName(country) : formatName(country)
 }
 
+const formatFullAddress = (addressLine1: string | null | undefined, addressLine2: string | null | undefined, city: string | null | undefined, state: string | null | undefined, zip: string | null | undefined) => {
+  return `${addressLine1} ${addressLine2} ${city} ${state} ${zip}`
+}
+
 const drugTypes = [
   'antibiotic',
   'antidiabetic',
@@ -111,8 +115,6 @@ const getProductTotals = (obj: any) => {
 
   return sum
 }
-
-
 
 const getProductTransCount = (obj: any) => {
   let transactionSum = 0;
@@ -187,6 +189,7 @@ export {
   colorGradient,
   availableYears,
   capitalizeWords,
+  formatFullAddress,
   formatMoney,
   formatNumber,
   formatName,
