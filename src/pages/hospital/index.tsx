@@ -7,7 +7,7 @@ import LoadingStarHealth from "../../components/Loading";
 import type { HospitalData } from "../../components/Hospitals/HospitalData.model";
 import ErrorComponent from "../../components/ErrorComponent";
 import type { HospitalDataResponse } from "../api/hospitals/[hospital_id]";
-import { delay } from "../../utils";
+import LocationButton from "../../components/LocationButton";
 import Citation from "../../components/Citation";
 import BookmarkButton from "../../components/BookmarkButton";
 import { DataDirectoryCategory } from "../../utils/Enums/DataDirectoryCategory.enum";
@@ -51,6 +51,7 @@ const HospitalDetails = () => {
 
   const navigate = useRouter();
   const hospitalId = navigate.query?.hospital_id as string;
+  const hospitalAddress = navigate.query?.hospital_address as string
 
   const hospitalDataTemplate: Sections = {
     [Section.overview]: [
@@ -598,7 +599,10 @@ const HospitalDetails = () => {
                 {hospitalDetails?.at(0)?.data_name}
               </p>
               <div className="flex justify-end min-w-[375px]">
-                <Citation title={hospitalDetails?.at(0)?.data_name || '-'} />
+                <LocationButton address={hospitalAddress} text="Find This Hospital" />
+                <div className="ml-1">
+                  <Citation title={hospitalDetails?.at(0)?.data_name || '-'} />
+                </div>
                 <div className="ml-1">
                   <BookmarkButton title={hospitalDetails?.at(0)?.data_name || '-'} categoryId={DataDirectoryCategory.Hospitals} />
                 </div>

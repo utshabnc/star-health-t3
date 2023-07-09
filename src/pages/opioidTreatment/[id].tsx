@@ -23,7 +23,8 @@ const OpioidTreatmentProviderDetails = () => {
     setProvider(data);
   }, [data]);
 
-  const handleMap = () => {
+  // THIS WILL FULL FORMAT THE PROVIDER ADDRESS PROPERTIES FOR GOOGLE MAPS CONSUMPTION
+  const handleAddress = () => {
     if (provider !== undefined) {
         const fullAddress = formatFullAddress(
           provider?.address_line_1,
@@ -36,7 +37,7 @@ const OpioidTreatmentProviderDetails = () => {
     }
   }
 
-  const formatttedAddress = provider !== undefined && handleMap()
+  const formatttedAddress = provider !== undefined && handleAddress()
 
   // Loading Screen
   if (!provider) {

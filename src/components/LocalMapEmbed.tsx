@@ -5,7 +5,7 @@ interface LocalMapEmbedProps {
 }
 
 const LocalMapEmbed: React.FC<LocalMapEmbedProps> = ({address}) => {
-    const src     = `https://maps.google.com/maps?&q="+${address}"&output=embed`;
+    const src = `https://maps.google.com/maps?&q="+${address}"&output=embed`;
 
     return (
         <div>
