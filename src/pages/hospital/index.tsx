@@ -11,6 +11,7 @@ import LocationButton from "../../components/LocationButton";
 import Citation from "../../components/Citation";
 import BookmarkButton from "../../components/BookmarkButton";
 import { DataDirectoryCategory } from "../../utils/Enums/DataDirectoryCategory.enum";
+import { delay } from "../../utils";
 
 enum Section {
   overview = "Overview",
