@@ -15,6 +15,7 @@ const OpioidTreatmentProviderDetails = () => {
   const id = navigate.query.id as string;
 
   const [provider, setProvider] = useState<OpioidTreatmentProvider | null | undefined>(null);
+  const [location, setLocation] = useState<any>(null);
 
   const query = useMemo(() => ({ id }), [id]);
   const { data } = trpc.db.opioidTreatment.useQuery(query);
@@ -30,14 +31,42 @@ const OpioidTreatmentProviderDetails = () => {
           provider?.address_line_1,
           provider?.address_line_2,
           provider?.city,
-          provider?.state, provider?.zip
+          provider?.state,
+          provider?.zip
         )
 
       return fullAddress;
     }
   }
 
-  const formatttedAddress = provider !== undefined && handleAddress()
+  const getUserLocation = () => {
+    const options = {
+      enableHighAccuracy: true,
+      timeout: 5000,
+      maximumAge: 0,
+    };
+    
+    function success(pos: any) {
+      const crd = pos.coords;
+
+      if (location === null) {
+        setLocation({
+          longitude: crd.longitude,
+          latitude: crd.latitude
+        })
+      }
+    }
+    
+    function error(err: any) {
+      console.warn(`ERROR(${err.code}): ${err.message}`);
+    }
+    
+    window.navigator.geolocation.getCurrentPosition(success, error, options);
+  }
+
+  getUserLocation()
+
+  const formattedAddress = provider !== undefined && handleAddress()
 
   // Loading Screen
   if (!provider) {
@@ -171,9 +200,9 @@ const OpioidTreatmentProviderDetails = () => {
                 </div>
               </div>
             </p>
+            <LocalMapEmbed address={formattedAddress} origin={location} />
           </div>
         </div>
-        <LocalMapEmbed address={formatttedAddress} />
       </div>
     </>
   );

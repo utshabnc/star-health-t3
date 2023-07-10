@@ -10,6 +10,7 @@ import type { HospitalDataResponse } from "../api/hospitals/[hospital_id]";
 import LocationButton from "../../components/LocationButton";
 import Citation from "../../components/Citation";
 import BookmarkButton from "../../components/BookmarkButton";
+import LocalMapEmbed from "../../components/LocalMapEmbed";
 import { DataDirectoryCategory } from "../../utils/Enums/DataDirectoryCategory.enum";
 import { delay } from "../../utils";
 
@@ -48,6 +49,7 @@ const HospitalDetails = () => {
   const [error, setError] = useState<any>();
   const [year, setYear] = useState<string | undefined>("");
   const [availableYears, setAvailableYears] = useState<string[]>([]);
+  const [location, setLocation] = useState<any>(null);
 
 
   const navigate = useRouter();
@@ -564,6 +566,33 @@ const HospitalDetails = () => {
     return <ErrorComponent>{error.msg}</ErrorComponent>;
   }
 
+  const getUserLocation = () => {
+    const options = {
+      enableHighAccuracy: true,
+      timeout: 5000,
+      maximumAge: 0,
+    };
+    
+    function success(pos: any) {
+      const crd = pos.coords;
+
+      if (location === null) {
+        setLocation({
+          longitude: crd.longitude,
+          latitude: crd.latitude
+        })
+      }
+    }
+    
+    function error(err: any) {
+      console.warn(`ERROR(${err.code}): ${err.message}`);
+    }
+    
+    window.navigator.geolocation.getCurrentPosition(success, error, options);
+  }
+
+  getUserLocation()
+
   return !hospitalDetails || isProcessing ? (
     <LoadingStarHealth />
   ) : (
@@ -672,6 +701,8 @@ const HospitalDetails = () => {
             {generateSection(Section.financialsAndTaxes)}
             {generateSection(Section.statistics)}
             {generateSection(Section.incomeMetrics)}
+            <br></br>
+            <LocalMapEmbed address={hospitalAddress} origin={location} />                      
 
           </div>
         </div>

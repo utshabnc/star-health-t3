@@ -7,10 +7,12 @@ import {
   formatName,
   formatProductName,
   formatProductType,
+  formatFullAddress
 } from "../../utils";
 import Transaction from "../../components/DocDets/Transaction";
 import BarChart from "../../components/charts/bar";
 import DoctorReviews from "../DoctorReviews";
+import LocalMapEmbed from "../../components/LocalMapEmbed";
 import { useRouter } from "next/router";
 import { trpc } from "../../utils/trpc";
 
@@ -32,6 +34,51 @@ const DoctorDetails = () => {
 
   const [reviewText, setReviewText] = useState("");
   const [reviewStars, setReviewStars] = useState(5);
+  const [location, setLocation] = useState<any>(null);
+
+  // THIS WILL FULL FORMAT THE PROVIDER ADDRESS PROPERTIES FOR GOOGLE MAPS CONSUMPTION
+  const handleAddress = () => {
+    if (doctor !== undefined) {
+        const fullAddress = formatFullAddress(
+          doctor?.addressLine1,
+          doctor?.addressLine2,
+          doctor?.city,
+          doctor?.state,
+          doctor?.zipCode
+        )
+
+      return fullAddress;
+    }
+  }
+
+  const getUserLocation = () => {
+    const options = {
+      enableHighAccuracy: true,
+      timeout: 5000,
+      maximumAge: 0,
+    };
+    
+    function success(pos: any) {
+      const crd = pos.coords;
+
+      if (location === null) {
+        setLocation({
+          longitude: crd.longitude,
+          latitude: crd.latitude
+        })
+      }
+    }
+    
+    function error(err: any) {
+      console.warn(`ERROR(${err.code}): ${err.message}`);
+    }
+    
+    window.navigator.geolocation.getCurrentPosition(success, error, options);
+  }
+
+  getUserLocation()
+
+  const formattedAddress = doctor !== undefined && handleAddress()
 
   if (!doctor || isDoctorLoading) {
     return (
@@ -257,6 +304,11 @@ const DoctorDetails = () => {
 
           <div className="mt-8">
             <DoctorReviews doctor={doctor} doctorRefetch={doctorRefetch} />
+            <div className="py-5 px-12">
+              <div className="sm:px-2 lg:px-28">
+                <LocalMapEmbed address={formattedAddress} origin={location} />
+              </div>
+            </div>
           </div>
         </div>
       </div>
