@@ -1,11 +1,22 @@
 import React from 'react';
+import { env } from '../env/server.mjs';
 
 interface LocalMapEmbedProps {
-    address: string | false | undefined
+    address: string | false | undefined,
+    origin: any
 }
 
-const LocalMapEmbed: React.FC<LocalMapEmbedProps> = ({address}) => {
-    const src = `https://maps.google.com/maps?&q="+${address}"&output=embed`;
+const LocalMapEmbed: React.FC<LocalMapEmbedProps> = ({address, origin}) => {
+    const lon = origin?.longitude;
+    const lat = origin?.latitude
+
+    let src;
+
+    if (origin !== undefined && origin !== null) {
+        src = `https://www.google.com/maps/embed/v1/directions?key=${env.GOOGLEMAPS_API_KEY}&origin=${lat},${lon}&destination=${address}&avoid=tolls|highways` 
+    } else {
+        src = `https://maps.google.com/maps?&q="+${address}"&output=embed`;
+    }
 
     return (
         <div>
