@@ -600,7 +600,7 @@ const HospitalDetails = () => {
                 {hospitalDetails?.at(0)?.data_name}
               </p>
               <div className="flex justify-end min-w-[375px]">
-                <LocationButton address={hospitalAddress} text="Find This Hospital" />
+                <LocationButton address={hospitalAddress} text="Get Directions" />
                 <div className="ml-1">
                   <Citation title={hospitalDetails?.at(0)?.data_name || '-'} />
                 </div>
