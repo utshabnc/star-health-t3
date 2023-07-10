@@ -62,7 +62,7 @@ export const DocDets = ({ doctor, onChangeYear }: DocSchema) => {
             {formatName(doctor.firstName + " " + doctor.lastName)}
           </p>
           <div className="flex justify-end min-w-[375px]">
-            <LocationButton address={formatttedAddress} text="Find This Doctor" />
+            <LocationButton address={formatttedAddress} text="Get Directions" />
             <div className="ml-1">
               <Citation title={formatName(doctor.firstName + " " + doctor.lastName)} />
             </div>

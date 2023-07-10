@@ -71,7 +71,8 @@ const formatLocation = (country: string, state: string | null) => {
 }
 
 const formatFullAddress = (addressLine1: string | null | undefined, addressLine2: string | null | undefined, city: string | null | undefined, state: string | null | undefined, zip: string | null | undefined) => {
-  return `${addressLine1} ${addressLine2} ${city} ${state} ${zip}`
+  const handleSuite = addressLine2 !== null || '' ? addressLine2 : ''
+  return `${addressLine1} ${handleSuite} ${city} ${state} ${zip}`
 }
 
 const drugTypes = [
