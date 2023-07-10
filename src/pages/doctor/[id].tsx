@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { DocDets } from "../../components/DocDets";
 import ReviewForm from "../../components/ReviewForm";
 import Reviews from "../../components/Reviews";
@@ -51,7 +51,7 @@ const DoctorDetails = () => {
     }
   }
 
-  const getUserLocation = () => {
+  useEffect(() => {
     const options = {
       enableHighAccuracy: true,
       timeout: 5000,
@@ -74,9 +74,7 @@ const DoctorDetails = () => {
     }
     
     window.navigator.geolocation.getCurrentPosition(success, error, options);
-  }
-
-  getUserLocation()
+  })
 
   const formattedAddress = doctor !== undefined && handleAddress()
 

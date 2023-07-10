@@ -39,7 +39,7 @@ const OpioidTreatmentProviderDetails = () => {
     }
   }
 
-  const getUserLocation = () => {
+  useEffect(() => {
     const options = {
       enableHighAccuracy: true,
       timeout: 5000,
@@ -62,9 +62,7 @@ const OpioidTreatmentProviderDetails = () => {
     }
     
     window.navigator.geolocation.getCurrentPosition(success, error, options);
-  }
-
-  getUserLocation()
+  })
 
   const formattedAddress = provider !== undefined && handleAddress()
 

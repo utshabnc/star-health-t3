@@ -449,6 +449,31 @@ const HospitalDetails = () => {
 
   }, [hospitalId]);
 
+  useEffect(() => {
+    const options = {
+      enableHighAccuracy: true,
+      timeout: 5000,
+      maximumAge: 0,
+    };
+    
+    function success(pos: any) {
+      const crd = pos.coords;
+
+      if (location === null) {
+        setLocation({
+          longitude: crd.longitude,
+          latitude: crd.latitude
+        })
+      }
+    }
+    
+    function error(err: any) {
+      console.warn(`ERROR(${err.code}): ${err.message}`);
+    }
+    
+    window.navigator.geolocation.getCurrentPosition(success, error, options);
+  })
+
   const formatData = (data: HospitalData, field: Field, section: Section): string => {
 
     const fieldValue = data[field.code] ? String(data[field.code]) : '';
@@ -565,33 +590,6 @@ const HospitalDetails = () => {
   if (error && error.service === "Hospitals") {
     return <ErrorComponent>{error.msg}</ErrorComponent>;
   }
-
-  const getUserLocation = () => {
-    const options = {
-      enableHighAccuracy: true,
-      timeout: 5000,
-      maximumAge: 0,
-    };
-    
-    function success(pos: any) {
-      const crd = pos.coords;
-
-      if (location === null) {
-        setLocation({
-          longitude: crd.longitude,
-          latitude: crd.latitude
-        })
-      }
-    }
-    
-    function error(err: any) {
-      console.warn(`ERROR(${err.code}): ${err.message}`);
-    }
-    
-    window.navigator.geolocation.getCurrentPosition(success, error, options);
-  }
-
-  getUserLocation()
 
   return !hospitalDetails || isProcessing ? (
     <LoadingStarHealth />
