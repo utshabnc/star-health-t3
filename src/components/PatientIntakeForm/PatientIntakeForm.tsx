@@ -3,7 +3,7 @@ import { useState } from "react";
 const PatientIntakeForm: React.FC = () => {
   const headingStyle = {
     fontSize: "25px",
-    color: "blue",
+    color: "#885CF6",
 
   };
 
@@ -44,6 +44,7 @@ const PatientIntakeForm: React.FC = () => {
   const [healthConcerns, setHealthConcerns] = useState("");
 
   const [formSubmitted, setFormSubmitted] = useState(false); // State variable for tracking form submission
+  
 
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -203,30 +204,41 @@ const PatientIntakeForm: React.FC = () => {
               <label htmlFor="sex" className="font-semibold">
                 Sex:*
               </label>
-              <input
-                type="text"
+              <select
                 id="sex"
                 value={sex}
                 onChange={(e) => setSex(e.target.value)}
                 required
                 className="w-full border border-gray-300 px-2 py-1"
                 style={{ border: "1px solid #000", borderRadius: "10px" }}
-              />
+              >
+                <option value="" disabled>Select Sex</option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+                <option value="Other">Other</option>
+                {/* Add more options as needed */}
+              </select>
             </div>
             <div>
-              <label htmlFor="maritialStatus" className="font-semibold">
-                Maritial Status:*
-              </label>
-              <input
-                type="text"
-                id="maritialStatus"
-                value={maritialStatus}
-                onChange={(e) => setMaritialStatus(e.target.value)}
-                required
-                className="w-full border border-gray-300 px-2 py-1"
-                style={{ border: "1px solid #000", borderRadius: "10px" }}
-              />
-            </div>
+                <label htmlFor="maritialStatus" className="font-semibold">
+                  Marital Status:*
+                </label>
+                <select
+                  id="maritialStatus"
+                  value={maritialStatus}
+                  onChange={(e) => setMaritialStatus(e.target.value)}
+                  required
+                  className="w-full border border-gray-300 px-2 py-1"
+                  style={{ border: "1px solid #000", borderRadius: "10px" }}
+                >
+                  <option value="" disabled>Select Marital Status</option>
+                  <option value="Single">Single</option>
+                  <option value="Married">Married</option>
+                  <option value="Divorced">Divorced</option>
+                  <option value="Widowed">Widowed</option>
+                  {/* Add more options as needed */}
+                </select>
+              </div>
             <div>
               <label htmlFor="email" className="font-semibold">
                 Email Address:*
@@ -265,6 +277,8 @@ const PatientIntakeForm: React.FC = () => {
                 value={cellPhone1}
                 required
                 onChange={(e) => setCellPhone1(e.target.value)}
+                pattern="\d{3}-\d{3}-\d{4}"
+                placeholder="123-456-8910"
                 className="w-full border border-gray-300 px-2 py-1"
                 style={{ border: "1px solid #000", borderRadius: "10px" }}
               />
@@ -278,6 +292,8 @@ const PatientIntakeForm: React.FC = () => {
                 id="homePhone1"
                 value={homePhone1}
                 onChange={(e) => setHomePhone1(e.target.value)}
+                pattern="\d{3}-\d{3}-\d{4}"
+                placeholder="123-456-8910"
                 className="w-full border border-gray-300 px-2 py-1"
                 style={{ border: "1px solid #000", borderRadius: "10px" }}
               />
@@ -291,6 +307,8 @@ const PatientIntakeForm: React.FC = () => {
                 id="workPhone1"
                 value={workPhone1}
                 onChange={(e) => setWorkPhone1(e.target.value)}
+                pattern="\d{3}-\d{3}-\d{4}"
+                placeholder="123-456-8910"
                 className="w-full border border-gray-300 px-2 py-1"
                 style={{ border: "1px solid #000", borderRadius: "10px" }}
               />
@@ -321,15 +339,22 @@ const PatientIntakeForm: React.FC = () => {
               <label htmlFor="relationship1" className="font-semibold">
                 Relationship:*
               </label>
-              <input
-                type="text"
+              <select
                 id="relationship1"
                 value={relationship1}
                 onChange={(e) => setRelationship1(e.target.value)}
                 required
                 className="w-full border border-gray-300 px-2 py-1"
                 style={{ border: "1px solid #000", borderRadius: "10px" }}
-              />
+              >
+                <option value="">Select a relationship</option>
+                <option value="parent">Parent</option>
+                <option value="son/daugther">Son/Daugther</option>
+                <option value="sibling">Sibling</option>
+                <option value="partner">Partner</option>
+                <option value="friend">Friend</option>
+                <option value="other">Other</option>
+              </select>
             </div>
             <div>
               <label htmlFor="cellPhone2" className="font-semibold">
@@ -341,6 +366,8 @@ const PatientIntakeForm: React.FC = () => {
                 required
                 value={cellPhone2}
                 onChange={(e) => setCellPhone2(e.target.value)}
+                pattern="\d{3}-\d{3}-\d{4}"
+                placeholder="123-456-8910"
                 className="w-full border border-gray-300 px-2 py-1"
                 style={{ border: "1px solid #000", borderRadius: "10px" }}
               />
@@ -354,6 +381,8 @@ const PatientIntakeForm: React.FC = () => {
                 id="homePhone2"
                 value={homePhone2}
                 onChange={(e) => setHomePhone2(e.target.value)}
+                pattern="\d{3}-\d{3}-\d{4}"
+                placeholder="123-456-8910"
                 className="w-full border border-gray-300 px-2 py-1"
                 style={{ border: "1px solid #000", borderRadius: "10px" }}
               />
@@ -367,6 +396,8 @@ const PatientIntakeForm: React.FC = () => {
                 id="workPhone2"
                 value={workPhone2}
                 onChange={(e) => setWorkPhone2(e.target.value)}
+                pattern="\d{3}-\d{3}-\d{4}"
+                placeholder="123-456-8910"
                 className="w-full border border-gray-300 px-2 py-1"
                 style={{ border: "1px solid #000", borderRadius: "10px" }}
               />
@@ -388,14 +419,21 @@ const PatientIntakeForm: React.FC = () => {
               <label htmlFor="relationship2" className="font-semibold">
                 Relationship:
               </label>
-              <input
-                type="text"
+              <select
                 id="relationship2"
                 value={relationship2}
                 onChange={(e) => setRelationship2(e.target.value)}
                 className="w-full border border-gray-300 px-2 py-1"
                 style={{ border: "1px solid #000", borderRadius: "10px" }}
-              />
+              >
+                <option value="">Select a relationship</option>
+                <option value="parent">Parent</option>
+                <option value="son/daugther">Son/Daugther</option>
+                <option value="sibling">Sibling</option>
+                <option value="partner">Partner</option>
+                <option value="friend">Friend</option>
+                <option value="other">Other</option>
+              </select>
             </div>
             <div>
               <label htmlFor="cellPhone3" className="font-semibold">
@@ -406,6 +444,8 @@ const PatientIntakeForm: React.FC = () => {
                 id="cellPhone3"
                 value={cellPhone3}
                 onChange={(e) => setCellPhone3(e.target.value)}
+                pattern="\d{3}-\d{3}-\d{4}"
+                placeholder="123-456-8910"
                 className="w-full border border-gray-300 px-2 py-1"
                 style={{ border: "1px solid #000", borderRadius: "10px" }}
               />
@@ -419,6 +459,8 @@ const PatientIntakeForm: React.FC = () => {
                 id="homePhone3"
                 value={homePhone3}
                 onChange={(e) => setHomePhone3(e.target.value)}
+                pattern="\d{3}-\d{3}-\d{4}"
+                placeholder="123-456-8910"
                 className="w-full border border-gray-300 px-2 py-1"
                 style={{ border: "1px solid #000", borderRadius: "10px" }}
               />
@@ -432,6 +474,8 @@ const PatientIntakeForm: React.FC = () => {
                 id="workPhone3"
                 value={workPhone3}
                 onChange={(e) => setWorkPhone3(e.target.value)}
+                pattern="\d{3}-\d{3}-\d{4}"
+                placeholder="123-456-8910"
                 className="w-full border border-gray-300 px-2 py-1"
                 style={{ border: "1px solid #000", borderRadius: "10px" }}
               />
@@ -482,6 +526,8 @@ const PatientIntakeForm: React.FC = () => {
                 value={contactNumber}
                 onChange={(e) => setContactNumber(e.target.value)}
                 required
+                pattern="\d{3}-\d{3}-\d{4}"
+                placeholder="123-456-8910"
                 className="w-full border border-gray-300 px-2 py-1"
                 style={{ border: "1px solid #000", borderRadius: "10px" }}
               />
@@ -523,6 +569,8 @@ const PatientIntakeForm: React.FC = () => {
                 id="ssn"
                 value={ssn}
                 onChange={(e) => setSsn(e.target.value)}
+                pattern="\d{3}-\d{2}-\d{4}"
+                placeholder="123-45-6789"
                 required
                 className="w-full border border-gray-300 px-2 py-1"
                 style={{ border: "1px solid #000", borderRadius: "10px" }}
@@ -619,13 +667,31 @@ const PatientIntakeForm: React.FC = () => {
           </div>
         </div>
         <div className="mt-6">
-          <button
-            type="submit"
-            className="rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
-            style={{backgroundColor: "#885CF6"}}
-          >
-            Submit
-          </button>
+          {formSubmitted ? (
+            <>
+              <span className="mr-2">Submitted</span>
+              <svg
+                className="h-5 w-5 inline-block text-green-500"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M5 13l4 4L19 7"></path>
+              </svg>
+            </>
+          ) : (
+            <button
+              type="submit"
+              className="rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
+              style={{ backgroundColor: "#885CF6" }}
+            >
+              Submit
+            </button>
+          )}
         </div>
       </form>
     </div>
