@@ -114,9 +114,9 @@ const ProfilePage: React.FC = () => {
           onClick={handleFormToggle}
           disabled={showForm}
           style={{
-            color: !showForm ? 'white' : '#885CF6',
-            backgroundColor: !showForm ? '#885CF6' : 'white',
-            border: !showForm ? 'none' : '1px solid #885CF6',
+            color: !showForm ? '#885CF6' : 'white',
+            backgroundColor: !showForm ? 'white' : '#885CF6',
+            border: !showForm ? '1px solid #885CF6' : 'node',
           }}
         >
           Patient Intake Form
@@ -126,9 +126,9 @@ const ProfilePage: React.FC = () => {
           onClick={handleFormToggle}
           disabled={!showForm}
           style={{
-            color: showForm ? 'white' : '#885CF6',
-            backgroundColor: showForm ? '#885CF6' : 'white',
-            border: showForm ? 'none' : '1px solid #885CF6',
+            color: showForm ? '#885CF6' : 'white',
+            backgroundColor: showForm ? 'white' : '#885CF6',
+            border: showForm ? '1px solid #885CF6' : 'node',
           }}
         >
           Bookmarks

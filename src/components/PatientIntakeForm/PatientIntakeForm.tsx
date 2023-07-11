@@ -160,55 +160,51 @@ const PatientIntakeForm: React.FC = () => {
           <div className="grid grid-cols-3 gap-4">
             <div>
               <label htmlFor="firstName" className="font-semibold">
-                First Name:*
+                First Name:
               </label>
               <input
                 type="text"
                 id="firstName"
                 value={firstName}
                 onChange={(e) => setFirstName(e.target.value)}
-                required
                 className="w-full border border-gray-300 px-2 py-1"
                 style={{ border: "1px solid #000", borderRadius: "10px" }}
               />
             </div>
             <div>
               <label htmlFor="lastName" className="font-semibold">
-                Last Name:*
+                Last Name:
               </label>
               <input
                 type="text"
                 id="lastName"
                 value={lastName}
                 onChange={(e) => setLastName(e.target.value)}
-                required
                 className="w-full border border-gray-300 px-2 py-1"
                 style={{ border: "1px solid #000", borderRadius: "10px" }}
               />
             </div>
             <div>
               <label htmlFor="dateOfBirth" className="font-semibold">
-                Date of Birth:*
+                Date of Birth:
               </label>
               <input
                 type="date"
                 id="dateOfBirth"
                 value={dateOfBirth}
                 onChange={(e) => setDateOfBirth(e.target.value)}
-                required
                 className="w-full border border-gray-300 px-2 py-1"
                 style={{ border: "1px solid #000", borderRadius: "10px" }}
               />
             </div>
             <div>
               <label htmlFor="sex" className="font-semibold">
-                Sex:*
+                Sex:
               </label>
               <select
                 id="sex"
                 value={sex}
                 onChange={(e) => setSex(e.target.value)}
-                required
                 className="w-full border border-gray-300 px-2 py-1"
                 style={{ border: "1px solid #000", borderRadius: "10px" }}
               >
@@ -216,18 +212,16 @@ const PatientIntakeForm: React.FC = () => {
                 <option value="Male">Male</option>
                 <option value="Female">Female</option>
                 <option value="Other">Other</option>
-                {/* Add more options as needed */}
               </select>
             </div>
             <div>
                 <label htmlFor="maritialStatus" className="font-semibold">
-                  Marital Status:*
+                  Marital Status:
                 </label>
                 <select
                   id="maritialStatus"
                   value={maritialStatus}
                   onChange={(e) => setMaritialStatus(e.target.value)}
-                  required
                   className="w-full border border-gray-300 px-2 py-1"
                   style={{ border: "1px solid #000", borderRadius: "10px" }}
                 >
@@ -236,46 +230,42 @@ const PatientIntakeForm: React.FC = () => {
                   <option value="Married">Married</option>
                   <option value="Divorced">Divorced</option>
                   <option value="Widowed">Widowed</option>
-                  {/* Add more options as needed */}
                 </select>
               </div>
             <div>
               <label htmlFor="email" className="font-semibold">
-                Email Address:*
+                Email Address:
               </label>
               <input
                 type="email"
                 id="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                required
                 className="w-full border border-gray-300 px-2 py-1"
                 style={{ border: "1px solid #000", borderRadius: "10px" }}
               />
             </div>
             <div>
               <label htmlFor="address" className="font-semibold">
-                Address:*
+                Address:
               </label>
               <input
                 type="text"
                 id="address"
                 value={address}
                 onChange={(e) => setAddress(e.target.value)}
-                required
                 className="w-full border border-gray-300 px-2 py-1"
                 style={{ border: "1px solid #000", borderRadius: "10px" }}
               />
             </div>
             <div>
               <label htmlFor="cellPhone1" className="font-semibold">
-                Cell Phone:*
+                Cell Phone:
               </label>
               <input
                 type="tel"
                 id="cellPhone1"
                 value={cellPhone1}
-                required
                 onChange={(e) => setCellPhone1(e.target.value)}
                 pattern="\d{3}-\d{3}-\d{4}"
                 placeholder="123-456-8910"
@@ -323,27 +313,25 @@ const PatientIntakeForm: React.FC = () => {
           <div className="grid grid-cols-3 gap-4">
             <div>
               <label htmlFor="emergencyContact1" className="font-semibold">
-                Name:*
+                Name: 
               </label>
               <input
                 type="text"
                 id="emergencyContact1"
                 value={emergencyContact1}
                 onChange={(e) => setEmergencyContact1(e.target.value)}
-                required
                 className="w-full border border-gray-300 px-2 py-1"
                 style={{ border: "1px solid #000", borderRadius: "10px" }}
               />
             </div>
             <div>
               <label htmlFor="relationship1" className="font-semibold">
-                Relationship:*
+                Relationship:
               </label>
               <select
                 id="relationship1"
                 value={relationship1}
                 onChange={(e) => setRelationship1(e.target.value)}
-                required
                 className="w-full border border-gray-300 px-2 py-1"
                 style={{ border: "1px solid #000", borderRadius: "10px" }}
               >
@@ -358,12 +346,11 @@ const PatientIntakeForm: React.FC = () => {
             </div>
             <div>
               <label htmlFor="cellPhone2" className="font-semibold">
-                Cell Phone:*
+                Cell Phone:
               </label>
               <input
                 type="tel"
                 id="cellPhone2"
-                required
                 value={cellPhone2}
                 onChange={(e) => setCellPhone2(e.target.value)}
                 pattern="\d{3}-\d{3}-\d{4}"
@@ -490,42 +477,39 @@ const PatientIntakeForm: React.FC = () => {
           <div className="grid grid-cols-3 gap-4">
             <div>
               <label htmlFor="insuranceCarried" className="font-semibold">
-                Insurance Carried:*
+                Insurance Carried:
               </label>
               <input
                 type="text"
                 id="insuranceCarried"
                 value={insuranceCarried}
                 onChange={(e) => setInsuranceCarried(e.target.value)}
-                required
                 className="w-full border border-gray-300 px-2 py-1"
                 style={{ border: "1px solid #000", borderRadius: "10px" }}
               />
             </div>
             <div>
               <label htmlFor="insurancePlan" className="font-semibold">
-                Insurance Plan:*
+                Insurance Plan:
               </label>
               <input
                 type="text"
                 id="insurancePlan"
                 value={insurancePlan}
                 onChange={(e) => setInsurancePlan(e.target.value)}
-                required
                 className="w-full border border-gray-300 px-2 py-1"
                 style={{ border: "1px solid #000", borderRadius: "10px" }}
               />
             </div>
             <div>
               <label htmlFor="contactNumber" className="font-semibold">
-                Contact Number:*
+                Contact Number:
               </label>
               <input
                 type="tel"
                 id="contactNumber"
                 value={contactNumber}
                 onChange={(e) => setContactNumber(e.target.value)}
-                required
                 pattern="\d{3}-\d{3}-\d{4}"
                 placeholder="123-456-8910"
                 className="w-full border border-gray-300 px-2 py-1"
@@ -534,35 +518,33 @@ const PatientIntakeForm: React.FC = () => {
             </div>
             <div>
               <label htmlFor="policyNumber" className="font-semibold">
-                Policy Number:*
+                Policy Number:
               </label>
               <input
                 type="text"
                 id="policyNumber"
                 value={policyNumber}
                 onChange={(e) => setPolicyNumber(e.target.value)}
-                required
                 className="w-full border border-gray-300 px-2 py-1"
                 style={{ border: "1px solid #000", borderRadius: "10px" }}
               />
             </div>
             <div>
               <label htmlFor="groupNumber" className="font-semibold">
-                Group Number:*
+                Group Number:
               </label>
               <input
                 type="text"
                 id="groupNumber"
                 value={groupNumber}
                 onChange={(e) => setGroupNumber(e.target.value)}
-                required
                 className="w-full border border-gray-300 px-2 py-1"
                 style={{ border: "1px solid #000", borderRadius: "10px" }}
               />
             </div>
             <div>
               <label htmlFor="ssn" className="font-semibold">
-                Social Security Number:*
+                Social Security Number:
               </label>
               <input
                 type="text"
@@ -571,7 +553,6 @@ const PatientIntakeForm: React.FC = () => {
                 onChange={(e) => setSsn(e.target.value)}
                 pattern="\d{3}-\d{2}-\d{4}"
                 placeholder="123-45-6789"
-                required
                 className="w-full border border-gray-300 px-2 py-1"
                 style={{ border: "1px solid #000", borderRadius: "10px" }}
               />
@@ -586,10 +567,10 @@ const PatientIntakeForm: React.FC = () => {
           <div className="grid grid-cols-3 gap-4">
             <div>
               <label htmlFor="underMedicalCare" className="font-semibold">
-                Are you currently under medical care?*
+                Are you currently under medical care?
               </label>
-              <div>
-                <label htmlFor="underMedicalCareYes">Yes</label>
+              <div style={{ display: "flex", flexDirection: "column" }}>
+               <div style={{ display: "flex", alignItems: "center", marginBottom: "10px" }}>
                 <input
                   type="radio"
                   id="underMedicalCareYes"
@@ -597,11 +578,10 @@ const PatientIntakeForm: React.FC = () => {
                   value="yes"
                   checked={underMedicalCare === "yes"}
                   onChange={(e) => setUnderMedicalCare(e.target.value)}
-                  required
                 />
+                <label htmlFor="underMedicalCareYes" style={{ marginLeft: "5px" }}>Yes</label>
               </div>
-              <div>
-                <label htmlFor="underMedicalCareNo">No</label>
+              <div style={{ display: "flex", alignItems: "center" }}>
                 <input
                   type="radio"
                   id="underMedicalCareNo"
@@ -609,11 +589,11 @@ const PatientIntakeForm: React.FC = () => {
                   value="no"
                   checked={underMedicalCare === "no"}
                   onChange={(e) => setUnderMedicalCare(e.target.value)}
-                  required
-                  style={{ border: "1px solid #000", borderRadius: "10px" }}
                 />
+                <label htmlFor="underMedicalCareNo" style={{ marginLeft: "5px" }}>No</label>
               </div>
             </div>
+          </div>
             <div>
               <label htmlFor="medicalCareReason" className="font-semibold">
                 If yes, please explain the reason for medical care:
@@ -628,14 +608,13 @@ const PatientIntakeForm: React.FC = () => {
             </div>
             <div>
               <label htmlFor="primaryCarePhysician" className="font-semibold">
-                Primary Care Physician:*
+                Primary Care Physician:
               </label>
               <input
                 type="text"
                 id="primaryCarePhysician"
                 value={primaryCarePhysician}
                 onChange={(e) => setPrimaryCarePhysician(e.target.value)}
-                required
                 className="w-full border border-gray-300 px-2 py-1"
                 style={{ border: "1px solid #000", borderRadius: "10px" }}
               />
