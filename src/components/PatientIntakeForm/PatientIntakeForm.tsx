@@ -267,7 +267,6 @@ const PatientIntakeForm: React.FC = () => {
                 id="cellPhone1"
                 value={cellPhone1}
                 onChange={(e) => setCellPhone1(e.target.value)}
-                pattern="\d{3}-\d{3}-\d{4}"
                 placeholder="123-456-8910"
                 className="w-full border border-gray-300 px-2 py-1"
                 style={{ border: "1px solid #000", borderRadius: "10px" }}
@@ -282,7 +281,6 @@ const PatientIntakeForm: React.FC = () => {
                 id="homePhone1"
                 value={homePhone1}
                 onChange={(e) => setHomePhone1(e.target.value)}
-                pattern="\d{3}-\d{3}-\d{4}"
                 placeholder="123-456-8910"
                 className="w-full border border-gray-300 px-2 py-1"
                 style={{ border: "1px solid #000", borderRadius: "10px" }}
@@ -297,7 +295,6 @@ const PatientIntakeForm: React.FC = () => {
                 id="workPhone1"
                 value={workPhone1}
                 onChange={(e) => setWorkPhone1(e.target.value)}
-                pattern="\d{3}-\d{3}-\d{4}"
                 placeholder="123-456-8910"
                 className="w-full border border-gray-300 px-2 py-1"
                 style={{ border: "1px solid #000", borderRadius: "10px" }}
@@ -353,7 +350,6 @@ const PatientIntakeForm: React.FC = () => {
                 id="cellPhone2"
                 value={cellPhone2}
                 onChange={(e) => setCellPhone2(e.target.value)}
-                pattern="\d{3}-\d{3}-\d{4}"
                 placeholder="123-456-8910"
                 className="w-full border border-gray-300 px-2 py-1"
                 style={{ border: "1px solid #000", borderRadius: "10px" }}
@@ -368,7 +364,6 @@ const PatientIntakeForm: React.FC = () => {
                 id="homePhone2"
                 value={homePhone2}
                 onChange={(e) => setHomePhone2(e.target.value)}
-                pattern="\d{3}-\d{3}-\d{4}"
                 placeholder="123-456-8910"
                 className="w-full border border-gray-300 px-2 py-1"
                 style={{ border: "1px solid #000", borderRadius: "10px" }}
@@ -383,7 +378,6 @@ const PatientIntakeForm: React.FC = () => {
                 id="workPhone2"
                 value={workPhone2}
                 onChange={(e) => setWorkPhone2(e.target.value)}
-                pattern="\d{3}-\d{3}-\d{4}"
                 placeholder="123-456-8910"
                 className="w-full border border-gray-300 px-2 py-1"
                 style={{ border: "1px solid #000", borderRadius: "10px" }}
@@ -431,7 +425,6 @@ const PatientIntakeForm: React.FC = () => {
                 id="cellPhone3"
                 value={cellPhone3}
                 onChange={(e) => setCellPhone3(e.target.value)}
-                pattern="\d{3}-\d{3}-\d{4}"
                 placeholder="123-456-8910"
                 className="w-full border border-gray-300 px-2 py-1"
                 style={{ border: "1px solid #000", borderRadius: "10px" }}
@@ -446,7 +439,6 @@ const PatientIntakeForm: React.FC = () => {
                 id="homePhone3"
                 value={homePhone3}
                 onChange={(e) => setHomePhone3(e.target.value)}
-                pattern="\d{3}-\d{3}-\d{4}"
                 placeholder="123-456-8910"
                 className="w-full border border-gray-300 px-2 py-1"
                 style={{ border: "1px solid #000", borderRadius: "10px" }}
@@ -461,7 +453,6 @@ const PatientIntakeForm: React.FC = () => {
                 id="workPhone3"
                 value={workPhone3}
                 onChange={(e) => setWorkPhone3(e.target.value)}
-                pattern="\d{3}-\d{3}-\d{4}"
                 placeholder="123-456-8910"
                 className="w-full border border-gray-300 px-2 py-1"
                 style={{ border: "1px solid #000", borderRadius: "10px" }}
@@ -510,7 +501,6 @@ const PatientIntakeForm: React.FC = () => {
                 id="contactNumber"
                 value={contactNumber}
                 onChange={(e) => setContactNumber(e.target.value)}
-                pattern="\d{3}-\d{3}-\d{4}"
                 placeholder="123-456-8910"
                 className="w-full border border-gray-300 px-2 py-1"
                 style={{ border: "1px solid #000", borderRadius: "10px" }}
@@ -551,7 +541,6 @@ const PatientIntakeForm: React.FC = () => {
                 id="ssn"
                 value={ssn}
                 onChange={(e) => setSsn(e.target.value)}
-                pattern="\d{3}-\d{2}-\d{4}"
                 placeholder="123-45-6789"
                 className="w-full border border-gray-300 px-2 py-1"
                 style={{ border: "1px solid #000", borderRadius: "10px" }}
