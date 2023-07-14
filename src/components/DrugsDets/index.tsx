@@ -625,6 +625,37 @@ export const DrugsDets = ({ data }: DrugSchema) => {
   }
 
   console.log(splData);
+  const isDrugInCompareList = () => {
+    let compareDoctors = JSON.parse(localStorage.getItem('compareDoctors') || '[]');
+    return compareDoctors.some((compDrug: DrugResponse) => compDrug?.drug?.id === data?.drug?.id);
+  };
+  const [isCompared, setIsCompared] = useState(isDrugInCompareList);
+
+
+  const handleClick = () => {
+    
+    let compareDrugs = JSON.parse(localStorage.getItem('compareDrugs') || '[]');
+    if (compareDrugs.some((compDrug: DrugResponse) => compDrug?.drug?.id === data?.drug?.id)) {
+      return;
+    }
+    compareDrugs.push(data);
+    localStorage.setItem('compareDrugs', JSON.stringify(compareDrugs));
+    setIsCompared(true);
+  };
+
+  
+
+  const removeCompare = () => {
+    let compareDrugs = JSON.parse(localStorage.getItem('compareDrugs') || '[]');
+  
+    let index = compareDrugs.findIndex((compDrug: DrugResponse) => compDrug?.drug?.id === data?.drug?.id);
+  
+    if (index !== -1) {
+      compareDrugs.splice(index, 1);
+    }
+    localStorage.setItem('compareDrugs', JSON.stringify(compareDrugs));
+    setIsCompared(false);
+  };
   return (
     <>
       <style>
@@ -681,6 +712,14 @@ export const DrugsDets = ({ data }: DrugSchema) => {
                 title={formatName(data?.drug?.brand_name || "Unknown")}
                 categoryId={DataDirectoryCategory.Drugs}
               />
+            </div>
+            <div className="ml-1">
+              <button
+                className="ease focus:shadow-outline select-none rounded-md border border-violet-700 bg-violet-700 px-4 py-2 text-white transition duration-500 hover:bg-violet-900 focus:outline-none"
+                onClick={isCompared ? removeCompare : handleClick}
+              >
+                {isCompared ? 'Remove Compare Item' : 'Compare'}
+              </button>
             </div>
           </div>
         </div>

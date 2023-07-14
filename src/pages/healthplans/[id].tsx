@@ -219,6 +219,51 @@ const HealthPlansDetails = () => {
     { title: "Summary of Benefits and Coverage" || null, content: SBCSJSX },
   ];
 
+  const [isCompared, setIsCompared] = useState(false);
+
+useEffect(() => {
+  const isDiseaseInCompareList = () => {
+    if (typeof window !== 'undefined') {
+      let compareHealthPlans = JSON.parse(localStorage.getItem('compareHealthPlans') || '[]');
+      return compareHealthPlans.some((compHealthPlans: any) => compHealthPlans?.name === healthPlanDetail?.name);
+    }
+    return false;
+  };
+
+  setIsCompared(isDiseaseInCompareList());
+}, []);
+
+const handleClick = () => {
+  if (typeof window !== 'undefined') {
+    let compareHealthPlans = JSON.parse(localStorage.getItem('compareHealthPlans') || '[]');
+    console.log(compareHealthPlans);
+    if (compareHealthPlans.some((compHealthPlans: any) => compHealthPlans?.name === healthPlanDetail?.name)) {
+      
+      return;
+    }
+
+    compareHealthPlans.push(healthPlanDetail);
+
+    localStorage.setItem('compareHealthPlans', JSON.stringify(compareHealthPlans));
+    setIsCompared(true);
+  }
+};
+
+const removeCompare = () => {
+  if (typeof window !== 'undefined') {
+    let compareHealthPlans = JSON.parse(localStorage.getItem('compareHealthPlans') || '[]');
+
+    let index = compareHealthPlans.findIndex((compHealthPlans: any) => compHealthPlans?.name === healthPlanDetail?.name);
+
+    if (index !== -1) {
+      compareHealthPlans.splice(index, 1);
+    }
+
+    localStorage.setItem('compareHealthPlans', JSON.stringify(compareHealthPlans));
+    setIsCompared(false);
+  }
+};
+
   return isProcessing ? (
     <LoadingStarHealth />
   ) : (
@@ -257,6 +302,14 @@ const HealthPlansDetails = () => {
                 <Citation title={healthPlanDetail?.name || "-"} />
                 <div className="ml-1">
                   <BookmarkButton title={healthPlanDetail?.name || "-"} categoryId={DataDirectoryCategory.Insurance} />
+                </div>
+                <div className="ml-1">
+                  <button
+                    className="ease focus:shadow-outline select-none rounded-md border border-violet-700 bg-violet-700 px-4 py-2 text-white transition duration-500 hover:bg-violet-900 focus:outline-none"
+                    onClick={isCompared ? removeCompare : handleClick}
+                  >
+                    {isCompared ? 'Remove Compare Item' : 'Compare'}
+                  </button>
                 </div>
               </div>
             </div>

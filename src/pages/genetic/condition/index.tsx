@@ -159,6 +159,52 @@ const ConditionDetails = () => {
     }
   }, [conditionName]);
 
+  const [isCompared, setIsCompared] = useState(false);
+
+useEffect(() => {
+  const isDiseaseInCompareList = () => {
+    if (typeof window !== 'undefined') {
+      let compareDiseases = JSON.parse(localStorage.getItem('compareDiseases') || '[]');
+      console.log(compareDiseases);
+      return compareDiseases.some((compDisease: GeneticData) => compDisease.name === conditionData.name);
+    }
+    return false;
+  };
+
+  setIsCompared(isDiseaseInCompareList());
+}, []);
+
+const handleClick = () => {
+  if (typeof window !== 'undefined') {
+    let compareDiseases = JSON.parse(localStorage.getItem('compareDiseases') || '[]');
+    console.log(compareDiseases);
+    if (compareDiseases.some((compDisease: GeneticData) => compDisease.name === conditionData.name)) {
+      
+      return;
+    }
+
+    compareDiseases.push(conditionData);
+
+    localStorage.setItem('compareDiseases', JSON.stringify(compareDiseases));
+    setIsCompared(true);
+  }
+};
+
+const removeCompare = () => {
+  if (typeof window !== 'undefined') {
+    let compareDiseases = JSON.parse(localStorage.getItem('compareDiseases') || '[]');
+
+    let index = compareDiseases.findIndex((compDisease: GeneticData) => compDisease.name === conditionData.name);
+
+    if (index !== -1) {
+      compareDiseases.splice(index, 1);
+    }
+
+    localStorage.setItem('compareDiseases', JSON.stringify(compareDiseases));
+    setIsCompared(false);
+  }
+};
+
   return conditionData && isProcessing ? (
     <LoadingStarHealth />
   ) : (
@@ -206,6 +252,14 @@ const ConditionDetails = () => {
                 <Citation title={conditionData.name ? upperCaseAllWords(conditionData.name) : ""} />
                 <div className="ml-1">
                   <BookmarkButton title={conditionData.name ? upperCaseAllWords(conditionData.name) : ""} categoryId={DataDirectoryCategory.Diseases} />
+                </div>
+                <div className="ml-1">
+                  <button
+                    className="ease focus:shadow-outline select-none rounded-md border border-violet-700 bg-violet-700 px-4 py-2 text-white transition duration-500 hover:bg-violet-900 focus:outline-none"
+                    onClick={isCompared ? removeCompare : handleClick}
+                  >
+                    {isCompared ? 'Remove Compare Item' : 'Compare'}
+                  </button>
                 </div>
               </div>
             </div>

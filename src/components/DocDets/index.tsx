@@ -23,7 +23,13 @@ function classNames(...classes: string[]) {
 const NUM_DOCTORS = 1267275;
 
 export const DocDets = ({ doctor, onChangeYear }: DocSchema) => {
+  const isDoctorInCompareList = () => {
+    let compareDoctors = JSON.parse(localStorage.getItem('compareDoctors') || '[]');
+    return compareDoctors.some((compDoctor: DoctorResponse) => compDoctor.id === doctor.id);
+  };
+  
   const [year, setYear] = useState(0);
+  const [isCompared, setIsCompared] = useState(isDoctorInCompareList);
 
   useEffect(() => {
     onChangeYear(year == 0 ? undefined : year);
@@ -34,7 +40,29 @@ export const DocDets = ({ doctor, onChangeYear }: DocSchema) => {
   );
 
   const numReviews = doctor.reviews?.length ?? 0;
+  
+  const handleClick = () => {
+    let compareDoctors = JSON.parse(localStorage.getItem('compareDoctors') || '[]');
+    if (compareDoctors.some((compDoctor: DoctorResponse) => compDoctor.id === doctor.id)) {
+      
+      return;
+    }
+    compareDoctors.push(doctor);
+    localStorage.setItem('compareDoctors', JSON.stringify(compareDoctors));
+    setIsCompared(true);
+  };
 
+  
+
+  const removeCompare = () => {
+    let compareDoctors = JSON.parse(localStorage.getItem('compareDoctors') || '[]');
+    let index = compareDoctors.findIndex((doc: DoctorResponse) => doc.id === doctor.id);
+    if (index !== -1) {
+      compareDoctors.splice(index, 1);
+    }
+    localStorage.setItem('compareDoctors', JSON.stringify(compareDoctors));
+    setIsCompared(false);
+  };
   return (
     <>
       <div className="flex flex-col justify-end sm:px-2 lg:px-28">
@@ -46,6 +74,14 @@ export const DocDets = ({ doctor, onChangeYear }: DocSchema) => {
             <Citation title={formatName(doctor.firstName + " " + doctor.lastName)} />
             <div className="ml-1">
               <BookmarkButton title={formatName(doctor.firstName + " " + doctor.lastName)} categoryId={DataDirectoryCategory.Doctors} />
+            </div>
+            <div className="ml-1">
+              <button
+                className="ease focus:shadow-outline select-none rounded-md border border-violet-700 bg-violet-700 px-4 py-2 text-white transition duration-500 hover:bg-violet-900 focus:outline-none"
+                onClick={isCompared ? removeCompare : handleClick}
+              >
+                {isCompared ? 'Remove Compare Item' : 'Compare'}
+              </button>
             </div>
           </div>
         </div>

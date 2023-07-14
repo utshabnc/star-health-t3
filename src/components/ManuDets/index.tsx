@@ -31,12 +31,40 @@ function classNames(...classes: string[]) {
 const NUM_MANUFACTURERS = 2471;
 
 export const ManuDets = (schema: MenuSchema) => {
+  const isMenuInCompareList = () => {
+    let compareMenus = JSON.parse(localStorage.getItem('compareMenus') || '[]');
+    return compareMenus.some((compMenu: MenuSchema) => compMenu.manufacturer?.name === schema.manufacturer?.name);
+  };
   const d = new Date();
   const [year, setYear] = useState<number>(0);
+  const [isCompared, setIsCompared] = useState(isMenuInCompareList);
 
   useEffect(() => {
     schema.onChangeYear(year == 0 ? undefined : year);
   }, [year]);
+  
+  
+  const handleClick = () => {
+    let compareMenus = JSON.parse(localStorage.getItem('compareMenus') || '[]');
+    if (compareMenus.some((compMenu: MenuSchema) => compMenu.manufacturer?.name === schema.manufacturer?.name)) {
+      
+      return;
+    }
+    compareMenus.push(schema);
+    localStorage.setItem('compareMenus', JSON.stringify(compareMenus));
+    setIsCompared(true);
+  };
+
+  const removeCompare = () => {
+    let compareMenus = JSON.parse(localStorage.getItem('compareMenus') || '[]');
+  
+    let index = compareMenus.findIndex((doc: MenuSchema) => doc.manufacturer?.name === schema.manufacturer?.name);
+    if (index !== -1) {
+      compareMenus.splice(index, 1);
+    }
+    localStorage.setItem('compareMenus', JSON.stringify(compareMenus));
+    setIsCompared(false);
+  };
 
   return (
     <>
@@ -49,6 +77,14 @@ export const ManuDets = (schema: MenuSchema) => {
             <Citation title={schema.manufacturer.name} />
             <div className="ml-1">
               <BookmarkButton title={schema.manufacturer?.name || ''} categoryId={DataDirectoryCategory.Manufacturers} />
+            </div>
+            <div className="ml-1">
+              <button
+                className="ease focus:shadow-outline select-none rounded-md border border-violet-700 bg-violet-700 px-4 py-2 text-white transition duration-500 hover:bg-violet-900 focus:outline-none"
+                onClick={isCompared ? removeCompare : handleClick}
+              >
+                {isCompared ? 'Remove Compare Item' : 'Compare'}
+              </button>
             </div>
           </div>
         </div>

@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { useSession } from 'next-auth/react';
 import Bookmark from "../../components/Bookmark";
+import Compare from "../../components/Compare";
 import { useEffect, useState } from "react";
 import Dropdown from "../../components/Dropdown";
 import { trpc } from "../../utils/trpc";
@@ -39,6 +40,10 @@ const ProfilePage: React.FC = () => {
   const [bookmarks, setBookmarks] = useState<BookmarkInterface[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [showForm, setShowForm] = useState<boolean>(false);
+  const [showBookmark, setShowBookmark] = useState(false);
+  const [showCompare, setShowCompare] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState('');
+  
 
   const removeBookmark = trpc.db.removeBookmarkById.useMutation();
   const { data: allCategories } = trpc.db.allCategories.useQuery();
@@ -70,6 +75,7 @@ const ProfilePage: React.FC = () => {
     if (value) {
       refetch();
       setSelectedFilter(value);
+      setSelectedCategory(value);
     }
   };
 
@@ -83,8 +89,23 @@ const ProfilePage: React.FC = () => {
       })
   }
   const handleFormToggle = () => {
-    setShowForm(!showForm);
-  }
+    setShowForm(true);
+    setShowBookmark(false);
+    setShowCompare(false);
+  };
+
+  const handleBookmarkToggle = () => {
+    setShowForm(false);
+    setShowBookmark(true);
+    setShowCompare(false);
+  };
+
+  const handleCompareToggle = () => {
+    setShowForm(false);
+    setShowBookmark(false);
+    setShowCompare(true);
+  };
+
 
   return status === 'loading' ?
     (
@@ -113,23 +134,34 @@ const ProfilePage: React.FC = () => {
           className={`bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded ${showForm ? 'opacity-50' : ''}`}
           onClick={handleFormToggle}
           disabled={showForm}
-          style={{color: 'white', backgroundColor: "#885CF6"}}       
-
+          style={{ color: 'white', backgroundColor: '#885CF6' }}
         >
           Form
         </button>
         <button
-          className={`bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded ${!showForm ? 'opacity-50' : ''}`}
-          onClick={handleFormToggle}
-          disabled={!showForm}
-          style={{color: 'white', backgroundColor: "#885CF6"}}       
-          >
+          className={`bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded ${
+            showBookmark ? 'opacity-50' : ''
+          } ${!showForm ? 'disabled' : ''}`}
+          onClick={handleBookmarkToggle}
+          disabled={showBookmark}
+          style={{ color: 'white', backgroundColor: '#885CF6' }}
+        >
           Bookmarks
+        </button>
+        <button
+          className={`bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded ${
+            showCompare ? 'opacity-50' : ''
+          } ${!showForm && !showBookmark ? 'disabled' : ''}`}
+          onClick={handleCompareToggle}
+          disabled={showCompare}
+          style={{ color: 'white', backgroundColor: '#885CF6' }}
+        >
+          Comparison Tool
         </button>
       </div>
       {showForm ? (
         <PatientIntakeForm />
-      ) : (
+      ) : showBookmark ? (
         <>
           <h2 className="text-lg font-semibold mb-1">Bookmarks:</h2>
           <Dropdown
@@ -139,19 +171,28 @@ const ProfilePage: React.FC = () => {
             placeholder={'-'}
             value={selectedFilter}
           />
-          {bookmarks.map(bookmark => (
-            <div className="mb-3" key={bookmark.id}>
-              <Bookmark
-                createdAt={bookmark.createdAt}
-                id={bookmark.id}
-                notes={bookmark.notes || undefined}
-                title={bookmark.title}
-                url={bookmark.url}
-                onDelete={handleDelete}
-              />
-            </div>
-          ))}
+          {bookmarks.length > 0 ? (
+            bookmarks.map((bookmark) => (
+              <div className="mb-3" key={bookmark.id}>
+                <Bookmark
+                  createdAt={bookmark.createdAt}
+                  id={bookmark.id}
+                  notes={bookmark.notes || undefined}
+                  title={bookmark.title}
+                  url={bookmark.url}
+                  onDelete={handleDelete}
+                />
+              </div>
+            ))
+          ) : (
+            <p>Select an option from the dropdown to start comparing</p>
+          )}
+          
         </>
+      ) : showCompare ? (
+        <Compare />
+      ) : (
+        <h2>No content to display</h2>
       )}
     </div>
   );
