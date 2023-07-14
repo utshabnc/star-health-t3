@@ -9,6 +9,8 @@ import Link from 'next/link';
 import Citation from '../Citation';
 import { DataDirectoryCategory } from '../../utils/Enums/DataDirectoryCategory.enum';
 import BookmarkButton from '../BookmarkButton';
+import LocationButton from '../LocationButton';
+import { formatFullAddress } from '../../utils';
 
 interface DocSchema {
   doctor: DoctorResponse;
@@ -51,9 +53,7 @@ export const DocDets = ({ doctor, onChangeYear }: DocSchema) => {
     localStorage.setItem('compareDoctors', JSON.stringify(compareDoctors));
     setIsCompared(true);
   };
-
   
-
   const removeCompare = () => {
     let compareDoctors = JSON.parse(localStorage.getItem('compareDoctors') || '[]');
     let index = compareDoctors.findIndex((doc: DoctorResponse) => doc.id === doctor.id);
@@ -63,6 +63,25 @@ export const DocDets = ({ doctor, onChangeYear }: DocSchema) => {
     localStorage.setItem('compareDoctors', JSON.stringify(compareDoctors));
     setIsCompared(false);
   };
+
+
+  // THIS WILL FULL FORMAT THE DOCTOR ADDRESS PROPERTIES FOR GOOGLE MAPS CONSUMPTION
+  const handleAddress = () => {
+    if (doctor !== undefined) {
+        const fullAddress = formatFullAddress(
+          doctor?.addressLine1,
+          doctor?.addressLine2,
+          doctor?.city,
+          doctor?.state, 
+          doctor?.zipCode
+        )
+
+      return fullAddress;
+    }
+  }
+  
+  const formatttedAddress = doctor !== undefined && handleAddress()
+
   return (
     <>
       <div className="flex flex-col justify-end sm:px-2 lg:px-28">
@@ -71,7 +90,10 @@ export const DocDets = ({ doctor, onChangeYear }: DocSchema) => {
             {formatName(doctor.firstName + " " + doctor.lastName)}
           </p>
           <div className="flex justify-end min-w-[375px]">
-            <Citation title={formatName(doctor.firstName + " " + doctor.lastName)} />
+            <LocationButton address={formatttedAddress} text="Get Directions" />
+            <div className="ml-1">
+              <Citation title={formatName(doctor.firstName + " " + doctor.lastName)} />
+            </div>
             <div className="ml-1">
               <BookmarkButton title={formatName(doctor.firstName + " " + doctor.lastName)} categoryId={DataDirectoryCategory.Doctors} />
             </div>

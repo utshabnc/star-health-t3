@@ -4,9 +4,10 @@ import { useRouter } from 'next/router';
 import { trpc } from '../../utils/trpc';
 import type { OpioidTreatmentProvider } from '../../components/OpioidTreatmentProviders/OpioidTreatmentProvider.model';
 import PhoneNumber from "../../components/PhoneNumber";
-import { toTitleCase } from "../../utils";
+import { toTitleCase, formatFullAddress } from "../../utils";
 import Citation from '../../components/Citation';
 import BookmarkButton from '../../components/BookmarkButton';
+import LocalMapEmbed from '../../components/LocalMapEmbed';
 import { DataDirectoryCategory } from '../../utils/Enums/DataDirectoryCategory.enum';
 
 const OpioidTreatmentProviderDetails = () => {
@@ -14,6 +15,7 @@ const OpioidTreatmentProviderDetails = () => {
   const id = navigate.query.id as string;
 
   const [provider, setProvider] = useState<OpioidTreatmentProvider | null | undefined>(null);
+  const [location, setLocation] = useState<any>(null);
 
   const query = useMemo(() => ({ id }), [id]);
   const { data } = trpc.db.opioidTreatment.useQuery(query);
@@ -34,6 +36,48 @@ const OpioidTreatmentProviderDetails = () => {
   useEffect(() => {
     setProvider(data);
   }, [data]);
+
+  // THIS WILL FULL FORMAT THE PROVIDER ADDRESS PROPERTIES FOR GOOGLE MAPS CONSUMPTION
+  const handleAddress = () => {
+    if (provider !== undefined) {
+        const fullAddress = formatFullAddress(
+          provider?.address_line_1,
+          provider?.address_line_2,
+          provider?.city,
+          provider?.state,
+          provider?.zip
+        )
+
+      return fullAddress;
+    }
+  }
+
+  useEffect(() => {
+    const options = {
+      enableHighAccuracy: true,
+      timeout: 5000,
+      maximumAge: 0,
+    };
+    
+    function success(pos: any) {
+      const crd = pos.coords;
+
+      if (location === null) {
+        setLocation({
+          longitude: crd.longitude,
+          latitude: crd.latitude
+        })
+      }
+    }
+    
+    function error(err: any) {
+      console.warn(`ERROR(${err.code}): ${err.message}`);
+    }
+    
+    window.navigator.geolocation.getCurrentPosition(success, error, options);
+  })
+
+  const formattedAddress = provider !== undefined && handleAddress()
 
   // Loading Screen
   if (!provider) {
@@ -99,7 +143,6 @@ const OpioidTreatmentProviderDetails = () => {
       </>
     );
   }
-
 const handleClick = () => {
   if (typeof window !== 'undefined') {
     let compareOpioid = JSON.parse(localStorage.getItem('compareOpioid') || '[]');
@@ -206,6 +249,7 @@ const removeCompare = () => {
                 </div>
               </div>
             </p>
+            <LocalMapEmbed address={formattedAddress} origin={location} />
           </div>
         </div>
       </div>
