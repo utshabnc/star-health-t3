@@ -6,7 +6,6 @@ import DirectoryCards from "../../components/DirectoryCards";
 import Filters from "../../components/Filters";
 import { formatMoney } from "../../utils";
 import { trpc } from "../../utils/trpc";
-import { toTitleCase } from "../../utils";
 
 import type { Observable } from "rxjs";
 import { forkJoin } from "rxjs";
@@ -30,7 +29,6 @@ import { Tab } from "../../utils/Enums/Tab.enum";
 
 import { useSession } from "next-auth/react";
 import Image from "next/image";
-import AutocompleteInput from "../../components/AutoCompleteInput";
 import clinicalTrials from "../../assets/logos/clinical-trials.png";
 import cms from "../../assets/logos/cms.png";
 import cmsDataLogo from "../../assets/logos/cms_data.svg";
@@ -59,7 +57,6 @@ import HospitalsComponent from "../../components/Hospitals/Hospitals";
 import HospitalsFilters from "../../components/Hospitals/HospitalsFilters";
 import LoadingStarHealth from "../../components/Loading";
 import { PayWall } from "../../components/PayWall/PayWall";
-import { id } from "date-fns/locale";
 
 interface PriceFilter {
   min: number;
@@ -475,7 +472,7 @@ export default function Directory() {
     }, 1000),
     []
   );
- 
+
   useEffect(() => {
     if (zipcode.length === 5) {
       setHealthPlansDataError("");
@@ -529,75 +526,7 @@ export default function Directory() {
     filterParams.drugType,
     debouncedSearch,
   ]);
-  const returnDoctorNames =(list:any[])=>{
-    var output = []
-    if ( list === undefined)
-    {
-      return[]
-    }
-    list.forEach((element:any) => {
-      output.push(toTitleCase((element.firstName+' '+element.lastName).toLowerCase()))
-    });
-    return output
-  }
-  const returnNamesOfClincalNames =(list:any[],name:string)=>{
-    var output = []
-    if ( list === undefined)
-    {
-      return[]
-    }
-    list.forEach((element:any) => {
-      output.push(element[name][0])
-    });
-    return output
-  }
-  const returnNamesOfObjects =(searchObj:any,tab:string)=>{
-    var output = []
-    if ( searchObj === undefined)
-    {
-      return[]
-    }
-    var name = ''
-    var list = []
-    if (tab == Tab.Drugs) 
-    {
-      name = 'brand_name'
-      list = searchObj['drugs']
-    }
-    if(tab == Tab.Manufacturers )
-    {
-      name = 'name'
-      list = searchObj['manufacturers']
-    }
-    if(tab == Tab.Products)
-    {
-      name = 'name'
-      list = searchObj['products']
-    }
-    if(tab == Tab.OpioidTreatmentProviders)
-    {
-      name = 'provider_name'
-      list = searchObj['opioidTreatmentProviders']
-    }
-    if(tab == Tab.Doctors)
-    {
-      return returnDoctorNames(searchObj['doctors'])
-    }
-    if(tab == Tab.Transactions)
-    {
-      list = searchObj['payments']
-      console.log(list)
-      list.forEach((element:any) => {
-        output.push(toTitleCase(element.product.name.toLowerCase()))
-      });
-      return output
-    }
-    console.log(list)
-    list.forEach((element:any) => {
-      output.push(toTitleCase(element[name].toLowerCase()))
-    });
-    return output
-  }
+
   const handleMinPrice = (e: any) => {
     if (e.target.value >= filterParams.price.max) {
       setFilterParams((prev: any) => {
@@ -1074,8 +1003,18 @@ export default function Directory() {
                 <p className="p-1 text-xs font-semibold text-violet-900">
                   Search for clinical trials
                 </p>
-
-                <AutocompleteInput expr={clinicalTrialSearchKeywordExpr} setExpr={setClinicalTrialSearchKeywordExpr} options={returnNamesOfClincalNames(clinicalTrialsData.StudyFieldsResponse?clinicalTrialsData.StudyFieldsResponse.StudyFields:[],'BriefTitle')}></AutocompleteInput>
+                <div className="flex w-[100%] items-center gap-3">
+                  <input
+                    type="text"
+                    placeholder={`Search`}
+                    className={`
+                          mx-1 my-2 w-[30%] cursor-pointer rounded-lg border border-violet-900 bg-violet-100 p-1 text-slate-900 placeholder:text-violet-800 hover:bg-violet-300 hover:text-violet-900`}
+                    value={clinicalTrialSearchKeywordExpr}
+                    onChange={(e) => {
+                      setClinicalTrialSearchKeywordExpr(e.target.value);
+                    }}
+                  />
+                </div>
                 <Image
                   src={clinicalTrials}
                   alt=""
@@ -1197,8 +1136,22 @@ export default function Directory() {
                             : "product"
                         }`}</p>
                         <div className="flex w-[100%] items-center gap-3">
+                          <input
+                            type="text"
+                            placeholder={`Search`}
+                            className={`
+                          mx-1 my-2 w-[30%] cursor-pointer rounded-lg border border-violet-900 bg-violet-100 p-1 text-slate-900 placeholder:text-violet-800 hover:bg-violet-300 hover:text-violet-900`}
+                            value={filterParams.name}
+                            onChange={(e) => {
+                              setFilterParams((prev) => {
+                                return {
+                                  ...prev,
+                                  name: e.target.value,
+                                };
+                              });
+                            }}
+                          />
 
-                          <AutocompleteInput expr={filterParams.name?filterParams.name:''} setFilterParam={setFilterParams} options={searchResults?returnNamesOfObjects(searchResults,selectedTab):[]}></AutocompleteInput>
                           <div className="ml-5 flex flex-col items-center">
                             {filterParams.subject === "transactions" && (
                               <div className="mb-4 mt-5 w-80">

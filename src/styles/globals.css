@@ -33,35 +33,3 @@ input[type="range"]::-webkit-slider-thumb {
     transform: rotate(360deg);
   }
 }
-
-.suggestions li {
-  padding: 0.5rem;
-  background-color: white;
-}
-
-.suggestion-active,
-.suggestions li:hover {
-  background-color: rgb(139 92 246);
-  color: white;
-  cursor: pointer;
-  font-weight: 700;
-}
-.suggestions {
-  border: 1px solid #999;
-  border-top-width: 0;
-  list-style: none;
-  margin-top: 0;
-  min-width: 30%;
-  max-height: 143px;
-  overflow-y: auto;
-  z-index: 2;
-  position: absolute;
-  padding-left: 0;
-}
-.suggestions li:not(:last-of-type) {
-  border-bottom: 1px solid #999;
-}
-.no-suggestions {
-  color: #999;
-  padding: 0.5rem;
-}

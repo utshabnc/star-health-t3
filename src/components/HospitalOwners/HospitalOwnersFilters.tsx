@@ -2,10 +2,8 @@ import Image from "next/image";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import type { HospitalOwners } from "./HospitalOwners.model";
 import { data } from "./processJSON";
-import { toTitleCase } from "../../utils";
 
 import cbi from "../../assets/logos/Data-CMS-gov.png";
-import AutocompleteInput from "../AutoCompleteInput";
 
 interface HospitalOwnersFiltersProps {
   params: {
@@ -23,17 +21,7 @@ export default function HospitalsFilters({
   const [searchStr, setSearchStr] = useState("");
   const [dataIsAvailable, setDataIsAvailable] = useState(false);
   const [error, setError] = useState<any>("");
-  const returnHospitalsOwnersNames =(list:any[])=>{
-    var output = []
-    if ( list === undefined)
-    {
-      return[]
-    }
-    list.forEach((element:any) => {
-      output.push(element['ORGANIZATION_NAME'])
-    });
-    return output
-  }
+
   useEffect(() => {
     if (hospitalOwnersData && hospitalOwnersData.length > 1) {
       setDataIsAvailable(true);
@@ -73,7 +61,14 @@ export default function HospitalsFilters({
             Search for hospitals
           </p>
           <div className="flex w-[100%] items-center justify-between gap-3">
-          <AutocompleteInput expr={searchStr} setExpr={setSearchStr} options={returnHospitalsOwnersNames(hospitalOwnersData?hospitalOwnersData:[])}></AutocompleteInput>
+            <input
+              type="text"
+              placeholder="Search"
+              className="mx-1 my-2 w-[30%] cursor-pointer rounded-lg border border-violet-900 bg-violet-100 p-1 text-slate-900 placeholder:text-violet-800 hover:bg-violet-300 hover:text-violet-900"
+              value={searchStr}
+              onChange={(e) => setSearchStr(e.target.value)}
+            />
+
             <Image
               src={cbi}
               alt=""

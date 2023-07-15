@@ -4,8 +4,6 @@ import type { Food } from "./Food.model";
 import Image from "next/image";
 
 import usda from "../../assets/logos/USDA-Emblem.png";
-import AutocompleteInput from "../AutoCompleteInput";
-import { toTitleCase } from "../../utils";
 
 interface FoodsFiltersProps {
   params: {
@@ -114,17 +112,7 @@ export default function FoodsFilters({ params }: FoodsFiltersProps) {
       );
     }
   };
-  const returnFoodNames =(list:any[])=>{
-    var output = []
-    if ( list === undefined)
-    {
-      return[]
-    }
-    list.forEach((element:any) => {
-      output.push(toTitleCase((element.description).toLowerCase()))
-    });
-    return output
-  }
+
   useEffect(() => {
     if (searchStr) {
       const delayDebounceFn = setTimeout(() => {
@@ -422,7 +410,13 @@ export default function FoodsFilters({ params }: FoodsFiltersProps) {
             Search by Name of Food/Beverage
           </p>
           <div className="flex w-[100%] items-center justify-between gap-3">
-            <AutocompleteInput expr={searchStr} setExpr={setSearchStr} options={returnFoodNames(food)}></AutocompleteInput>
+            <input
+              type="text"
+              placeholder="Search"
+              className="mx-1 mb-2 w-[30%] cursor-pointer rounded-lg border border-violet-900 bg-violet-100 p-2 text-slate-900 placeholder:text-violet-800 hover:bg-violet-300 hover:text-violet-900"
+              value={searchStr}
+              onChange={(e) => setSearchStr(e.target.value)}
+            />
             <Image
               src={usda}
               alt=""

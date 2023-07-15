@@ -185,10 +185,9 @@ export const db = router({
           addressLine1: true,
           specialty: true,
         },
-        take: 5,
+        take: 10,
       });
 
-      
       const manufacturers = await prisma.manufacturer.findMany({
         where: {
           name: {
@@ -207,9 +206,8 @@ export const db = router({
           rank: "asc",
         },
 
-        take: 5,
+        take: 10,
       });
-
 
       const products = await prisma.product.findMany({
         where: {
@@ -218,54 +216,9 @@ export const db = router({
             mode: "insensitive",
           },
         },
-        take: 5,
-      });
-      const drugs = await prisma.drugs.findMany({
-        where: {
-          brand_name: {
-            contains: search,
-            mode: "insensitive",
-          },
-        },
-        take: 5,
-      });
-
-      const hospital = await prisma.hospital.findMany({
-        where: {
-          name: {
-            contains: search,
-            mode: "insensitive",
-          },
-        },
         take: 10,
       });
-      const clinicalTrials = await prisma.clinicalTrials.findMany({
-        where: {
-          brief_title: {
-            contains: search,
-            mode: "insensitive",
-          },
-        },
-        take: 5,
-      });
-      const diseases = await prisma.diseases.findMany({
-        where: {
-          name: {
-            contains: search,
-            mode: "insensitive",
-          },
-        },
-        take: 5,
-      });
-      const genetics = await prisma.genetics.findMany({
-        where: {
-          name: {
-            contains: search,
-            mode: "insensitive",
-          },
-        },
-        take: 5,
-      });
+
       const opioidTreatmentProviders = await prisma.opioidTreatment.findMany({
         where: {
           provider_name: {
@@ -285,10 +238,10 @@ export const db = router({
           phone: true,
           medicare_id_effective_date: true,
         },
-        take: 5,
+        take: 10,
       });
 
-      return { doctors, manufacturers,drugs, products, opioidTreatmentProviders, diseases,genetics, hospital,clinicalTrials };
+      return { doctors, manufacturers, products, opioidTreatmentProviders };
     }),
 
   doctor: publicProcedure

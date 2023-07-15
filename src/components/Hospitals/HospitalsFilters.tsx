@@ -2,9 +2,8 @@ import { Dispatch, SetStateAction, useMemo} from "react";
 import { useEffect, useState } from "react";
 import type { Hospital } from "./Hospital.model";
 import Image from "next/image";
-import { toTitleCase } from "../../utils";
+
 import cbi from '../../assets/logos/community-benefits.png';
-import AutocompleteInput from "../AutoCompleteInput";
 
 interface HospitalsFiltersProps {
   params: {
@@ -78,17 +77,7 @@ export default function HospitalsFilters({ params }: HospitalsFiltersProps) {
   const [dataIsAvailable, setDataIsAvailable] = useState(false);
   const [error, setError] = useState<any>("");
   // const [hospitalIds, setHospitalIds] = useState<string[]>([]);
-  const returnHospitalsNames =(list:any[])=>{
-    var output = []
-    if ( list === undefined)
-    {
-      return[]
-    }
-    list.forEach((element:any) => {
-      output.push(toTitleCase((element.name).toLowerCase()))
-    });
-    return output
-  }
+
   useEffect(() => {
     if (hospitalsData && hospitalsData.length > 1) {
       setDataIsAvailable(true);
@@ -258,8 +247,14 @@ export default function HospitalsFilters({ params }: HospitalsFiltersProps) {
             Search for hospitals
           </p>
           <div className="flex justify-between w-[100%] items-center gap-3">
+            <input
+              type="text"
+              placeholder="Search"
+              className="mx-1 my-2 w-[30%] cursor-pointer rounded-lg border border-violet-900 bg-violet-100 p-1 text-slate-900 placeholder:text-violet-800 hover:bg-violet-300 hover:text-violet-900"
+              value={searchStr}
+              onChange={(e) => setSearchStr(e.target.value)}
+            />
 
-            <AutocompleteInput expr={searchStr} setExpr={setSearchStr} options={returnHospitalsNames(hospitalsData?hospitalsData:[])}></AutocompleteInput>
             <Image
               src={cbi}
               alt=""

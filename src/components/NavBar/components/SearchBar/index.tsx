@@ -1,5 +1,4 @@
 import { useState } from "react";
-import AutocompleteInput from "../../../AutoCompleteInput";
 
 const options = [{ name: "Doctors" }, { name: "Manufacturers" }];
 
