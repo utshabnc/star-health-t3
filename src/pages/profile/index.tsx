@@ -110,20 +110,27 @@ const ProfilePage: React.FC = () => {
         <hr className="my-4" />
         <div className="flex space-x-4 mb-4">
         <button
-          className={`bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded ${showForm ? 'opacity-50' : ''}`}
+          className={`bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded}`}
           onClick={handleFormToggle}
           disabled={showForm}
-          style={{color: 'white', backgroundColor: "#885CF6"}}       
-
+          style={{
+            color: !showForm ? '#885CF6' : 'white',
+            backgroundColor: !showForm ? 'white' : '#885CF6',
+            border: !showForm ? '1px solid #885CF6' : 'node',
+          }}
         >
-          Form
+          Patient Intake Form
         </button>
         <button
-          className={`bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded ${!showForm ? 'opacity-50' : ''}`}
+          className={`bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded }`}
           onClick={handleFormToggle}
           disabled={!showForm}
-          style={{color: 'white', backgroundColor: "#885CF6"}}       
-          >
+          style={{
+            color: showForm ? '#885CF6' : 'white',
+            backgroundColor: showForm ? 'white' : '#885CF6',
+            border: showForm ? '1px solid #885CF6' : 'node',
+          }}
+        >
           Bookmarks
         </button>
       </div>
