@@ -37,7 +37,54 @@ model State {
   manufacturers StateManufacturer[]
   summaries     StateSummary[]
 }
-
+model Diseases {
+  id              String                   @id
+  name            String
+  url             String?
+}
+model Genetics {
+  id              String                   @id
+  name            String
+  url             String?
+}
+model ClinicalTrials {
+  id                      String      @id
+  brief_title              String
+  central_contactname      String?
+  completion_date          String?
+  gender                  String?
+  healthy_volunteers       String?
+  official_title           String?
+  org_full_name             String?
+  overall_official_name     String?
+  maximum_age              String?
+  minimum_age              String?
+  nctid                   String?
+  overall_status           String?
+  start_date               String?
+}
+model Hospital {
+  id                       String   @id 
+  hospital_id               String
+  hospital_org_id            String? 
+  ein                      String? 
+  name                     String? 
+  name_cr                   String? 
+  street_address            String? 
+  city                     String? 
+  state                    String? 
+  zip                      String? 
+  fips_state_and_county_code   String? 
+  hospital_bed_count         String? 
+  chrch_affl_f               String? 
+  urban_location_f           String? 
+  children_hospital_f        String? 
+  memb_counc_teach_hosps_f     String? 
+  medicare_provider_number   String? 
+  county                   String? 
+  hospital_bed_size          String? 
+  updated_dt                DateTime?
+}
 model StateCounty {
   id          String @id
   stateId     String
