@@ -1,5 +1,6 @@
 import Link from "next/link";
 import {HospitalOwners} from "./HospitalOwners.model"
+import { toTitleCase } from "../../utils";
 
 type Data = {
   results: HospitalOwners[]

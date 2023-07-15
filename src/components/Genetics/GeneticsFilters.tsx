@@ -2,8 +2,10 @@ import type { Dispatch, SetStateAction } from "react";
 import { useEffect, useState } from "react";
 import type { Genetic } from "./Genetic.model";
 import Image from "next/image";
+import { toTitleCase } from "../../utils";
 
 import mps from "../../assets/logos/medlinePlus.png";
+import AutocompleteInput from "../AutoCompleteInput";
 
 interface GeneticsFiltersProps {
   params: {
@@ -31,7 +33,7 @@ export default function GeneticsFilters({ params }: GeneticsFiltersProps) {
   const [selectedCategory, setSelectedCategory] = useState<string>("");
   const [dataIsAvailable, setDataIsAvailable] = useState<boolean>(false);
   const [searchStr, setSearchStr] = useState<string>("");
-
+  const [filterGeneticList,setFilteredGeneticsList]=useState<any>([])
   const allCategories: string[] = ["Genes", "Chromosomes"];
 
   useEffect(() => {
@@ -52,13 +54,27 @@ export default function GeneticsFilters({ params }: GeneticsFiltersProps) {
           );
         });
         setFilteredGenetics(filteredData || []);
+        setFilteredGeneticsList(filteredData || []);
       }, 250);
       return () => clearTimeout(delayDebounceFn);
     } else {
       setFilteredGenetics(genetics || []);
+      setFilteredGeneticsList(genetics || []);
+
     }
   }, [searchStr]);
 
+  const returnGeneticsNames =(list:any[])=>{
+    var output = []
+    if ( list === undefined)
+    {
+      return[]
+    }
+    list.forEach((element:any) => {
+      output.push(toTitleCase((element.title).toLowerCase()))
+    });
+    return output
+  }
   const onSelectCategory = (category: string) => {
     setIsApiProcessing(true);
     setSelectedCategory(category);
@@ -68,8 +84,12 @@ export default function GeneticsFilters({ params }: GeneticsFiltersProps) {
     });
     if (category === "") {
       setFilteredGenetics(genetics || []);
+      setFilteredGeneticsList(genetics || []);
+
     } else {
       setFilteredGenetics(filteredData || []);
+      setFilteredGeneticsList(filteredData || []);
+
     }
     setIsApiProcessing(false);
   };
@@ -101,13 +121,7 @@ export default function GeneticsFilters({ params }: GeneticsFiltersProps) {
           </div>
           <p className="p-1 text-xs font-semibold text-violet-900">Search by Gene/Chromosome Name</p>
           <div className="flex w-[100%] items-center justify-between gap-3">
-            <input
-              type="text"
-              placeholder="Search"
-              className="mx-1 my-2 w-[30%] cursor-pointer rounded-lg border border-violet-900 bg-violet-100 p-1 text-slate-900 placeholder:text-violet-800 hover:bg-violet-300 hover:text-violet-900"
-              value={searchStr}
-              onChange={(e) => setSearchStr(e.target.value)}
-            />
+            <AutocompleteInput expr={searchStr} setExpr={setSearchStr} options={returnGeneticsNames(filterGeneticList?filterGeneticList:[])}></AutocompleteInput>
             <Image
               src={mps}
               alt=""

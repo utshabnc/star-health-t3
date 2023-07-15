@@ -4,6 +4,7 @@ import type { Genetic } from "./Genetic.model";
 import Image from "next/image";
 
 import mps from "../../assets/logos/medlinePlus.png";
+import AutocompleteInput from "../AutoCompleteInput";
 
 interface DiseasesFiltersProps {
   params: {
@@ -27,8 +28,20 @@ function mapOtherNames(other_names: any[]) {
 
 export default function DiseasesFilters({ params }: DiseasesFiltersProps) {
   const { diseases, setFilteredDiseases, setIsApiProcessing } = params;
-  const [searchStr, setSearchStr] = useState<string>("");
+  const [diseaseslist, setFilteredDiseaseslist] = useState<Genetic[]>([]);
 
+  const [searchStr, setSearchStr] = useState<string>("");
+  const returnNames =(list:any[],name:string)=>{
+    var output = []
+    if ( list === undefined)
+    {
+      return[]
+    }
+    list.forEach((element:any) => {
+      output.push(element[name])
+    });
+    return output
+  }
   useEffect(() => {
     if (searchStr) {
       const delayDebounceFn = setTimeout(() => {
@@ -41,10 +54,13 @@ export default function DiseasesFilters({ params }: DiseasesFiltersProps) {
           );
         });
         setFilteredDiseases(filteredData || []);
+        setFilteredDiseaseslist(filteredData || [])
+
       }, 250);
       return () => clearTimeout(delayDebounceFn);
     } else {
       setFilteredDiseases(diseases || []);
+      setFilteredDiseaseslist(diseases || [])
     }
   }, [searchStr]);
 
@@ -57,13 +73,8 @@ export default function DiseasesFilters({ params }: DiseasesFiltersProps) {
           </div>
           <p className="p-1 text-xs font-semibold text-violet-900">Search by Condition Name</p>
           <div className="flex w-[100%] items-center justify-between gap-3">
-            <input
-              type="text"
-              placeholder="Search"
-              className="mx-1 my-2 w-[30%] cursor-pointer rounded-lg border border-violet-900 bg-violet-100 p-1 text-slate-900 placeholder:text-violet-800 hover:bg-violet-300 hover:text-violet-900"
-              value={searchStr}
-              onChange={(e) => setSearchStr(e.target.value)}
-            />
+
+            <AutocompleteInput setExpr={setSearchStr} expr={searchStr} options={returnNames(diseaseslist?diseaseslist:[],'title')}></AutocompleteInput>
             <Image
               src={mps}
               alt=""
