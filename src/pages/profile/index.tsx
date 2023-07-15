@@ -133,7 +133,7 @@ const ProfilePage: React.FC = () => {
         <button
           className={`bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded}`}
           onClick={handleFormToggle}
-          disabled={showForm}
+          disabled={showForm && !showBookmark && !showCompare}
           style={{
             color: !showForm ? '#885CF6' : 'white',
             backgroundColor: !showForm ? 'white' : '#885CF6',
@@ -144,23 +144,25 @@ const ProfilePage: React.FC = () => {
         </button>
         <button
           className={`bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded }`}
-          onClick={handleFormToggle}
-          disabled={!showForm}
+          onClick={handleBookmarkToggle}
+          disabled={showBookmark && !showForm && !showCompare}
           style={{
-            color: showForm ? '#885CF6' : 'white',
-            backgroundColor: showForm ? 'white' : '#885CF6',
-            border: showForm ? '1px solid #885CF6' : 'node',
+            color: !showBookmark ? '#885CF6' : 'white',
+            backgroundColor: !showBookmark ? 'white' : '#885CF6',
+            border: !showBookmark ? '1px solid #885CF6' : 'node',
           }}
         >
           Bookmarks
         </button>
         <button
-          className={`bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded ${
-            showCompare ? 'opacity-50' : ''
-          } ${!showForm && !showBookmark ? 'disabled' : ''}`}
+          className={`bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded }`}
           onClick={handleCompareToggle}
-          disabled={showCompare}
-          style={{ color: 'white', backgroundColor: '#885CF6' }}
+          disabled={showCompare && !showForm && !showBookmark}
+          style={{
+            color: !showCompare ? '#885CF6' : 'white',
+            backgroundColor: !showCompare ? 'white' : '#885CF6',
+            border: !showCompare ? '1px solid #885CF6' : 'node',
+          }}
         >
           Comparison Tool
         </button>
