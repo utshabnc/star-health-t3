@@ -87,7 +87,7 @@ const ClinicalTrialDetails = () => {
   useEffect(() => {
     const isTrialInCompareList = () => {
       if (typeof window !== 'undefined' && clinicalTrialData) {
-        let compareTrials = JSON.parse(localStorage.getItem('compareTrials') || '[]');
+        const compareTrials = JSON.parse(localStorage.getItem('compareTrials') || '[]');
         console.log(compareTrials);
         return compareTrials.some((compTrial: ClinicalTrialsFullStudyResponse) => compTrial?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.IdentificationModule?.BriefTitle === clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.IdentificationModule?.BriefTitle);
       }
@@ -96,12 +96,11 @@ const ClinicalTrialDetails = () => {
     };
 
     setIsCompared(isTrialInCompareList());
-  }, []);
+  }, [clinicalTrialData]);
 
   const handleClick = () => {
-    //localStorage.removeItem('compareTrials');
     if (typeof window !== 'undefined') {
-      let compareTrials = JSON.parse(localStorage.getItem('compareTrials') || '[]');
+      const compareTrials = JSON.parse(localStorage.getItem('compareTrials') || '[]');
       console.log(compareTrials);
       if (compareTrials.some((compTrial: ClinicalTrialsFullStudyResponse) => compTrial?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.IdentificationModule?.BriefTitle === clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.IdentificationModule?.BriefTitle)) {
         
@@ -117,9 +116,9 @@ const ClinicalTrialDetails = () => {
 
   const removeCompare = () => {
     if (typeof window !== 'undefined' && clinicalTrialData) {
-      let compareTrials = JSON.parse(localStorage.getItem('compareTrials') || '[]');
+      const compareTrials = JSON.parse(localStorage.getItem('compareTrials') || '[]');
 
-      let index = compareTrials.findIndex((compTrial: ClinicalTrialsFullStudyResponse) => compTrial?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.IdentificationModule?.BriefTitle === clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.IdentificationModule?.BriefTitle);
+      const index = compareTrials.findIndex((compTrial: ClinicalTrialsFullStudyResponse) => compTrial?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.IdentificationModule?.BriefTitle === clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.IdentificationModule?.BriefTitle);
 
       if (index !== -1) {
         compareTrials.splice(index, 1);

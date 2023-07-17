@@ -49,7 +49,7 @@ const CompareManufacturers: React.FC = () => {
   }, []);
 
   const removeMenu = (index: number) => {
-    let compareMenus = JSON.parse(localStorage.getItem('compareMenus') || '[]');
+    const compareMenus = JSON.parse(localStorage.getItem('compareMenus') || '[]');
     compareMenus.splice(index, 1);
     localStorage.setItem('compareMenus', JSON.stringify(compareMenus));
     setMenus(compareMenus);

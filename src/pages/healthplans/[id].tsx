@@ -224,18 +224,18 @@ const HealthPlansDetails = () => {
 useEffect(() => {
   const isDiseaseInCompareList = () => {
     if (typeof window !== 'undefined') {
-      let compareHealthPlans = JSON.parse(localStorage.getItem('compareHealthPlans') || '[]');
+      const compareHealthPlans = JSON.parse(localStorage.getItem('compareHealthPlans') || '[]');
       return compareHealthPlans.some((compHealthPlans: any) => compHealthPlans?.name === healthPlanDetail?.name);
     }
     return false;
   };
 
   setIsCompared(isDiseaseInCompareList());
-}, []);
+}, [healthPlanDetail?.name]);
 
 const handleClick = () => {
   if (typeof window !== 'undefined') {
-    let compareHealthPlans = JSON.parse(localStorage.getItem('compareHealthPlans') || '[]');
+    const compareHealthPlans = JSON.parse(localStorage.getItem('compareHealthPlans') || '[]');
     console.log(compareHealthPlans);
     if (compareHealthPlans.some((compHealthPlans: any) => compHealthPlans?.name === healthPlanDetail?.name)) {
       
@@ -251,9 +251,9 @@ const handleClick = () => {
 
 const removeCompare = () => {
   if (typeof window !== 'undefined') {
-    let compareHealthPlans = JSON.parse(localStorage.getItem('compareHealthPlans') || '[]');
+    const compareHealthPlans = JSON.parse(localStorage.getItem('compareHealthPlans') || '[]');
 
-    let index = compareHealthPlans.findIndex((compHealthPlans: any) => compHealthPlans?.name === healthPlanDetail?.name);
+    const index = compareHealthPlans.findIndex((compHealthPlans: any) => compHealthPlans?.name === healthPlanDetail?.name);
 
     if (index !== -1) {
       compareHealthPlans.splice(index, 1);

@@ -48,16 +48,12 @@ const CompareInsurance: React.FC = () => {
   }, []);
 
   const removeInsurancePlan = (index: number) => {
-    let compareInsurancePlans = JSON.parse(localStorage.getItem('compareHealthPlans') || '[]');
+    const compareInsurancePlans = JSON.parse(localStorage.getItem('compareHealthPlans') || '[]');
     compareInsurancePlans.splice(index, 1);
     localStorage.setItem('compareHealthPlans', JSON.stringify(compareInsurancePlans));
     setInsurancePlans(compareInsurancePlans);
   }
 
-  const currencyFormatter = new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'USD',
-  });
 
   return (
     <div className="overflow-x-auto">

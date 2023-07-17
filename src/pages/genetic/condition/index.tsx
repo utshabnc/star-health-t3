@@ -164,20 +164,18 @@ const ConditionDetails = () => {
 useEffect(() => {
   const isDiseaseInCompareList = () => {
     if (typeof window !== 'undefined') {
-      let compareDiseases = JSON.parse(localStorage.getItem('compareDiseases') || '[]');
-      console.log(compareDiseases);
+      const compareDiseases = JSON.parse(localStorage.getItem('compareDiseases') || '[]');
       return compareDiseases.some((compDisease: GeneticData) => compDisease.name === conditionData.name);
     }
     return false;
   };
 
   setIsCompared(isDiseaseInCompareList());
-}, []);
+}, [conditionData.name]);
 
 const handleClick = () => {
   if (typeof window !== 'undefined') {
-    let compareDiseases = JSON.parse(localStorage.getItem('compareDiseases') || '[]');
-    console.log(compareDiseases);
+    const compareDiseases = JSON.parse(localStorage.getItem('compareDiseases') || '[]');
     if (compareDiseases.some((compDisease: GeneticData) => compDisease.name === conditionData.name)) {
       
       return;
@@ -192,9 +190,9 @@ const handleClick = () => {
 
 const removeCompare = () => {
   if (typeof window !== 'undefined') {
-    let compareDiseases = JSON.parse(localStorage.getItem('compareDiseases') || '[]');
+    const compareDiseases = JSON.parse(localStorage.getItem('compareDiseases') || '[]');
 
-    let index = compareDiseases.findIndex((compDisease: GeneticData) => compDisease.name === conditionData.name);
+    const index = compareDiseases.findIndex((compDisease: GeneticData) => compDisease.name === conditionData.name);
 
     if (index !== -1) {
       compareDiseases.splice(index, 1);

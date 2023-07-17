@@ -38,8 +38,8 @@ const CompareDiseasesTable: React.FC = () => {
 
   const truncateDescription = (html: string) => {
     if (!html) return ""; 
-    let sanitized = html.replace(/(<([^>]+)>)/gi, "");
-    let words = sanitized.split(' ');
+    const sanitized = html.replace(/(<([^>]+)>)/gi, "");
+    const words = sanitized.split(' ');
     if (words.length > 20) {
       return words.slice(0, 10).join(' ') + '...';
     } else {

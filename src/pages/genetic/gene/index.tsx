@@ -154,19 +154,18 @@ const GeneDetails = () => {
 useEffect(() => {
   const isDiseaseInCompareList = () => {
     if (typeof window !== 'undefined') {
-      let compareGenetics = JSON.parse(localStorage.getItem('compareGenetics') || '[]');
+      const compareGenetics = JSON.parse(localStorage.getItem('compareGenetics') || '[]');
       return compareGenetics.some((compGenetic: GeneticData) => compGenetic.name === geneData.name);
     }
     return false;
   };
 
   setIsCompared(isDiseaseInCompareList());
-}, []);
+}, [geneData.name]);
 
 const handleClick = () => {
   if (typeof window !== 'undefined') {
-    let compareGenetics = JSON.parse(localStorage.getItem('compareGenetics') || '[]');
-    console.log(compareGenetics);
+    const compareGenetics = JSON.parse(localStorage.getItem('compareGenetics') || '[]');
     if (compareGenetics.some((compGenetic: GeneticData) => compGenetic.name === geneData.name)) {
       return;
     }
@@ -180,9 +179,8 @@ const handleClick = () => {
 
 const removeCompare = () => {
   if (typeof window !== 'undefined') {
-    let compareGenetics = JSON.parse(localStorage.getItem('compareGenetics') || '[]');
-
-    let index = compareGenetics.findIndex((compGenetic: GeneticData) => compGenetic.name === geneData.name);
+    const compareGenetics = JSON.parse(localStorage.getItem('compareGenetics') || '[]');
+    const index = compareGenetics.findIndex((compGenetic: GeneticData) => compGenetic.name === geneData.name);
 
     if (index !== -1) {
       compareGenetics.splice(index, 1);

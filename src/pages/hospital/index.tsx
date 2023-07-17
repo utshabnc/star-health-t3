@@ -55,6 +55,7 @@ const HospitalDetails = () => {
   const navigate = useRouter();
   const hospitalId = navigate.query?.hospital_id as string;
   const hospitalAddress = navigate.query?.hospital_address as string
+  const [isCompared, setIsCompared] = useState(false);
 
   const hospitalDataTemplate: Sections = {
     [Section.overview]: [
@@ -448,6 +449,18 @@ const HospitalDetails = () => {
     }
 
   }, [hospitalId]);
+  
+  useEffect(() => {
+    const isDiseaseInCompareList = () => {
+      if (typeof window !== 'undefined') {
+        const compareHospitals = JSON.parse(localStorage.getItem('compareHospitals') || '[]');
+        return compareHospitals.some((compHospital: HospitalData) => compHospital.name === hospitalDetails?.at(0)?.data_name);
+      }
+      return false;
+    };
+  
+    setIsCompared(isDiseaseInCompareList());
+  }, [hospitalDetails]);
 
   useEffect(() => {
     const options = {
@@ -591,23 +604,11 @@ const HospitalDetails = () => {
     return <ErrorComponent>{error.msg}</ErrorComponent>;
   }
 
-  const [isCompared, setIsCompared] = useState(false);
-
-useEffect(() => {
-  const isDiseaseInCompareList = () => {
-    if (typeof window !== 'undefined') {
-      let compareHospitals = JSON.parse(localStorage.getItem('compareHospitals') || '[]');
-      return compareHospitals.some((compHospital: HospitalData) => compHospital.name === hospitalDetails?.at(0)?.data_name);
-    }
-    return false;
-  };
-
-  setIsCompared(isDiseaseInCompareList());
-}, []);
+  
 
 const handleClick = () => {
   if (typeof window !== 'undefined') {
-    let compareHospitals = JSON.parse(localStorage.getItem('compareHospitals') || '[]');
+    const compareHospitals = JSON.parse(localStorage.getItem('compareHospitals') || '[]');
     console.log(compareHospitals);
     if (compareHospitals.some((compHospital: HospitalData) => compHospital.name === hospitalDetails?.at(0)?.data_name)) {
       
@@ -623,9 +624,9 @@ const handleClick = () => {
 
 const removeCompare = () => {
   if (typeof window !== 'undefined') {
-    let compareHospitals = JSON.parse(localStorage.getItem('compareHospitals') || '[]');
+    const compareHospitals = JSON.parse(localStorage.getItem('compareHospitals') || '[]');
 
-    let index = compareHospitals.findIndex((compHospital: HospitalData) => compHospital.name === hospitalDetails?.at(0)?.data_name);
+    const index = compareHospitals.findIndex((compHospital: HospitalData) => compHospital.name === hospitalDetails?.at(0)?.data_name);
 
     if (index !== -1) {
       compareHospitals.splice(index, 1);

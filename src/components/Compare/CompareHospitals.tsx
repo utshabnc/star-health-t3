@@ -25,7 +25,7 @@ const CompareHospitals: React.FC = () => {
   }, []);
 
   const removeHospital = (index: number) => {
-    let compareHospitals = JSON.parse(localStorage.getItem('compareHospitals') || '[]');
+    const compareHospitals = JSON.parse(localStorage.getItem('compareHospitals') || '[]');
     compareHospitals.splice(index, 1);
     localStorage.setItem('compareHospitals', JSON.stringify(compareHospitals));
     setHospitals(compareHospitals);
