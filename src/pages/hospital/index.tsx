@@ -55,6 +55,7 @@ const HospitalDetails = () => {
   const navigate = useRouter();
   const hospitalId = navigate.query?.hospital_id as string;
   const hospitalAddress = navigate.query?.hospital_address as string
+  const [isCompared, setIsCompared] = useState(false);
 
   const hospitalDataTemplate: Sections = {
     [Section.overview]: [
@@ -448,6 +449,18 @@ const HospitalDetails = () => {
     }
 
   }, [hospitalId]);
+  
+  useEffect(() => {
+    const isDiseaseInCompareList = () => {
+      if (typeof window !== 'undefined') {
+        const compareHospitals = JSON.parse(localStorage.getItem('compareHospitals') || '[]');
+        return compareHospitals.some((compHospital: HospitalData) => compHospital.name === hospitalDetails?.at(0)?.data_name);
+      }
+      return false;
+    };
+  
+    setIsCompared(isDiseaseInCompareList());
+  }, [hospitalDetails]);
 
   useEffect(() => {
     const options = {
@@ -591,6 +604,39 @@ const HospitalDetails = () => {
     return <ErrorComponent>{error.msg}</ErrorComponent>;
   }
 
+  
+
+const handleClick = () => {
+  if (typeof window !== 'undefined') {
+    const compareHospitals = JSON.parse(localStorage.getItem('compareHospitals') || '[]');
+    console.log(compareHospitals);
+    if (compareHospitals.some((compHospital: HospitalData) => compHospital.name === hospitalDetails?.at(0)?.data_name)) {
+      
+      return;
+    }
+
+    compareHospitals.push(hospitalDetails?.at(-1));
+
+    localStorage.setItem('compareHospitals', JSON.stringify(compareHospitals));
+    setIsCompared(true);
+  }
+};
+
+const removeCompare = () => {
+  if (typeof window !== 'undefined') {
+    const compareHospitals = JSON.parse(localStorage.getItem('compareHospitals') || '[]');
+
+    const index = compareHospitals.findIndex((compHospital: HospitalData) => compHospital.name === hospitalDetails?.at(0)?.data_name);
+
+    if (index !== -1) {
+      compareHospitals.splice(index, 1);
+    }
+
+    localStorage.setItem('compareHospitals', JSON.stringify(compareHospitals));
+    setIsCompared(false);
+  }
+};
+
   return !hospitalDetails || isProcessing ? (
     <LoadingStarHealth />
   ) : (
@@ -633,6 +679,14 @@ const HospitalDetails = () => {
                 </div>
                 <div className="ml-1">
                   <BookmarkButton title={hospitalDetails?.at(0)?.data_name || '-'} categoryId={DataDirectoryCategory.Hospitals} />
+                </div>
+                <div className="ml-1">
+                  <button
+                    className="ease focus:shadow-outline select-none rounded-md border border-violet-700 bg-violet-700 px-4 py-2 text-white transition duration-500 hover:bg-violet-900 focus:outline-none"
+                    onClick={isCompared ? removeCompare : handleClick}
+                  >
+                    {isCompared ? 'Remove Compare Item' : 'Compare'}
+                  </button>
                 </div>
               </div>
             </div>

@@ -19,6 +19,19 @@ const OpioidTreatmentProviderDetails = () => {
 
   const query = useMemo(() => ({ id }), [id]);
   const { data } = trpc.db.opioidTreatment.useQuery(query);
+  const [isCompared, setIsCompared] = useState(false);
+
+  useEffect(() => {
+    const isOpioidInCompareList = () => {
+      if (typeof window !== 'undefined' && provider) {
+        let compareOpioid = JSON.parse(localStorage.getItem('compareOpioid') || '[]');
+        return compareOpioid.some((compOpioid: OpioidTreatmentProvider) => compOpioid.id === provider.id);
+      }
+      return false;
+    };
+  
+    setIsCompared(isOpioidInCompareList());
+  }, []);
 
   useEffect(() => {
     setProvider(data);
@@ -130,6 +143,36 @@ const OpioidTreatmentProviderDetails = () => {
       </>
     );
   }
+const handleClick = () => {
+  if (typeof window !== 'undefined') {
+    let compareOpioid = JSON.parse(localStorage.getItem('compareOpioid') || '[]');
+    console.log(compareOpioid);
+    if (compareOpioid.some((compOpioid: OpioidTreatmentProvider) => compOpioid.id === provider.id)) {
+      
+      return;
+    }
+
+    compareOpioid.push(provider);
+
+    localStorage.setItem('compareOpioid', JSON.stringify(compareOpioid));
+    setIsCompared(true);
+  }
+};
+
+const removeCompare = () => {
+  if (typeof window !== 'undefined') {
+    let compareOpioid = JSON.parse(localStorage.getItem('compareOpioid') || '[]');
+
+    let index = compareOpioid.findIndex((compOpioid: OpioidTreatmentProvider) => compOpioid.id === provider.id);
+
+    if (index !== -1) {
+      compareOpioid.splice(index, 1);
+    }
+
+    localStorage.setItem('compareOpioid', JSON.stringify(compareOpioid));
+    setIsCompared(false);
+  }
+};
 
   return (
     <>
@@ -167,6 +210,14 @@ const OpioidTreatmentProviderDetails = () => {
                 <Citation title={toTitleCase((provider?.provider_name?.toLowerCase()) ?? "")} />
                 <div className="ml-1">
                   <BookmarkButton title={toTitleCase((provider?.provider_name?.toLowerCase()) ?? "")} categoryId={DataDirectoryCategory.OpioidTreatment} />
+                </div>
+                <div className="ml-1">
+                  <button
+                    className="ease focus:shadow-outline select-none rounded-md border border-violet-700 bg-violet-700 px-4 py-2 text-white transition duration-500 hover:bg-violet-900 focus:outline-none"
+                    onClick={isCompared ? removeCompare : handleClick}
+                  >
+                    {isCompared ? 'Remove Compare Item' : 'Compare'}
+                  </button>
                 </div>
               </div>
             </div>

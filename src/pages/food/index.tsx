@@ -168,6 +168,50 @@ const FoodDetails = () => {
       fetchFoodData(foodID);
     }
   }, [foodID]);
+  
+  const [isCompared, setIsCompared] = useState(false);
+
+  useEffect(() => {
+    const isFoodInCompareList = () => {
+      if (typeof window !== 'undefined') {
+        let compareFood = JSON.parse(localStorage.getItem('compareFood') || '[]');
+        return compareFood.some((compFood: FoodData) => compFood.fdcID === foodData.fdcID);
+      }
+      return false;
+    };
+  
+    setIsCompared(isFoodInCompareList());
+  }, []);
+  
+  const handleClick = () => {
+    if (typeof window !== 'undefined') {
+      let compareFood = JSON.parse(localStorage.getItem('compareFood') || '[]');
+      console.log(compareFood);
+      if (compareFood.some((compFood: FoodData) => compFood.foodCategory === foodData.foodCategory)) {
+        return;
+      }
+  
+      compareFood.push(foodData);
+  
+      localStorage.setItem('compareFood', JSON.stringify(compareFood));
+      setIsCompared(true);
+    }
+  };
+  
+  const removeCompare = () => {
+    if (typeof window !== 'undefined') {
+      let compareFood = JSON.parse(localStorage.getItem('compareFood') || '[]');
+  
+      let index = compareFood.findIndex((compFood: FoodData) => compFood.foodCategory === foodData.foodCategory);
+  
+      if (index !== -1) {
+        compareFood.splice(index, 1);
+      }
+  
+      localStorage.setItem('compareFood', JSON.stringify(compareFood));
+      setIsCompared(false);
+    }
+  };
 
   return foodData && isProcessing ? (
     <LoadingStarHealth />
@@ -227,6 +271,14 @@ const FoodDetails = () => {
                   <BookmarkButton title={foodData.description
                     ? upperCaseAllWords(foodData.description)
                     : ""} categoryId={DataDirectoryCategory.Food} />
+                </div>
+                <div className="ml-1">
+                  <button
+                    className="ease focus:shadow-outline select-none rounded-md border border-violet-700 bg-violet-700 px-4 py-2 text-white transition duration-500 hover:bg-violet-900 focus:outline-none"
+                    onClick={isCompared ? removeCompare : handleClick}
+                  >
+                    {isCompared ? 'Remove Compare Item' : 'Compare'}
+                  </button>
                 </div>
               </div>
             </div>
