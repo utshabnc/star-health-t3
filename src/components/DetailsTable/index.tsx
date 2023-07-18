@@ -13,6 +13,8 @@ interface ResultSchema {
   name: string;
   location: string;
   type: "doctor" | "manufacturer" | "drug";
+  link: string
+
 }
 
 const tableHeaders =
@@ -52,8 +54,7 @@ function DetailsTable({ rows }: { rows: ResultSchema[] }) {
                         </td>
                       }
                       <td className="p-2">
-                        <Link href={`/${row.type}/${row.id}`}>
-                          <p className="text-left text-base font-medium text-violet-700 sm:underline lg:no-underline">
+                      <Link href={`${row.link}`}>                          <p className="text-left text-base font-medium text-violet-700 sm:underline lg:no-underline">
                             {formatName(row.name)}
                           </p>
                         </Link>
@@ -69,7 +70,7 @@ function DetailsTable({ rows }: { rows: ResultSchema[] }) {
                           <div className="flex justify-center">
                             <button
                               onClick={() =>
-                                navigation.push(`/${row.type}/${row.id}`)
+                                navigation.push(`${row.link}`)
                               }
                               className="buttonText ease m-2 rounded-md bg-violet-600 px-4 py-2 text-white transition duration-500 hover:bg-violet-700 active:bg-violet-800"
                             >

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import {HospitalOwners} from "./HospitalOwners.model"
+import NoResultComponent from "../NoResultComponent";
 
 type Data = {
   results: HospitalOwners[]
@@ -8,6 +9,8 @@ type Data = {
 export default function HospitalOwnersComponent(props: Data) {
   return (
     <>
+    {(!props.results||props.results.length==0)&&
+    <NoResultComponent title="Health Plan"></NoResultComponent>}
       {props.results.map((hospital: any, index: any) => {
         return (
           <div key={index} className="mb-2 w-[100%] rounded-lg bg-white shadow-lg">
