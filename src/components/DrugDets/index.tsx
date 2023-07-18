@@ -22,7 +22,7 @@ function classNames(...classes: string[]) {
 
 export const DrugDets = ({ drug, onChangeYear }: DrugSchema) => {
   const isDrugInCompareList = () => {
-    let compareDrugDevs = JSON.parse(localStorage.getItem('compareDrugDevs') || '[]');
+    const compareDrugDevs = JSON.parse(localStorage.getItem('compareDrugDevs') || '[]');
     return compareDrugDevs.some((compDrugDevs: ProductResponse) => compDrugDevs.id === drug.id);
   };
   const [year, setYear] = useState(0);
@@ -33,7 +33,7 @@ export const DrugDets = ({ drug, onChangeYear }: DrugSchema) => {
   }, [year]);
 
   const handleClick = () => {
-    let compareDrugDevs = JSON.parse(localStorage.getItem('compareDrugDevs') || '[]');
+    const compareDrugDevs = JSON.parse(localStorage.getItem('compareDrugDevs') || '[]');
     if (compareDrugDevs.some((compDrugDevs: ProductResponse) => compDrugDevs.id === drug.id)) {
       
       return;
@@ -47,8 +47,8 @@ export const DrugDets = ({ drug, onChangeYear }: DrugSchema) => {
 
   const removeCompare = () => {
 
-    let compareDrugDevs = JSON.parse(localStorage.getItem('compareDrugDevs') || '[]');
-    let index = compareDrugDevs.findIndex((compDrugDevs: ProductResponse) => compDrugDevs.id === drug.name);
+    const compareDrugDevs = JSON.parse(localStorage.getItem('compareDrugDevs') || '[]');
+    const index = compareDrugDevs.findIndex((compDrugDevs: ProductResponse) => compDrugDevs.id === drug.name);
   
     if (index !== -1) {
       compareDrugDevs.splice(index, 1);

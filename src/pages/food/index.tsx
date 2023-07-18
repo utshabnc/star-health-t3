@@ -174,7 +174,7 @@ const FoodDetails = () => {
   useEffect(() => {
     const isFoodInCompareList = () => {
       if (typeof window !== 'undefined') {
-        let compareFood = JSON.parse(localStorage.getItem('compareFood') || '[]');
+        const compareFood = JSON.parse(localStorage.getItem('compareFood') || '[]');
         return compareFood.some((compFood: FoodData) => compFood.fdcID === foodData.fdcID);
       }
       return false;
@@ -185,7 +185,7 @@ const FoodDetails = () => {
   
   const handleClick = () => {
     if (typeof window !== 'undefined') {
-      let compareFood = JSON.parse(localStorage.getItem('compareFood') || '[]');
+      const compareFood = JSON.parse(localStorage.getItem('compareFood') || '[]');
       console.log(compareFood);
       if (compareFood.some((compFood: FoodData) => compFood.foodCategory === foodData.foodCategory)) {
         return;
@@ -200,9 +200,9 @@ const FoodDetails = () => {
   
   const removeCompare = () => {
     if (typeof window !== 'undefined') {
-      let compareFood = JSON.parse(localStorage.getItem('compareFood') || '[]');
+      const compareFood = JSON.parse(localStorage.getItem('compareFood') || '[]');
   
-      let index = compareFood.findIndex((compFood: FoodData) => compFood.foodCategory === foodData.foodCategory);
+      const index = compareFood.findIndex((compFood: FoodData) => compFood.foodCategory === foodData.foodCategory);
   
       if (index !== -1) {
         compareFood.splice(index, 1);

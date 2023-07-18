@@ -24,7 +24,7 @@ const OpioidTreatmentProviderDetails = () => {
   useEffect(() => {
     const isOpioidInCompareList = () => {
       if (typeof window !== 'undefined' && provider) {
-        let compareOpioid = JSON.parse(localStorage.getItem('compareOpioid') || '[]');
+        const compareOpioid = JSON.parse(localStorage.getItem('compareOpioid') || '[]');
         return compareOpioid.some((compOpioid: OpioidTreatmentProvider) => compOpioid.id === provider.id);
       }
       return false;
@@ -145,7 +145,7 @@ const OpioidTreatmentProviderDetails = () => {
   }
 const handleClick = () => {
   if (typeof window !== 'undefined') {
-    let compareOpioid = JSON.parse(localStorage.getItem('compareOpioid') || '[]');
+    const compareOpioid = JSON.parse(localStorage.getItem('compareOpioid') || '[]');
     console.log(compareOpioid);
     if (compareOpioid.some((compOpioid: OpioidTreatmentProvider) => compOpioid.id === provider.id)) {
       
@@ -161,9 +161,9 @@ const handleClick = () => {
 
 const removeCompare = () => {
   if (typeof window !== 'undefined') {
-    let compareOpioid = JSON.parse(localStorage.getItem('compareOpioid') || '[]');
+    const compareOpioid = JSON.parse(localStorage.getItem('compareOpioid') || '[]');
 
-    let index = compareOpioid.findIndex((compOpioid: OpioidTreatmentProvider) => compOpioid.id === provider.id);
+    const index = compareOpioid.findIndex((compOpioid: OpioidTreatmentProvider) => compOpioid.id === provider.id);
 
     if (index !== -1) {
       compareOpioid.splice(index, 1);

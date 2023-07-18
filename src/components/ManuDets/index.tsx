@@ -32,7 +32,7 @@ const NUM_MANUFACTURERS = 2471;
 
 export const ManuDets = (schema: MenuSchema) => {
   const isMenuInCompareList = () => {
-    let compareMenus = JSON.parse(localStorage.getItem('compareMenus') || '[]');
+    const compareMenus = JSON.parse(localStorage.getItem('compareMenus') || '[]');
     return compareMenus.some((compMenu: MenuSchema) => compMenu.manufacturer?.name === schema.manufacturer?.name);
   };
   const d = new Date();
@@ -45,7 +45,7 @@ export const ManuDets = (schema: MenuSchema) => {
   
   
   const handleClick = () => {
-    let compareMenus = JSON.parse(localStorage.getItem('compareMenus') || '[]');
+    const compareMenus = JSON.parse(localStorage.getItem('compareMenus') || '[]');
     if (compareMenus.some((compMenu: MenuSchema) => compMenu.manufacturer?.name === schema.manufacturer?.name)) {
       
       return;
@@ -56,9 +56,9 @@ export const ManuDets = (schema: MenuSchema) => {
   };
 
   const removeCompare = () => {
-    let compareMenus = JSON.parse(localStorage.getItem('compareMenus') || '[]');
+    const compareMenus = JSON.parse(localStorage.getItem('compareMenus') || '[]');
   
-    let index = compareMenus.findIndex((doc: MenuSchema) => doc.manufacturer?.name === schema.manufacturer?.name);
+    const index = compareMenus.findIndex((doc: MenuSchema) => doc.manufacturer?.name === schema.manufacturer?.name);
     if (index !== -1) {
       compareMenus.splice(index, 1);
     }

@@ -227,7 +227,7 @@ const HospitalDetails = () => {
 useEffect(() => {
   const isDiseaseInCompareList = () => {
     if (typeof window !== 'undefined') {
-      let compareHospitalOwners = JSON.parse(localStorage.getItem('compareHospitalOwners') || '[]');
+      const compareHospitalOwners = JSON.parse(localStorage.getItem('compareHospitalOwners') || '[]');
       return compareHospitalOwners.some((compHospitalOwners: HospitalOwners) => compHospitalOwners.ORGANIZATION_NAME === data.ORGANIZATION_NAME);
     }
     return false;
@@ -238,7 +238,7 @@ useEffect(() => {
 
 const handleClick = () => {
   if (typeof window !== 'undefined') {
-    let compareHospitalOwners = JSON.parse(localStorage.getItem('compareHospitalOwners') || '[]');
+    const compareHospitalOwners = JSON.parse(localStorage.getItem('compareHospitalOwners') || '[]');
     console.log(compareHospitalOwners);
     if (compareHospitalOwners.some((compHospitalOwners: HospitalOwners) => compHospitalOwners.ORGANIZATION_NAME === data.ORGANIZATION_NAME)) {
       return;
@@ -253,9 +253,9 @@ const handleClick = () => {
 
 const removeCompare = () => {
   if (typeof window !== 'undefined') {
-    let compareHospitalOwners = JSON.parse(localStorage.getItem('compareHospitalOwners') || '[]');
+    const compareHospitalOwners = JSON.parse(localStorage.getItem('compareHospitalOwners') || '[]');
 
-    let index = compareHospitalOwners.findIndex((compHospitalOwners: HospitalOwners) => compHospitalOwners.ORGANIZATION_NAME === data.ORGANIZATION_NAME);
+    const index = compareHospitalOwners.findIndex((compHospitalOwners: HospitalOwners) => compHospitalOwners.ORGANIZATION_NAME === data.ORGANIZATION_NAME);
 
     if (index !== -1) {
       compareHospitalOwners.splice(index, 1);
