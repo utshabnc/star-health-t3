@@ -1,8 +1,11 @@
 import Link from "next/link";
+import NoResultComponent from "../NoResultComponent";
 
 export default function HealthPlansList({ plans }: any) {
   return (
     <>
+    {plans?.length==0&&
+    <NoResultComponent title="Health Plan"></NoResultComponent>}
       {plans?.map((plan: any, index: number) => {
         return (
           <div

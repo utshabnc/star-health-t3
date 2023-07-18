@@ -1,9 +1,12 @@
 import Link from "next/link";
 import type { ClinicalTrialsListItem, ClinicalTrialsStudyFieldsResponse } from "./ClinicalTrialsStudyFieldsResponse.model";
+import NoResultComponent from "../NoResultComponent";
 
 export default function ClinicalTrialsComponent({ data }: { data: ClinicalTrialsStudyFieldsResponse<ClinicalTrialsListItem> }) {
   return (
     <>
+    {!data.StudyFieldsResponse?.StudyFields &&
+<NoResultComponent title="Clinical Trail"></NoResultComponent>}
       {data.StudyFieldsResponse?.StudyFields?.map((study: ClinicalTrialsListItem, index: number) => {
         return (
           <div key={index} className="mb-2 w-[100%] rounded-lg bg-white shadow-lg">

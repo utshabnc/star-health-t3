@@ -1,10 +1,12 @@
 import Link from "next/link";
 import type { Hospital } from "./Hospital.model";
+import NoResultComponent from "../NoResultComponent";
 
 export default function HospitalsComponent({ data }: { data: Hospital[] }) {
 
   return (
     <>
+    {data.length==0&&<NoResultComponent title="Hospital"></NoResultComponent>}
       {data?.map((hospital: Hospital, index: number) => {
         return (
           <div key={index} className="mb-2 w-[100%] rounded-lg bg-white shadow-lg">

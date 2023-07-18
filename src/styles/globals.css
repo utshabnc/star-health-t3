@@ -64,3 +64,20 @@ input[type="range"]::-webkit-slider-thumb {
   color: #999;
   padding: 0.5rem;
 }
+
+.NoResultComp{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  align-content: center;
+  font-size: x-large;
+  font-weight: 700;
+  margin-top: 50px;
+  color: #010139;
+}
+
+.errorIcon{
+  font-size: 100px;
+  margin-bottom: 15px;
+}
