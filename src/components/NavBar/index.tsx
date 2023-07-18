@@ -12,7 +12,8 @@ import Link from "next/link";
 import { useSession, signIn, signOut } from "next-auth/react";
 import { HiOutlineSearch } from "react-icons/hi";
 import { IoMdClose } from "react-icons/io";
-import { GoThreeBars } from "react-icons/go";
+// import { GoThreeBars } from "react-icons/go";
+import { VscMenu } from "react-icons/vsc";
 
 // --- index.module.css ---
 // .title {
@@ -164,7 +165,7 @@ function NavBar() {
               {navbarOpen ? (
                 <IoMdClose size={110} color="white" />
               ) : (
-                <GoThreeBars size={110} color="white" />
+                <VscMenu size={110} color="white" />
               )}
             </button>
           </div>

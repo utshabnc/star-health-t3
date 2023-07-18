@@ -4,9 +4,10 @@ import { useRouter } from 'next/router';
 import { trpc } from '../../utils/trpc';
 import type { OpioidTreatmentProvider } from '../../components/OpioidTreatmentProviders/OpioidTreatmentProvider.model';
 import PhoneNumber from "../../components/PhoneNumber";
-import { toTitleCase } from "../../utils";
+import { toTitleCase, formatFullAddress } from "../../utils";
 import Citation from '../../components/Citation';
 import BookmarkButton from '../../components/BookmarkButton';
+import LocalMapEmbed from '../../components/LocalMapEmbed';
 import { DataDirectoryCategory } from '../../utils/Enums/DataDirectoryCategory.enum';
 
 const OpioidTreatmentProviderDetails = () => {
@@ -14,13 +15,69 @@ const OpioidTreatmentProviderDetails = () => {
   const id = navigate.query.id as string;
 
   const [provider, setProvider] = useState<OpioidTreatmentProvider | null | undefined>(null);
+  const [location, setLocation] = useState<any>(null);
 
   const query = useMemo(() => ({ id }), [id]);
   const { data } = trpc.db.opioidTreatment.useQuery(query);
+  const [isCompared, setIsCompared] = useState(false);
+
+  useEffect(() => {
+    const isOpioidInCompareList = () => {
+      if (typeof window !== 'undefined' && provider) {
+        const compareOpioid = JSON.parse(localStorage.getItem('compareOpioid') || '[]');
+        return compareOpioid.some((compOpioid: OpioidTreatmentProvider) => compOpioid.id === provider.id);
+      }
+      return false;
+    };
+  
+    setIsCompared(isOpioidInCompareList());
+  }, []);
 
   useEffect(() => {
     setProvider(data);
   }, [data]);
+
+  // THIS WILL FULL FORMAT THE PROVIDER ADDRESS PROPERTIES FOR GOOGLE MAPS CONSUMPTION
+  const handleAddress = () => {
+    if (provider !== undefined) {
+        const fullAddress = formatFullAddress(
+          provider?.address_line_1,
+          provider?.address_line_2,
+          provider?.city,
+          provider?.state,
+          provider?.zip
+        )
+
+      return fullAddress;
+    }
+  }
+
+  useEffect(() => {
+    const options = {
+      enableHighAccuracy: true,
+      timeout: 5000,
+      maximumAge: 0,
+    };
+    
+    function success(pos: any) {
+      const crd = pos.coords;
+
+      if (location === null) {
+        setLocation({
+          longitude: crd.longitude,
+          latitude: crd.latitude
+        })
+      }
+    }
+    
+    function error(err: any) {
+      console.warn(`ERROR(${err.code}): ${err.message}`);
+    }
+    
+    window.navigator.geolocation.getCurrentPosition(success, error, options);
+  })
+
+  const formattedAddress = provider !== undefined && handleAddress()
 
   // Loading Screen
   if (!provider) {
@@ -86,7 +143,36 @@ const OpioidTreatmentProviderDetails = () => {
       </>
     );
   }
+const handleClick = () => {
+  if (typeof window !== 'undefined') {
+    const compareOpioid = JSON.parse(localStorage.getItem('compareOpioid') || '[]');
+    console.log(compareOpioid);
+    if (compareOpioid.some((compOpioid: OpioidTreatmentProvider) => compOpioid.id === provider.id)) {
+      
+      return;
+    }
 
+    compareOpioid.push(provider);
+
+    localStorage.setItem('compareOpioid', JSON.stringify(compareOpioid));
+    setIsCompared(true);
+  }
+};
+
+const removeCompare = () => {
+  if (typeof window !== 'undefined') {
+    const compareOpioid = JSON.parse(localStorage.getItem('compareOpioid') || '[]');
+
+    const index = compareOpioid.findIndex((compOpioid: OpioidTreatmentProvider) => compOpioid.id === provider.id);
+
+    if (index !== -1) {
+      compareOpioid.splice(index, 1);
+    }
+
+    localStorage.setItem('compareOpioid', JSON.stringify(compareOpioid));
+    setIsCompared(false);
+  }
+};
 
   return (
     <>
@@ -125,6 +211,14 @@ const OpioidTreatmentProviderDetails = () => {
                 <div className="ml-1">
                   <BookmarkButton title={toTitleCase((provider?.provider_name?.toLowerCase()) ?? "")} categoryId={DataDirectoryCategory.OpioidTreatment} />
                 </div>
+                <div className="ml-1">
+                  <button
+                    className="ease focus:shadow-outline select-none rounded-md border border-violet-700 bg-violet-700 px-4 py-2 text-white transition duration-500 hover:bg-violet-900 focus:outline-none"
+                    onClick={isCompared ? removeCompare : handleClick}
+                  >
+                    {isCompared ? 'Remove Compare Item' : 'Compare'}
+                  </button>
+                </div>
               </div>
             </div>
             <p className='text-gray-500 text-sm'>
@@ -155,6 +249,7 @@ const OpioidTreatmentProviderDetails = () => {
                 </div>
               </div>
             </p>
+            <LocalMapEmbed address={formattedAddress} origin={location} />
           </div>
         </div>
       </div>

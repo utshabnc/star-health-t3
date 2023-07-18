@@ -21,11 +21,41 @@ function classNames(...classes: string[]) {
 }
 
 export const DrugDets = ({ drug, onChangeYear }: DrugSchema) => {
+  const isDrugInCompareList = () => {
+    const compareDrugDevs = JSON.parse(localStorage.getItem('compareDrugDevs') || '[]');
+    return compareDrugDevs.some((compDrugDevs: ProductResponse) => compDrugDevs.id === drug.id);
+  };
   const [year, setYear] = useState(0);
+  const [isCompared, setIsCompared] = useState(isDrugInCompareList);
 
   useEffect(() => {
     onChangeYear(year == 0 ? undefined : year);
   }, [year]);
+
+  const handleClick = () => {
+    const compareDrugDevs = JSON.parse(localStorage.getItem('compareDrugDevs') || '[]');
+    if (compareDrugDevs.some((compDrugDevs: ProductResponse) => compDrugDevs.id === drug.id)) {
+      
+      return;
+    }
+    compareDrugDevs.push(drug);
+    localStorage.setItem('compareDrugDevs', JSON.stringify(compareDrugDevs));
+    setIsCompared(true);
+  };
+
+  
+
+  const removeCompare = () => {
+
+    const compareDrugDevs = JSON.parse(localStorage.getItem('compareDrugDevs') || '[]');
+    const index = compareDrugDevs.findIndex((compDrugDevs: ProductResponse) => compDrugDevs.id === drug.name);
+  
+    if (index !== -1) {
+      compareDrugDevs.splice(index, 1);
+    }
+    localStorage.setItem('compareDrugDevs', JSON.stringify(compareDrugDevs));
+    setIsCompared(false);
+  };
 
   return (
     <>
@@ -38,6 +68,14 @@ export const DrugDets = ({ drug, onChangeYear }: DrugSchema) => {
             <Citation title={formatName(drug.name || "Unknown")} />
             <div className="ml-1">
               <BookmarkButton title={formatName(drug.name || "Unknown")} categoryId={DataDirectoryCategory.MedicalDevices} />
+            </div>
+            <div className="ml-1">
+              <button
+                className="ease focus:shadow-outline select-none rounded-md border border-violet-700 bg-violet-700 px-4 py-2 text-white transition duration-500 hover:bg-violet-900 focus:outline-none"
+                onClick={isCompared ? removeCompare : handleClick}
+              >
+                {isCompared ? 'Remove Compare Item' : 'Compare'}
+              </button>
             </div>
           </div>
         </div>
