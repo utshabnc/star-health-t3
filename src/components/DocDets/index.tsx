@@ -5,7 +5,7 @@ import { Fragment, useEffect, useState } from 'react';
 import { availableYears, formatMoney, formatName, formatNumber } from '../../utils';
 import _ from 'lodash';
 import type { DoctorResponse } from '../../server/trpc/router/db';
-import Link from 'next/link';
+
 import Citation from '../Citation';
 import { DataDirectoryCategory } from '../../utils/Enums/DataDirectoryCategory.enum';
 import BookmarkButton from '../BookmarkButton';
@@ -26,7 +26,7 @@ const NUM_DOCTORS = 1267275;
 
 export const DocDets = ({ doctor, onChangeYear }: DocSchema) => {
   const isDoctorInCompareList = () => {
-    let compareDoctors = JSON.parse(localStorage.getItem('compareDoctors') || '[]');
+    const compareDoctors = JSON.parse(localStorage.getItem('compareDoctors') || '[]');
     return compareDoctors.some((compDoctor: DoctorResponse) => compDoctor.id === doctor.id);
   };
   
@@ -44,7 +44,7 @@ export const DocDets = ({ doctor, onChangeYear }: DocSchema) => {
   const numReviews = doctor.reviews?.length ?? 0;
   
   const handleClick = () => {
-    let compareDoctors = JSON.parse(localStorage.getItem('compareDoctors') || '[]');
+    const compareDoctors = JSON.parse(localStorage.getItem('compareDoctors') || '[]');
     if (compareDoctors.some((compDoctor: DoctorResponse) => compDoctor.id === doctor.id)) {
       
       return;
@@ -55,8 +55,8 @@ export const DocDets = ({ doctor, onChangeYear }: DocSchema) => {
   };
   
   const removeCompare = () => {
-    let compareDoctors = JSON.parse(localStorage.getItem('compareDoctors') || '[]');
-    let index = compareDoctors.findIndex((doc: DoctorResponse) => doc.id === doctor.id);
+    const compareDoctors = JSON.parse(localStorage.getItem('compareDoctors') || '[]');
+    const index = compareDoctors.findIndex((doc: DoctorResponse) => doc.id === doctor.id);
     if (index !== -1) {
       compareDoctors.splice(index, 1);
     }
