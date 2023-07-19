@@ -10,6 +10,7 @@ import CompareInsurance from './CompareInsurance';
 import CompareMedicalDevices from './CompareMedicalDevices';
 import CompareManufacturers from './CompareManufacturers';
 import CompareOpiodTreatment from './CompareOpiodTreatment';
+import CompareFood from './CompareFood';
 
 
 
@@ -35,6 +36,8 @@ const Compare: React.FC = () => {
         return <CompareDrugs />;
       case 'Genetics':
         return <CompareGenetics />;
+      case 'Food':
+        return <CompareFood />;
       case 'Hospitals':
         return <CompareHospitals />;
       case 'Hospital Owners':
@@ -67,6 +70,7 @@ const Compare: React.FC = () => {
         <option value="Diseases">Diseases</option>
         <option value="Doctors">Doctors</option>
         <option value="Drugs">Drugs</option>
+        <option value="Food">Food</option>
         <option value="Genetics">Genetics</option>
         <option value="Hospitals">Hospitals</option>
         <option value="Hospital Owners">Hospital Owners</option>

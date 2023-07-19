@@ -19,9 +19,7 @@ const CompareHospitals: React.FC = () => {
 
   useEffect(() => {
     const loadedHospitals = JSON.parse(localStorage.getItem('compareHospitals') || '[]');
-    if (loadedHospitals.length > 0) {
-    setHospitals([loadedHospitals.at(loadedHospitals.length - 1)]);
-    }
+    setHospitals(loadedHospitals);
   }, []);
 
   const removeHospital = (index: number) => {

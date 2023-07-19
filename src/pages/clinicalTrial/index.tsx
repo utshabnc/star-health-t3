@@ -88,7 +88,6 @@ const ClinicalTrialDetails = () => {
     const isTrialInCompareList = () => {
       if (typeof window !== 'undefined' && clinicalTrialData) {
         const compareTrials = JSON.parse(localStorage.getItem('compareTrials') || '[]');
-        console.log(compareTrials);
         return compareTrials.some((compTrial: ClinicalTrialsFullStudyResponse) => compTrial?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.IdentificationModule?.BriefTitle === clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.IdentificationModule?.BriefTitle);
       }
       
@@ -101,7 +100,6 @@ const ClinicalTrialDetails = () => {
   const handleClick = () => {
     if (typeof window !== 'undefined') {
       const compareTrials = JSON.parse(localStorage.getItem('compareTrials') || '[]');
-      console.log(compareTrials);
       if (compareTrials.some((compTrial: ClinicalTrialsFullStudyResponse) => compTrial?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.IdentificationModule?.BriefTitle === clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.IdentificationModule?.BriefTitle)) {
         
         return;

@@ -451,15 +451,15 @@ const HospitalDetails = () => {
   }, [hospitalId]);
   
   useEffect(() => {
-    const isDiseaseInCompareList = () => {
+    const isHospitalInCompareList = () => {
       if (typeof window !== 'undefined') {
         const compareHospitals = JSON.parse(localStorage.getItem('compareHospitals') || '[]');
-        return compareHospitals.some((compHospital: HospitalData) => compHospital.name === hospitalDetails?.at(0)?.data_name);
+        return compareHospitals.some((compHospital: HospitalData) => compHospital.hospital_data_id === hospitalDetails?.at(-1)?.hospital_data_id);
       }
       return false;
     };
   
-    setIsCompared(isDiseaseInCompareList());
+    setIsCompared(isHospitalInCompareList());
   }, [hospitalDetails]);
 
   useEffect(() => {
@@ -609,8 +609,7 @@ const HospitalDetails = () => {
 const handleClick = () => {
   if (typeof window !== 'undefined') {
     const compareHospitals = JSON.parse(localStorage.getItem('compareHospitals') || '[]');
-    console.log(compareHospitals);
-    if (compareHospitals.some((compHospital: HospitalData) => compHospital.name === hospitalDetails?.at(0)?.data_name)) {
+    if (compareHospitals.some((compHospital: HospitalData) => compHospital.hospital_data_id === hospitalDetails?.at(-1)?.hospital_data_id)) {
       
       return;
     }
@@ -626,7 +625,7 @@ const removeCompare = () => {
   if (typeof window !== 'undefined') {
     const compareHospitals = JSON.parse(localStorage.getItem('compareHospitals') || '[]');
 
-    const index = compareHospitals.findIndex((compHospital: HospitalData) => compHospital.name === hospitalDetails?.at(0)?.data_name);
+    const index = compareHospitals.findIndex((compHospital: HospitalData) => compHospital.hospital_data_id === hospitalDetails?.at(-1)?.hospital_data_id);
 
     if (index !== -1) {
       compareHospitals.splice(index, 1);

@@ -175,7 +175,7 @@ const FoodDetails = () => {
     const isFoodInCompareList = () => {
       if (typeof window !== 'undefined') {
         const compareFood = JSON.parse(localStorage.getItem('compareFood') || '[]');
-        return compareFood.some((compFood: FoodData) => compFood.fdcID === foodData.fdcID);
+        return compareFood.some((compFood: FoodData) => compFood.description === foodData.description);
       }
       return false;
     };
@@ -187,7 +187,7 @@ const FoodDetails = () => {
     if (typeof window !== 'undefined') {
       const compareFood = JSON.parse(localStorage.getItem('compareFood') || '[]');
       console.log(compareFood);
-      if (compareFood.some((compFood: FoodData) => compFood.foodCategory === foodData.foodCategory)) {
+      if (compareFood.some((compFood: FoodData) => compFood.description === foodData.description)) {
         return;
       }
   
@@ -202,7 +202,7 @@ const FoodDetails = () => {
     if (typeof window !== 'undefined') {
       const compareFood = JSON.parse(localStorage.getItem('compareFood') || '[]');
   
-      const index = compareFood.findIndex((compFood: FoodData) => compFood.foodCategory === foodData.foodCategory);
+      const index = compareFood.findIndex((compFood: FoodData) => compFood.description === foodData.description);
   
       if (index !== -1) {
         compareFood.splice(index, 1);

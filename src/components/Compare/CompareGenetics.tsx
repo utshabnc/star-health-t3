@@ -2,13 +2,22 @@ import React, { useEffect, useState } from 'react';
 import { TrashIcon } from '@heroicons/react/outline';
 import Link from 'next/link';
 
+interface Synonym {
+  synonym: string;
+}
+
+interface RelatedHealthCondition {
+  name: string;
+  'ghr-page': string;
+}
+
 interface GeneticInfo {
   'gene-symbol': string;
   name: string;
   'ghr-page': string;
-  'text-list': Array<any>;
-  'related-health-condition-list': Array<any>;
-  'synonym-list': Array<any>;
+  'text-list': Array<{text: {html: string}}>;
+  'related-health-condition-list': Array<{ 'related-health-condition': RelatedHealthCondition }>;
+  'synonym-list': Array<Synonym>;
   'db-key-list': Array<any>;
   reviewed: string;
   published: string;
@@ -17,7 +26,6 @@ interface GeneticInfo {
 const CompareGenetics: React.FC = () => {
   const [geneticData, setGeneticData] = useState<GeneticInfo[]>([]);
 
-  // Load genetic data from localStorage when component mounts
   useEffect(() => {
     const loadedGeneticData = JSON.parse(localStorage.getItem('compareGenetics') || '[]');
     setGeneticData(loadedGeneticData);
@@ -29,6 +37,14 @@ const CompareGenetics: React.FC = () => {
     localStorage.setItem('compareGenetics', JSON.stringify(compareGenetics));
     setGeneticData(compareGenetics);
   }
+
+  const splitAfterTenWords = (str: string): string[] => {
+    const words = str.split(' ');
+    if (words.length > 10) {
+      return [words.slice(0, 10).join(' '), ...splitAfterTenWords(words.slice(10).join(' '))];
+    }
+    return [str];
+  };
 
   return (
     <div className="overflow-x-auto">
@@ -50,23 +66,50 @@ const CompareGenetics: React.FC = () => {
           </tr>
         </thead>
         <tbody className="bg-white divide-y divide-gray-200">
-          <tr>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">Name</th>
+        <tr>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">Description</th>
             {geneticData.map((data, i) => (
               <td className="px-6 py-4 whitespace-nowrap" key={i}>
-                {data.name}
+                {data['text-list'].map((textItem, j) => {
+                  const descriptionParts = splitAfterTenWords(textItem.text.html.replace(/<\/?[^>]+(>|$)/g, ""));
+                  return (
+                    <div key={j}>
+                      {descriptionParts.map((part, k) => <div key={k}>{part}</div>)}
+                    </div>
+                  );
+                })}
               </td>
             ))}
           </tr>
           <tr>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">GHR Page</th>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">Related Health Condition</th>
             {geneticData.map((data, i) => (
               <td className="px-6 py-4 whitespace-nowrap" key={i}>
-                <a href={data['ghr-page']} target="_blank" rel="noreferrer">{data['ghr-page']}</a>
+                {data['related-health-condition-list'].map((item, j) => (
+                  <div key={j}>
+                    <p>{item['related-health-condition'].name}</p>
+                    <a href={item['related-health-condition']['ghr-page']} target="_blank" rel="noreferrer">{item['related-health-condition']['ghr-page']}</a>
+                  </div>
+                ))}
               </td>
             ))}
           </tr>
-          {/* Add more rows as needed */}
+          <tr>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">Synonyms</th>
+            {geneticData.map((data, i) => (
+              <td className="px-6 py-4 whitespace-nowrap" key={i}>
+                {data['synonym-list'].map((synonymObj, j) => {
+                  const [firstPart, secondPart] = splitAfterTenWords(synonymObj.synonym);
+                  return (
+                    <div key={j}>
+                      <div>{firstPart}</div>
+                      {secondPart && <div>{secondPart}</div>}
+                    </div>
+                  );
+                })}
+              </td>
+            ))}
+          </tr>
           <tr>
             <th className="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">Remove</th>
             {geneticData.map((_, i) => (
