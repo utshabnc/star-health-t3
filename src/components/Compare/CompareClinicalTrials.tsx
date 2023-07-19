@@ -55,7 +55,6 @@ const CompareClinicalTrials: React.FC = () => {
   useEffect(() => {
     let loadedTrials = JSON.parse(localStorage.getItem('compareTrials') || '[]');
     loadedTrials = loadedTrials.filter((trial: ClinicalTrialsFullStudyResponse | null) => trial !== null);
-    console.log(loadedTrials)
     setTrials(loadedTrials);
   }, []);
 

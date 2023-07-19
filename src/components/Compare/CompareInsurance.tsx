@@ -33,6 +33,9 @@ interface InsurancePlan {
   type: string;
   state: string;
   benefits: Benefit[];
+  benefits_url: string;
+  brochure_url: string;
+  formulary_url: string;
 }
 
 const CompareInsurance: React.FC = () => {
@@ -74,6 +77,33 @@ const CompareInsurance: React.FC = () => {
               </th>
             ))}
           </tr>
+          <tr>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">Benefits</th>
+            {insurancePlans.map((insurancePlan, i) => (
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider" key={i}>
+                <Link className="text-md mb-2 font-medium text-violet-700 underline w-[75%]"
+                 href={insurancePlan.benefits_url}>benefits</Link>
+              </th>
+            ))}
+          </tr>
+          <tr>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">Brochure</th>
+            {insurancePlans.map((insurancePlan, i) => (
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider" key={i}>
+                <Link className="text-md mb-2 font-medium text-violet-700 underline w-[75%]"
+                href={insurancePlan.brochure_url}>brochure</Link>
+              </th>
+            ))}
+          </tr>
+          <tr>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">Formulary</th>
+            {insurancePlans.map((insurancePlan, i) => (
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider" key={i}>
+                <Link className="text-md mb-2 font-medium text-violet-700 underline w-[75%]"
+                href={insurancePlan.formulary_url}>formulary</Link>
+              </th>
+            ))}
+          </tr>
         </thead>
         <tbody className="bg-white divide-y divide-gray-200">
           {insurancePlans[0]?.benefits.map((benefit, i) => (
@@ -99,6 +129,5 @@ const CompareInsurance: React.FC = () => {
       )}
     </div>
   );
-};
-
-export default CompareInsurance;
+            }
+  export default CompareInsurance;
