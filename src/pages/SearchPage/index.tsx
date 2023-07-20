@@ -1,15 +1,11 @@
 import {
-  ChangeEvent,
   useCallback,
   useEffect,
-  useMemo,
-  useRef,
   useState,
 } from "react";
 import { debounce } from "lodash";
 import DetailsTable from "../../components/DetailsTable";
-import { formatName, formatLocation } from "../../utils";
-import Search from "../../components/Search";
+import { formatLocation } from "../../utils";
 import { Popover } from "react-tiny-popover";
 import { useRouter } from "next/router";
 import { trpc } from "../../utils/trpc";
@@ -125,7 +121,7 @@ const SearchPage = ({ buttonPlaceholder, buttonSmall }: Props) => {
                 name: name ?? "",
                 location: "",
                 link:'/drug/'+id,
-                type: "Device" as const,
+                type: "device" as const,
                 })),
                 ...searchResults?.hospital.map(
                   ({ id, name, state,street_address, hospital_id }) => ({
@@ -140,30 +136,38 @@ const SearchPage = ({ buttonPlaceholder, buttonSmall }: Props) => {
                   ({ id, brief_title,nctid}) => ({
                     id: id,
                     name: brief_title,
+                    location: "",
+
                     link:'/clinicalTrial?NCTId='+nctid,
-                    type: "Clinical Trials" as const,
+                    type: "clinical trials" as const,
                   })
                 ),
                 ...searchResults?.drugs.map(
                   ({ id, brand_name }) => ({
                     id: id,
                     name: brand_name,
+                    location: "",
+
                     link:'/drugs/'+id,
-                    type: "Drugs" as const,
+                    type: "drugs" as const,
                   })
                 ),
                 ...searchResults?.diseases.map(
                   ({ id, name ,url}) => ({
                     id: id,
                     name: name,
+                    location: "",
+
                     link:'/genetic/condition?name='+url?.substring(url.lastIndexOf('/')+1),                  
-                    type: "Diseases" as const,
+                    type: "diseases" as const,
                   })
                 ),
                 ...searchResults?.genetics.map(
                   ({ id, name ,url}) => ({
                     id: id,
                     name: name,
+                    location: "",
+
                     link:'/genetic/gene?name='+url?.substring(url.lastIndexOf('/')+1),
                     type: "genetics" as const,
                   })

@@ -65,7 +65,7 @@ export default function GeneticsFilters({ params }: GeneticsFiltersProps) {
     }
   }, [searchStr]);
   const returnGeneticsNames =(list:any[])=>{
-    var output = []
+    var output:any = []
     if ( list === undefined)
     {
       return[]

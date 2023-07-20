@@ -10,9 +10,9 @@ import { formatName } from "../../utils";
 
 interface ResultSchema {
   id: string;
-  name: string;
-  location: string;
-  type: "doctor" | "manufacturer" | "drug";
+  name: string | null;
+  location: string | null;
+  type: "doctor" | "manufacturer" | "drugs" | "device" | "hospital" | "clinical trials" | "diseases" | "genetics" | "food" ;
   link: string
 
 }
@@ -55,13 +55,13 @@ function DetailsTable({ rows }: { rows: ResultSchema[] }) {
                       }
                       <td className="p-2">
                       <Link href={`${row.link}`}>                          <p className="text-left text-base font-medium text-violet-700 sm:underline lg:no-underline">
-                            {formatName(row.name)}
+                            {formatName(row.name?row.name:'')}
                           </p>
                         </Link>
                       </td>
                       <td className="p-2">
                         <div className="text-left text-base font-medium text-violet-700">
-                          {row.location}
+                          {row.location?row.location:''}
                         </div>
                       </td>
                       {/* {screen.width > 1000 && ( */}

@@ -24,7 +24,7 @@ export default function HospitalsFilters({
   const [dataIsAvailable, setDataIsAvailable] = useState(false);
   const [error, setError] = useState<any>("");
   const returnHospitalsOwnersNames =(list:any[])=>{
-    var output = []
+    var output:any = []
     if ( list === undefined)
     {
       return[]
