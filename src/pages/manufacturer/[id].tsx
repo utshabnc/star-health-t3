@@ -1,12 +1,11 @@
-import { useState, Fragment, SetStateAction } from 'react';
+import { useState} from 'react';
 // import { Link, useNavigate, useParams } from 'react-router-dom';
 // import { useManufacturerQuery } from '../../api';
 import BarChart from '../../components/charts/bar';
 import PieChart from '../../components/charts/pie';
 import { ManuDets } from '../../components/ManuDets';
 import { colorGradient, formatMoney } from '../../utils';
-import { Menu, Transition } from '@headlessui/react';
-import { ChevronDownIcon } from '@heroicons/react/solid';
+
 import _ from 'lodash';
 import { useRouter } from 'next/router';
 import { trpc } from '../../utils/trpc';
@@ -16,21 +15,6 @@ const ManufacturerDetails = () => {
   const id = navigate.query.id as string;
   const [year, setYear] = useState<string>();
   const { data: manufacturer } = trpc.db.manufacturer.useQuery({ id, year });
-
-  function classNames(...classes: string[]) {
-    return classes.filter(Boolean).join(' ');
-  }
-
-  const formatter = new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'USD',
-  });
-
-  const payment = [
-    { title: 'Top Doctors Paid' },
-    { title: 'Top Payments Made' },
-    { title: 'Top Catalog Items' },
-  ];
 
   // Loading Screen
   if (!manufacturer) {
@@ -174,7 +158,7 @@ const ManufacturerDetails = () => {
                   }}
                   ticks={{
                     // Include a dollar sign in the ticks
-                    callback: function (value, index, ticks) {
+                    callback: function (value) {
                       if (typeof value === 'string') {
                         return value;
                       }

@@ -15,7 +15,7 @@ interface FoodsFiltersProps {
   };
 }
 const returnFoodNames =(list:any[])=>{
-    var output:any = []
+  const output:any = []
     if ( list === undefined)
     {
       return[]
@@ -98,7 +98,7 @@ export default function FoodsFilters({ params }: FoodsFiltersProps) {
   const [exclusiveNutrients, setExclusiveNutrients] = useState<string[]>([]);
   const [selectedNutrient, setSelectedNutrient] = useState<string>("203");
   const returnFoodNames =(list:any[])=>{
-    var output:any = []
+    const output:any = []
     if ( list === undefined)
     {
       return[]

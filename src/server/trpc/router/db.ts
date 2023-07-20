@@ -56,14 +56,14 @@ const defaultProductSelect = Prisma.validator<Prisma.ProductSelect>()({
   category: true,
 });
 
-const defaultReviewSelect = Prisma.validator<Prisma.ReviewSelect>()({
-  id: true,
-  doctorId: true,
-  rating: true,
-  text: true,
-  createdAt: true,
-  createdBy: true,
-});
+// const defaultReviewSelect = Prisma.validator<Prisma.ReviewSelect>()({
+//   id: true,
+//   doctorId: true,
+//   rating: true,
+//   text: true,
+//   createdAt: true,
+//   createdBy: true,
+// });
 
 const defaultManufacturerSelect = Prisma.validator<Prisma.ManufacturerSelect>()(
   {

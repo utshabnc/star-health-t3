@@ -182,7 +182,7 @@ export default function HospitalsFilters({ params }: HospitalsFiltersProps) {
   };
 
   const returnHospitalsNames =(list:any[])=>{
-    var output:any = []
+    const output:any = []
     if ( list === undefined)
     {
       return[]

@@ -31,7 +31,7 @@ export default function DiseasesFilters({ params }: DiseasesFiltersProps) {
   const [diseaseslist, setFilteredDiseaseslist] = useState<Genetic[]>([]);
   const [searchStr, setSearchStr] = useState<string>("");
   const returnNames =(list:any[],name:string)=>{
-    var output:any = []
+    const output:any = []
     if ( list === undefined)
     {
       return[]

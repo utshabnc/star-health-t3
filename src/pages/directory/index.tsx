@@ -477,7 +477,7 @@ export default function Directory() {
     []
   );
   const returnDoctorNames =(list:any[])=>{
-    var output:any = []
+    const output:any = []
     if ( list === undefined)
     {
       return[]
@@ -488,7 +488,7 @@ export default function Directory() {
     return output
   }
   const returnNamesOfClincalNames =(list:any[],name:string)=>{
-    var output:any = []
+    const output:any = []
     if ( list === undefined)
     {
       return[]
@@ -499,13 +499,13 @@ export default function Directory() {
     return output
   }
   const returnNamesOfObjects =(searchObj:any,tab:string)=>{
-    var output:any = []
+    const output:any = []
     if ( searchObj === undefined)
     {
       return[]
     }
-    var name = ''
-    var list = []
+    let name = ''
+    let list = []
     if (tab == Tab.Drugs) 
     {
       name = 'brand_name'
