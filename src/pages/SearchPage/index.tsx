@@ -136,6 +136,8 @@ const SearchPage = ({ buttonPlaceholder, buttonSmall }: Props) => {
                   ({ id, brief_title,nctid}) => ({
                     id: id,
                     name: brief_title,
+                    location: "",
+
                     link:'/clinicalTrial?NCTId='+nctid,
                     type: "clinical trials" as const,
                   })
@@ -144,6 +146,8 @@ const SearchPage = ({ buttonPlaceholder, buttonSmall }: Props) => {
                   ({ id, brand_name }) => ({
                     id: id,
                     name: brand_name,
+                    location: "",
+
                     link:'/drugs/'+id,
                     type: "drugs" as const,
                   })
@@ -152,6 +156,8 @@ const SearchPage = ({ buttonPlaceholder, buttonSmall }: Props) => {
                   ({ id, name ,url}) => ({
                     id: id,
                     name: name,
+                    location: "",
+
                     link:'/genetic/condition?name='+url?.substring(url.lastIndexOf('/')+1),                  
                     type: "diseases" as const,
                   })
@@ -160,6 +166,8 @@ const SearchPage = ({ buttonPlaceholder, buttonSmall }: Props) => {
                   ({ id, name ,url}) => ({
                     id: id,
                     name: name,
+                    location: "",
+
                     link:'/genetic/gene?name='+url?.substring(url.lastIndexOf('/')+1),
                     type: "genetics" as const,
                   })
