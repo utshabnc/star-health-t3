@@ -3,9 +3,8 @@ import { router, publicProcedure } from "../trpc";
 import _ from "lodash";
 import type { inferRouterOutputs } from "@trpc/server";
 import type { AppRouter } from "./_app";
-import { Doctor, Payment, Prisma, Product, Review } from "@prisma/client";
+import {  Prisma } from "@prisma/client";
 import { filterDuplicateObjArr, filterDuplicates } from "../../../utils";
-import { useSession } from "next-auth/react";
 
 const directoryInput = z.object({
   subject: z.string().optional(),
@@ -57,14 +56,14 @@ const defaultProductSelect = Prisma.validator<Prisma.ProductSelect>()({
   category: true,
 });
 
-const defaultReviewSelect = Prisma.validator<Prisma.ReviewSelect>()({
-  id: true,
-  doctorId: true,
-  rating: true,
-  text: true,
-  createdAt: true,
-  createdBy: true,
-});
+// const defaultReviewSelect = Prisma.validator<Prisma.ReviewSelect>()({
+//   id: true,
+//   doctorId: true,
+//   rating: true,
+//   text: true,
+//   createdAt: true,
+//   createdBy: true,
+// });
 
 const defaultManufacturerSelect = Prisma.validator<Prisma.ManufacturerSelect>()(
   {
