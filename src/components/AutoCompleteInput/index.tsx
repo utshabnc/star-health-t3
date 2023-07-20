@@ -61,7 +61,14 @@ const AutocompleteInput: React.FC<AutocompleteInputProps> = ({ expr,setExpr,setF
                     onChange={(e) => {
                       if (setExpr)
                       {setExpr(e.target.value);}
-
+                      else{
+                        setFilterParam((prev) => {
+                          return {
+                            ...prev,
+                            name: e.target.value,
+                          };
+                        });
+                      }
                       setOpen(true)
                     }}
                     onBlur={(e)=>{if(choose){setOpen(false);setChoose(false)}e}}
@@ -81,7 +88,14 @@ const AutocompleteInput: React.FC<AutocompleteInputProps> = ({ expr,setExpr,setF
                       <li key={index} onClick={() => {const val:string=option?option:'';                 
                       if (setExpr)
                       {setExpr(val);}
-                  setOpen(false);setChoose(true)}}>
+                      else{
+                        setFilterParam((prev) => {
+                          return {
+                            ...prev,
+                            name:val,
+                          };
+                        });
+                      }setOpen(false);setChoose(true)}}>
                       {option}
                     </li>
                     ))}
