@@ -446,6 +446,7 @@ export default function Directory() {
         }
       };
       fetchFood();
+      console.log(food);
     }
   }, [selectedTab]);
 

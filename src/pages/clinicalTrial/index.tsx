@@ -12,7 +12,7 @@ import { DataDirectoryCategory } from "../../utils/Enums/DataDirectoryCategory.e
 const ClinicalTrialDetails = () => {
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
   const [clinicalTrialData, setClinicalTrialData] = useState<ClinicalTrialsFullStudyResponse>();
-
+  const [isCompared, setIsCompared] = useState(false);
   const navigate = useRouter();
   const NCTId = navigate.query?.NCTId as string;
 
@@ -81,6 +81,54 @@ const ClinicalTrialDetails = () => {
     { title: 'Eligibility' || null, content: EligibilityJSX },
     { title: 'Design' || null, content: DesignJSX },
   ]
+
+ 
+  
+  useEffect(() => {
+    const isTrialInCompareList = () => {
+      if (typeof window !== 'undefined' && clinicalTrialData) {
+        const compareTrials = JSON.parse(localStorage.getItem('compareTrials') || '[]');
+        console.log(compareTrials);
+        return compareTrials.some((compTrial: ClinicalTrialsFullStudyResponse) => compTrial?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.IdentificationModule?.BriefTitle === clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.IdentificationModule?.BriefTitle);
+      }
+      
+      return false;
+    };
+
+    setIsCompared(isTrialInCompareList());
+  }, [clinicalTrialData]);
+
+  const handleClick = () => {
+    if (typeof window !== 'undefined') {
+      const compareTrials = JSON.parse(localStorage.getItem('compareTrials') || '[]');
+      console.log(compareTrials);
+      if (compareTrials.some((compTrial: ClinicalTrialsFullStudyResponse) => compTrial?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.IdentificationModule?.BriefTitle === clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.IdentificationModule?.BriefTitle)) {
+        
+        return;
+      }
+      
+      compareTrials.push(clinicalTrialData);
+
+      localStorage.setItem('compareTrials', JSON.stringify(compareTrials));
+      setIsCompared(true);
+    }
+  };
+
+  const removeCompare = () => {
+    if (typeof window !== 'undefined' && clinicalTrialData) {
+      const compareTrials = JSON.parse(localStorage.getItem('compareTrials') || '[]');
+
+      const index = compareTrials.findIndex((compTrial: ClinicalTrialsFullStudyResponse) => compTrial?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.IdentificationModule?.BriefTitle === clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.IdentificationModule?.BriefTitle);
+
+      if (index !== -1) {
+        compareTrials.splice(index, 1);
+      }
+
+      localStorage.setItem('compareTrials', JSON.stringify(compareTrials));
+      setIsCompared(false);
+    }
+  };
+
 
   return (
     isProcessing ? (
@@ -161,6 +209,14 @@ const ClinicalTrialDetails = () => {
                   <div className="ml-1">
                     <BookmarkButton title={clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.IdentificationModule?.BriefTitle || ''} categoryId={DataDirectoryCategory.ClinicalTrials} />
                   </div>
+                  <div className="ml-1">
+                  <button
+                    className="ease focus:shadow-outline select-none rounded-md border border-violet-700 bg-violet-700 px-4 py-2 text-white transition duration-500 hover:bg-violet-900 focus:outline-none"
+                    onClick={isCompared ? removeCompare : handleClick}
+                  >
+                    {isCompared ? 'Remove Compare' : 'Compare'}
+                  </button>
+                </div>
                 </div>
               </div>
               <div className="my-1">

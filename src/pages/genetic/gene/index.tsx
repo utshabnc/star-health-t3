@@ -149,7 +149,47 @@ const GeneDetails = () => {
       fetchGeneData(geneName);
     }
   }, [geneName]);
+  const [isCompared, setIsCompared] = useState(false);
 
+useEffect(() => {
+  const isDiseaseInCompareList = () => {
+    if (typeof window !== 'undefined') {
+      const compareGenetics = JSON.parse(localStorage.getItem('compareGenetics') || '[]');
+      return compareGenetics.some((compGenetic: GeneticData) => compGenetic.name === geneData.name);
+    }
+    return false;
+  };
+
+  setIsCompared(isDiseaseInCompareList());
+}, [geneData.name]);
+
+const handleClick = () => {
+  if (typeof window !== 'undefined') {
+    const compareGenetics = JSON.parse(localStorage.getItem('compareGenetics') || '[]');
+    if (compareGenetics.some((compGenetic: GeneticData) => compGenetic.name === geneData.name)) {
+      return;
+    }
+
+    compareGenetics.push(geneData);
+
+    localStorage.setItem('compareGenetics', JSON.stringify(compareGenetics));
+    setIsCompared(true);
+  }
+};
+
+const removeCompare = () => {
+  if (typeof window !== 'undefined') {
+    const compareGenetics = JSON.parse(localStorage.getItem('compareGenetics') || '[]');
+    const index = compareGenetics.findIndex((compGenetic: GeneticData) => compGenetic.name === geneData.name);
+
+    if (index !== -1) {
+      compareGenetics.splice(index, 1);
+    }
+
+    localStorage.setItem('compareGenetics', JSON.stringify(compareGenetics));
+    setIsCompared(false);
+  }
+};
   return geneData && isProcessing ? (
     <LoadingStarHealth />
   ) : (
@@ -206,6 +246,14 @@ const GeneDetails = () => {
                   <BookmarkButton title={geneData["gene-symbol"]
                     ? geneData["gene-symbol"].toLocaleUpperCase()
                     : ""} categoryId={DataDirectoryCategory.Genetics} />
+                </div>
+                <div className="ml-1">
+                  <button
+                    className="ease focus:shadow-outline select-none rounded-md border border-violet-700 bg-violet-700 px-4 py-2 text-white transition duration-500 hover:bg-violet-900 focus:outline-none"
+                    onClick={isCompared ? removeCompare : handleClick}
+                  >
+                    {isCompared ? 'Remove Compare Item' : 'Compare'}
+                  </button>
                 </div>
               </div>
             </div>

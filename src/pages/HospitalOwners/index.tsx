@@ -222,6 +222,51 @@ const HospitalDetails = () => {
     );
   }
 
+  const [isCompared, setIsCompared] = useState(false);
+
+useEffect(() => {
+  const isDiseaseInCompareList = () => {
+    if (typeof window !== 'undefined') {
+      const compareHospitalOwners = JSON.parse(localStorage.getItem('compareHospitalOwners') || '[]');
+      return compareHospitalOwners.some((compHospitalOwners: HospitalOwners) => compHospitalOwners.ORGANIZATION_NAME === data.ORGANIZATION_NAME);
+    }
+    return false;
+  };
+
+  setIsCompared(isDiseaseInCompareList());
+}, []);
+
+const handleClick = () => {
+  if (typeof window !== 'undefined') {
+    const compareHospitalOwners = JSON.parse(localStorage.getItem('compareHospitalOwners') || '[]');
+    console.log(compareHospitalOwners);
+    if (compareHospitalOwners.some((compHospitalOwners: HospitalOwners) => compHospitalOwners.ORGANIZATION_NAME === data.ORGANIZATION_NAME)) {
+      return;
+    }
+
+    compareHospitalOwners.push(data);
+
+    localStorage.setItem('compareHospitalOwners', JSON.stringify(compareHospitalOwners));
+    setIsCompared(true);
+  }
+};
+
+const removeCompare = () => {
+  if (typeof window !== 'undefined') {
+    const compareHospitalOwners = JSON.parse(localStorage.getItem('compareHospitalOwners') || '[]');
+
+    const index = compareHospitalOwners.findIndex((compHospitalOwners: HospitalOwners) => compHospitalOwners.ORGANIZATION_NAME === data.ORGANIZATION_NAME);
+
+    if (index !== -1) {
+      compareHospitalOwners.splice(index, 1);
+    }
+
+    localStorage.setItem('compareHospitalOwners', JSON.stringify(compareHospitalOwners));
+    setIsCompared(false);
+  }
+};
+
+
   const generateSection = (section: Section): JSX.Element => {
     switch (section) {
       case Section.hospital:
@@ -235,6 +280,14 @@ const HospitalDetails = () => {
                   <div className="ml-1">
                     <BookmarkButton title={data.ORGANIZATION_NAME} categoryId={DataDirectoryCategory.HospitalOwners} />
                   </div>
+                  <div className="ml-1">
+                  <button
+                    className="ease focus:shadow-outline select-none rounded-md border border-violet-700 bg-violet-700 px-4 py-2 text-white transition duration-500 hover:bg-violet-900 focus:outline-none"
+                    onClick={isCompared ? removeCompare : handleClick}
+                  >
+                    {isCompared ? 'Remove Compare Item' : 'Compare'}
+                  </button>
+                </div>
                 </div>
                 <div className="my-1 mr-8">
                   <hr />
