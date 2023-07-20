@@ -12,7 +12,7 @@ interface ResultSchema {
   id: string;
   name: string;
   location: string;
-  type: "doctor" | "manufacturer" | "drug";
+  type: "doctor" | "manufacturer" | "drugs" | "device" | "hospital" | "clinical trials" | "diseases" | "genetics" | "food" ;
   link: string
 
 }

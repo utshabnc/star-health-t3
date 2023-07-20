@@ -1,15 +1,11 @@
 import {
-  ChangeEvent,
   useCallback,
   useEffect,
-  useMemo,
-  useRef,
   useState,
 } from "react";
 import { debounce } from "lodash";
 import DetailsTable from "../../components/DetailsTable";
-import { formatName, formatLocation } from "../../utils";
-import Search from "../../components/Search";
+import { formatLocation } from "../../utils";
 import { Popover } from "react-tiny-popover";
 import { useRouter } from "next/router";
 import { trpc } from "../../utils/trpc";
@@ -125,7 +121,7 @@ const SearchPage = ({ buttonPlaceholder, buttonSmall }: Props) => {
                 name: name ?? "",
                 location: "",
                 link:'/drug/'+id,
-                type: "Device" as const,
+                type: "device" as const,
                 })),
                 ...searchResults?.hospital.map(
                   ({ id, name, state,street_address, hospital_id }) => ({
@@ -141,7 +137,7 @@ const SearchPage = ({ buttonPlaceholder, buttonSmall }: Props) => {
                     id: id,
                     name: brief_title,
                     link:'/clinicalTrial?NCTId='+nctid,
-                    type: "Clinical Trials" as const,
+                    type: "clinical trials" as const,
                   })
                 ),
                 ...searchResults?.drugs.map(
@@ -149,7 +145,7 @@ const SearchPage = ({ buttonPlaceholder, buttonSmall }: Props) => {
                     id: id,
                     name: brand_name,
                     link:'/drugs/'+id,
-                    type: "Drugs" as const,
+                    type: "drugs" as const,
                   })
                 ),
                 ...searchResults?.diseases.map(
@@ -157,7 +153,7 @@ const SearchPage = ({ buttonPlaceholder, buttonSmall }: Props) => {
                     id: id,
                     name: name,
                     link:'/genetic/condition?name='+url?.substring(url.lastIndexOf('/')+1),                  
-                    type: "Diseases" as const,
+                    type: "diseases" as const,
                   })
                 ),
                 ...searchResults?.genetics.map(
