@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { Genetic } from "./Genetic.model";
+import NoResultComponent from "../NoResultComponent";
 
 function mapOtherNames(other_names: any[]) {
   try {
@@ -30,6 +31,8 @@ function generateURL(url: string, type: string) {
 export default function GeneticsComponent({ data }: { data: Genetic[] }) {
   return (
     <>
+    {(!data||data.length==0)&&
+    <NoResultComponent title="Genetics"></NoResultComponent>}
       {data?.map((genetic: Genetic, index: number) => {
         return (
           <div

@@ -7,6 +7,7 @@ import { formatSpecialties } from "../Filters";
 import _ from "lodash";
 import PhoneNumber from "../PhoneNumber";
 import { toTitleCase } from "../../utils";
+import NoResultComponent from "../NoResultComponent";
 
 
 type FilterParams = {
@@ -39,10 +40,20 @@ export default function DirectoryCards({
   searchResults: any;
   search: string;
 }) {
-  const [comparedItems, setComparedItems] = useState<number[]>([]);
+ const [comparedItems, setComparedItems] = useState<number[]>([]);
+
   if (data?.doctors || searchResults?.doctors) {
+    if (searchResults?.doctors.length==0)
+    {
+      return(
+        <>
+        <NoResultComponent title=""></NoResultComponent>
+        </>
+      )
+    }
     return (
       <>
+
         {data &&
           data?.doctors &&
           (!searchResults ? data?.doctors : searchResults?.doctors).map(
@@ -86,6 +97,14 @@ export default function DirectoryCards({
   }
 
   if (data?.manufacturers) {
+    if (searchResults?.manufacturers.length==0)
+    {
+      return(
+        <>
+        <NoResultComponent title=""></NoResultComponent>
+        </>
+      )
+    }
     return (
       <>
         {data &&
@@ -145,7 +164,14 @@ export default function DirectoryCards({
   }
 
   if (data?.opioidTreatmentProviders) {
-
+    if (searchResults?.opioidTreatmentProviders.length==0)
+    {
+      return(
+        <>
+        <NoResultComponent title=""></NoResultComponent>
+        </>
+      )
+    }
     return (
       <>
         {data &&
@@ -203,6 +229,14 @@ export default function DirectoryCards({
   }
 
   if (data?.products) {
+    if (searchResults?.products.length==0)
+    {
+      return(
+        <>
+        <NoResultComponent title=""></NoResultComponent>
+        </>
+      )
+    }
     return (
       <>
         {data &&
@@ -266,6 +300,14 @@ export default function DirectoryCards({
 
   /* transactions tab */
   if (data?.payments || searchResults?.payments) {
+    if (searchResults?.payments.length==0)
+    {
+      return(
+        <>
+        <NoResultComponent title=""></NoResultComponent>
+        </>
+      )
+    }
     return (
       <>
         {data &&
@@ -343,6 +385,14 @@ export default function DirectoryCards({
   }
 
   if (data?.manufacturerSummary) {
+    if (searchResults?.manufacturerSummary.length==0)
+    {
+      return(
+        <>
+        <NoResultComponent title=""></NoResultComponent>
+        </>
+      )
+    }
     return (
       <>
         {data &&
@@ -386,6 +436,14 @@ export default function DirectoryCards({
   }
 
   if (data?.drugs) {
+    if (searchResults?.drugs.length==0)
+    {
+      return(
+        <>
+        <NoResultComponent title=""></NoResultComponent>
+        </>
+      )
+    }
     return (
       <>
         {data &&
@@ -437,9 +495,9 @@ export default function DirectoryCards({
     );
   }
 
-  if (data) {
-    return (<></>)
-  }
+  // if (data) {
+  //   return (<></>)
+  // }
 
   return (
     <>

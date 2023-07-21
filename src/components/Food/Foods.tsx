@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { Food } from "./Food.model";
+import NoResultComponent from "../NoResultComponent";
 
 function upperCaseAllWords(name: string) {
   const words = name.split(" ");
@@ -89,6 +90,8 @@ export default function FoodsComponent({ data }: { data: Food[] }) {
     <div
       className="h-[44vh] overflow-y-scroll scrollbar-show"
     >
+    {(!data||data.length==0)&&
+    <NoResultComponent title="Health Plan"></NoResultComponent>}
       {data?.map((food: Food, index: number) => {
         return (
           <div

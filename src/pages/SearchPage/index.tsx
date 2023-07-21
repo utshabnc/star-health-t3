@@ -1,15 +1,11 @@
 import {
-  ChangeEvent,
   useCallback,
   useEffect,
-  useMemo,
-  useRef,
   useState,
 } from "react";
 import { debounce } from "lodash";
 import DetailsTable from "../../components/DetailsTable";
-import { formatName, formatLocation } from "../../utils";
-import Search from "../../components/Search";
+import { formatLocation } from "../../utils";
 import { Popover } from "react-tiny-popover";
 import { useRouter } from "next/router";
 import { trpc } from "../../utils/trpc";
@@ -27,6 +23,7 @@ const SearchPage = ({ buttonPlaceholder, buttonSmall }: Props) => {
     trpc.db.search.useQuery(search ?? "", { enabled: false });
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
   // console.log(searchResults);
+  const [food,setFood]=useState([])
 
   useEffect(() => {
     const searchParam = querySearch["search"] as string;
@@ -40,7 +37,19 @@ const SearchPage = ({ buttonPlaceholder, buttonSmall }: Props) => {
       if (search.length < 2) return;
       setIsPopoverOpen(true);
       fetchSearchResults();
-    }, 500),
+      const fetchFood = async () => {
+        try {
+          const response = await fetch(`/api/food/search/`+search);
+          const data = await response.json();
+          if (response.status != 200) {
+          } else {
+            setFood(data["foods"]);
+          }
+    }
+  catch{setFood([])}
+  }
+   fetchFood()
+}, 500),
     []
   );
 
@@ -53,8 +62,12 @@ const SearchPage = ({ buttonPlaceholder, buttonSmall }: Props) => {
     if (
       searchResults?.doctors?.length === 0 &&
       searchResults?.manufacturers?.length === 0 &&
-      searchResults?.products?.length === 0
-    ) {
+      searchResults?.products?.length === 0 &&
+      searchResults?.hospital?.length === 0 &&
+      searchResults?.clinicalTrials?.length === 0 &&
+      searchResults?.diseases?.length === 0 &&
+      searchResults?.genetics?.length === 0
+          ) {
       return null;
     }
     return (
@@ -82,6 +95,8 @@ const SearchPage = ({ buttonPlaceholder, buttonSmall }: Props) => {
                 name: `${firstName} ${lastName}`,
                 location: formatLocation(city, state),
                 type: "doctor" as const,
+                link:'/doctor/'+id,
+
               })
             ),
             // manufacturers
@@ -91,20 +106,80 @@ const SearchPage = ({ buttonPlaceholder, buttonSmall }: Props) => {
                 name,
                 location: formatLocation(country, state),
                 type: "manufacturer" as const,
+                link:'/manufacturer/'+id,
+
               })
             ),
             // products
             ...searchResults?.products
               .filter(
                 (product) =>
-                  product.type && product.type.toLowerCase() === "drug"
+                  product.type && product.type.toLowerCase() === "device"
               ) // TODO - enable other products when we have somewhere to display them
               .map(({ id, name }) => ({
                 id: id,
                 name: name ?? "",
                 location: "",
-                type: "drug" as const,
-              })),
+                link:'/drug/'+id,
+                type: "device" as const,
+                })),
+                ...searchResults?.hospital.map(
+                  ({ id, name, state,street_address, hospital_id }) => ({
+                    id,
+                    name,
+                    location: formatLocation("USA", state),
+                    link:'/hospital?hospital_id='+hospital_id+'&hospital_address='+street_address,
+                    type: "hospital" as const,
+                  })
+                ),
+                ...searchResults?.clinicalTrials.map(
+                  ({ id, brief_title,nctid}) => ({
+                    id: id,
+                    name: brief_title,
+                    location: "",
+
+                    link:'/clinicalTrial?NCTId='+nctid,
+                    type: "clinical trials" as const,
+                  })
+                ),
+                ...searchResults?.drugs.map(
+                  ({ id, brand_name }) => ({
+                    id: id,
+                    name: brand_name,
+                    location: "",
+
+                    link:'/drugs/'+id,
+                    type: "drugs" as const,
+                  })
+                ),
+                ...searchResults?.diseases.map(
+                  ({ id, name ,url}) => ({
+                    id: id,
+                    name: name,
+                    location: "",
+
+                    link:'/genetic/condition?name='+url?.substring(url.lastIndexOf('/')+1),                  
+                    type: "diseases" as const,
+                  })
+                ),
+                ...searchResults?.genetics.map(
+                  ({ id, name ,url}) => ({
+                    id: id,
+                    name: name,
+                    location: "",
+
+                    link:'/genetic/gene?name='+url?.substring(url.lastIndexOf('/')+1),
+                    type: "genetics" as const,
+                  })
+                ),
+              ...food?.map(                
+                (item) => ({
+                id: item['fdcId'],
+                name: item['description'],
+                link:'/food?id='+ item['fdcId'],
+                location:item['foodCategory'],
+                type: "food" as const,
+              }))
           ]}
         />
       </div>

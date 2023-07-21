@@ -3,9 +3,8 @@ import { router, publicProcedure } from "../trpc";
 import _ from "lodash";
 import type { inferRouterOutputs } from "@trpc/server";
 import type { AppRouter } from "./_app";
-import { Doctor, Payment, Prisma, Product, Review } from "@prisma/client";
+import {  Prisma } from "@prisma/client";
 import { filterDuplicateObjArr, filterDuplicates } from "../../../utils";
-import { useSession } from "next-auth/react";
 
 const directoryInput = z.object({
   subject: z.string().optional(),
@@ -57,14 +56,14 @@ const defaultProductSelect = Prisma.validator<Prisma.ProductSelect>()({
   category: true,
 });
 
-const defaultReviewSelect = Prisma.validator<Prisma.ReviewSelect>()({
-  id: true,
-  doctorId: true,
-  rating: true,
-  text: true,
-  createdAt: true,
-  createdBy: true,
-});
+// const defaultReviewSelect = Prisma.validator<Prisma.ReviewSelect>()({
+//   id: true,
+//   doctorId: true,
+//   rating: true,
+//   text: true,
+//   createdAt: true,
+//   createdBy: true,
+// });
 
 const defaultManufacturerSelect = Prisma.validator<Prisma.ManufacturerSelect>()(
   {
@@ -185,7 +184,7 @@ export const db = router({
           addressLine1: true,
           specialty: true,
         },
-        take: 10,
+        take: 5,
       });
 
       const manufacturers = await prisma.manufacturer.findMany({
@@ -206,7 +205,7 @@ export const db = router({
           rank: "asc",
         },
 
-        take: 10,
+        take: 5,
       });
 
       const products = await prisma.product.findMany({
@@ -216,9 +215,54 @@ export const db = router({
             mode: "insensitive",
           },
         },
-        take: 10,
+        take: 5,
+      });
+      const drugs = await prisma.drugs.findMany({
+        where: {
+          brand_name: {
+            contains: search,
+            mode: "insensitive",
+          },
+        },
+        take: 5,
       });
 
+      const hospital = await prisma.hospital.findMany({
+        where: {
+          name: {
+            contains: search,
+            mode: "insensitive",
+          },
+        },
+        take: 10,
+      });
+      const clinicalTrials = await prisma.clinicalTrials.findMany({
+        where: {
+          brief_title: {
+            contains: search,
+            mode: "insensitive",
+          },
+        },
+        take: 5,
+      });
+      const diseases = await prisma.diseases.findMany({
+        where: {
+          name: {
+            contains: search,
+            mode: "insensitive",
+          },
+        },
+        take: 5,
+      });
+      const genetics = await prisma.genetics.findMany({
+        where: {
+          name: {
+            contains: search,
+            mode: "insensitive",
+          },
+        },
+        take: 5,
+      });
       const opioidTreatmentProviders = await prisma.opioidTreatment.findMany({
         where: {
           provider_name: {
@@ -238,11 +282,10 @@ export const db = router({
           phone: true,
           medicare_id_effective_date: true,
         },
-        take: 10,
+        take: 5,
       });
 
-      return { doctors, manufacturers, products, opioidTreatmentProviders };
-    }),
+      return { doctors, manufacturers,drugs, products, opioidTreatmentProviders, diseases,genetics, hospital,clinicalTrials };    }),
 
   doctor: publicProcedure
     .input(
