@@ -14,6 +14,16 @@ interface TreatmentCenter {
   phone: string;
 }
 
+function formatPhoneNumber(phoneNumberString: string) {
+  const cleaned = ('' + phoneNumberString).replace(/\D/g, '');
+  const match = cleaned.match(/^(1|)?(\d{3})(\d{3})(\d{4})$/);
+  if (match) {
+    const intlCode = (match[1] ? '+1 ' : '');
+    return [intlCode, '(', match[2], ') ', match[3], '-', match[4]].join('');
+  }
+  return null;
+}
+
 const CompareOpiodTreatment: React.FC = () => {
   const [treatmentCenters, setTreatmentCenters] = useState<TreatmentCenter[]>([]);
 
@@ -93,7 +103,7 @@ const CompareOpiodTreatment: React.FC = () => {
             <th className="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">Phone</th>
             {treatmentCenters.map((center) => (
               <td className="px-6 py-4 whitespace-nowrap" key={center.id}>
-                {center.phone}
+                +1 {formatPhoneNumber(center.phone)}
               </td>
             ))}
           </tr>

@@ -80,6 +80,14 @@ const CompareManufacturers: React.FC = () => {
         </thead>
         <tbody className="bg-white divide-y divide-gray-200">
           <tr>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">Rank</th>
+            {menus.map((menu, i) => (
+              <td className="px-6 py-4 whitespace-nowrap" key={i}>
+                #{menu.manufacturer.rank} of 2,471
+              </td>
+            ))}
+          </tr>
+          <tr>
             <th className="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">State</th>
             {menus.map((menu, i) => (
               <td className="px-6 py-4 whitespace-nowrap" key={i}>

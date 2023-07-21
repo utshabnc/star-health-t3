@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { TrashIcon } from '@heroicons/react/outline';
+import { formatNumber } from '../../utils';
 import Link from 'next/link';
 
 interface TopProduct {
@@ -23,8 +24,8 @@ interface Doctor {
 
 const CompareDoctorsTable: React.FC = () => {
   const [doctors, setDoctors] = useState<Doctor[]>([]);
+  const NUM_DOCTORS = 1267275;
 
-  // Load doctors from localStorage when component mounts
   useEffect(() => {
     const loadedDoctors = JSON.parse(localStorage.getItem('compareDoctors') || '[]');
     setDoctors(loadedDoctors);
@@ -53,14 +54,6 @@ const CompareDoctorsTable: React.FC = () => {
       <table className="min-w-full divide-y divide-gray-200">
         <thead className="bg-gray-50">
           <tr>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">Rank</th>
-            {doctors.map((doctor, i) => (
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider" key={i}>
-                #{doctor.rank}
-              </th>
-            ))}
-          </tr>
-          <tr>
             <th className="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">Name</th>
             {doctors.map((doctor) => (
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider" key={doctor.id}>
@@ -70,6 +63,14 @@ const CompareDoctorsTable: React.FC = () => {
           </tr>
         </thead>
         <tbody className="bg-white divide-y divide-gray-200">
+        <tr>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">Rank</th>
+            {doctors.map((doctor, i) => (
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider" key={i}>
+                #{formatNumber(doctor.rank)} of {" "} {formatNumber(NUM_DOCTORS)}
+              </th>
+            ))}
+          </tr>
           <tr>
             <th className="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">Specialty</th>
             {doctors.map((doctor) => (

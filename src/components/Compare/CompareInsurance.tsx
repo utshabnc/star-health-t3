@@ -43,7 +43,7 @@ const CompareInsurance: React.FC = () => {
 
   useEffect(() => {
     const loadedInsurancePlans = JSON.parse(localStorage.getItem('compareHealthPlans') || '[]');
-    console.log(loadedInsurancePlans);
+
     if (loadedInsurancePlans.length > 0) {
       // set all insurance plans in the state
       setInsurancePlans(loadedInsurancePlans);
@@ -56,7 +56,12 @@ const CompareInsurance: React.FC = () => {
     localStorage.setItem('compareHealthPlans', JSON.stringify(compareInsurancePlans));
     setInsurancePlans(compareInsurancePlans);
   }
-
+  function formatPercentage(decimalNumberString: string): string {
+    let decimalNumber = parseFloat(decimalNumberString);
+    // Assume the input is a ratio and convert it to a percentage
+    decimalNumber /= 100;
+    return new Intl.NumberFormat('en-US', { style: 'percent', minimumFractionDigits: 2 }).format(decimalNumber);
+  }
 
   return (
     <div className="overflow-x-auto">
@@ -70,14 +75,56 @@ const CompareInsurance: React.FC = () => {
       <table className="min-w-full divide-y divide-gray-200">
         <thead className="bg-gray-50">
           <tr>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider"></th>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">Name</th>
             {insurancePlans.map((insurancePlan, i) => (
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider" key={i}>
                 {insurancePlan?.name}
               </th>
             ))}
           </tr>
+        </thead>
+        <tbody className="bg-white divide-y divide-gray-200">
+        <tr>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">id</th>
+            {insurancePlans.map((insurancePlan, i) => (
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider" key={i}>
+                {insurancePlan?.id}
+              </th>
+            ))}
+          </tr>
           <tr>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">State</th>
+            {insurancePlans.map((insurancePlan, i) => (
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider" key={i}>
+                {insurancePlan?.state}
+              </th>
+            ))}
+          </tr>
+          <tr>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">Type</th>
+            {insurancePlans.map((insurancePlan, i) => (
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider" key={i}>
+                {insurancePlan?.type}
+              </th>
+            ))}
+          </tr>
+          <tr>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">Premium</th>
+            {insurancePlans.map((insurancePlan, i) => (
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider" key={i}>
+                {insurancePlan?.premium}
+              </th>
+            ))}
+          </tr>
+          <tr>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">Metal Level</th>
+            {insurancePlans.map((insurancePlan, i) => (
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider" key={i}>
+                {insurancePlan?.metal_level}
+              </th>
+            ))}
+          </tr>
+        <tr>
             <th className="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">Benefits</th>
             {insurancePlans.map((insurancePlan, i) => (
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider" key={i}>
@@ -104,17 +151,28 @@ const CompareInsurance: React.FC = () => {
               </th>
             ))}
           </tr>
-        </thead>
-        <tbody className="bg-white divide-y divide-gray-200">
           {insurancePlans[0]?.benefits.map((benefit, i) => (
-            <tr key={i}>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">{benefit.name}</th>
-              {insurancePlans.map((insurancePlan, j) => (
-                <td className="px-6 py-4 whitespace-nowrap" key={j}>
-                  {benefit.covered ? "Covered" : "Not covered"}
-                </td>
-              ))}
-            </tr>
+            <React.Fragment key={i}>
+              <tr>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">{benefit.name}</th>
+                {insurancePlans.map((insurancePlan, j) => (
+                  <td className="px-6 py-4 whitespace-nowrap" key={j}>
+                    {insurancePlan?.benefits[i]?.covered ? "Covered" : "Not covered"}
+                    {insurancePlan?.benefits[i]?.cost_sharings.map((costSharing, k) => (
+                      <div key={k}>
+                        Coinsurance rate: {formatPercentage(String(costSharing.coinsurance_rate))} <br/>
+                        Coinsurance options: {costSharing.coinsurance_options} <br/>
+                        Copay amount: {costSharing.copay_amount} <br/>
+                        Copay options: {costSharing.copay_options} <br/>
+                        Network tier: {costSharing.network_tier} <br/>
+                        CSR: {costSharing.csr} <br/>
+                        Display string: {costSharing.display_string}
+                      </div>
+                    ))}
+                  </td>
+                ))}
+              </tr>
+            </React.Fragment>
           ))}
           <tr>
             <th className="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">Remove</th>
