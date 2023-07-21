@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { TrashIcon } from '@heroicons/react/outline';
+import { formatNumber } from '../../utils';
 import Link from 'next/link';
 
 interface Manufacturer {
@@ -36,6 +37,10 @@ const CompareMedicalDevices: React.FC = () => {
     localStorage.setItem('compareDrugDevs', JSON.stringify(compareDevices));
     setDevices(compareDevices);
   }
+  const currencyFormatter = new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+  });
 
   // Function to get top 3 transactions by amount
   const getTopTransactions = (transactions: Transaction[]) => {
@@ -82,7 +87,7 @@ const CompareMedicalDevices: React.FC = () => {
               {devices.map((device) => (
                 <td className="px-6 py-4 whitespace-nowrap" key={device.id}>
                   {device.topManufacturers.map((manufacturer, index) => (
-                    <p key={index}>{manufacturer.manufacturerName} - Amount: {manufacturer.amount} - Count: {manufacturer.count}</p>
+                    <p key={index}>{manufacturer.manufacturerName} - Amount: {currencyFormatter.format(manufacturer.amount)} - Count: {manufacturer.count}</p>
                   ))}
                 </td>
               ))}
@@ -93,7 +98,7 @@ const CompareMedicalDevices: React.FC = () => {
               <td className="px-6 py-4 whitespace-nowrap" key={device.id}>
                 {getTopTransactions(device.transactionsSummary).map((transaction, index) => (
                   <p key={index}>
-                    {transaction.doctorName ? `${transaction.doctorName} - Amount: ${transaction.amount}` : `Total Amount From Doctors: ${transaction.amount}`}
+                    {transaction.doctorName ? `${transaction.doctorName} - Amount: ${currencyFormatter.format(transaction.amount)}` : `Total Amount From Doctors: ${currencyFormatter.format(transaction.amount)}`}
                   </p>
                 ))}
               </td>

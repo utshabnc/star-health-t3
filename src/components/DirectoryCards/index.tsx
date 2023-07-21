@@ -1,5 +1,5 @@
 import Link from "next/link";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { formatMoney, formatDate, capitalizeWords } from "../../utils";
 import type { DirectoryResponse } from "../../server/trpc/router/db";
 import { Manufacturer, ManufacturerSummary, Product } from "@prisma/client";
@@ -7,6 +7,7 @@ import { formatSpecialties } from "../Filters";
 import _ from "lodash";
 import PhoneNumber from "../PhoneNumber";
 import { toTitleCase } from "../../utils";
+
 
 type FilterParams = {
   subject: string;
@@ -38,6 +39,7 @@ export default function DirectoryCards({
   searchResults: any;
   search: string;
 }) {
+  const [comparedItems, setComparedItems] = useState<number[]>([]);
   if (data?.doctors || searchResults?.doctors) {
     return (
       <>
@@ -244,6 +246,24 @@ export default function DirectoryCards({
     );
   }
 
+  
+
+  const handleClick = (item: any) => {
+    const existingData = JSON.parse(localStorage.getItem('compareTransactions') || '[]');
+    const newData = [...existingData, item];
+    localStorage.setItem('compareTransactions', JSON.stringify(newData));
+    setComparedItems(prevItems => [...prevItems, item.id]); // add item id to array
+  };
+  
+  const removeCompare = (item: any) => {
+    const existingData = JSON.parse(localStorage.getItem('compareTransactions') || '[]');
+    const newData = existingData.filter((data: any) => data.id !== item.id);
+    localStorage.setItem('compareTransactions', JSON.stringify(newData));
+    setComparedItems(prevItems => prevItems.filter(id => id !== item.id)); // remove item id from array
+  };
+
+
+
   /* transactions tab */
   if (data?.payments || searchResults?.payments) {
     return (
@@ -291,8 +311,15 @@ export default function DirectoryCards({
                       </Link>
                     </h5>
                     <p className="mb-1 text-base text-gray-700"> </p>
+                    <button
+                      className="ease focus:shadow-outline select-none rounded-md border border-violet-700 bg-violet-700 px-4 py-2 text-white transition duration-500 hover:bg-violet-900 focus:outline-none"
+                      onClick={comparedItems.includes(item.id) ? () => removeCompare(item) : () => handleClick(item)}
+                    >
+                      {comparedItems.includes(item.id) ? 'Remove Compare' : 'Compare'}
+                    </button>
                   </div>
                   <div className="flex flex-row justify-between text-sm">
+                    
                     <p className="mb-1 text-xs text-violet-400">
                       {/* Category: {item.category.charAt(0).toUpperCase() + item.category.slice(1, item.category.length).toLowerCase()}  */}
                       <Link
@@ -302,7 +329,7 @@ export default function DirectoryCards({
                         Manufacturer: {item.manufacturerName}
                       </Link>
                     </p>
-
+                    
                     <p className="text-sm text-gray-600">
                       {item.date.toLocaleDateString("en-US")}
                     </p>
