@@ -8,6 +8,8 @@ import {
   useEffect,
   useState,
 } from "react";
+import NoResultComponent from "../NoResultComponent";
+
 // import './index.css';
 
 // .buttonText {
@@ -55,7 +57,8 @@ function ResultsDetailsTable({ rows }: { rows: ResultSchema[] }) {
 
             </div>
             <div className="overflow-x-auto p-3 ">
-              
+                  {rows.length==0&&<NoResultComponent title={''}></NoResultComponent>}
+
                   {currentResults.map((row,i) => (
                     <div key={i}>
                     <ResultComponent title={row?.title??' '} subtitle={row?.subtitle??' '} category={row?.category??' '} link={row?.link??' '}></ResultComponent>
