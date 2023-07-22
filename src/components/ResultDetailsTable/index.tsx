@@ -9,7 +9,7 @@ import {
   useState,
 } from "react";
 import NoResultComponent from "../NoResultComponent";
-
+import Search from "../Search";
 // import './index.css';
 
 // .buttonText {
@@ -33,7 +33,7 @@ function ResultsDetailsTable({ rows }: { rows: ResultSchema[] }) {
   const navigation = useRouter();
   const resultsPerPage = 15; // Number of results to display per page
   const [currentPage, setCurrentPage] = useState(1);
-
+  const [search,setSearch]=useState('')
   // Calculate the total number of pages based on the total number of results
   const totalPages = Math.ceil(rows.length / resultsPerPage);
 
@@ -51,14 +51,14 @@ function ResultsDetailsTable({ rows }: { rows: ResultSchema[] }) {
     <>
       <section className="py-4 text-gray-600 h-full w-full antialiased" x-data="app">
         <div className="flex h-full w-full flex-row">
-          <div className="mx-auto w-full h-full overflow-scroll rounded-lg border border-gray-200 bg-white shadow-lg">
+          <div className=" w-full h-full overflow-scroll rounded-lg border border-gray-200 bg-white shadow-lg">
+        
             <div className="font-bold p-3">
             {rows.length} Number of Results
 
             </div>
             <div className="overflow-x-auto p-3 ">
                   {rows.length==0&&<NoResultComponent title={''}></NoResultComponent>}
-
                   {currentResults.map((row,i) => (
                     <div key={i}>
                     <ResultComponent title={row?.title??' '} subtitle={row?.subtitle??' '} category={row?.category??' '} link={row?.link??' '}></ResultComponent>

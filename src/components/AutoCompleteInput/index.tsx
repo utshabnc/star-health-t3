@@ -32,6 +32,32 @@ interface PriceFilter {
 }
 const AutocompleteInput: React.FC<AutocompleteInputProps> = ({ expr,setExpr,setFilterParam,options }) => {
   const [inputValue, setInputValue] = useState('');
+  function levenshteinDistance(a: string, b: string): number {
+    const distance: number[][] = Array.from(Array(a.length + 1), () =>
+      Array(b.length + 1).fill(0)
+    );
+  
+    for (let i = 0; i <= a.length; i++) {
+      distance?[i][0] = i:0;
+    }
+  
+    for (let j = 0; j <= b.length; j++) {
+      distance?[0][j] = j:0;
+    }
+  
+    for (let i = 1; i <= a.length; i++) {
+      for (let j = 1; j <= b.length; j++) {
+        const cost = a[i - 1] === b[j - 1] ? 0 : 1;
+        distance?[i][j] = Math.min(
+          distance?[i - 1][j]??0 + 1:1,
+          distance?[i][j - 1]??0 + 1:1,
+          distance?[i - 1][j - 1]??0 + cost:cost
+        ):0;
+      }
+    }
+  
+    return distance?[a.length][b.length]??0:0;
+  }
   const [filteredOptions, setFilteredOptions] = useState<string[]>([]);
   const [open,setOpen]=useState(false)
   const [choose,setChoose]=useState(false)
@@ -41,15 +67,22 @@ const AutocompleteInput: React.FC<AutocompleteInputProps> = ({ expr,setExpr,setF
 
     const filtered = options.filter(option =>
       option.toLowerCase().includes(value.toLowerCase())
-    );
-    setFilteredOptions(filtered);
-  };
+      );
+      const suggestions = options.filter(option => {
+        const distance = levenshteinDistance(value.toLowerCase(), option.toLowerCase());
+        return distance <= 4; // You can adjust the threshold for suggestions
+      });
+      setFilteredOptions([...suggestions,...filtered]);
+    
 
+      
+  };
+const dictionaryMap = new Map();
   const handleOptionClick = (option: string) => {
     setInputValue(option);
     setFilteredOptions([]);
   };
-
+  const dictionary = new Map();
   return (
     <div className="flex flex-col w-[100%] items-start">
                   <input
@@ -71,14 +104,15 @@ const AutocompleteInput: React.FC<AutocompleteInputProps> = ({ expr,setExpr,setF
                       }
                       setOpen(true)
                     }}
-                    onBlur={(e)=>{if(choose){setOpen(false);setChoose(false)}e}}
+                    onBlur={(e)=>{if(!choose){setOpen(false);setChoose(false)}}}
                     onFocus={(e)=>{setOpen(true)}}
                   />
                 <div>
 
                 {open && expr.length > 0 && (
                   <ul className="suggestions"                      
-                  onFocus={(e)=>setOpen(true)}>
+                  onMouseEnter={(e)=>setChoose(true)}
+                  onMouseLeave={(e)=>setChoose(false)}>
                   { options.length == 0&&(
                               <li className="no-suggestions">
                               <em>No Suggestions Available</em>
