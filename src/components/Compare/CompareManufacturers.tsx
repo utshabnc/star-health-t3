@@ -55,6 +55,9 @@ const CompareManufacturers: React.FC = () => {
     setMenus(compareMenus);
   }
 
+  const getTopFive = (arr: any[]) => {
+    return arr.slice(0, 5);
+  }
   return (
     <div className="overflow-x-auto">
       {menus.length === 0 ? (
@@ -76,6 +79,14 @@ const CompareManufacturers: React.FC = () => {
           </tr>
         </thead>
         <tbody className="bg-white divide-y divide-gray-200">
+          <tr>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">Rank</th>
+            {menus.map((menu, i) => (
+              <td className="px-6 py-4 whitespace-nowrap" key={i}>
+                #{menu.manufacturer.rank} of 2,471
+              </td>
+            ))}
+          </tr>
           <tr>
             <th className="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">State</th>
             {menus.map((menu, i) => (
@@ -106,6 +117,30 @@ const CompareManufacturers: React.FC = () => {
               <td className="px-6 py-4 whitespace-nowrap" key={i}>
                 {menu.manufacturer.items.slice(0, 3).map((item, j) => (
                   <p key={j}>{item.productName}</p>
+                ))}
+              </td>
+            ))}
+          </tr>
+          <tr>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">Top 5 Largest Payments</th>
+            {menus.map((menu, i) => (
+              <td className="px-6 py-4 whitespace-nowrap" key={i}>
+                {getTopFive(menu.manufacturer.largestPayments).map((payment, j) => (
+                  <p key={j}>
+                    Doctor: {payment.doctor.firstName} {payment.doctor.lastName}, Amount: {payment.amount}
+                  </p>
+                ))}
+              </td>
+            ))}
+          </tr>
+          <tr>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">Top 5 Most Common Items</th>
+            {menus.map((menu, i) => (
+              <td className="px-6 py-4 whitespace-nowrap" key={i}>
+                {getTopFive(menu.manufacturer.items).map((item, j) => (
+                  <p key={j}>
+                    Name: {item.productName}, Type: {item.productType}, Total Amount: {item.totalAmount}
+                  </p>
                 ))}
               </td>
             ))}

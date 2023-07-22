@@ -40,8 +40,8 @@ const CompareDiseasesTable: React.FC = () => {
     if (!html) return ""; 
     const sanitized = html.replace(/(<([^>]+)>)/gi, "");
     const words = sanitized.split(' ');
-    if (words.length > 20) {
-      return words.slice(0, 10).join(' ') + '...';
+    if (words.length > 50) {
+      return words.slice(0, 350).join(' ') + '...';
     } else {
       return sanitized;
     }
@@ -82,7 +82,7 @@ const CompareDiseasesTable: React.FC = () => {
         <tr>
             <th className="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">Description</th>
             {diseases.map((disease) => (
-              <td className="px-6 py-4 whitespace-nowrap" key={disease.name} dangerouslySetInnerHTML={{ __html: disease['text-list']?.[0]?.text?.html ? wrapText(disease['text-list'][0].text.html, 20) : 'N/A' }}>
+              <td className="px-6 py-4 whitespace-nowrap" key={disease.name} dangerouslySetInnerHTML={{ __html: disease['text-list']?.[0]?.text?.html ? wrapText(disease['text-list'][0].text.html, 10) : 'N/A' }}>
               </td>
             ))}
           </tr>

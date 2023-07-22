@@ -210,7 +210,6 @@ const SearchPage = ({setSearchVar, buttonPlaceholder, buttonSmall }: Props) => {
         value={search}
         onChange={(e) => {setSearch(e.target.value);setSearchVar(e.target.value)} }
       />
-
            </div>
     </Popover>
   );
