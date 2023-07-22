@@ -80,9 +80,9 @@ const AutocompleteInput: React.FC<AutocompleteInputProps> = ({ expr,setExpr,setF
                   <ul className="suggestions"                      
                   onFocus={(e)=>setOpen(true)}>
                   { options.length == 0&&(
-                              <div className="no-suggestions">
-                              <em>No suggestions Available</em>
-                            </div>
+                              <li className="no-suggestions">
+                              <em>No Suggestions Available</em>
+                            </li>
                   )}
                     {options?.map((option:any,index)=>(
                       <li key={index} onClick={() => {const val:string=option?option:'';                 
