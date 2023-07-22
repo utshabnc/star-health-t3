@@ -19,6 +19,8 @@ import Head from "next/head";
           <Route path='drug/:id' element={<DrugDetails />} />
           <Route path='manufacturer/:id' element={<ManufacturerDetails />} />
           <Route path='state/:id' element={<StateDetails />} />
+          <Route path='search' element={<StateDetails />} />
+
         </Routes>
       </NavFoot>
     </BrowserRouter>
