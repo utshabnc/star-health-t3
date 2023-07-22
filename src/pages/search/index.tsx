@@ -19,68 +19,55 @@ interface ResultSchema {
 
 }
 const ResultPage= () => {
-const { query: querySearch } = useRouter();
 const [search, setSearch] = useState<string>();
-const [food,setFood]=useState([])
-const [results,setResults]=useState<ResultSchema[]>([])
+const [searchT, setSearchT] = useState<string>();
 
+const [food,setFood]=useState([]);
+const [isSearching,setIsSearching]=useState(false);
 const { data: searchResults, refetch: fetchSearchResults } =
-trpc.db.searchAll.useQuery(search ?? "", { enabled: false });
+trpc.db.searchAll.useQuery(searchT ?? "", { enabled: false });
 
 useEffect(()=>{
-  const s = [
-    ...[],
-    ...['sas']
-  ]
-  const rows=[
-    // doctors,
-    searchResults?.doctors.map(
-      ({ id, firstName, lastName, city, state })=> ({
-        title: `${firstName} ${lastName}`,
-        subtitle: formatLocation(city, state),
-        category: "Doctor",
-        link:'/doctor/'+id,
-
-      })
-    ),
-  ]
-},[search])
-useEffect(() => {
-    const searchParam = querySearch["search"] as string;
-    
-    if (searchParam) {
-      setSearch(searchParam);
-      if (search||search!='')
+  if (!searchT||searchT.length < 2) return;
+  fetchSearchResults();
+  const fetchFood = async () => {
+    try {
+      const response = await fetch(`/api/food/search/`+searchT);
+      const data = await response.json();
+      if (response.status != 200) 
       {
-        debouncedSearch(search ?? "")
+
       }
+      else {
+        setFood(data["foods"]);
+       
       }
-  }, [querySearch]);
-  const debouncedSearch = useCallback(
-    debounce((search: string) => {
-      if (search.length < 2) return;
-      fetchSearchResults();
-      const fetchFood = async () => {
-        try {
-          const response = await fetch(`/api/food/search/`+search);
-          const data = await response.json();
-          if (response.status != 200) {
-          } else {
-            setFood(data["foods"]);
-          }
-    }
-  catch{setFood([])}
-  }
-   fetchFood()
-}, 500),
-    []
-  );
+      setIsSearching(false)
+}
+catch{setFood([])}
+}
+fetchFood()
+},[searchT])
 
   return (
-    <div className="flex h-screen w-full items-center justify-center bg-bgPrimary">
-      {!searchResults&&
-      <LoadingStarHealth></LoadingStarHealth>}
+    <div className="flex flex-col h-screen w-full bg-bgPrimary">
 
+      <div className="flex flex-row w-full pt-4 px-[2.2rem]">
+        <input
+        type="text"
+        placeholder={
+       "Search the StarHealth Database"
+        }
+        className={` me-20  w-full rounded-full px-[2.2rem] text-[2.5rem] h-[2.488rem]  lg:text-base `}
+        value={search}
+        onChange={(e) => {setSearch(e.target.value);} }
+      />
+      <div className="ease focus:shadow-outline select-none rounded-full font-bold border border-violet-700 bg-violet-700 px-[2.2rem] py-2 text-white transition duration-500 hover:bg-violet-900 focus:outline-none" onClick={(e)=>{{setSearchT(search);setIsSearching(true);}}}>
+            Search
+      </div>
+      </div>
+      {/* {( !searchResults)&&<div className="h-full w-full bg-white flex justify-center	items-center mt-4">Search the StarHealth Database</div>} */}
+      {(!searchResults)&&<LoadingStarHealth></LoadingStarHealth>}
       {searchResults&&<ResultDetailsTable 
       rows={[
         // doctors

@@ -123,6 +123,13 @@ function NavBar() {
               Data Visualization
             </Link>
             <Link
+              href={"/search"}
+              className="w-30 md:w-22 hidden rounded px-3 py-1 font-custom font-medium 
+							text-white hover:text-blue-300 md:block"
+            >
+              Search
+            </Link>
+            <Link
               href={"/directory"}
               className="w-30 md:w-22 hidden rounded px-3 py-1 font-custom font-medium 
 							text-white hover:text-blue-300 md:block"

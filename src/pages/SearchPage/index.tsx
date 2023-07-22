@@ -210,9 +210,7 @@ const SearchPage = ({setSearchVar, buttonPlaceholder, buttonSmall }: Props) => {
         value={search}
         onChange={(e) => {setSearch(e.target.value);setSearchVar(e.target.value)} }
       />
-      <div className="ease focus:shadow-outline select-none rounded-md border border-violet-700 bg-violet-700 px-4 py-2 text-white transition duration-500 hover:bg-violet-900 focus:outline-none" onClick={(e)=>{{setIsPopoverOpen(false);navigate.push('/results?search='+search)}}}>
-            Search
-           </div>
+
            </div>
     </Popover>
   );
