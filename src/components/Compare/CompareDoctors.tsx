@@ -1,6 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { TrashIcon } from '@heroicons/react/outline';
+import { formatNumber } from '../../utils';
 import Link from 'next/link';
+
+interface TopProduct {
+  productName: string;
+  amount: number;
+}
 
 interface Doctor {
   id: string;
@@ -11,12 +17,15 @@ interface Doctor {
   city: string;
   state: string;
   zipCode: string;
+  rank: number;
+  totalAmount: number;
+  topProducts: TopProduct[];
 }
 
 const CompareDoctorsTable: React.FC = () => {
   const [doctors, setDoctors] = useState<Doctor[]>([]);
+  const NUM_DOCTORS = 1267275;
 
-  // Load doctors from localStorage when component mounts
   useEffect(() => {
     const loadedDoctors = JSON.parse(localStorage.getItem('compareDoctors') || '[]');
     setDoctors(loadedDoctors);
@@ -29,10 +38,15 @@ const CompareDoctorsTable: React.FC = () => {
     setDoctors(compareDoctors);
   }
 
+  const currencyFormatter = new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+  });
+
   return (
     <div className="overflow-x-auto">
       {doctors.length === 0 ? (
-        <div>No doctors has been selected for comparison
+        <div>No doctors have been selected for comparison
           <h5 className="text-md mb-2 font-medium text-violet-700 underline w-[75%]">
           <Link href={'https://www.starhealth.io/directory'}>Data Directory</Link></h5>
           </div>
@@ -40,7 +54,7 @@ const CompareDoctorsTable: React.FC = () => {
       <table className="min-w-full divide-y divide-gray-200">
         <thead className="bg-gray-50">
           <tr>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider"></th>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">Name</th>
             {doctors.map((doctor) => (
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider" key={doctor.id}>
                 {doctor.firstName} {doctor.lastName}
@@ -49,6 +63,14 @@ const CompareDoctorsTable: React.FC = () => {
           </tr>
         </thead>
         <tbody className="bg-white divide-y divide-gray-200">
+        <tr>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">Rank</th>
+            {doctors.map((doctor, i) => (
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider" key={i}>
+                #{formatNumber(doctor.rank)} of {" "} {formatNumber(NUM_DOCTORS)}
+              </th>
+            ))}
+          </tr>
           <tr>
             <th className="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">Specialty</th>
             {doctors.map((doctor) => (
@@ -86,6 +108,24 @@ const CompareDoctorsTable: React.FC = () => {
             {doctors.map((doctor) => (
               <td className="px-6 py-4 whitespace-nowrap" key={doctor.id}>
                 {doctor.zipCode}
+              </td>
+            ))}
+          </tr>
+          <tr>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">Total Manufacturer Payments</th>
+            {doctors.map((doctor) => (
+              <td className="px-6 py-4 whitespace-nowrap" key={doctor.id}>
+                {currencyFormatter.format(doctor.totalAmount)}
+              </td>
+            ))}
+          </tr>
+          <tr>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">Top products</th>
+            {doctors.map((doctor) => (
+              <td className="px-6 py-4 whitespace-nowrap" key={doctor.id}>
+                {doctor.topProducts.slice(0, 3).map((product, i) => 
+                  <div key={i}>{product.productName} ({currencyFormatter.format(product.amount)})</div>
+                )}
               </td>
             ))}
           </tr>

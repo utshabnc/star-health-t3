@@ -8,11 +8,28 @@ interface Drug {
   generic_name: string;
   manufacturer_name: string;
   product_type: string;
+  effective_time: string;
+  route: string;
+  purpose: string;
+  warnings_and_cautions: string | null;
+  adverse_reactions: string | null;
+  description: string | null;
+  clinical_studies: string | null;
+  active_ingredient: string;
+  laboratory_tests: string | null;
+  instructions_for_use: string | null;
+  overdosage: string | null;
+  microbiology: string | null;
 }
 
 interface DrugResponse {
   drug: Drug;
 }
+
+// Helper function to wrap text every 5 words
+const wrapText = (text: string, wordsPerLine: number): string => {
+  return text.split(' ').map((word, idx) => ((idx + 1) % wordsPerLine === 0 ? `${word}<br/>` : word)).join(' ');
+};
 
 const CompareDrugs: React.FC = () => {
   const [drugs, setDrugs] = useState<DrugResponse[]>([]);
@@ -49,30 +66,36 @@ const CompareDrugs: React.FC = () => {
           </tr>
         </thead>
         <tbody className="bg-white divide-y divide-gray-200">
-          <tr>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">Generic Name</th>
-            {drugs.map((drugResponse) => (
-              <td className="px-6 py-4 whitespace-nowrap" key={drugResponse.drug.id}>
-                {drugResponse.drug.generic_name}
-              </td>
-            ))}
-          </tr>
-          <tr>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">Manufacturer</th>
-            {drugs.map((drugResponse) => (
-              <td className="px-6 py-4 whitespace-nowrap" key={drugResponse.drug.id}>
-                {drugResponse.drug.manufacturer_name}
-              </td>
-            ))}
-          </tr>
-          <tr>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">Product Type</th>
-            {drugs.map((drugResponse) => (
-              <td className="px-6 py-4 whitespace-nowrap" key={drugResponse.drug.id}>
-                {drugResponse.drug.product_type}
-              </td>
-            ))}
-          </tr>
+          {[
+            'generic_name',
+            'manufacturer_name',
+            'effective_time',
+            'product_type',
+            'route',
+            'purpose',
+            'warnings_and_cautions',
+            'adverse_reactions',
+            'description',
+            'clinical_studies',
+            'active_ingredient',
+            'laboratory_tests',
+            'instructions_for_use',
+            'overdosage',
+            'microbiology',
+          ].map(property => (
+            <tr key={property}>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">{property.replace('_', ' ')}</th>
+              {drugs.map((drugResponse) => (
+                <td className="px-6 py-4 whitespace-nowrap" key={drugResponse.drug.id}>
+                  {
+                    ['purpose', 'warnings_and_cautions', 'adverse_reactions', 'description', 'clinical_studies', 'active_ingredient', 'laboratory_tests', 'instructions_for_use', 'overdosage', 'microbiology'].includes(property) ? 
+                    <div dangerouslySetInnerHTML={{ __html: wrapText(drugResponse.drug[property as keyof Drug] || 'N/A', 5) }} /> :
+                    drugResponse.drug[property as keyof Drug] || 'N/A'
+                  }
+                </td>
+              ))}
+            </tr>
+          ))}
           <tr>
             <th className="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">Remove</th>
             {drugs.map((drugResponse) => (

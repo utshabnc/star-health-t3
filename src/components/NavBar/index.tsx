@@ -7,6 +7,7 @@ import { debounce } from "lodash";
 // import '../../index.css';
 import SearchPage from "../../pages/SearchPage";
 import Image from "next/image";
+import ShareIcons from "../ShareIcons";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import { useSession, signIn, signOut } from "next-auth/react";
@@ -238,6 +239,10 @@ function NavBar() {
           )}
         </div>
       </nav>
+      <div className="sub-nav w-full flex justify-center bg-royalBlue">
+        <p className="text-white leading-loose">Follow and Share!</p>
+        <ShareIcons />      
+      </div>
     </>
   );
 }

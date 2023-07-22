@@ -146,7 +146,6 @@ const OpioidTreatmentProviderDetails = () => {
 const handleClick = () => {
   if (typeof window !== 'undefined') {
     const compareOpioid = JSON.parse(localStorage.getItem('compareOpioid') || '[]');
-    console.log(compareOpioid);
     if (compareOpioid.some((compOpioid: OpioidTreatmentProvider) => compOpioid.id === provider.id)) {
       
       return;
