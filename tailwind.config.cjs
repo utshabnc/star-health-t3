@@ -8,6 +8,7 @@ module.exports = {
         bordercolor: "hsla(0, 0%, 100%, 0.2)",
         customgrey: "rgba(255, 255, 255, 0.65)",
         bgPrimary: "#0e1936",
+        royalBlue: '#502eed'
       },
       gridAutoColumns: {
         custom: "1fr",
