@@ -286,7 +286,175 @@ export const db = router({
       });
 
       return { doctors, manufacturers,drugs, products, opioidTreatmentProviders, diseases,genetics, hospital,clinicalTrials };    }),
-
+      searchAll: publicProcedure
+      .input(z.string())
+      .query(async ({ ctx: { prisma }, input: search }) => {
+        const names = search.split(" ");
+  
+        let searchArgs: Prisma.DoctorWhereInput = {
+          OR: [
+            {
+              firstName: {
+                contains: search,
+                mode: "insensitive",
+              },
+            },
+            {
+              lastName: {
+                contains: search,
+                mode: "insensitive",
+              },
+            },
+          ],
+        };
+  
+        if (names.length === 2) {
+          searchArgs = {
+            AND: [
+              {
+                firstName: {
+                  startsWith: names[0],
+                  mode: "insensitive",
+                },
+              },
+              {
+                lastName: {
+                  startsWith: names[1],
+                  mode: "insensitive",
+                },
+              },
+            ],
+          };
+        } else if (names.length > 2) {
+          searchArgs = {
+            AND: [
+              {
+                firstName: {
+                  startsWith: names[0],
+                  mode: "insensitive",
+                },
+              },
+              {
+                middleName: {
+                  startsWith: names[1],
+                  mode: "insensitive",
+                },
+              },
+              {
+                lastName: {
+                  startsWith: names[2],
+                  mode: "insensitive",
+                },
+              },
+            ],
+          };
+        }
+  
+        const doctors = await prisma.doctor.findMany({
+          where: searchArgs,
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+            city: true,
+            state: true,
+            addressLine1: true,
+            specialty: true,
+          },
+        });
+  
+        const manufacturers = await prisma.manufacturer.findMany({
+          where: {
+            name: {
+              contains: search,
+              mode: "insensitive",
+            },
+          },
+          include: {
+            ManufacturerSummary: {
+              where: {
+                year: "ALL",
+              },
+            },
+          },
+          orderBy: {
+            rank: "asc",
+          },
+  
+        });
+  
+        const products = await prisma.product.findMany({
+          where: {
+            name: {
+              contains: search,
+              mode: "insensitive",
+            },
+          },
+        });
+        const drugs = await prisma.drugs.findMany({
+          where: {
+            brand_name: {
+              contains: search,
+              mode: "insensitive",
+            },
+          },
+        });
+  
+        const hospital = await prisma.hospital.findMany({
+          where: {
+            name: {
+              contains: search,
+              mode: "insensitive",
+            },
+          },
+        });
+        const clinicalTrials = await prisma.clinicalTrials.findMany({
+          where: {
+            brief_title: {
+              contains: search,
+              mode: "insensitive",
+            },
+          },
+        });
+        const diseases = await prisma.diseases.findMany({
+          where: {
+            name: {
+              contains: search,
+              mode: "insensitive",
+            },
+          },
+        });
+        const genetics = await prisma.genetics.findMany({
+          where: {
+            name: {
+              contains: search,
+              mode: "insensitive",
+            },
+          },
+        });
+        const opioidTreatmentProviders = await prisma.opioidTreatment.findMany({
+          where: {
+            provider_name: {
+              contains: search,
+              mode: "insensitive",
+            },
+          },
+          select: {
+            id: true,
+            npi: true,
+            provider_name: true,
+            address_line_1: true,
+            address_line_2: true,
+            city: true,
+            state: true,
+            zip: true,
+            phone: true,
+            medicare_id_effective_date: true,
+          },
+        });
+  
+        return { doctors, manufacturers,drugs, products, opioidTreatmentProviders, diseases,genetics, hospital,clinicalTrials };    }),
+  
   doctor: publicProcedure
     .input(
       z.object({

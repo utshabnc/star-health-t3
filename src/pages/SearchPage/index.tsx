@@ -9,14 +9,16 @@ import { formatLocation } from "../../utils";
 import { Popover } from "react-tiny-popover";
 import { useRouter } from "next/router";
 import { trpc } from "../../utils/trpc";
+import LoadingStarHealth from "../../components/Loading";
 
 type Props = {
+  setSearchVar:React.Dispatch<React.SetStateAction<string>>;
   buttonStyle?: string;
   buttonPlaceholder?: string;
   buttonSmall?: boolean;
 };
 
-const SearchPage = ({ buttonPlaceholder, buttonSmall }: Props) => {
+const SearchPage = ({setSearchVar, buttonPlaceholder, buttonSmall }: Props) => {
   const { query: querySearch } = useRouter();
   const [search, setSearch] = useState<string>();
   const { data: searchResults, refetch: fetchSearchResults } =
@@ -24,6 +26,9 @@ const SearchPage = ({ buttonPlaceholder, buttonSmall }: Props) => {
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
   // console.log(searchResults);
   const [food,setFood]=useState([])
+  const navigate = useRouter();
+
+
 
   useEffect(() => {
     const searchParam = querySearch["search"] as string;
@@ -192,18 +197,23 @@ const SearchPage = ({ buttonPlaceholder, buttonSmall }: Props) => {
       content={<SearchResults />}
       onClickOutside={() => setIsPopoverOpen(false)}
     >
+      <div className="flex flex-row">
       <input
         type="text"
         placeholder={
-          buttonPlaceholder ?? "Search for Doctor, Company, or Drug Data"
+          buttonPlaceholder ?? "Search the StarHealth Database"
         }
         className={`
               ${buttonSmall ? "max-w-[160px]" : ""}
 							 mx-20 h-[8rem] w-[65rem] rounded-full px-[8rem] text-[2.5rem] lg:h-[2.488rem] lg:w-[390px] lg:px-[2.2rem] lg:text-base
                `}
         value={search}
-        onChange={(e) => setSearch(e.target.value)}
+        onChange={(e) => {setSearch(e.target.value);setSearchVar(e.target.value)} }
       />
+      <div className="ease focus:shadow-outline select-none rounded-md border border-violet-700 bg-violet-700 px-4 py-2 text-white transition duration-500 hover:bg-violet-900 focus:outline-none" onClick={(e)=>{{setIsPopoverOpen(false);navigate.push('/results?search='+search)}}}>
+            Search
+           </div>
+           </div>
     </Popover>
   );
 };

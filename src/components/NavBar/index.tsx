@@ -78,18 +78,22 @@ function NavBar() {
           ></div>
 
           <div className="relative hidden items-center justify-center md:flex">
-            <div className="absolute mr-[22rem]">
+            <div className="absolute mr-[27rem]">
               <HiOutlineSearch size={21} />
             </div>
-            <SearchPage />
+            <div>
+            <SearchPage setSearchVar={setSearch}/>
+            </div>
           </div>
 
-          <div className="relative flex items-center justify-center md:hidden">
+          {/* <div className="relative flex items-center justify-center md:hidden">
             <div className="absolute mr-[57rem]">
               <HiOutlineSearch size={70} />
             </div>
-            <SearchPage />
-          </div>
+            <div >
+            <SearchPage setSearchVar={setSearch}/>
+            </div> */}
+          {/* </div> */}
 
           <div
             style={{
@@ -100,7 +104,7 @@ function NavBar() {
             className={`flex flex-row items-center justify-end space-x-2 ${session?.status === "loading" && "opacity-0"
               }`}
           >
-            {(typeof window !== "undefined" && width) > 1000 &&
+            {(typeof window !== "undefined" && width > 1000) &&
               session?.data?.user && (
                 <p
                   className={`text-white   ${!session == null && "opacity-0"} `}
