@@ -1,18 +1,34 @@
-// import { Link } from 'react-router-dom';
+import React from 'react';
 import { SlSocialTwitter } from "react-icons/sl";
 import { BsLink45Deg, BsBoxArrowUp } from "react-icons/bs";
+import { toast } from "react-toastify";
 import Link from "next/link";
+import Image from 'next/image';
+import Modal from "../Modal"
+
+// IMAGE ASSETS
+import ShQrCode from "../../assets/starHealth-share.jpg";
 
 const ShareIcons = () => {
+  const [isOpen, setIsOpen] = React.useState(false);
 
   const copyURI = (evt: any) => {
     evt.preventDefault();
+
     const parent = evt.target.parentElement
-    console.log(parent);
-    navigator.clipboard.writeText(parent.getAttribute('href'))
+
+    if (evt.target.hasAttribute('href')) {
+      navigator.clipboard.writeText(evt.target.getAttribute('href'))
+    } else {
+      navigator.clipboard.writeText(parent.getAttribute('href'))
+    }
+
+    toast('Link https://www.starhealth.io/ added to clipboard!', { hideProgressBar: true, autoClose: 2000, type: 'success' })
   }
 
-  const generalShare = async () => {
+  const generalShare = async (evt: any) => {
+    evt.preventDefault();
+
     const shareData = {
       title: "Star Health",
       text: "StarHealth Data Directory",
@@ -27,18 +43,34 @@ const ShareIcons = () => {
   }
 
   return (
-    <div className="footer-social-wrapper m-1 flex w-[10%] items-center justify-around">
-        <Link href="https://www.starhealth.io/" onClick={copyURI}>
-          <BsLink45Deg size={20} color="white" />
-        </Link>
-        <BsBoxArrowUp size={18} color="white" onClick={generalShare} />
-        <Link href="https://www.twitter.com">
-          <SlSocialTwitter size={20} color="white" />
-        </Link>
-    </div>
+    <>
+      <button
+        className="text-white"
+        onClick={() => setIsOpen(true)}>
+          Follow and Share!
+      </button>
+      <Modal
+        open={isOpen}
+        onClose={() => setIsOpen(false)}
+        message="Share"
+      >
+        <div className='share-icons flex-col'>
+          <Image src={ShQrCode} alt="Star Health QR Code" width={100} height={100} />
+          <div className="footer-social-wrapper mt-5 flex w-[100%] justify-between">
+              <Link href="https://www.starhealth.io/" onClick={copyURI}>
+                <BsLink45Deg size={30} color="royalBlue" />
+              </Link>
+              <Link href="" onClick={generalShare}>
+                <BsBoxArrowUp className='cursor-pointer' size={28} color="royalBlue" />
+              </Link>
+              <a className="twitter-share-button" href="https://twitter.com/intent/tweet?text=Find%20Data-driven%20Health%20Care%20at%20https://www.starhealth.io/" data-size="large" target="_blank" rel="noreferrer">
+                <SlSocialTwitter size={30} color="royalBlue" />
+              </a>
+          </div>
+        </div>
+      </Modal>
+    </>
   );
 }
 
 export default ShareIcons;
-
-

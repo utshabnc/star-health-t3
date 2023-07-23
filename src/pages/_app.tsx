@@ -2,6 +2,9 @@ import type { AppType } from "next/app";
 import type { Session } from "next-auth";
 import { SessionProvider } from "next-auth/react";
 
+import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer } from 'react-toastify';
+
 import { trpc } from "../utils/trpc";
 
 import "../styles/globals.css";
@@ -36,6 +39,7 @@ const MyApp: AppType<{ session: Session | null }> = ({
       </Head>
       <NavFoot>
         <Component {...pageProps} />
+        <ToastContainer />
       </NavFoot>
     </SessionProvider>
   );
