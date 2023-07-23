@@ -1,6 +1,7 @@
 import React from 'react';
 import { SlSocialTwitter } from "react-icons/sl";
 import { BsLink45Deg, BsBoxArrowUp } from "react-icons/bs";
+import { HiMail } from "react-icons/hi";
 import { toast } from "react-toastify";
 import Link from "next/link";
 import Image from 'next/image';
@@ -26,26 +27,26 @@ const ShareIcons = () => {
     toast('Link https://www.starhealth.io/ added to clipboard!', { hideProgressBar: true, autoClose: 2000, type: 'success' })
   }
 
-  const generalShare = async (evt: any) => {
-    evt.preventDefault();
+  // const generalShare = async (evt: any) => {
+  //   evt.preventDefault();
 
-    const shareData = {
-      title: "Star Health",
-      text: "StarHealth Data Directory",
-      url: "https://www.starhealth.io/",
-    };
+  //   const shareData = {
+  //     title: "Star Health",
+  //     text: "StarHealth Data Directory",
+  //     url: "https://www.starhealth.io/",
+  //   };
 
-    try {
-      await navigator.share(shareData);
-    } catch (err) {
-      console.log(`Error: ${err}`);
-    }
-  }
+  //   try {
+  //     await navigator.share(shareData);
+  //   } catch (err) {
+  //     console.log(`Error: ${err}`);
+  //   }
+  // }
 
   return (
     <>
       <button
-        className="text-white"
+        className="text-white underline"
         onClick={() => setIsOpen(true)}>
           Follow and Share!
       </button>
@@ -60,11 +61,11 @@ const ShareIcons = () => {
               <Link href="https://www.starhealth.io/" onClick={copyURI}>
                 <BsLink45Deg size={30} color="royalBlue" />
               </Link>
-              <Link href="" onClick={generalShare}>
-                <BsBoxArrowUp className='cursor-pointer' size={28} color="royalBlue" />
+              <Link href="mailto:">
+                <HiMail className='cursor-pointer' size={30} color="royalBlue" />
               </Link>
               <a className="twitter-share-button" href="https://twitter.com/intent/tweet?text=Find%20Data-driven%20Health%20Care%20at%20https://www.starhealth.io/" data-size="large" target="_blank" rel="noreferrer">
-                <SlSocialTwitter size={30} color="royalBlue" />
+                <SlSocialTwitter size={26} color="royalBlue" />
               </a>
           </div>
         </div>

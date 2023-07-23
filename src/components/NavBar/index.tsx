@@ -235,9 +235,9 @@ function NavBar() {
           )}
         </div>
       </nav>
-      <div className="sub-nav w-full flex justify-center bg-royalBlue">
+      {navigate.pathname !== '/' && <div className="sub-nav w-full flex justify-center bg-royalBlue">
         <ShareIcons />      
-      </div>
+      </div>}
     </>
   );
 }
