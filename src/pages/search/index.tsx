@@ -10,6 +10,8 @@ import {
   import { useRouter } from "next/router";
   import { trpc } from "../../utils/trpc";
 import ResultDetailsTable from "../../components/ResultDetailsTable";
+import Image from "next/image";
+import Logo from "../../assets/Logo.png"
 import LoadingStarHealth from "../../components/Loading";
 interface ResultSchema {
   title: string | null;
@@ -50,24 +52,60 @@ fetchFood()
 },[searchT])
 
   return (
-    <div className="flex flex-col h-screen w-full bg-bgPrimary">
-
-      <div className="flex flex-row w-full pt-4 px-[2.2rem]">
+    
+    <div className="flex flex-col w-full bg-bgPrimary">
+    {!searchT&&<>
+      <div className="flex h-[100vh] flex-col w-100 bg-white justify-start items-center pt-[10rem]">
+        <div className="pb-4 font-custom font-bold
+							text-white md:block">
+              <Image
+                src={Logo}
+                alt="logo"
+                width={300}
+                height={300}
+              />        </div>      
+      <div className="flex flex-row w-full justify-center ">
         <input
         type="text"
         placeholder={
        "Search the StarHealth Database"
         }
-        className={` me-20  w-full rounded-full px-[2.2rem] text-[2.5rem] h-[2.488rem]  lg:text-base `}
-        value={search}
+        className={`w-[60%] outline rounded-full px-[2.2rem] mx-[1.5rem] text-[2.5rem] h-[2.488rem]  lg:text-base `}
+        value={search} 
         onChange={(e) => {setSearch(e.target.value);} }
       />
       <div className="ease focus:shadow-outline select-none rounded-full font-bold border border-violet-700 bg-violet-700 px-[2.2rem] py-2 text-white transition duration-500 hover:bg-violet-900 focus:outline-none" onClick={(e)=>{{setSearchT(search);setIsSearching(true);}}}>
             Search
       </div>
       </div>
+    </div>
+    </>}
+    {searchT&&<>
+    <div className="flex flex-col w-100 justify-center items-center pt-4">
+        <div className="pb-4 font-custom font-bold
+							text-white md:block">
+        Search the StarHealth Database
+        </div>      
+      <div className="flex flex-row w-full justify-center ">
+        <input
+        type="text"
+        placeholder={
+       "Search the StarHealth Database"
+        }
+        className={`w-[60%] rounded-full px-[2.2rem] mx-[1.5rem] text-[2.5rem] h-[2.488rem]  lg:text-base `}
+        value={search} 
+        onChange={(e) => {setSearch(e.target.value);} }
+      />
+      <div className="ease focus:shadow-outline select-none rounded-full font-bold border border-violet-700 bg-violet-700 px-[2.2rem] py-2 text-white transition duration-500 hover:bg-violet-900 focus:outline-none" onClick={(e)=>{{setSearchT(search);setIsSearching(true);}}}>
+            Search
+      </div>
+      </div>
+      </div>
       {/* {( !searchResults)&&<div className="h-full w-full bg-white flex justify-center	items-center mt-4">Search the StarHealth Database</div>} */}
-      {(!searchResults)&&<LoadingStarHealth></LoadingStarHealth>}
+      {(!searchResults)&&
+      <div className="mt-4">
+      <LoadingStarHealth></LoadingStarHealth>
+      </div>}
       {searchResults&&<ResultDetailsTable 
       rows={[
         // doctors
@@ -151,6 +189,7 @@ fetchFood()
             category: "Food" as const,
           }))
       ]}/>}
+      </>}
     </div>
   );
 };

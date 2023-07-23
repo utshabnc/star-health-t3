@@ -18,6 +18,8 @@ interface ResultSchema {
   link: string
 
 }
+import Image from "next/image";
+
 const ResultPage= () => {
 const { query: querySearch } = useRouter();
 const [search, setSearch] = useState<string>();
