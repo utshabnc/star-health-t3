@@ -48,25 +48,40 @@ const ShareIcons = () => {
       <button
         className="text-white underline"
         onClick={() => setIsOpen(true)}>
-          Follow and Share!
+          Share
       </button>
       <Modal
         open={isOpen}
         onClose={() => setIsOpen(false)}
         message="Share"
       >
-        <div className='share-icons flex-col'>
-          <Image src={ShQrCode} alt="Star Health QR Code" width={100} height={100} />
-          <div className="footer-social-wrapper mt-5 flex w-[100%] justify-between">
-              <Link href="https://www.starhealth.io/" onClick={copyURI}>
-                <BsLink45Deg size={30} color="royalBlue" />
-              </Link>
+        <div className='share-icons flex-col w-3/4 m-auto'>
+          <Image src={ShQrCode} alt="Star Health QR Code" className='w-full' />
+          <div className="footer-social-wrapper mt-5 flex w-full justify-between flex-col content-center">
+              <button
+                className="ease w-full mx-auto leading-loose mt-2 focus:shadow-outline select-none rounded-md border border-violet-700 bg-violet-700 px-4 py-2 text-white transition duration-500 hover:bg-violet-900 focus:outline-none flex justify-center"
+                onClick={copyURI}
+              >
+                <BsLink45Deg className='mr-1' size={30} color="white" />
+                Copy Embed
+              </button>
               <Link href="mailto:">
-                <HiMail className='cursor-pointer' size={30} color="royalBlue" />
+                <button
+                  className="ease w-full mx-auto mt-2 leading-loose focus:shadow-outline select-none rounded-md border border-violet-700 bg-violet-700 px-4 py-2 text-white transition duration-500 hover:bg-violet-900 focus:outline-none flex justify-center"
+                >
+                  <HiMail className='cursor-pointer mr-2' size={30} color="white" />
+                  Email
+                </button>
               </Link>
-              <a className="twitter-share-button" href="https://twitter.com/intent/tweet?text=Find%20Data-driven%20Health%20Care%20at%20https://www.starhealth.io/" data-size="large" target="_blank" rel="noreferrer">
-                <SlSocialTwitter size={26} color="royalBlue" />
-              </a>
+              <Link className="twitter-share-button" href="https://twitter.com/intent/tweet?text=Find%20Data-driven%20Health%20Care%20at%20https://www.starhealth.io/" data-size="large" target="_blank" rel="noreferrer">
+                <button
+                  className="ease w-full mx-auto mt-2 leading-loose focus:shadow-outline select-none rounded-md border border-violet-700 bg-violet-700 px-4 py-2 text-white transition duration-500 hover:bg-violet-900 focus:outline-none flex justify-center"
+                  onClick={copyURI}
+                >
+                  <SlSocialTwitter className='mr-2' size={26} color="white" />
+                  Share
+                </button>
+              </Link>
           </div>
         </div>
       </Modal>
