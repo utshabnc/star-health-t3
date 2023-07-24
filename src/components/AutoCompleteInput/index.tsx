@@ -110,7 +110,7 @@ const dictionaryMap = new Map();
                 <div>
 
                 {open && expr.length > 0 && (
-                  <div className='absolute w-100 '>
+                  <div className='absolute w-100 z-30'>
                   <div className='closeSuggestions'>
                     <GrClose></GrClose>
                   </div>

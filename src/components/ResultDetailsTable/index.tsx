@@ -52,9 +52,9 @@ function ResultsDetailsTable({ rows }: { rows: ResultSchema[] }) {
     }}
   return (
     <>
-      <section className="pt-4 text-gray-600 h-full w-full antialiased" x-data="app">
+      <section className=" text-gray-600 h-full w-full antialiased" x-data="app">
         <div className="flex h-full w-full flex-row">
-          <div className=" w-full h-full rounded-lg border border-gray-200 bg-white shadow-lg">
+          <div className=" w-full h-full rounded-lg bg-white shadow-lg">
         
             <div className="font-bold p-3">
             {rows.length} Results Found
