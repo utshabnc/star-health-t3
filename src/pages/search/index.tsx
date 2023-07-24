@@ -13,6 +13,7 @@ import ResultDetailsTable from "../../components/ResultDetailsTable";
 import Image from "next/image";
 import Logo from "../../assets/Logo.png"
 import LoadingStarHealth from "../../components/Loading";
+import { HiOutlineSearch } from "react-icons/hi";
 interface ResultSchema {
   title: string | null;
   subtitle: string | null;
@@ -65,15 +66,20 @@ fetchFood()
                 height={300}
               />        </div>      
       <div className="flex flex-row w-full justify-center ">
+      <div className="w-[60%] relative hidden items-center justify-center md:flex">
+      <div  className="absolute pointer-events-none  w-[100%] ml-[4.1rem] text-gray-400">
+              <HiOutlineSearch size={21} />
+            </div>
         <input
         type="text"
         placeholder={
        "Search the StarHealth Database"
         }
-        className={`w-[60%] outline rounded-full px-[2.2rem] mx-[1.5rem] text-[2.5rem] h-[2.488rem]  lg:text-base `}
+        className={`w-[100%] outline rounded-full px-[2.2rem] mx-[1.5rem] text-[2.5rem] h-[2.488rem]  lg:text-base `}
         value={search} 
         onChange={(e) => {setSearch(e.target.value);} }
       />
+      </div>
       <div className="ease focus:shadow-outline select-none rounded-full font-bold border border-violet-700 bg-violet-700 px-[2.2rem] py-2 text-white transition duration-500 hover:bg-violet-900 focus:outline-none" onClick={(e)=>{{setSearchT(search);setIsSearching(true);}}}>
             Search
       </div>
@@ -82,20 +88,26 @@ fetchFood()
     </>}
     {searchT&&<>
     <div className="flex flex-col w-100 justify-center items-center pt-4">
+
         <div className="pb-4 font-custom font-bold
 							text-white md:block">
         Search the StarHealth Database
         </div>      
-      <div className="flex flex-row w-full justify-center ">
+        <div className="flex flex-row w-full justify-center ">
+      <div className="w-[60%] relative hidden items-center justify-center md:flex">
+      <div  className="absolute pointer-events-none  w-[100%] ml-[4.1rem] text-gray-400">
+              <HiOutlineSearch size={21} />
+            </div>
         <input
         type="text"
         placeholder={
        "Search the StarHealth Database"
         }
-        className={`w-[60%] rounded-full px-[2.2rem] mx-[1.5rem] text-[2.5rem] h-[2.488rem]  lg:text-base `}
+        className={`w-[100%] outline rounded-full px-[2.2rem] mx-[1.5rem] text-[2.5rem] h-[2.488rem]  lg:text-base `}
         value={search} 
         onChange={(e) => {setSearch(e.target.value);} }
       />
+      </div>
       <div className="ease focus:shadow-outline select-none rounded-full font-bold border border-violet-700 bg-violet-700 px-[2.2rem] py-2 text-white transition duration-500 hover:bg-violet-900 focus:outline-none" onClick={(e)=>{{setSearchT(search);setIsSearching(true);}}}>
             Search
       </div>

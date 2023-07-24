@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-
+import {GrClose} from 'react-icons/gr'
 interface AutocompleteInputProps {
   expr: string,
   setExpr?:React.Dispatch<React.SetStateAction<string>>;
@@ -110,6 +110,10 @@ const dictionaryMap = new Map();
                 <div>
 
                 {open && expr.length > 0 && (
+                  <div className='absolute w-100 '>
+                  <div className='closeSuggestions'>
+                    <GrClose></GrClose>
+                  </div>
                   <ul className="suggestions"                      
                   onMouseEnter={(e)=>setChoose(true)}
                   onMouseLeave={(e)=>setChoose(false)}>
@@ -134,7 +138,9 @@ const dictionaryMap = new Map();
                     </li>
                     ))}
                   </ul>
-                )}
+                  </div>
+                )
+                }
                 </div>
                 </div>
   );
