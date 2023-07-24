@@ -30,12 +30,7 @@ const SearchPage = ({setSearchVar, buttonPlaceholder, buttonSmall }: Props) => {
 
 
 
-  useEffect(() => {
-    const searchParam = querySearch["search"] as string;
-    if (searchParam) {
-      setSearch(searchParam);
-    }
-  }, [querySearch]);
+
 
   const debouncedSearch = useCallback(
     debounce((search: string) => {

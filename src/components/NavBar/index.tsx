@@ -79,7 +79,7 @@ function NavBar() {
           ></div>
 
           <div className="relative hidden items-center justify-center md:flex">
-            <div className="absolute mr-[27rem]">
+            <div className="absolute mr-[22rem]">
               <HiOutlineSearch size={21} />
             </div>
             <div>
