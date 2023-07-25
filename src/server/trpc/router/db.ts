@@ -287,8 +287,13 @@ export const db = router({
 
       return { doctors, manufacturers,drugs, products, opioidTreatmentProviders, diseases,genetics, hospital,clinicalTrials };    }),
       searchAll: publicProcedure
-      .input(z.string())
-      .query(async ({ ctx: { prisma }, input: search }) => {
+      .input(z.object({
+        searchTerm: z.string(),
+
+      }
+      ))
+      .query(async ({ ctx: { prisma }, input: searchInput }) => {
+        const search = searchInput['searchTerm']
         const names = search.split(" ");
   
         let searchArgs: Prisma.DoctorWhereInput = {
@@ -451,9 +456,37 @@ export const db = router({
             phone: true,
             medicare_id_effective_date: true,
           },
+
         });
-  
-        return { doctors, manufacturers,drugs, products, opioidTreatmentProviders, diseases,genetics, hospital,clinicalTrials };    }),
+        const payments = await prisma.payment.findMany({
+          where: {
+            AND: [
+              {
+                product: {
+                  name: {
+                    contains: search,
+                    mode: "insensitive",
+                  },
+                },
+              },
+            ],
+          },
+          include: {
+                      
+            product: {
+              select: {
+                name: true,
+                type: true,
+              },
+            },
+          },
+          orderBy: {
+            year: "desc",
+          },
+          take:200
+        });
+
+        return { doctors, manufacturers,drugs, products, opioidTreatmentProviders, diseases,genetics, hospital,clinicalTrials,payments };    }),
   
   doctor: publicProcedure
     .input(
@@ -1708,6 +1741,7 @@ export const db = router({
 
 type RouterOutput = inferRouterOutputs<AppRouter>;
 export type SearchResponse = RouterOutput["db"]["search"];
+export type SearchAllResponse = RouterOutput["db"]["searchAll"];
 export type DoctorResponse = RouterOutput["db"]["doctor"];
 export type OpioidTreatmentProviderResponse =
   RouterOutput["db"]["opioidTreatment"];
