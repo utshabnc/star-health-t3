@@ -37,18 +37,49 @@ import openPayments from "../assets/logos/open-payments.png";
 import opioid from "../assets/logos/opioid-treatment.png";
 import testTubes from "../assets/logos/test-tubes.png";
 import states from "../assets/states.png";
+import map from "../assets/logos/mapping.png";
+import comparasion from "../assets/logos/comparasion.png";
+import visualization from "../assets/logos/visualization.png";
+import patient from "../assets/logos/patient.png";
+import search from "../assets/logos/search.png";
 import InfoSection from "../components/InfoSection";
 import { trpc } from "../utils/trpc";
+
 const features = [
-  { label: "Data Analytics", img: data_analytics },
+  { label: "Bookmarks", img: bookmark },
+
   { label: "Citation Generator", img: citation },
+  {
+    label: "Comparison Tool",
+    img: comparasion,
+  },
+  { label: "Customizable dashboards", img: dashboard },
+  { label: "Data Analytics", img: data_analytics },
   /* {
     label: "Proprietary Insights &\n Clinical intelligence",
     img: insights,
   }, */
   {
+    label: "Mapping",
+    img: map,
+  },
+  {
+    label: "Patient Intake Form",
+    img: patient,
+  },
+  {
     label: ["Proprietary Insights &", "Clinical intelligence"],
     img: insights,
+  },
+  {
+    label: "Search",
+    img: search,
+  },
+  { label: "Ratings & Reviews", img: ratings_and_reviews },
+
+  {
+    label: "Visualization",
+    img: visualization,
   },
 ];
 
@@ -59,14 +90,14 @@ const info = [
 ];
 
 const partners = [
-  { label: "", img: openPayments },
-  { label: "", img: fda },
-  { label: "", img: cms },
   { label: "", img: clinicalTrials },
-  { label: "", img: usda },
-  { label: "", img: datacCms },
-  { label: "", img: medlinPlus },
   { label: "", img: Cbenefits },
+  { label: "", img: cms },
+  { label: "", img: datacCms },
+  { label: "", img: fda },
+  { label: "", img: medlinPlus },
+  { label: "", img: openPayments },
+  { label: "", img: usda },
 ];
 
 /* const understand = [
@@ -111,7 +142,7 @@ const dataDir = [
 export default function Home() {
   const [drugType, setDrugType] = useState<string>();
   const { data: allStates } = trpc.db.allStates.useQuery({ drugType });
-  //   console.log(data)
+  console.log(allStates);
   const FirstSection = () => (
     <div className="mx-10 flex items-center justify-center pb-20 pt-10 sm:flex-row">
       <div className="flex flex-col items-center justify-center sm:w-[100%]">
@@ -138,7 +169,7 @@ export default function Home() {
 								Sign In
 							</button> */}
             <button
-              className="w-62 lg:w-62 h-24 rounded bg-emerald-400 px-3 py-1 font-custom text-xl font-medium hover:bg-emerald-500 active:bg-emerald-600"
+              className="w-62 lg:w-62 h-24 rounded bg-purple-600 px-3 py-1 font-custom text-xl font-medium hover:bg-purple-500 active:bg-purple-600"
               onClick={() => signIn("google")}
             >
               Open Data Directory
@@ -166,9 +197,9 @@ export default function Home() {
     <div className="z-0 bg-[#0e1936]">
       <FirstSection />
       <InfoSection
-        items={dataDir.slice(0, 6)}
+        items={dataDir}
         header="StarHealth Data Directory"
-        textSize="sm:text-[5rem]"
+        // textSize="sm:text-[5rem]"
         textColor="font-custom"
         boxStyle="bg-white"
         itemTextSpacing={true}
@@ -181,13 +212,13 @@ export default function Home() {
         itemTextSpacing={true}
         linkable={true}
       /> */}
-      <InfoSection
+      {/* <InfoSection
         items={dataDir.slice(6)}
         textColor="font-custom"
         boxStyle="bg-white"
         itemTextSpacing={true}
         linkable={true}
-      />
+      /> */}
       <Divider />
       <InfoSection
         items={features}
@@ -196,24 +227,24 @@ export default function Home() {
         textColor="font-custom"
         itemTextSpacing={true}
       />
-      <InfoSection
+      {/* <InfoSection
         items={info}
         textColor="font-custom"
         boxStyle="bg-white"
         itemTextSpacing={true}
-      />
+      /> */}
       <Divider />
       <InfoSection
-        items={partners.slice(0, 4)}
+        items={partners}
         header="Data Partners"
         textColor="font-custom"
         boxStyle="bg-white"
       />
-      <InfoSection
+      {/* <InfoSection
         items={partners.slice(4)}
         textColor="font-custom"
         boxStyle="bg-white"
-      />
+      /> */}
       <Divider />
       {/* <div id='Features' className='section l4 wf-section text-customgrey [rgba(255, 255, 255, 0.65)] font-custom px-[80px] pt-[40px] pb-[150px]'>
 				<div className='container max-w-[1040px] flex mx-auto flex-col justify-center items-center'>

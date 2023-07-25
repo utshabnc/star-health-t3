@@ -47,7 +47,7 @@ function Footer() {
               </p>
             </div>
 
-            <div className="footer-social-wrapper m-1 mt-2 flex w-[40%] items-center justify-around">
+            {/* <div className="footer-social-wrapper m-1 mt-2 flex w-[40%] items-center justify-around">
               <Link href="https://www.facebook.com">
                 <FaFacebookSquare size={30} />
               </Link>
@@ -57,7 +57,7 @@ function Footer() {
               <Link href="https://www.instagram.com">
                 <BsInstagram size={30} />
               </Link>
-            </div>
+            </div> */}
           </div>
 
           <div className="node mt-3 grid auto-cols-custom grid-cols-custom2 grid-rows-custom">
@@ -71,6 +71,19 @@ function Footer() {
               </Link>
               <Link href="/pricing" className="my-1 text-sm">
                 Pricing
+              </Link>
+              <Link href={"/visualization"} className="my-1 text-sm">
+                Data Visualization
+              </Link>
+              <Link href={"/search"} className="my-1 text-sm">
+                Search
+              </Link>
+              <Link href={"/directory"} className="my-1 text-sm">
+                Data Directory
+              </Link>
+
+              <Link href={"/profile"} className="my-1 text-sm">
+                Profile
               </Link>
               {/* <Link href='/' className='my-1 text-sm'>Contact</Link> */}
             </div>

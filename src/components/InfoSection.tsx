@@ -41,7 +41,7 @@ const InfoSection = ({
         </p>
       )}
 
-      <div className="mx-2 flex flex-row justify-around sm:mx-2">
+      <div className="mx-2 flex flex-row flex-wrap justify-around gap-10 sm:mx-2">
         {items.map((item, i) => (
           // <div key={i} className='relative w-full gap-4 rounded-md bg-white px-6 py-12'>
           <div
