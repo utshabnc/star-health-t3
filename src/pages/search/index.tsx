@@ -16,6 +16,7 @@ import LoadingStarHealth from "../../components/Loading";
 import { HiOutlineSearch } from "react-icons/hi";
 import { Tab } from "../../utils/Enums/Tab.enum";
 import * as HospitalOwnerData from "../../components/HospitalOwners/processJSON";
+import { HospitalOwners } from "../../components/HospitalOwners/HospitalOwners.model";
 
 interface ResultSchema {
   title: string | null;
@@ -56,14 +57,13 @@ catch{setFood([])}
 }
 fetchFood()
 const filteredOwners:ResultSchema[] = [];
-HospitalOwnerData.data.forEach((item:any,index:any) => {
+HospitalOwnerData?.data?.forEach((item:any,index:any) => {
   item['OWNERS']?.forEach((owner:any) => {
-    if (owner.NAME_OWNER.toLowerCase().includes(searchT.toLowerCase())) {
+    if (owner?.NAME_OWNER?.toLowerCase().includes(searchT.toLowerCase())) {
       filteredOwners.push({'title':owner.NAME_OWNER,'subtitle':item.ORGANIZATION_NAME,'link':`/HospitalOwners?index=${index}`,'category':'Hospital Owner'});
     }
   });
 });
-console.log(searchResults?.payments)
 setHospitalOwners(filteredOwners)
 const transactions:ResultSchema[]=[];
 
@@ -134,10 +134,10 @@ setCurrentData(array)
       </div>
       </div>
       {/* {( !searchResults)&&<div className="h-full w-full bg-white flex justify-center	items-center mt-4">Search the StarHealth Database</div>} */}
-      {/* {(!searchResults)&&
+      {(!searchResults)&&
       <div className="mt-4">
       <LoadingStarHealth></LoadingStarHealth>
-      </div>} */}
+      </div>}
       {searchResults&&
       <div className="rounded-lg border border-gray-200 bg-white shadow-lg pt-4 mt-4">
       <div  className="flex gap-3 justify-center ">
