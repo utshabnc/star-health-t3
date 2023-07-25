@@ -15,6 +15,8 @@ import Logo from "../../assets/Logo.png"
 import LoadingStarHealth from "../../components/Loading";
 import { HiOutlineSearch } from "react-icons/hi";
 import { Tab } from "../../utils/Enums/Tab.enum";
+import * as HospitalOwnerData from "../../components/HospitalOwners/processJSON";
+import { HospitalOwners } from "../../components/HospitalOwners/HospitalOwners.model";
 
 interface ResultSchema {
   title: string | null;
@@ -32,6 +34,7 @@ const [isSearching,setIsSearching]=useState(false);
 const [currentData,setCurrentData]=useState<ResultSchema[]>()
 const { data: searchResults, refetch: fetchSearchResults } =
 trpc.db.searchAll.useQuery(searchT ?? "", { enabled: false });
+const [hospitalOwners,setHospitalOwners]=useState<ResultSchema[]>([]);
 
 useEffect(()=>{
   if (!searchT||searchT.length < 2) return;
@@ -53,6 +56,18 @@ useEffect(()=>{
 catch{setFood([])}
 }
 fetchFood()
+const filteredOwners:ResultSchema[] = [];
+HospitalOwnerData.data.forEach((item:any,index:any) => {
+  item['OWNERS']?.forEach((owner:any) => {
+    if (owner.NAME_OWNER.toLowerCase().includes(searchT.toLowerCase())) {
+      filteredOwners.push({'title':owner.NAME_OWNER,'subtitle':item.ORGANIZATION_NAME,'link':`/HospitalOwners?index=${index}`,'category':'Hospital Owner'});
+    }
+  });
+});
+setHospitalOwners(filteredOwners)
+
+
+
 },[searchT])
 const handleTabClick = (tab: Tab, array:ResultSchema[] ) => {
 setSelectedTab(tab)
@@ -127,7 +142,103 @@ setCurrentData(array)
       {searchResults&&
       <div className="rounded-lg border border-gray-200 bg-white shadow-lg pt-4 mt-4">
       <div  className="flex gap-3 justify-center ">
+      <button
+            onClick={() => {
+                    handleTabClick(Tab.ClinicalTrials, 
+                      [
+                        // doctors
+                        ...searchResults?.doctors.map(
+                          ({ id, firstName, lastName, city, state }) => ({
+                            title: `${firstName} ${lastName}`,
+                            subtitle: formatLocation(city, state),
+                            category: "Doctor",
+                            link:'/doctor/'+id,
+                    
+                          })
+                        )??[],
+                        // manufacturers
+                        ...searchResults?.manufacturers.map(
+                          ({ id, name, state, country }) => ({
+                            title:name,
+                            subtitle: formatLocation(country, state),
+                            category: "Manufacturer",
+                            link:'/manufacturer/'+id,
+                    
+                          })
+                        )??[],
+                        // products
+                        ...searchResults?.products
+                          .filter(
+                            (product) =>
+                              product.type && product.type.toLowerCase() === "device"
+                          ) // TODO - enable other products when we have somewhere to display them
+                          .map(({ id, name }) => ({
+                            title: name ?? "",
+                            subtitle: "",
+                            link:'/drug/'+id,
+                            category: "Device",
+                            }))??[],
+                            ...searchResults?.hospital.map(
+                              ({ id, name, state,street_address, hospital_id }) => ({
+                                title:name,
+                                subtitle: formatLocation("USA", state),
+                                link:'/hospital?hospital_id='+hospital_id+'&hospital_address='+street_address,
+                                category: "Hospital",
+                              })
+                            )??[],
+                            ...searchResults?.clinicalTrials.map(
+                              ({ id, brief_title,nctid}) => ({
+                                title: brief_title,
+                                subtitle: "",
+                                link:'/clinicalTrial?NCTId='+nctid,
+                                category: "Clinical Trials",
+                              })
+                            )??[],
+                            ...searchResults?.drugs.map(
+                              ({ id, brand_name }) => ({
+                                title: brand_name,
+                                subtitle: "",
+                                link:'/drugs/'+id,
+                                category: "Drugs"
+                              })
+                            )??[],
+                            ...searchResults?.diseases.map(
+                              ({ id, name ,url}) => ({
+                                title: name,
+                                subtitle: "",
+                    
+                                link:'/genetic/condition?name='+url?.substring(url.lastIndexOf('/')+1),                  
+                                category: "Diseases",
+                              })
+                            )??[],
+                            ...searchResults?.genetics.map(
+                              ({ id, name ,url}) => ({
+                                title: name,
+                                subtitle: "",
+                                link:'/genetic/gene?name='+url?.substring(url.lastIndexOf('/')+1),
+                                category: "Genetics" as const,
+                              })
+                            )??[],
+                          ...food?.map(                
+                            (item) => ({
+                            title: item['description'],
+                            link:'/food?id='+ item['fdcId'],
+                            subtitle:item['foodCategory'],
+                            category: "Food" as const,
+                          })),
+                        ...hospitalOwners??[]
+                      ]
+                      );
+                  }}
+                  className={`border-b-2 hover:border-zinc-500 ${
+                    selectedTab === Tab.ClinicalTrials
+                      ? "border-violet-600"
+                      : "border-zinc-200"
+                  }`}
+                >
+        <span>All</span>
 
+      </button>
       <button
             onClick={() => {
                     handleTabClick(Tab.ClinicalTrials, 
@@ -269,7 +380,7 @@ setCurrentData(array)
       </button>
       <button
             onClick={() => {
-                    handleTabClick(Tab.HospitalOwners, []);
+                    handleTabClick(Tab.HospitalOwners, hospitalOwners)
                   }}
                   className={`border-b-2 hover:border-zinc-500 ${
                     selectedTab === Tab.HospitalOwners
