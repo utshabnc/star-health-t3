@@ -1,4 +1,5 @@
 export enum Tab {
+  All = "All",
   Transactions = "Transactions",
   Manufacturers = "Manufacturers",
   Genetics = "Genetics",

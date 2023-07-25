@@ -16,7 +16,6 @@ import LoadingStarHealth from "../../components/Loading";
 import { HiOutlineSearch } from "react-icons/hi";
 import { Tab } from "../../utils/Enums/Tab.enum";
 import * as HospitalOwnerData from "../../components/HospitalOwners/processJSON";
-import { HospitalOwners } from "../../components/HospitalOwners/HospitalOwners.model";
 
 interface ResultSchema {
   title: string | null;
@@ -27,13 +26,16 @@ interface ResultSchema {
 }
 const ResultPage= () => {
 const [search, setSearch] = useState<string>();
-const [searchT, setSearchT] = useState<string>();
+const [searchT, setSearchT] = useState<string>('');
 const [selectedTab, setSelectedTab] = useState<Tab>(Tab.Diseases);
 const [food,setFood]=useState([]);
 const [isSearching,setIsSearching]=useState(false);
 const [currentData,setCurrentData]=useState<ResultSchema[]>()
 const { data: searchResults, refetch: fetchSearchResults } =
-trpc.db.searchAll.useQuery(searchT ?? "", { enabled: false });
+trpc.db.searchAll.useQuery({
+  searchTerm: searchT,
+
+}, { enabled: false });
 const [hospitalOwners,setHospitalOwners]=useState<ResultSchema[]>([]);
 
 useEffect(()=>{
@@ -65,7 +67,6 @@ HospitalOwnerData?.data?.forEach((item:any,index:any) => {
   });
 });
 setHospitalOwners(filteredOwners)
-const transactions:ResultSchema[]=[];
 
 },[searchT])
 const handleTabClick = (tab: Tab, array:ResultSchema[] ) => {
@@ -100,7 +101,7 @@ setCurrentData(array)
         onChange={(e) => {setSearch(e.target.value);} }
       />
       </div>
-      <div className="ease focus:shadow-outline select-none rounded-full font-bold border border-violet-700 bg-violet-700 px-[2.2rem] py-2 text-white transition duration-500 hover:bg-violet-900 focus:outline-none" onClick={(e)=>{{setSearchT(search);setIsSearching(true);}}}>
+      <div className="ease focus:shadow-outline select-none rounded-full font-bold border border-violet-700 bg-violet-700 px-[2.2rem] py-2 text-white transition duration-500 hover:bg-violet-900 focus:outline-none" onClick={(e)=>{{setSearchT(search??'');setIsSearching(true);}}}>
             Search
       </div>
       </div>
@@ -128,7 +129,7 @@ setCurrentData(array)
         onChange={(e) => {setSearch(e.target.value);} }
       />
       </div>
-      <div className="ease focus:shadow-outline select-none rounded-full font-bold border border-violet-700 bg-violet-700 px-[2.2rem] py-2 text-white transition duration-500 hover:bg-violet-900 focus:outline-none" onClick={(e)=>{{setSearchT(search);setIsSearching(true);}}}>
+      <div className="ease focus:shadow-outline select-none rounded-full font-bold border border-violet-700 bg-violet-700 px-[2.2rem] py-2 text-white transition duration-500 hover:bg-violet-900 focus:outline-none" onClick={(e)=>{{setSearchT(search??'');setIsSearching(true);}}}>
             Search
       </div>
       </div>
@@ -143,7 +144,7 @@ setCurrentData(array)
       <div  className="flex gap-3 justify-center ">
       <button
             onClick={() => {
-                    handleTabClick(Tab.ClinicalTrials, 
+                    handleTabClick(Tab.All, 
                       [
                         // doctors
                         ...searchResults?.doctors.map(
@@ -230,7 +231,7 @@ setCurrentData(array)
                       );
                   }}
                   className={`border-b-2 hover:border-zinc-500 ${
-                    selectedTab === Tab.ClinicalTrials
+                    selectedTab === Tab.All
                       ? "border-violet-600"
                       : "border-zinc-200"
                   }`}

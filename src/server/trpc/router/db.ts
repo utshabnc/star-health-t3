@@ -287,8 +287,13 @@ export const db = router({
 
       return { doctors, manufacturers,drugs, products, opioidTreatmentProviders, diseases,genetics, hospital,clinicalTrials };    }),
       searchAll: publicProcedure
-      .input(z.string())
-      .query(async ({ ctx: { prisma }, input: search }) => {
+      .input(z.object({
+        searchTerm: z.string(),
+
+      }
+      ))
+      .query(async ({ ctx: { prisma }, input: searchInput }) => {
+        const search = searchInput['searchTerm']
         const names = search.split(" ");
   
         let searchArgs: Prisma.DoctorWhereInput = {
@@ -489,6 +494,7 @@ export const db = router({
           orderBy: {
             year: "desc",
           },
+          take:200
         });
 
         return { doctors, manufacturers,drugs, products, opioidTreatmentProviders, diseases,genetics, hospital,clinicalTrials,payments };    }),
@@ -1746,6 +1752,7 @@ export const db = router({
 
 type RouterOutput = inferRouterOutputs<AppRouter>;
 export type SearchResponse = RouterOutput["db"]["search"];
+export type SearchAllResponse = RouterOutput["db"]["searchAll"];
 export type DoctorResponse = RouterOutput["db"]["doctor"];
 export type OpioidTreatmentProviderResponse =
   RouterOutput["db"]["opioidTreatment"];
