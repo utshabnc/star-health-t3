@@ -16,7 +16,6 @@ import LoadingStarHealth from "../../components/Loading";
 import { HiOutlineSearch } from "react-icons/hi";
 import { Tab } from "../../utils/Enums/Tab.enum";
 import * as HospitalOwnerData from "../../components/HospitalOwners/processJSON";
-import { HospitalOwners } from "../../components/HospitalOwners/HospitalOwners.model";
 
 interface ResultSchema {
   title: string | null;
@@ -64,9 +63,9 @@ HospitalOwnerData.data.forEach((item:any,index:any) => {
     }
   });
 });
+console.log(searchResults?.payments)
 setHospitalOwners(filteredOwners)
-
-
+const transactions:ResultSchema[]=[];
 
 },[searchT])
 const handleTabClick = (tab: Tab, array:ResultSchema[] ) => {
@@ -135,10 +134,10 @@ setCurrentData(array)
       </div>
       </div>
       {/* {( !searchResults)&&<div className="h-full w-full bg-white flex justify-center	items-center mt-4">Search the StarHealth Database</div>} */}
-      {(!searchResults)&&
+      {/* {(!searchResults)&&
       <div className="mt-4">
       <LoadingStarHealth></LoadingStarHealth>
-      </div>}
+      </div>} */}
       {searchResults&&
       <div className="rounded-lg border border-gray-200 bg-white shadow-lg pt-4 mt-4">
       <div  className="flex gap-3 justify-center ">
@@ -452,7 +451,13 @@ setCurrentData(array)
       </button>
       <button
             onClick={() => {
-                    handleTabClick(Tab.Transactions, []);
+                    handleTabClick(Tab.Transactions, [...searchResults?.payments
+                      .map(({ id,product }) => ({
+                        title: product['name'] ?? "",
+                        subtitle: "",
+                        link:'/payment/'+id,
+                        category: "Opioid Treatment Providers",
+                        }))??[]]);
                   }}
                   className={`border-b-2 hover:border-zinc-500 ${
                     selectedTab === Tab.Transactions

@@ -452,8 +452,46 @@ export const db = router({
             medicare_id_effective_date: true,
           },
         });
-  
-        return { doctors, manufacturers,drugs, products, opioidTreatmentProviders, diseases,genetics, hospital,clinicalTrials };    }),
+        const payments = await prisma.payment.findMany({
+          where: {
+            AND: [
+              {
+                product: {
+                  name: {
+                    contains: search,
+                    mode: "insensitive",
+                  },
+                },
+              },
+            ],
+          },
+          include: {
+            manufacturer: {
+              select: {
+                name: true,
+                id: true,
+              },
+            },
+            doctor: {
+              select: {
+                firstName: true,
+                lastName: true,
+                id: true,
+              },
+            },
+            product: {
+              select: {
+                name: true,
+                type: true,
+              },
+            },
+          },
+          orderBy: {
+            year: "desc",
+          },
+        });
+
+        return { doctors, manufacturers,drugs, products, opioidTreatmentProviders, diseases,genetics, hospital,clinicalTrials,payments };    }),
   
   doctor: publicProcedure
     .input(
