@@ -111,7 +111,7 @@ const dictionaryMap = new Map();
 
                 {open && expr.length > 0 && (
                   <div className='absolute w-100 z-30'>
-                  <div className='closeSuggestions'>
+                  <div onClick={(e)=>setOpen(false)} className='closeSuggestions justify-end'>
                     <GrClose></GrClose>
                   </div>
                   <ul className="suggestions"                      

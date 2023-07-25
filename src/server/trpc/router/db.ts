@@ -456,6 +456,7 @@ export const db = router({
             phone: true,
             medicare_id_effective_date: true,
           },
+
         });
         const payments = await prisma.payment.findMany({
           where: {
@@ -471,19 +472,7 @@ export const db = router({
             ],
           },
           include: {
-            manufacturer: {
-              select: {
-                name: true,
-                id: true,
-              },
-            },
-            doctor: {
-              select: {
-                firstName: true,
-                lastName: true,
-                id: true,
-              },
-            },
+                      
             product: {
               select: {
                 name: true,

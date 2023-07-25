@@ -226,7 +226,14 @@ setCurrentData(array)
                             subtitle:item['foodCategory'],
                             category: "Food" as const,
                           })),
-                        ...hospitalOwners??[]
+                        ...hospitalOwners??[],
+                        ...searchResults?.payments
+                      .map(({ id,amount,product }) => ({
+                        title: product['name'] ?? "",
+                        subtitle: "Amount: $"+ amount??"",
+                        link:'',
+                        category: "Payments",
+                        }))??[]
                       ]
                       );
                   }}
@@ -453,11 +460,11 @@ setCurrentData(array)
       <button
             onClick={() => {
                     handleTabClick(Tab.Transactions, [...searchResults?.payments
-                      .map(({ id,product }) => ({
+                      .map(({ id,amount,product }) => ({
                         title: product['name'] ?? "",
-                        subtitle: "",
-                        link:'/payment/'+id,
-                        category: "Opioid Treatment Providers",
+                        subtitle: "Amount: $"+ amount??"",
+                        link:'',
+                        category: "Payments",
                         }))??[]]);
                   }}
                   className={`border-b-2 hover:border-zinc-500 ${
