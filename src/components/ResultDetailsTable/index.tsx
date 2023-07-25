@@ -45,6 +45,7 @@ function ResultsDetailsTable({ rows }: { rows: ResultSchema[] }) {
   const indexOfFirstResult = indexOfLastResult - resultsPerPage;
   const currentResults = rows.slice(indexOfFirstResult, indexOfLastResult);
 
+  useEffect(()=>{setCurrentPage(1)},[rows])
   // Function to handle pagination navigation
   const goToPage = (page: number) => {
     if (page >= 1 && page <= totalPages) {

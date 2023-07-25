@@ -23,7 +23,7 @@ interface ResultSchema {
 const ResultPage= () => {
 const [search, setSearch] = useState<string>();
 const [searchT, setSearchT] = useState<string>('');
-const [selectedTab, setSelectedTab] = useState<Tab>(Tab.Diseases);
+const [selectedTab, setSelectedTab] = useState<Tab>(Tab.All);
 const [food,setFood]=useState([]);
 const [currentData,setCurrentData]=useState<ResultSchema[]>()
 const { data: searchResults, refetch: fetchSearchResults } =
@@ -33,6 +33,102 @@ trpc.db.searchAll.useQuery({
 }, { enabled: false });
 const [hospitalOwners,setHospitalOwners]=useState<ResultSchema[]>([]);
 
+useEffect(()=>{
+  const array:ResultSchema[]= [
+    // doctors
+    ...searchResults?.doctors.map(
+      ({ id, firstName, lastName, city, state }) => ({
+        title: `${firstName} ${lastName}`,
+        subtitle: formatLocation(city, state),
+        category: "Doctor",
+        link:'/doctor/'+id,
+  
+      })
+    )??[],
+    // manufacturers
+    ...searchResults?.manufacturers.map(
+      ({ id, name, state, country }) => ({
+        title:name,
+        subtitle: formatLocation(country, state),
+        category: "Manufacturer",
+        link:'/manufacturer/'+id,
+  
+      })
+    )??[],
+    // products
+    ...searchResults?.products
+      .filter(
+        (product) =>
+          product.type && product.type.toLowerCase() === "device"
+      ) // TODO - enable other products when we have somewhere to display them
+      .map(({ id, name }) => ({
+        title: name ?? "",
+        subtitle: "",
+        link:'/drug/'+id,
+        category: "Device",
+        }))??[],
+        ...searchResults?.hospital.map(
+          ({ id, name, state,street_address, hospital_id }) => ({
+            title:name,
+            subtitle: formatLocation("USA", state),
+            link:'/hospital?hospital_id='+hospital_id+'&hospital_address='+street_address,
+            category: "Hospital",
+          })
+        )??[],
+        ...searchResults?.clinicalTrials.map(
+          ({ id, brief_title,nctid}) => ({
+            title: brief_title,
+            subtitle: "",
+            link:'/clinicalTrial?NCTId='+nctid,
+            category: "Clinical Trials",
+          })
+        )??[],
+        ...searchResults?.drugs.map(
+          ({ id, brand_name }) => ({
+            title: brand_name,
+            subtitle: "",
+            link:'/drugs/'+id,
+            category: "Drugs"
+          })
+        )??[],
+        ...searchResults?.diseases.map(
+          ({ id, name ,url}) => ({
+            title: name,
+            subtitle: "",
+  
+            link:'/genetic/condition?name='+url?.substring(url.lastIndexOf('/')+1),                  
+            category: "Diseases",
+          })
+        )??[],
+        ...searchResults?.genetics.map(
+          ({ id, name ,url}) => ({
+            title: name,
+            subtitle: "",
+            link:'/genetic/gene?name='+url?.substring(url.lastIndexOf('/')+1),
+            category: "Genetics" as const,
+          })
+        )??[],
+      ...food?.map(                
+        (item) => ({
+        title: item['description'],
+        link:'/food?id='+ item['fdcId'],
+        subtitle:item['foodCategory'],
+        category: "Food" as const,
+      })),
+    ...hospitalOwners??[],
+    ...searchResults?.payments
+  .map(({ id,amount,product }) => ({
+    title: product['name'] ?? "",
+    subtitle: "Amount: $"+ amount??"",
+    link:'',
+    category: "Payments",
+    }))??[]
+  ]
+  setSelectedTab(Tab.All)
+  setCurrentData(array)
+
+
+},[searchResults])
 useEffect(()=>{
   if (!searchT||searchT.length < 2) return;
   fetchSearchResults();
@@ -69,6 +165,7 @@ const fetchHospitals = async () => {
   } catch (error) {
   }}
 fetchHospitals();
+
 },[searchT,fetchSearchResults])
 const handleTabClick = (tab: Tab, array:ResultSchema[] ) => {
 setSelectedTab(tab)
