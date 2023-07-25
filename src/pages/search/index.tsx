@@ -1,13 +1,8 @@
 import {
-    useCallback,
     useEffect,
     useState,
   } from "react";
-  import { debounce } from "lodash"
-  import DetailsTable from "../../components/DetailsTable";
   import { formatLocation } from "../../utils";
-  import { Popover } from "react-tiny-popover";
-  import { useRouter } from "next/router";
   import { trpc } from "../../utils/trpc";
 import ResultDetailsTable from "../../components/ResultDetailsTable";
 import Image from "next/image";
@@ -16,6 +11,7 @@ import LoadingStarHealth from "../../components/Loading";
 import { HiOutlineSearch } from "react-icons/hi";
 import { Tab } from "../../utils/Enums/Tab.enum";
 import * as HospitalOwnerData from "../../components/HospitalOwners/processJSON";
+import type { HospitalOwners } from "../../components/HospitalOwners/HospitalOwners.model";
 
 interface ResultSchema {
   title: string | null;
@@ -29,7 +25,6 @@ const [search, setSearch] = useState<string>();
 const [searchT, setSearchT] = useState<string>('');
 const [selectedTab, setSelectedTab] = useState<Tab>(Tab.Diseases);
 const [food,setFood]=useState([]);
-const [isSearching,setIsSearching]=useState(false);
 const [currentData,setCurrentData]=useState<ResultSchema[]>()
 const { data: searchResults, refetch: fetchSearchResults } =
 trpc.db.searchAll.useQuery({
@@ -53,22 +48,28 @@ useEffect(()=>{
         setFood(data["foods"]);
        
       }
-      setIsSearching(false)
 }
 catch{setFood([])}
 }
 fetchFood()
-const filteredOwners:ResultSchema[] = [];
-HospitalOwnerData?.data?.forEach((item:any,index:any) => {
-  item['OWNERS']?.forEach((owner:any) => {
-    if (owner?.NAME_OWNER?.toLowerCase().includes(searchT.toLowerCase())) {
-      filteredOwners.push({'title':owner.NAME_OWNER,'subtitle':item.ORGANIZATION_NAME,'link':`/HospitalOwners?index=${index}`,'category':'Hospital Owner'});
-    }
-  });
-});
-setHospitalOwners(filteredOwners)
+const fetchHospitals = async () => {
+  try {
+    const response = await HospitalOwnerData.default();
+    const data: HospitalOwners[] = await HospitalOwnerData.data;
+    const filteredOwners:ResultSchema[] = [];
+    data?.forEach((item:any,index:any) => {
+      item['OWNERS']?.forEach((owner:any) => {
+        if (owner?.NAME_OWNER?.toLowerCase().includes(searchT.toLowerCase())) {
+          filteredOwners.push({'title':owner.NAME_OWNER,'subtitle':item.ORGANIZATION_NAME,'link':`/HospitalOwners?index=${index}`,'category':'Hospital Owner'});
+        }
+      });
+    });
 
-},[searchT])
+    setHospitalOwners(filteredOwners);
+  } catch (error) {
+  }}
+fetchHospitals();
+},[searchT,fetchSearchResults])
 const handleTabClick = (tab: Tab, array:ResultSchema[] ) => {
 setSelectedTab(tab)
 setCurrentData(array)
@@ -101,7 +102,7 @@ setCurrentData(array)
         onChange={(e) => {setSearch(e.target.value);} }
       />
       </div>
-      <div className="ease focus:shadow-outline select-none rounded-full font-bold border border-violet-700 bg-violet-700 px-[2.2rem] py-2 text-white transition duration-500 hover:bg-violet-900 focus:outline-none" onClick={(e)=>{{setSearchT(search??'');setIsSearching(true);}}}>
+      <div className="ease focus:shadow-outline select-none rounded-full font-bold border border-violet-700 bg-violet-700 px-[2.2rem] py-2 text-white transition duration-500 hover:bg-violet-900 focus:outline-none" onClick={(e)=>{{setSearchT(search??'');}}}>
             Search
       </div>
       </div>
@@ -129,7 +130,7 @@ setCurrentData(array)
         onChange={(e) => {setSearch(e.target.value);} }
       />
       </div>
-      <div className="ease focus:shadow-outline select-none rounded-full font-bold border border-violet-700 bg-violet-700 px-[2.2rem] py-2 text-white transition duration-500 hover:bg-violet-900 focus:outline-none" onClick={(e)=>{{setSearchT(search??'');setIsSearching(true);}}}>
+      <div className="ease focus:shadow-outline select-none rounded-full font-bold border border-violet-700 bg-violet-700 px-[2.2rem] py-2 text-white transition duration-500 hover:bg-violet-900 focus:outline-none" onClick={(e)=>{{setSearchT(search??'');}}}>
             Search
       </div>
       </div>
