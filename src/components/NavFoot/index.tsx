@@ -15,8 +15,9 @@ export const NavFoot = ({ children }: Props) => {
   return (
     <>
       <NavBar />
-        <div className="min-h-screen bg-[#f6f6f6]">{children}</div>
-      <Footer />
+      <div className="flex min-h-screen flex-col bg-[#f6f6f6]">
+        {children} <Footer />
+      </div>
     </>
   );
 };

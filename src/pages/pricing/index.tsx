@@ -10,9 +10,7 @@ const pricing = () => {
       <div className="header-container mx-auto my-0 flex w-[100%] max-w-[1140px] justify-center pb-[50px]">
         <div className="block-column min-w-0 break-words text-center">
           <div className="clear-both h-[60px] leading-tight"></div>
-          <h2 className="text-[36px] font-bold">
-            Choose a StarHealth Solution For You
-          </h2>
+          <h2 className="text-[36px] font-bold">Pricing Options</h2>
         </div>
       </div>
 
@@ -51,21 +49,21 @@ const pricing = () => {
             </div>
           </div>
         </div> */}
-        <div className="relative  mx-4 w-[300px] border border-[#d0d0d0] p-[25px] text-center leading-tight md:mb-8 ">
+        <div className="relative mx-4 flex  w-[300px]  flex-col border border-[#d0d0d0] bg-purple-300 p-[25px] text-center leading-tight md:mb-8">
           <h2 className="py-[10px] text-[36px] font-bold">Standard </h2>
-          <h5 className="mb-2 py-4 text-[22px] font-bold ">$100</h5>
-          <p className="mb-[20px] font-medium ">
+          <h5 className="mb-2 py-4 text-[22px] font-bold ">$100 / month</h5>
+          {/* <p className="mb-[20px] font-medium ">
             / user / month, billed annually
-          </p>
-          <p className="mb-[20px] font-medium ">
+          </p> */}
+          {/* <p className="mb-[20px] font-medium ">
             Unlock StarHealth&apos;s full suite of tools fueled by proprietary
             data
           </p>
           <p className="mb-[65px] font-medium italic">
             Best for Individuals and Small Teams
-          </p>
-          <div className="flex flex-wrap items-center justify-center ">
-            <div className="button m-0 inline-block w-[205px] rounded-lg bg-[#8D47FC] p-[18px] text-white">
+          </p> */}
+          <div className="mt-auto flex flex-wrap items-center justify-center">
+            <div className="button m-0  inline-block w-[205px] rounded-lg bg-[#8D47FC] p-[18px] text-white">
               <a className="font-medium">
                 <BsLightningFill className="absolute left-[54px] mt-[3px]" />{" "}
                 TRY PRO FREE
@@ -73,16 +71,16 @@ const pricing = () => {
             </div>
           </div>
         </div>
-        <div className="relative  mx-4 w-[300px] border border-[#d0d0d0] p-[25px] text-center leading-tight md:mb-8 ">
+        <div className="relative mx-4  flex w-[300px] flex-col border   border-[#d0d0d0] bg-purple-600 p-[25px] text-center leading-tight md:mb-8 ">
           <h2 className="py-[10px] text-[36px] font-bold">Enterprise</h2>
           <h5 className="mb-2 py-4 text-[22px] font-bold ">Contact Us</h5>
-          <p className="mb-[20px] font-medium ">Custom billing</p>
+          {/* <p className="mb-[20px] font-medium ">Custom billing</p>
           <p className="mb-[20px] font-medium ">
             A custom solution that scales as teams do
           </p>
-          <p className="mb-[125px] font-medium italic">Best for Large Teams</p>
-          <div className="flex flex-wrap items-center justify-center ">
-            <div className="button m-0 inline-block w-[205px] rounded-lg bg-purple-800 p-[18px] text-white">
+          <p className="mb-[125px] font-medium italic">Best for Large Teams</p> */}
+          <div className="mt-auto flex flex-wrap items-center justify-center">
+            <div className="button m-0  inline-block w-[205px] rounded-lg bg-purple-800 p-[18px] text-white">
               <a className="font-medium">
                 <BsLightningFill className="absolute left-[57px] mt-[3px]" />
                 CONTACT US

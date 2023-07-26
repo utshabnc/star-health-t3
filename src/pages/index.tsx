@@ -55,6 +55,10 @@ const features = [
   },
   { label: "Customizable dashboards", img: dashboard },
   { label: "Data Analytics", img: data_analytics },
+  {
+    label: "Data Visualization",
+    img: visualization,
+  },
   /* {
     label: "Proprietary Insights &\n Clinical intelligence",
     img: insights,
@@ -71,15 +75,11 @@ const features = [
     label: ["Proprietary Insights &", "Clinical intelligence"],
     img: insights,
   },
+
+  { label: "Ratings & Reviews", img: ratings_and_reviews },
   {
     label: "Search",
     img: search,
-  },
-  { label: "Ratings & Reviews", img: ratings_and_reviews },
-
-  {
-    label: "Data Visualization",
-    img: visualization,
   },
 ];
 
@@ -170,10 +170,10 @@ export default function Home() {
 								Sign In
 							</button> */}
               <button
-                className="w-62 lg:w-62 h-24 rounded bg-purple-600 px-3 py-1 font-custom text-xl font-medium text-white hover:bg-purple-500 active:bg-purple-600"
+                className="w-62 lg:w-62 h-24 rounded bg-purple-600 px-3 py-1 font-custom text-xl font-extrabold font-medium text-white hover:bg-purple-500 active:bg-purple-600"
                 onClick={() => signIn("google")}
               >
-                Open Data Directory
+                Access the Data
               </button>
             </div>
           </div>
@@ -265,102 +265,204 @@ export default function Home() {
         boxStyle="bg-white"
       /> */}
       <Divider />
-      {/* <div id='Features' className='section l4 wf-section text-customgrey [rgba(255, 255, 255, 0.65)] font-custom px-[80px] pt-[40px] pb-[150px]'>
-				<div className='container max-w-[1040px] flex mx-auto flex-col justify-center items-center'>
-					<div className='flex max-w-[900px] text-white title-wrapper flex-col mb-[40px] text-center'>
-						<h2 className='h2-title my-0 pt-[40px] bg-transparent pl-0 text-[4vw] tracking-[-0.0375em] leading-[1.1] font-[700]'>
-							High-Powered Tools
-						</h2>
-						<p className='max-w-[640px] my-0 px-[25px] text-[18px]'>
-								Built to help you command research data - whether you’re part of a small research team or a large organization
-						</p>
-					</div>
-					<div className='features-grid grid w-[100%] items-stretch auto-cols-custom gap-x-[40px] gap-y-[40px] grid-cols-custom3 grid-rows-custom2'>
-						<div className='node p-[35px] col-start-1 row-start-1 row-end-3 border-solid border border-bordercolor rounded-[6px] features-card'>
-							<div className='text-blue-500 flex mb-[25px] flex-col items-start features-row '>
-								<FaPencilRuler size={27} className='mb-[25px]' />
-								<div className='font-[700] text-white text-[18px] leading-[1.25] fontfeatures-card-title'>
-									Ready to go
-								</div>
-							</div>
-							<div className='mb-[40px] text-[16px] leading-[1.6] feature-card-text bottom-margin'>
-								The worlds largest database of clinical trials made available through a simple API.
-							</div>
-							<div className='mb-[40px] text-[16px] leading-[1.6] feature-card-text bottom-margin'>
-								The worlds medical knowledge plugged into your analysis.
-							</div>
-							<div className='mb-[40px] text-[16px] leading-[1.6] feature-card-text bottom-margin'>
-								The Medical Board is...
-							</div>
-							<div className='text-white flex mb-[20px] flex-row items-center check-row'>
-								<BsCheck2 size={30} color='#7CFC00' className='mr-2 ' />
-								<div className='check-text'>
-									Affordable
-								</div>
-							</div>
-							<div className='text-white flex mb-[20px] flex-row items-center check-row'>
-								<BsCheck2 size={30} color='#7CFC00' className='mr-2 ' />
-								<div className='check-text'>
-										Fast and Scalable
-								</div>
-							</div>
-							<div className='text-white flex mb-[20px] flex-row items-center check-row'>
-								<BsCheck2 size={30} color='#7CFC00' className='mr-2 ' />
-								<div className='check-text'>
-										Real Time
-								</div>
-							</div>
-						</div>
-						<div className='node p-[35px] col-start-2 row-start-1 row-end-1 border-solid border border-bordercolor rounded-[6px] features-card'>
-							<div className='text-blue-500 flex mb-[25px] flex-col items-start features-row '>
-								<FaPaintBrush size={27} className='mb-[25px]' />
-								<div className='font-[700] text-white text-[18px] leading-[1.25] fontfeatures-card-title'>
-									Customizable
-								</div>
-							</div>
-							<div className='mb-[40px] text-[16px] leading-[1.6] feature-card-text bottom-margin'>
-								Mix and match the data points according to your search query to generate new results.
-							</div>
-						</div>
-						<div className='node p-[35px] col-start-3 row-start-1 row-end-1 border-solid border border-bordercolor rounded-[6px] features-card'>
-							<div className='text-blue-500 flex mb-[25px] flex-col items-start features-row '>
-								<MdPedalBike size={27} className='mb-[25px]' />
-								<div className='font-[700] text-white text-[18px] leading-[1.25] fontfeatures-card-title'>
-									Timely
-								</div>
-							</div>
-							<div className='mb-[40px] text-[16px] leading-[1.6] feature-card-text bottom-margin'>
-								Our service aggregates and cleans large amounts of data in seconds.
-							</div>
-						</div>
-						<div className='node p-[35px] col-start-2 row-start-2 row-end-2 border-solid border border-bordercolor rounded-[6px] features-card'>
-							<div className='text-blue-500 flex mb-[25px] flex-col items-start features-row '>
-								<MdOutlineAirplanemodeActive size={27} className='mb-[25px]' />
-								<div className='font-[700] text-white text-[18px] leading-[1.25] fontfeatures-card-title'>
-									Accessible
-								</div>
-							</div>
-							<div className='mb-[40px] text-[16px] leading-[1.6] feature-card-text bottom-margin'>
-								Pricing that scales as you do. Individual researchers can use our platform for as little as $100/month.
-							</div>
-						</div>
-						<div className='node p-[35px] col-start-3 row-start-2 row-end-2 border-solid border border-bordercolor rounded-[6px] features-card'>
-							<div className='text-blue-500 flex mb-[25px] flex-col items-start features-row '>
-								<TbLayoutGridAdd size={27} className='mb-[25px]' />
-								<div className='font-[700] text-white text-[18px] leading-[1.25] fontfeatures-card-title'>
-									Current
-								</div>
-							</div>
-							<div className='mb-[40px] text-[16px] leading-[1.6] feature-card-text bottom-margin'>
-								Our platform pulls the latest research as soon as it is published so your query results update in real time.
-							</div>
-						</div>
-
-					</div>
-
-				</div>
-
-			</div> */}
+      <div
+        id="Features"
+        className="section l4 wf-section [rgba(255, 255, 255, 0.65)] px-[80px] pb-[150px] pt-[40px] font-custom text-customgrey"
+      >
+        <div className="container mx-auto flex max-w-[1040px] flex-col items-center justify-center">
+          <div className="title-wrapper mb-[40px] flex max-w-[900px] flex-col text-center text-white">
+            <h2 className="h2-title my-0 bg-transparent pl-0 pt-[40px] text-[4vw] font-[700] leading-[1.1] tracking-[-0.0375em]">
+              Use Cases
+            </h2>
+          </div>
+          <div className="features-grid flex w-[100%]   items-stretch gap-x-[40px] gap-y-[40px]">
+            <div className="node features-card col-start-1 row-start-1 row-end-3 flex-1 rounded-[6px] border border-solid border-bordercolor p-[35px]">
+              <div className="features-row mb-[25px] flex flex-col items-start text-blue-500 ">
+                {/* <FaPencilRuler size={27} className="mb-[25px]" /> */}
+                <div className="fontfeatures-card-title text-[18px] font-[700] leading-[1.25] text-white">
+                  Healthcare and Medical
+                </div>
+              </div>
+              <div className="check-row mb-[20px] flex flex-row items-center text-white">
+                {/* <BsCheck2 size={30} color="#7CFC00" className="mr-2 " /> */}
+                <div className="check-text">Patients</div>
+              </div>
+              <div className="check-row mb-[20px] flex flex-row items-center text-white">
+                {/* <BsCheck2 size={30} color="#7CFC00" className="mr-2 " /> */}
+                <div className="check-text">Providers</div>
+              </div>
+              <div className="check-row mb-[20px] flex flex-row items-center text-white">
+                {/* <BsCheck2 size={30} color="#7CFC00" className="mr-2 " /> */}
+                <div className="check-text">Researchers</div>
+              </div>
+              <div className="check-row mb-[20px] flex flex-row items-center text-white">
+                {/* <BsCheck2 size={30} color="#7CFC00" className="mr-2 " /> */}
+                <div className="check-text">Healthcare Workers</div>
+              </div>
+              <div className="check-row mb-[20px] flex flex-row items-center text-white">
+                {/* <BsCheck2 size={30} color="#7CFC00" className="mr-2 " /> */}
+                <div className="check-text">Insurance</div>
+              </div>
+              <div className="check-row mb-[20px] flex flex-row items-center text-white">
+                {/* <BsCheck2 size={30} color="#7CFC00" className="mr-2 " /> */}
+                <div className="check-text">Administrators</div>
+              </div>
+              <div className="check-row mb-[20px] flex flex-row items-center text-white">
+                {/* <BsCheck2 size={30} color="#7CFC00" className="mr-2 " /> */}
+                <div className="check-text">Public-health</div>
+              </div>
+              <div className="check-row mb-[20px] flex flex-row items-center text-white">
+                {/* <BsCheck2 size={30} color="#7CFC00" className="mr-2 " /> */}
+                <div className="check-text">Government</div>
+              </div>
+              <div className="check-row mb-[20px] flex flex-row items-center text-white">
+                {/* <BsCheck2 size={30} color="#7CFC00" className="mr-2 " /> */}
+                <div className="check-text">Military</div>
+              </div>
+            </div>
+            <div className="node features-card col-start-1 row-start-1 row-end-3 flex-1 rounded-[6px] border border-solid border-bordercolor p-[35px]">
+              <div className="features-row mb-[25px] flex flex-col items-start text-blue-500 ">
+                {/* <FaPencilRuler size={27} className="mb-[25px]" /> */}
+                <div className="fontfeatures-card-title text-[18px] font-[700] leading-[1.25] text-white">
+                  Data, Technology and Services
+                </div>
+              </div>
+              <div className="check-row mb-[20px] flex flex-row items-center text-white">
+                {/* <BsCheck2 size={30} color="#7CFC00" className="mr-2 " /> */}
+                <div className="check-text">Data Scientists</div>
+              </div>
+              <div className="check-row mb-[20px] flex flex-row items-center text-white">
+                {/* <BsCheck2 size={30} color="#7CFC00" className="mr-2 " /> */}
+                <div className="check-text">IT Services</div>
+              </div>
+              <div className="check-row mb-[20px] flex flex-row items-center text-white">
+                {/* <BsCheck2 size={30} color="#7CFC00" className="mr-2 " /> */}
+                <div className="check-text">Professional Services</div>
+              </div>
+              <div className="check-row mb-[20px] flex flex-row items-center text-white">
+                {/* <BsCheck2 size={30} color="#7CFC00" className="mr-2 " /> */}
+                <div className="check-text">Recruiters</div>
+              </div>
+              <div className="check-row mb-[20px] flex flex-row items-center text-white">
+                {/* <BsCheck2 size={30} color="#7CFC00" className="mr-2 " /> */}
+                <div className="check-text">Marketers</div>
+              </div>
+              <div className="check-row mb-[20px] flex flex-row items-center text-white">
+                {/* <BsCheck2 size={30} color="#7CFC00" className="mr-2 " /> */}
+                <div className="check-text">Writers</div>
+              </div>
+            </div>
+            <div className="node features-card col-start-1 row-start-1 row-end-3 flex-1 rounded-[6px] border border-solid border-bordercolor p-[35px]">
+              <div className="features-row mb-[25px] flex flex-col items-start text-blue-500 ">
+                {/* <FaPencilRuler size={27} className="mb-[25px]" /> */}
+                <div className="fontfeatures-card-title text-[18px] font-[700] leading-[1.25] text-white">
+                  Education, Advocacy, and Non-profit
+                </div>
+              </div>
+              <div className="check-row mb-[20px] flex flex-row items-center text-white">
+                {/* <BsCheck2 size={30} color="#7CFC00" className="mr-2 " /> */}
+                <div className="check-text">Students</div>
+              </div>
+              <div className="check-row mb-[20px] flex flex-row items-center text-white">
+                {/* <BsCheck2 size={30} color="#7CFC00" className="mr-2 " /> */}
+                <div className="check-text">Educators</div>
+              </div>
+              <div className="check-row mb-[20px] flex flex-row items-center text-white">
+                {/* <BsCheck2 size={30} color="#7CFC00" className="mr-2 " /> */}
+                <div className="check-text">Parents</div>
+              </div>
+              <div className="check-row mb-[20px] flex flex-row items-center text-white">
+                {/* <BsCheck2 size={30} color="#7CFC00" className="mr-2 " /> */}
+                <div className="check-text">Advocacy</div>
+              </div>
+              <div className="check-row mb-[20px] flex flex-row items-center text-white">
+                {/* <BsCheck2 size={30} color="#7CFC00" className="mr-2 " /> */}
+                <div className="check-text">Non-profit</div>
+              </div>
+            </div>
+          </div>
+          {/* <div className="features-grid grid w-[100%] auto-cols-custom grid-cols-custom3 grid-rows-custom2 items-stretch gap-x-[40px] gap-y-[40px]">
+            <div className="node features-card col-start-1 row-start-1 row-end-3 rounded-[6px] border border-solid border-bordercolor p-[35px]">
+              <div className="features-row mb-[25px] flex flex-col items-start text-blue-500 ">
+                <FaPencilRuler size={27} className="mb-[25px]" />
+                <div className="fontfeatures-card-title text-[18px] font-[700] leading-[1.25] text-white">
+                  Ready to go
+                </div>
+              </div>
+              <div className="feature-card-text bottom-margin mb-[40px] text-[16px] leading-[1.6]">
+                The worlds largest database of clinical trials made available
+                through a simple API.
+              </div>
+              <div className="feature-card-text bottom-margin mb-[40px] text-[16px] leading-[1.6]">
+                The worlds medical knowledge plugged into your analysis.
+              </div>
+              <div className="feature-card-text bottom-margin mb-[40px] text-[16px] leading-[1.6]">
+                The Medical Board is...
+              </div>
+              <div className="check-row mb-[20px] flex flex-row items-center text-white">
+                <BsCheck2 size={30} color="#7CFC00" className="mr-2 " />
+                <div className="check-text">Affordable</div>
+              </div>
+              <div className="check-row mb-[20px] flex flex-row items-center text-white">
+                <BsCheck2 size={30} color="#7CFC00" className="mr-2 " />
+                <div className="check-text">Fast and Scalable</div>
+              </div>
+              <div className="check-row mb-[20px] flex flex-row items-center text-white">
+                <BsCheck2 size={30} color="#7CFC00" className="mr-2 " />
+                <div className="check-text">Real Time</div>
+              </div>
+            </div>
+            <div className="node features-card col-start-2 row-start-1 row-end-1 rounded-[6px] border border-solid border-bordercolor p-[35px]">
+              <div className="features-row mb-[25px] flex flex-col items-start text-blue-500 ">
+                <FaPaintBrush size={27} className="mb-[25px]" />
+                <div className="fontfeatures-card-title text-[18px] font-[700] leading-[1.25] text-white">
+                  Customizable
+                </div>
+              </div>
+              <div className="feature-card-text bottom-margin mb-[40px] text-[16px] leading-[1.6]">
+                Mix and match the data points according to your search query to
+                generate new results.
+              </div>
+            </div>
+            <div className="node features-card col-start-3 row-start-1 row-end-1 rounded-[6px] border border-solid border-bordercolor p-[35px]">
+              <div className="features-row mb-[25px] flex flex-col items-start text-blue-500 ">
+                <MdPedalBike size={27} className="mb-[25px]" />
+                <div className="fontfeatures-card-title text-[18px] font-[700] leading-[1.25] text-white">
+                  Timely
+                </div>
+              </div>
+              <div className="feature-card-text bottom-margin mb-[40px] text-[16px] leading-[1.6]">
+                Our service aggregates and cleans large amounts of data in
+                seconds.
+              </div>
+            </div>
+            <div className="node features-card col-start-2 row-start-2 row-end-2 rounded-[6px] border border-solid border-bordercolor p-[35px]">
+              <div className="features-row mb-[25px] flex flex-col items-start text-blue-500 ">
+                <MdOutlineAirplanemodeActive size={27} className="mb-[25px]" />
+                <div className="fontfeatures-card-title text-[18px] font-[700] leading-[1.25] text-white">
+                  Accessible
+                </div>
+              </div>
+              <div className="feature-card-text bottom-margin mb-[40px] text-[16px] leading-[1.6]">
+                Pricing that scales as you do. Individual researchers can use
+                our platform for as little as $100/month.
+              </div>
+            </div>
+            <div className="node features-card col-start-3 row-start-2 row-end-2 rounded-[6px] border border-solid border-bordercolor p-[35px]">
+              <div className="features-row mb-[25px] flex flex-col items-start text-blue-500 ">
+                <TbLayoutGridAdd size={27} className="mb-[25px]" />
+                <div className="fontfeatures-card-title text-[18px] font-[700] leading-[1.25] text-white">
+                  Current
+                </div>
+              </div>
+              <div className="feature-card-text bottom-margin mb-[40px] text-[16px] leading-[1.6]">
+                Our platform pulls the latest research as soon as it is
+                published so your query results update in real time.
+              </div>
+            </div>
+          </div> */}
+        </div>
+      </div>
     </div>
   );
 }

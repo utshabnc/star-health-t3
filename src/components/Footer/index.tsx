@@ -26,7 +26,7 @@ const year = new Date().getFullYear();
 
 function Footer() {
   return (
-    <div className="bg-nav w-[100%] bg-[#010139] p-1 font-custom leading-normal">
+    <div className="bg-nav mt-auto w-[100%] bg-[#010139] p-1 font-custom leading-normal">
       <div className="container ml-auto mr-auto	mt-9 flex flex-col items-center justify-center">
         <div className="grid auto-cols-custom grid-cols-custom grid-rows-custom font-custom text-white">
           <div className="node flex flex-col items-start justify-between">
@@ -63,28 +63,26 @@ function Footer() {
           <div className="node mt-3 grid auto-cols-custom grid-cols-custom2 grid-rows-custom">
             <div className="footer-column grid grid-cols-1 flex-col items-start justify-between text-white">
               <div className="footer-title mb-2.5 font-bold">Company</div>
-              <Link href="/" className="my-1 text-sm">
-                Home
-              </Link>
+
               <Link href="/directory" className="my-1 text-sm">
                 Data Directory
-              </Link>
-              <Link href="/pricing" className="my-1 text-sm">
-                Pricing
               </Link>
               <Link href={"/visualization"} className="my-1 text-sm">
                 Data Visualization
               </Link>
-              <Link href={"/search"} className="my-1 text-sm">
-                Search
+              <Link href="/" className="my-1 text-sm">
+                Home
               </Link>
-              <Link href={"/directory"} className="my-1 text-sm">
-                Data Directory
+              <Link href="/pricing" className="my-1 text-sm">
+                Pricing
               </Link>
-
               <Link href={"/profile"} className="my-1 text-sm">
                 Profile
               </Link>
+              <Link href={"/search"} className="my-1 text-sm">
+                Search
+              </Link>
+
               {/* <Link href='/' className='my-1 text-sm'>Contact</Link> */}
             </div>
             <div className="footer-column grid grid-cols-1 flex-col text-white">

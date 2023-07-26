@@ -47,7 +47,7 @@ const InfoSection = ({
           <div
             className={`relative ml-2 mr-2 flex w-full flex-col items-center rounded-[6px] rounded-md border-[1.5px] border-bordercolor bg-white px-6 py-8 shadow-md ${
               boxStyle ? "" : "rounded-lg bg-[#0e1936] "
-            } ${itemTextSpacing ? "h-[17.188rem]" : "h-[13.8rem]"} 
+            } ${itemTextSpacing ? "h-[17.188rem]" : "h-[9.8rem]"} 
                 p-1 sm:w-[27%] sm:p-3 md:w-[25.5%] xl:w-[21%] ${
                   linkable ? "hover:bg-gray-200" : ""
                 }`}
@@ -154,25 +154,29 @@ const InfoSection = ({
                     query: { tab: item.linkparam },
                   }}
                 >
-                  <p
-                    className={`justify-center pb-10 text-center text-xs font-semibold capitalize lg:text-lg ${
-                      "text-" + textColor ?? "text-violet-700"
-                    }          ${itemTextSpacing && "mt-0"}`}
-                  >
-                    {item.label}
-                  </p>
+                  {item.label && (
+                    <p
+                      className={`justify-center pb-10 text-center text-xs font-semibold capitalize lg:text-lg ${
+                        "text-" + textColor ?? "text-violet-700"
+                      }          ${itemTextSpacing && "mt-0"}`}
+                    >
+                      {item.label}
+                    </p>
+                  )}
                 </Link>
               </a>
             ) : (
-              <p
-                className={`justify-center pb-10 text-center text-xs font-semibold capitalize lg:text-lg ${
-                  "text-" + textColor ?? "text-violet-700"
-                }          ${itemTextSpacing && "mt-0"}`}
-              >
-                {typeof item.label === "string"
-                  ? item.label
-                  : item.label.map((line, idx) => <p key={idx}>{line}</p>)}
-              </p>
+              item.label && (
+                <p
+                  className={`justify-center pb-10 text-center text-xs font-semibold capitalize lg:text-lg ${
+                    "text-" + textColor ?? "text-violet-700"
+                  }          ${itemTextSpacing && "mt-0"}`}
+                >
+                  {typeof item.label === "string"
+                    ? item.label
+                    : item.label.map((line, idx) => <p key={idx}>{line}</p>)}
+                </p>
+              )
             )}
           </div>
         ))}
