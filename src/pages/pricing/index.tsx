@@ -17,7 +17,7 @@ const pricing = () => {
       </div>
 
       <div className="container mx-auto my-0 flex w-[100%] max-w-[1140px] justify-center pb-[50px]">
-        <div className="relative mx-4 w-[300px] border border-[#d0d0d0] p-[25px] text-center leading-tight md:mb-8 ">
+        {/* <div className="relative mx-4 w-[300px] border border-[#d0d0d0] p-[25px] text-center leading-tight md:mb-8 ">
           <h2 className="py-[10px] text-[36px] font-bold">Basic</h2>
           <h5 className="mb-2 py-4 text-[22px] font-bold ">
             Try StarHealth for free
@@ -50,10 +50,10 @@ const pricing = () => {
               </a>
             </div>
           </div>
-        </div>
+        </div> */}
         <div className="relative  mx-4 w-[300px] border border-[#d0d0d0] p-[25px] text-center leading-tight md:mb-8 ">
-          <h2 className="py-[10px] text-[36px] font-bold">Pro</h2>
-          <h5 className="mb-2 py-4 text-[22px] font-bold ">$19</h5>
+          <h2 className="py-[10px] text-[36px] font-bold">Standard </h2>
+          <h5 className="mb-2 py-4 text-[22px] font-bold ">$100</h5>
           <p className="mb-[20px] font-medium ">
             / user / month, billed annually
           </p>
@@ -82,7 +82,7 @@ const pricing = () => {
           </p>
           <p className="mb-[125px] font-medium italic">Best for Large Teams</p>
           <div className="flex flex-wrap items-center justify-center ">
-            <div className="button m-0 inline-block w-[205px] rounded-lg bg-[#8D47FC] p-[18px] text-white">
+            <div className="button m-0 inline-block w-[205px] rounded-lg bg-purple-800 p-[18px] text-white">
               <a className="font-medium">
                 <BsLightningFill className="absolute left-[57px] mt-[3px]" />
                 CONTACT US
@@ -92,7 +92,7 @@ const pricing = () => {
         </div>
       </div>
 
-      <div className="container mx-auto my-0 flex w-[100%] max-w-[1330px] justify-center pb-[50px] text-[16px] leading-relaxed ">
+      {/* <div className="container mx-auto my-0 flex w-[100%] max-w-[1330px] justify-center pb-[50px] text-[16px] leading-relaxed ">
         <div className="mr-1 w-[37%] break-words p-[25px]">
           <p className="mb-[15px] font-bold">Includes:</p>
           <ul className="font-medium">
@@ -660,9 +660,9 @@ const pricing = () => {
             </div>
           </div>
         </div>
-      </div>
+      </div> */}
 
-      <div className="container mx-auto my-0 mt-3 flex w-[100%] max-w-[1300px] justify-center pb-[50px] text-[16px] leading-relaxed">
+      {/* <div className="container mx-auto my-0 mt-3 flex w-[100%] max-w-[1300px] justify-center pb-[50px] text-[16px] leading-relaxed">
         <div className="justify-center break-words">
           <div
             className="block-spacer clear-both box-border h-[30px]"
@@ -679,7 +679,7 @@ const pricing = () => {
             <Image alt="logo" src={Logo} className="w-[250px]" />
           </figure>
         </div>
-      </div>
+      </div> */}
     </>
   );
 };
