@@ -78,7 +78,7 @@ const features = [
   { label: "Ratings & Reviews", img: ratings_and_reviews },
 
   {
-    label: "Visualization",
+    label: "Data Visualization",
     img: visualization,
   },
 ];
@@ -144,16 +144,17 @@ export default function Home() {
   const { data: allStates } = trpc.db.allStates.useQuery({ drugType });
   console.log(allStates);
   const FirstSection = () => (
-    <div className="mx-10 flex items-center justify-center pb-20 pt-10 sm:flex-row">
+    <div className="mx-10 flex items-center justify-center pb-20 pt-10 sm:flex-row ">
       <div className="flex flex-col items-center justify-center sm:w-[100%]">
-        <div className=" sm:w-[70%]">
-          <h2 className="mb-5 mt-10 flex justify-center text-center font-custom font-bold leading-tight text-white sm:text-4xl md:text-4xl xl:text-7xl ">
-            Healthcare Intelligence Tool
-          </h2>
-          <p className="mb-12 text-center text-xl text-white md:text-3xl xl:text-4xl">
-            Data-Driven Healthcare
-          </p>
-          {/* <div className='container-for-form mt-12 mb-11'>
+        <div className="flex min-h-[calc(50vh)] items-center gap-20">
+          <div className=" sm:w-[70%]">
+            <h2 className="mb-5 mt-10 flex justify-center text-center font-custom font-bold leading-tight text-white sm:text-4xl md:text-4xl xl:text-7xl ">
+              Healthcare Data Tool
+            </h2>
+            <p className="mb-12 text-center text-xl text-white md:text-3xl xl:text-4xl">
+              Data | Tooling | Research
+            </p>
+            {/* <div className='container-for-form mt-12 mb-11'>
 							<form action="/" method="post">
 								<div className='relative flex items-center justify-center'>
 									<input className='w-44 h-14 mx-2 px-4 rounded-full' type="text" placeholder="Your Name" id="name" name="name" required />
@@ -164,20 +165,31 @@ export default function Home() {
 								</div>
 							</form>
 						</div> */}
-          <div className="relative flex items-center justify-center">
-            {/* <button type="submit" className='my-4 bg-blue-500 hover:bg-blue-700 text-white text-2xl font-custom py-2 px-4 rounded-full'>
+            <div className="relative flex items-center justify-center">
+              {/* <button type="submit" className='my-4 bg-blue-500 hover:bg-blue-700 text-white text-2xl font-custom py-2 px-4 rounded-full'>
 								Sign In
 							</button> */}
-            <button
-              className="w-62 lg:w-62 h-24 rounded bg-purple-600 px-3 py-1 font-custom text-xl font-medium hover:bg-purple-500 active:bg-purple-600"
-              onClick={() => signIn("google")}
-            >
-              Open Data Directory
-            </button>
+              <button
+                className="w-62 lg:w-62 h-24 rounded bg-purple-600 px-3 py-1 font-custom text-xl font-medium text-white hover:bg-purple-500 active:bg-purple-600"
+                onClick={() => signIn("google")}
+              >
+                Open Data Directory
+              </button>
+            </div>
+          </div>
+          <div>
+            <iframe
+              width="720"
+              height="460"
+              src="https://www.youtube.com/embed/GrAa8Jz-_0E"
+              title="StarHealth.io - Comprehensive Healthcare Data Tool"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allowFullScreen
+            ></iframe>
           </div>
         </div>
 
-        <div className="mx-auto mt-16 flex w-fit items-center justify-center gap-8 rounded-xl bg-white px-10">
+        {/* <div className="mx-auto mt-16 flex w-fit items-center justify-center gap-8 rounded-xl bg-white px-10">
           <Image src={openPayments} alt="" width={108} height={128} />
           <Image src={fda} alt="" width={108} height={128} />
           <Image src={cms} alt="" width={108} height={128} />
@@ -186,7 +198,7 @@ export default function Home() {
           <Image src={clinicalTrials} alt="" width={108} height={128} />
           <Image src={medlinPlus} alt="" width={108} height={128} />
           <Image src={Cbenefits} alt="" width={108} height={128} />
-        </div>
+        </div> */}
       </div>
       {/* <Map /> */}
     </div>
@@ -197,7 +209,7 @@ export default function Home() {
     <div className="z-0 bg-[#0e1936]">
       <FirstSection />
       <InfoSection
-        items={dataDir}
+        items={dataDir.slice(0, 6)}
         header="StarHealth Data Directory"
         // textSize="sm:text-[5rem]"
         textColor="font-custom"
@@ -205,6 +217,7 @@ export default function Home() {
         itemTextSpacing={true}
         linkable={true}
       />
+
       {/* <InfoSection
         items={understand}
         textColor="font-custom"
@@ -212,17 +225,23 @@ export default function Home() {
         itemTextSpacing={true}
         linkable={true}
       /> */}
-      {/* <InfoSection
+      <InfoSection
         items={dataDir.slice(6)}
         textColor="font-custom"
         boxStyle="bg-white"
         itemTextSpacing={true}
         linkable={true}
-      /> */}
+      />
       <Divider />
       <InfoSection
-        items={features}
+        items={features.slice(0, 5)}
         header="Features"
+        boxStyle="bg-white"
+        textColor="font-custom"
+        itemTextSpacing={true}
+      />
+      <InfoSection
+        items={features.slice(5)}
         boxStyle="bg-white"
         textColor="font-custom"
         itemTextSpacing={true}
@@ -241,7 +260,7 @@ export default function Home() {
         boxStyle="bg-white"
       />
       {/* <InfoSection
-        items={partners.slice(4)}
+        items={partners.slice(5)}
         textColor="font-custom"
         boxStyle="bg-white"
       /> */}

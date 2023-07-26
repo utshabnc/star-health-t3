@@ -156,7 +156,7 @@ function NavBar() {
             {/* <Link href='/' className='w-30 lg:w-22 text-white font-custom font-medium hover:text-blue-600 rounded px-3 py-1'>Contact</Link>	 */}
             {session?.data?.user ? (
               <button
-                className="w-30 lg:w-22 rounded bg-purple-600 px-3 py-1 font-custom  font-medium hover:bg-emerald-500 active:bg-emerald-600"
+                className="w-30 hidden h-9 rounded bg-purple-600 px-3 py-1 font-custom font-medium text-white hover:bg-emerald-500 active:bg-emerald-600 lg:block"
                 type="button"
                 onClick={() => signOut()}
               >
@@ -164,7 +164,7 @@ function NavBar() {
               </button>
             ) : (
               <button
-                className="w-30 hidden h-9 rounded bg-purple-600 px-3 py-1 font-custom font-medium hover:bg-emerald-500 active:bg-emerald-600 lg:block"
+                className="w-30 hidden h-9 rounded bg-purple-600 px-3 py-1 font-custom font-medium text-white hover:bg-emerald-500 active:bg-emerald-600 lg:block"
                 onClick={() => signIn("google")}
               >
                 Sign In
