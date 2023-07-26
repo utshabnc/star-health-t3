@@ -24,6 +24,7 @@ const ResultPage= () => {
 const [search, setSearch] = useState<string>();
 const [searchT, setSearchT] = useState<string>('');
 const [selectedTab, setSelectedTab] = useState<Tab>(Tab.All);
+
 const [food,setFood]=useState([]);
 const [currentData,setCurrentData]=useState<ResultSchema[]>()
 const { data: searchResults, refetch: fetchSearchResults } =
