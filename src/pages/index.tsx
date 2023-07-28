@@ -173,7 +173,7 @@ export default function Home() {
                 className="w-62 lg:w-62 h-24 rounded bg-purple-600 px-3 py-1 font-custom text-xl font-extrabold font-medium text-white hover:bg-purple-500 active:bg-purple-600"
                 onClick={() => signIn("google")}
               >
-                Access the Data
+                Access Data
               </button>
             </div>
           </div>
@@ -267,7 +267,7 @@ export default function Home() {
       <Divider />
       <div
         id="Features"
-        className="section l4 wf-section [rgba(255, 255, 255, 0.65)] px-[80px] pb-[150px] pt-[40px] font-custom text-customgrey"
+        className="section l4 wf-section [rgba(255, 255, 255, 0.65)] bg-[#8345FE] px-[80px] pb-[150px] pt-[40px] font-custom text-customgrey"
       >
         <div className="container mx-auto flex max-w-[1040px] flex-col items-center justify-center">
           <div className="title-wrapper mb-[40px] flex max-w-[900px] flex-col text-center text-white">
@@ -276,10 +276,10 @@ export default function Home() {
             </h2>
           </div>
           <div className="features-grid flex w-[100%]   items-stretch gap-x-[40px] gap-y-[40px]">
-            <div className="node features-card col-start-1 row-start-1 row-end-3 flex-1 rounded-[6px] border border-solid border-bordercolor p-[35px]">
+            <div className="node features-card col-start-1 row-start-1 row-end-3 flex flex-1 flex-col items-center rounded-[6px] border border-solid border-bordercolor p-[35px]">
               <div className="features-row mb-[25px] flex flex-col items-start text-blue-500 ">
                 {/* <FaPencilRuler size={27} className="mb-[25px]" /> */}
-                <div className="fontfeatures-card-title text-[18px] font-[700] leading-[1.25] text-white">
+                <div className="fontfeatures-card-title text-center text-[18px] font-[700] leading-[1.25] text-white">
                   Healthcare and Medical
                 </div>
               </div>
@@ -309,7 +309,7 @@ export default function Home() {
               </div>
               <div className="check-row mb-[20px] flex flex-row items-center text-white">
                 {/* <BsCheck2 size={30} color="#7CFC00" className="mr-2 " /> */}
-                <div className="check-text">Public-health</div>
+                <div className="check-text">Public Health</div>
               </div>
               <div className="check-row mb-[20px] flex flex-row items-center text-white">
                 {/* <BsCheck2 size={30} color="#7CFC00" className="mr-2 " /> */}
@@ -320,10 +320,10 @@ export default function Home() {
                 <div className="check-text">Military</div>
               </div>
             </div>
-            <div className="node features-card col-start-1 row-start-1 row-end-3 flex-1 rounded-[6px] border border-solid border-bordercolor p-[35px]">
+            <div className="node features-card col-start-1 row-start-1 row-end-3 flex flex-1 flex-col items-center rounded-[6px] border border-solid border-bordercolor p-[35px]">
               <div className="features-row mb-[25px] flex flex-col items-start text-blue-500 ">
                 {/* <FaPencilRuler size={27} className="mb-[25px]" /> */}
-                <div className="fontfeatures-card-title text-[18px] font-[700] leading-[1.25] text-white">
+                <div className="fontfeatures-card-title text-center text-[18px] font-[700] leading-[1.25] text-white">
                   Data, Technology and Services
                 </div>
               </div>
@@ -352,10 +352,10 @@ export default function Home() {
                 <div className="check-text">Writers</div>
               </div>
             </div>
-            <div className="node features-card col-start-1 row-start-1 row-end-3 flex-1 rounded-[6px] border border-solid border-bordercolor p-[35px]">
+            <div className="node features-card col-start-1 row-start-1 row-end-3 flex flex-1 flex-col items-center rounded-[6px] border border-solid border-bordercolor p-[35px]">
               <div className="features-row mb-[25px] flex flex-col items-start text-blue-500 ">
                 {/* <FaPencilRuler size={27} className="mb-[25px]" /> */}
-                <div className="fontfeatures-card-title text-[18px] font-[700] leading-[1.25] text-white">
+                <div className="fontfeatures-card-title text-center text-[18px] font-[700] leading-[1.25] text-white">
                   Education, Advocacy, and Non-profit
                 </div>
               </div>
