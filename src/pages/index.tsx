@@ -39,6 +39,7 @@ import testTubes from "../assets/logos/test-tubes.png";
 import states from "../assets/states.png";
 import InfoSection from "../components/InfoSection";
 import { trpc } from "../utils/trpc";
+
 const features = [
   { label: "Data Analytics", img: data_analytics },
   { label: "Citation Generator", img: citation },
@@ -114,6 +115,8 @@ export default function Home() {
   //   console.log(data)
   const FirstSection = () => (
     <div className="mx-10 flex items-center justify-center pb-20 pt-10 sm:flex-row">
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.js"></script>
+      <link rel="stylesheet" href="" />
       <div className="flex flex-col items-center justify-center sm:w-[100%]">
         <div className=" sm:w-[70%]">
           <h2 className="mb-5 mt-10 flex justify-center text-center font-custom font-bold leading-tight text-white sm:text-4xl md:text-4xl xl:text-7xl ">

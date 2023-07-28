@@ -3,6 +3,7 @@ import type { Session } from "next-auth";
 import { SessionProvider } from "next-auth/react";
 
 import 'react-toastify/dist/ReactToastify.css';
+import '../assets/vis/dist/vis.css'
 import { ToastContainer } from 'react-toastify';
 
 import { trpc } from "../utils/trpc";
@@ -38,6 +39,7 @@ const MyApp: AppType<{ session: Session | null }> = ({
     <SessionProvider session={session}>
       <Head>
         <title>StarHealth</title>
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.css" rel="stylesheet" type="text/css" />
       </Head>
       <NavFoot>
         <Component {...pageProps} />
