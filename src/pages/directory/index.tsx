@@ -476,75 +476,68 @@ export default function Directory() {
     }, 1000),
     []
   );
-  const returnDoctorNames =(list:any[])=>{
-    const output:any = []
-    if ( list === undefined)
-    {
-      return[]
+  const returnDoctorNames = (list: any[]) => {
+    const output: any = [];
+    if (list === undefined) {
+      return [];
     }
-    list.forEach((element:any) => {
-      output.push(toTitleCase((element.firstName+' '+element.lastName).toLowerCase()))
+    list.forEach((element: any) => {
+      output.push(
+        toTitleCase((element.firstName + " " + element.lastName).toLowerCase())
+      );
     });
-    return output
-  }
-  const returnNamesOfClincalNames =(list:any[],name:string)=>{
-    const output:any = []
-    if ( list === undefined)
-    {
-      return[]
+    return output;
+  };
+  const returnNamesOfClincalNames = (list: any[], name: string) => {
+    const output: any = [];
+    if (list === undefined) {
+      return [];
     }
-    list.forEach((element:any) => {
-      output.push(element[name][0])
+    list.forEach((element: any) => {
+      output.push(element[name][0]);
     });
-    return output
-  }
-  const returnNamesOfObjects =(searchObj:any,tab:string)=>{
-    const output:any = []
-    if ( searchObj === undefined)
-    {
-      return[]
+    return output;
+  };
+  const returnNamesOfObjects = (searchObj: any, tab: string) => {
+    const output: any = [];
+    if (searchObj === undefined) {
+      return [];
     }
-    let name = ''
-    let list = []
-    if (tab == Tab.Drugs) 
-    {
-      name = 'brand_name'
-      list = searchObj['drugs']
+    let name = "";
+    let list = [];
+    if (tab == Tab.Drugs) {
+      name = "brand_name";
+      list = searchObj["drugs"];
     }
-    if(tab == Tab.Manufacturers )
-    {
-      name = 'name'
-      list = searchObj['manufacturers']
+    if (tab == Tab.Manufacturers) {
+      name = "name";
+      list = searchObj["manufacturers"];
     }
-    if(tab == Tab.Products)
-    {
-      name = 'name'
-      list = searchObj['products']
+    if (tab == Tab.Products) {
+      name = "name";
+      list = searchObj["products"];
     }
-    if(tab == Tab.OpioidTreatmentProviders)
-    {
-      name = 'provider_name'
-      list = searchObj['opioidTreatmentProviders']
+    if (tab == Tab.OpioidTreatmentProviders) {
+      name = "provider_name";
+      list = searchObj["opioidTreatmentProviders"];
     }
-    if(tab == Tab.Doctors)
-    {
-      return returnDoctorNames(searchObj['doctors'])
+    if (tab == Tab.Doctors) {
+      return returnDoctorNames(searchObj["doctors"]);
     }
-    if(tab == Tab.Transactions)
-    {
-      list = searchObj['payments']
-      console.log(list)
-      list.forEach((element:any) => {
-        output.push(toTitleCase(element.product.name.toLowerCase()))
+    if (tab == Tab.Transactions) {
+      list = searchObj["payments"];
+      console.log(list);
+      list.forEach((element: any) => {
+        output.push(toTitleCase(element.product.name.toLowerCase()));
       });
-      return output
+      return output;
     }
-    console.log(list)
-    list.forEach((element:any) => {
-      output.push(toTitleCase(element[name].toLowerCase()))
+    console.log(list);
+    list.forEach((element: any) => {
+      output.push(toTitleCase(element[name].toLowerCase()));
     });
-    return output
-  }
+    return output;
+  };
   useEffect(() => {
     if (zipcode.length === 5) {
       setHealthPlansDataError("");
@@ -726,7 +719,7 @@ export default function Directory() {
 
   return (
     <>
-      <div className="h-screen rounded bg-white p-5 pb-44">
+      <div className="min-h-screen rounded bg-white p-5 pb-44">
         <div className="flex flex-row">
           <div>
             <button
@@ -1076,7 +1069,16 @@ export default function Directory() {
                   Search for clinical trials
                 </p>
                 <div className="flex w-[100%] items-center gap-3">
-                <AutocompleteInput expr={clinicalTrialSearchKeywordExpr} setExpr={setClinicalTrialSearchKeywordExpr} options={returnNamesOfClincalNames(clinicalTrialsData.StudyFieldsResponse?clinicalTrialsData.StudyFieldsResponse.StudyFields:[],'BriefTitle')}></AutocompleteInput>
+                  <AutocompleteInput
+                    expr={clinicalTrialSearchKeywordExpr}
+                    setExpr={setClinicalTrialSearchKeywordExpr}
+                    options={returnNamesOfClincalNames(
+                      clinicalTrialsData.StudyFieldsResponse
+                        ? clinicalTrialsData.StudyFieldsResponse.StudyFields
+                        : [],
+                      "BriefTitle"
+                    )}
+                  ></AutocompleteInput>
                 </div>
                 <Image
                   src={clinicalTrials}
@@ -1199,7 +1201,18 @@ export default function Directory() {
                             : "product"
                         }`}</p>
                         <div className="flex w-[100%] items-center gap-3">
-                        <AutocompleteInput expr={filterParams.name?filterParams.name:''} setFilterParam={setFilterParams} options={searchResults?returnNamesOfObjects(searchResults,selectedTab):[]}></AutocompleteInput>
+                          <AutocompleteInput
+                            expr={filterParams.name ? filterParams.name : ""}
+                            setFilterParam={setFilterParams}
+                            options={
+                              searchResults
+                                ? returnNamesOfObjects(
+                                    searchResults,
+                                    selectedTab
+                                  )
+                                : []
+                            }
+                          ></AutocompleteInput>
 
                           <div className="ml-5 flex flex-col items-center">
                             {filterParams.subject === "transactions" && (

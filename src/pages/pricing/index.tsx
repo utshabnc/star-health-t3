@@ -129,7 +129,7 @@ const pricing = () => {
       >
         <div className="container mx-auto flex max-w-[1040px] flex-col items-center justify-center">
           <div className="title-wrapper mb-[40px] flex max-w-[900px] flex-col text-center text-white">
-            <h2 className="h2-title my-0 whitespace-nowrap bg-transparent pl-0 pt-[40px] text-[4vw] font-[700] leading-[1.1] tracking-[-0.0375em]">
+            <h2 className="h2-title my-0 flex justify-center whitespace-nowrap bg-transparent pl-0 pt-[40px] text-[4vw] font-[700] leading-[1.1] tracking-[-0.0375em]">
               Comprehensive Healthcare Tool
             </h2>
           </div>
