@@ -9,7 +9,7 @@ import LoadingStarHealth from "./Loading";
 import { Tab } from "../utils/Enums/Tab.enum";
 import { PayWall } from "./PayWall/PayWall";
 
-const Map = () => {
+const Graphs = () => {
   const [drugType, setDrugType] = useState<string>();
   const { data: allStates } = trpc.db.allStates.useQuery({ drugType });
   const navigate = useRouter();
@@ -64,6 +64,19 @@ const Map = () => {
                 Company Payments to Doctors
               </button>
             </div>
+            <div className="flex gap-2">
+              {/* Diseases and Genetics tab */}
+              <button
+                onClick={() => setSelectedTab(Tab.DiseasesAndGenetics)}
+                className={`border-b-2 hover:border-zinc-500 ${
+                  selectedTab === Tab.DiseasesAndGenetics
+                    ? "border-violet-600"
+                    : "border-zinc-200"
+                }`}
+              >
+                Deseases & Genetics
+              </button>
+            </div>
           </div>
           <div className="my-1">
             <hr />
@@ -95,8 +108,14 @@ const Map = () => {
             }
           />
         }
+        {selectedTab == Tab.DiseasesAndGenetics &&
+          <div>
+            This is the Graph Visualization placeholder
+            to hold Diseases and Genesis Graph
+          </div>
+        }
       </div>
     </div>
   );
 };
-export default Map;
+export default Graphs;
