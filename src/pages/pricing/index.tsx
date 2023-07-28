@@ -50,7 +50,7 @@ const pricing = () => {
             </div>
           </div>
         </div> */}
-        <div className="relative mx-4 flex  w-[300px]  flex-col border border-[#d0d0d0] bg-purple-300 p-[25px] text-center leading-tight md:mb-8">
+        <div className="relative mx-4 flex  w-[300px]  flex-col border border-[#d0d0d0] bg-purple-200 p-[25px] text-center leading-tight md:mb-8">
           <h2 className="py-[10px] text-[36px] font-bold ">Basic </h2>
           <h5 className="mb-2 py-4 text-[22px] font-bold ">$10 / month</h5>
           <p className="mb-[20px] font-medium ">Limited Features</p>
@@ -62,18 +62,18 @@ const pricing = () => {
             Best for Individuals and Small Teams
           </p> */}
           <div className="mt-auto flex flex-wrap items-center justify-center">
-            <div className="button m-0  inline-block w-[205px] rounded-lg bg-[#8D47FC] p-[18px] text-white">
-              <a
-                className="cursor-pointer font-medium"
-                onClick={() => signIn("google")}
-              >
+            <div
+              className="button m-0 inline-block  w-[205px] cursor-pointer rounded-lg bg-[#8D47FC] p-[18px] text-white"
+              onClick={() => signIn("google")}
+            >
+              <a className=" font-medium">
                 <BsLightningFill className="absolute left-[54px] mt-[3px]" />{" "}
                 Sign-Up
               </a>
             </div>
           </div>
         </div>
-        <div className="relative mx-4 flex  w-[300px]  flex-col border border-[#d0d0d0] bg-purple-300 p-[25px] text-center leading-tight md:mb-8">
+        <div className="relative mx-4 flex  w-[300px]  flex-col border border-[#d0d0d0] bg-purple-400 p-[25px] text-center leading-tight md:mb-8">
           <h2 className="py-[10px] text-[36px] font-bold ">Standard </h2>
           <h5 className="mb-2 py-4 text-[22px] font-bold ">$100 / month</h5>
           {/* <p className="mb-[20px] font-medium ">
@@ -87,11 +87,11 @@ const pricing = () => {
             Best for Individuals and Small Teams
           </p> */}
           <div className="mt-auto flex flex-wrap items-center justify-center">
-            <div className="button m-0  inline-block w-[205px] rounded-lg bg-[#8D47FC] p-[18px] text-white">
-              <a
-                className="cursor-pointer font-medium"
-                onClick={() => signIn("google")}
-              >
+            <div
+              onClick={() => signIn("google")}
+              className="button m-0 inline-block  w-[205px] cursor-pointer rounded-lg bg-[#8D47FC] p-[18px] text-white"
+            >
+              <a className=" font-medium">
                 <BsLightningFill className="absolute left-[54px] mt-[3px]" />{" "}
                 Register
               </a>
@@ -111,13 +111,13 @@ const pricing = () => {
           </p>
           <p className="mb-[125px] font-medium italic">Best for Large Teams</p> */}
           <div className="mt-auto flex flex-wrap items-center justify-center">
-            <div className="button m-0  inline-block w-[205px] rounded-lg bg-purple-800 p-[18px] text-white">
-              <a
-                className="cursor-pointer font-medium"
-                onClick={() => signIn("google")}
-              >
+            <div
+              onClick={() => signIn("google")}
+              className="button m-0 inline-block  w-[205px] cursor-pointer rounded-lg bg-purple-800 p-[18px] text-white"
+            >
+              <a className=" font-medium">
                 <BsLightningFill className="absolute left-[57px] mt-[3px]" />
-                CONTACT US
+                Contact Us
               </a>
             </div>
           </div>
@@ -129,12 +129,12 @@ const pricing = () => {
       >
         <div className="container mx-auto flex max-w-[1040px] flex-col items-center justify-center">
           <div className="title-wrapper mb-[40px] flex max-w-[900px] flex-col text-center text-white">
-            <h2 className="h2-title my-0 bg-transparent pl-0 pt-[40px] text-[4vw] font-[700] leading-[1.1] tracking-[-0.0375em]">
+            <h2 className="h2-title my-0 whitespace-nowrap bg-transparent pl-0 pt-[40px] text-[4vw] font-[700] leading-[1.1] tracking-[-0.0375em]">
               Comprehensive Healthcare Tool
             </h2>
           </div>
           <div className="features-grid flex w-[100%]   items-stretch gap-x-[40px] gap-y-[40px]">
-            <div className="node features-card col-start-1 row-start-1 row-end-3 flex flex-1 flex-col items-center rounded-[6px] border border-solid border-bordercolor p-[35px]">
+            <div className="node features-card  col-start-1 row-start-1 row-end-3 flex flex-1 flex-col items-center rounded-[6px] border border-2 border-solid border-bordercolor p-[35px]">
               <div className="features-row mb-[25px] flex flex-col items-start text-blue-500 ">
                 {/* <FaPencilRuler size={27} className="mb-[25px]" /> */}
                 <div className="fontfeatures-card-title text-center text-[18px] font-[700] leading-[1.25] text-white">
@@ -196,7 +196,7 @@ const pricing = () => {
                 <div className="check-text">50 States</div>
               </div>
             </div>
-            <div className="node features-card col-start-1 row-start-1 row-end-3 flex flex-1 flex-col items-center rounded-[6px] border border-solid border-bordercolor p-[35px]">
+            <div className="node features-card col-start-1  row-start-1 row-end-3 flex flex-1 flex-col items-center rounded-[6px] border border-2 border-solid border-bordercolor p-[35px]">
               <div className="features-row mb-[25px] flex flex-col items-start text-blue-500 ">
                 {/* <FaPencilRuler size={27} className="mb-[25px]" /> */}
                 <div className="fontfeatures-card-title text-center text-[18px] font-[700] leading-[1.25] text-white">
@@ -251,7 +251,7 @@ const pricing = () => {
                 <div className="check-text">Search</div>
               </div>
             </div>
-            <div className="node features-card col-start-1 row-start-1 row-end-3 flex flex-1 flex-col items-center rounded-[6px] border border-solid border-bordercolor p-[35px]">
+            <div className="node features-card col-start-1 row-start-1 row-end-3 flex flex-1 flex-col items-center rounded-[6px] border-2 border-solid border-bordercolor p-[35px]">
               <div className="features-row mb-[25px] flex flex-col items-start text-blue-500 ">
                 {/* <FaPencilRuler size={27} className="mb-[25px]" /> */}
                 <div className="fontfeatures-card-title text-center text-[18px] font-[700] leading-[1.25] text-white">
@@ -260,7 +260,7 @@ const pricing = () => {
               </div>
               <div className="check-row mb-[20px] flex flex-row items-center text-white">
                 {/* <BsCheck2 size={30} color="#7CFC00" className="mr-2 " /> */}
-                <div className="check-text">Clinical Trials</div>
+                <div className="check-text">NIH.gov</div>
               </div>
               <div className="check-row mb-[20px] flex flex-row items-center text-white">
                 {/* <BsCheck2 size={30} color="#7CFC00" className="mr-2 " /> */}
@@ -280,7 +280,7 @@ const pricing = () => {
               </div>
               <div className="check-row mb-[20px] flex flex-row items-center text-white">
                 {/* <BsCheck2 size={30} color="#7CFC00" className="mr-2 " /> */}
-                <div className="check-text">Medine Plus</div>
+                <div className="check-text">Medline Plus</div>
               </div>
               <div className="check-row mb-[20px] flex flex-row items-center text-white">
                 {/* <BsCheck2 size={30} color="#7CFC00" className="mr-2 " /> */}
