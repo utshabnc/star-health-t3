@@ -276,7 +276,7 @@ export default function Home() {
             </h2>
           </div>
           <div className="features-grid flex w-[100%]   items-stretch gap-x-[40px] gap-y-[40px]">
-            <div className="node features-card col-start-1 row-start-1 row-end-3 flex flex-1 flex-col items-center rounded-[6px] border border-solid border-bordercolor p-[35px]">
+            <div className="node features-card  col-start-1 row-start-1 row-end-3 flex flex-1 flex-col items-center rounded-[6px] border border-2 border-solid border-bordercolor p-[35px]">
               <div className="features-row mb-[25px] flex flex-col items-start text-blue-500 ">
                 {/* <FaPencilRuler size={27} className="mb-[25px]" /> */}
                 <div className="fontfeatures-card-title text-center text-[18px] font-[700] leading-[1.25] text-white">
@@ -320,7 +320,7 @@ export default function Home() {
                 <div className="check-text">Military</div>
               </div>
             </div>
-            <div className="node features-card col-start-1 row-start-1 row-end-3 flex flex-1 flex-col items-center rounded-[6px] border border-solid border-bordercolor p-[35px]">
+            <div className="node features-card  col-start-1 row-start-1 row-end-3 flex flex-1 flex-col items-center rounded-[6px] border border-2 border-solid border-bordercolor p-[35px]">
               <div className="features-row mb-[25px] flex flex-col items-start text-blue-500 ">
                 {/* <FaPencilRuler size={27} className="mb-[25px]" /> */}
                 <div className="fontfeatures-card-title text-center text-[18px] font-[700] leading-[1.25] text-white">
@@ -352,7 +352,7 @@ export default function Home() {
                 <div className="check-text">Writers</div>
               </div>
             </div>
-            <div className="node features-card col-start-1 row-start-1 row-end-3 flex flex-1 flex-col items-center rounded-[6px] border border-solid border-bordercolor p-[35px]">
+            <div className="node features-card  col-start-1 row-start-1 row-end-3 flex flex-1 flex-col items-center rounded-[6px] border border-2 border-solid border-bordercolor p-[35px]">
               <div className="features-row mb-[25px] flex flex-col items-start text-blue-500 ">
                 {/* <FaPencilRuler size={27} className="mb-[25px]" /> */}
                 <div className="fontfeatures-card-title text-center text-[18px] font-[700] leading-[1.25] text-white">
