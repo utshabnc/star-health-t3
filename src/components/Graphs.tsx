@@ -67,6 +67,7 @@ const Graphs = () => {
             <div className="flex gap-2">
               {/* Diseases and Genetics tab */}
               <button
+                id="graphLauncher"
                 onClick={() => setSelectedTab(Tab.DiseasesAndGenetics)}
                 className={`border-b-2 hover:border-zinc-500 ${
                   selectedTab === Tab.DiseasesAndGenetics
@@ -74,7 +75,7 @@ const Graphs = () => {
                     : "border-zinc-200"
                 }`}
               >
-                Deseases & Genetics
+                Diseases & Genetics
               </button>
             </div>
           </div>
@@ -109,7 +110,12 @@ const Graphs = () => {
           />
         }
         {selectedTab == Tab.DiseasesAndGenetics &&
-          <div>
+          <div id="graphPlaceholder" style={{
+            width: '800px',
+            height: '600px',
+            border: '1px solid #444444',
+            backgroundColor: '#222222'
+          }}>
             This is the Graph Visualization placeholder
             to hold Diseases and Genesis Graph
           </div>
