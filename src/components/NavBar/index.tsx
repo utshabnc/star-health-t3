@@ -83,7 +83,7 @@ function NavBar() {
               <HiOutlineSearch size={21} />
             </div>
             <div>
-            <SearchPage setSearchVar={setSearch}/>
+              <SearchPage setSearchVar={setSearch} />
             </div>
           </div>
 
@@ -102,34 +102,21 @@ function NavBar() {
               position: "absolute",
               right: "10px",
             }}
-            className={`flex flex-row items-center justify-end space-x-2 ${session?.status === "loading" && "opacity-0"
-              }`}
+            className={`flex flex-row items-center justify-end space-x-2 ${
+              session?.status === "loading" && "opacity-0"
+            }`}
           >
-            {(typeof window !== "undefined" && width > 1000) &&
+            {typeof window !== "undefined" &&
+              width > 1000 &&
               session?.data?.user && (
                 <p
                   className={`text-white   ${!session == null && "opacity-0"} `}
                 >
-                  Signed in as {session?.data?.user?.email}
+                  {/* Signed in as {session?.data?.user?.email} */}
                 </p>
               )}
 
             {/* <Link href='/' className='w-30 lg:w-22 text-white font-custom font-medium hover:text-blue-600 rounded px-3 py-1'>Clients</Link> */}
-
-            <Link
-              href={"/visualization"}
-              className="w-30 md:w-22 hidden rounded px-3 py-1 font-custom font-medium 
-							text-white hover:text-blue-300 md:block"
-            >
-              Data Visualization
-            </Link>
-            <Link
-              href={"/search"}
-              className="w-30 md:w-22 hidden rounded px-3 py-1 font-custom font-medium 
-							text-white hover:text-blue-300 md:block"
-            >
-              Search
-            </Link>
             <Link
               href={"/directory"}
               className="w-30 md:w-22 hidden rounded px-3 py-1 font-custom font-medium 
@@ -137,6 +124,14 @@ function NavBar() {
             >
               Data Directory
             </Link>
+            <Link
+              href={"/visualization"}
+              className="w-30 md:w-22 hidden rounded px-3 py-1 font-custom font-medium 
+							text-white hover:text-blue-300 md:block"
+            >
+              Data Visualization
+            </Link>
+
             <Link
               href={"/pricing"}
               className="w-30 md:w-22 hidden rounded px-3 py-1 font-custom font-medium 
@@ -151,10 +146,17 @@ function NavBar() {
             >
               Profile
             </Link>
+            <Link
+              href={"/search"}
+              className="w-30 md:w-22 hidden rounded px-3 py-1 font-custom font-medium 
+							text-white hover:text-blue-300 md:block"
+            >
+              Search
+            </Link>
             {/* <Link href='/' className='w-30 lg:w-22 text-white font-custom font-medium hover:text-blue-600 rounded px-3 py-1'>Contact</Link>	 */}
             {session?.data?.user ? (
               <button
-                className="w-30 lg:w-22 rounded bg-emerald-400 px-3 py-1 font-custom  font-medium hover:bg-emerald-500 active:bg-emerald-600"
+                className="w-30 hidden h-9 rounded bg-purple-600 px-3 py-1 font-custom font-medium text-white hover:bg-emerald-500 active:bg-emerald-600 lg:block"
                 type="button"
                 onClick={() => signOut()}
               >
@@ -162,7 +164,7 @@ function NavBar() {
               </button>
             ) : (
               <button
-                className="w-30 hidden h-9 rounded bg-emerald-400 px-3 py-1 font-custom font-medium hover:bg-emerald-500 active:bg-emerald-600 lg:block"
+                className="w-30 hidden h-9 rounded bg-purple-600 px-3 py-1 font-custom font-medium text-white hover:bg-emerald-500 active:bg-emerald-600 lg:block"
                 onClick={() => signIn("google")}
               >
                 Sign In
@@ -246,9 +248,11 @@ function NavBar() {
           )}
         </div>
       </nav>
-      {navigate.pathname !== '/' && <div className="sub-nav w-full flex justify-center bg-royalBlue">
-        <ShareIcons />
-      </div>}
+      {navigate.pathname !== "/" && (
+        <div className="sub-nav flex w-full justify-center bg-royalBlue">
+          <ShareIcons />
+        </div>
+      )}
     </>
   );
 }
