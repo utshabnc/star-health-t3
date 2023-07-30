@@ -77,8 +77,11 @@ const MyApp: AppType<{ session: Session | null }> = ({
 
   }, 5000);
 
-  const baseUrl = `http://localhost:3000/api/`;
-  
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  const serverAddr = 'https://star-health-t3-k83u3ox0m-utshab-starhealthi.vercel.app/';
+  const baseUrl = `${serverAddr}/api/`;
+
   function loadGraphToDisease(disease = null){
     console.log(`Passed value id: `, disease);
     const urlDisease = `${baseUrl}/genetics/condition/${disease ?? '10q26-deletion-syndrome'}`;
