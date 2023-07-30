@@ -16,6 +16,7 @@ const Graphs = () => {
   const navigate = useRouter();
   const [selectedTab, setSelectedTab] = useState<Tab>(Tab.PaymentsToDoctors);
   const [diseasesList, setDiseasesList] = useState<[]>([]);
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
 
@@ -88,7 +89,12 @@ const Graphs = () => {
               {/* Diseases and Genetics tab */}
               <button
                 id="graphLauncher"
-                onClick={() => setSelectedTab(Tab.DiseasesAndGenetics)}
+                onClick={
+                  () => {
+                    setSelectedTab(Tab.DiseasesAndGenetics);
+                    setLoading(true);
+                  }
+                }
                 className={`border-b-2 hover:border-zinc-500 ${
                   selectedTab === Tab.DiseasesAndGenetics
                     ? "border-violet-600"
@@ -166,10 +172,13 @@ const Graphs = () => {
               width: '80%',
               height: '100%',
               borderLeft: '1px solid #444444'
-            }}></div>
-
+            }}>
+            </div>
           </div>
         }
+        <div id="domLoading" style={{display: 'none'}}>
+          <LoadingStarHealth />
+        </div>
       </div>
     </div>
   );

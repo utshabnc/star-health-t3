@@ -47,16 +47,18 @@ const MyApp: AppType<{ session: Session | null }> = ({
         visLib.src = 'https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.js';
         document.getElementsByTagName('head')[0]?.appendChild(visLib);
 
+        document.domLoading = document.getElementById('domLoading').innerHTML;
+
         document.addEventListener('click', (e) => {
           if(e?.target?.id == 'graphLauncher'){
+            document.getElementById("graphPlaceholder").innerHTML = document.domLoading;
             console.log('Graph Tab loaded');     
             setTimeout(() => {
               
               document.getElementById('graphDiseaseDropDown')?.addEventListener('click', (e) => {
-
+                document.getElementById("graphPlaceholder").innerHTML = document.domLoading;
                 const diseaseName = e?.target?.value.toString().toLowerCase().replace(/ /g,'-').replace(/\./g,'');                
                 loadGraphToDisease(diseaseName);
-
               });
 
               loadGraphToDisease();
@@ -75,7 +77,6 @@ const MyApp: AppType<{ session: Session | null }> = ({
   
   function loadGraphToDisease(disease = null){
     console.log(`Passed value id: `, disease);
-    
     const urlDisease = `${baseUrl}/genetics/condition/${disease ?? '10q26-deletion-syndrome'}`;
     
     httpRequest(urlDisease)
