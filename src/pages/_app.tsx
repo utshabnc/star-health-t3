@@ -47,7 +47,7 @@ const MyApp: AppType<{ session: Session | null }> = ({
         visLib.src = 'https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.js';
         document.getElementsByTagName('head')[0]?.appendChild(visLib);
 
-        document.domLoading = document.getElementById('domLoading').innerHTML;
+        document.domLoading = document.getElementById('domLoading')?.innerHTML;
 
         document.addEventListener('click', (e) => {
           if(e?.target?.id == 'graphLauncher'){
