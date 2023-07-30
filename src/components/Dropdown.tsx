@@ -17,8 +17,8 @@ type Props = {
   placeholder: string;
   value: string | undefined;
   onChange: (newValue?: string) => void;
-  style: object;
-  id: string;
+  style?: object;
+  id?: string;
 };
 
 const Dropdown = ({ items, label, placeholder, onChange, value, style, id }: Props) => {
