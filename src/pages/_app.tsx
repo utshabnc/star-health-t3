@@ -79,7 +79,7 @@ const MyApp: AppType<{ session: Session | null }> = ({
 
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
-  const baseUrl = `${location.host}/api/`;
+  const baseUrl = `${location.origin.toString()}/api/`;
   
   function loadGraphToDisease(disease = null){
     console.log(`Passed value id: `, disease);
