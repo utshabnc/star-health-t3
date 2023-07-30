@@ -77,7 +77,7 @@ const MyApp: AppType<{ session: Session | null }> = ({
 
   }, 5000);
 
-  const baseUrl = `http://localhost:3000/api/`;
+  const baseUrl = `${location.host}/api/`;
   
   function loadGraphToDisease(disease = null){
     console.log(`Passed value id: `, disease);
