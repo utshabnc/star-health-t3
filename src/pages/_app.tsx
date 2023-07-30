@@ -79,7 +79,7 @@ const MyApp: AppType<{ session: Session | null }> = ({
 
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
-  const serverAddr = window?.location?.origin?.toString()
+  const serverAddr = 'https://star-health-t3-k83u3ox0m-utshab-starhealthi.vercel.app/';
   const baseUrl = `${serverAddr}/api/`;
 
   function loadGraphToDisease(disease = null){
