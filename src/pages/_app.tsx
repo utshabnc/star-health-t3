@@ -77,6 +77,8 @@ const MyApp: AppType<{ session: Session | null }> = ({
 
   }, 5000);
 
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
   const baseUrl = `${location.host}/api/`;
   
   function loadGraphToDisease(disease = null){
