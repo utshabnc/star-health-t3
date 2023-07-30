@@ -78,6 +78,7 @@ const MyApp: AppType<{ session: Session | null }> = ({
   }, 5000);
 
   const baseUrl = `http://localhost:3000/api/`;
+  
   function loadGraphToDisease(disease = null){
     console.log(`Passed value id: `, disease);
     const urlDisease = `${baseUrl}/genetics/condition/${disease ?? '10q26-deletion-syndrome'}`;
