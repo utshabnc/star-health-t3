@@ -49,9 +49,17 @@ const MyApp: AppType<{ session: Session | null }> = ({
 
         document.addEventListener('click', (e) => {
           if(e?.target?.id == 'graphLauncher'){
-            console.log('Graph Tab loaded');        
+            console.log('Graph Tab loaded');     
             setTimeout(() => {
-              initialLoad();
+              
+              document.getElementById('graphDiseaseDropDown')?.addEventListener('click', (e) => {
+
+                const diseaseName = e?.target?.value.toString().toLowerCase().replace(/ /g,'-').replace(/\./g,'');                
+                loadGraphToDisease(diseaseName);
+
+              });
+
+              loadGraphToDisease();
             },1000)
           }
         });
@@ -65,8 +73,10 @@ const MyApp: AppType<{ session: Session | null }> = ({
 
   const baseUrl = `http://localhost:3000/api/`;
   
-  function initialLoad(){
-    const urlDisease = `${baseUrl}/genetics/condition/15q24-microdeletion`;
+  function loadGraphToDisease(disease = null){
+    console.log(`Passed value id: `, disease);
+    
+    const urlDisease = `${baseUrl}/genetics/condition/${disease ?? '10q26-deletion-syndrome'}`;
     
     httpRequest(urlDisease)
     .then(async (result) => {
@@ -75,55 +85,84 @@ const MyApp: AppType<{ session: Session | null }> = ({
 
       let disease = JSON.parse(result);
       disease = disease?.condition;
-      const geneId = disease['related-gene-list'][0]['related-gene']['gene-symbol'];
-      const urlGenes = `${baseUrl}/genetics/chromosome/${geneId}`;
-      
-      let geneRequest = await httpRequest(urlGenes);
-      geneRequest = JSON.parse(geneRequest);
-      const chromosomes = geneRequest['chromosome']['chromosome-summary']['related-health-condition-list']['related-health-condition']
-      
-      const chromosomeNodes = [...chromosomes].map(chromo => (
-        { id: ++nodeId, label: `${chromo?.name?._text}`, group: 0 }
-      ))
+      const geneId: any = disease['related-gene-list'][0]['related-gene']['gene-symbol'];
+      let urlComplement = `chromosome/${geneId}`
+      if(isNaN(geneId))
+        urlComplement = `gene/${geneId.toString().toLowerCase()}`
 
-      const chromosomeEdges = [...chromosomes].map(chromo => (
+
+      const urlGenes = `${baseUrl}/genetics/${urlComplement}`;
+      
+      const geneRequest = await httpRequest(urlGenes);
+      const geneResult = JSON.parse(geneRequest);
+
+      console.log(`Result from genes is: `, geneResult);
+      
+      let chromosomes = null;
+      let chromosomeNodes = {};
+
+      if(geneResult?.gene){
+        chromosomes = geneResult['gene']['related-health-condition-list'] ?? [];
+        chromosomeNodes = [...chromosomes].map(gene => (
+          { id: ++nodeId, label: `${gene['related-health-condition']?.name}`, group: 'gene' }
+        ))
+      }
+
+      if(geneResult?.chromosome){
+        chromosomes = geneResult['chromosome']['chromosome-summary']['related-health-condition-list']['related-health-condition'] ?? [];
+        if(chromosomes?.name)
+          chromosomes = [chromosomes];
+          chromosomeNodes = [...chromosomes].map(chromo => (
+            { id: ++nodeId, label: `${chromo?.name?._text}`, group: 'chromo' }
+          ))
+      }
+
+      const chromosomeEdges = [...chromosomes].map(() => (
         { from: nodeId--, to: 0 }
       ));
 
       const nodes = [{ id: 0, label: `${disease?.name}`, group: 0 }, ...chromosomeNodes];
-      
-      // create a network
-      const container = document.getElementById("graphPlaceholder");
-      //console.log();
-      
-      const data = { nodes: nodes, edges: chromosomeEdges,};
-  
-      const options = {
-        nodes: {
-          shape: "dot",
-          size: 16,
-          font: {
-            color: 'black'
-          }
-        },
-        physics: {
-          forceAtlas2Based: {
-            gravitationalConstant: -26,
-            centralGravity: 0.005,
-            springLength: 230,
-            springConstant: 0.18,
-          },
-          maxVelocity: 146,
-          solver: "forceAtlas2Based",
-          timestep: 0.35,
-          stabilization: { iterations: 150 },
-        },
-      };
-  
-      new vis.Network(container, data, options);
+      renderGraph({ nodes: nodes, edges: chromosomeEdges});
 
     });
     
+  }
+
+  function renderGraph(data){
+
+    const container = document.getElementById("graphPlaceholder");
+    const options = {
+      nodes: {
+        shape: "dot",
+        size: 16,
+        font: {
+          color: 'black'
+        }
+      },
+      groups:{
+        gene: {
+          color: { background: 'red', border: 'black' }
+        },
+        chromo: {
+          color: { background: 'yellow', border: 'black' }
+        }
+      },
+      physics: {
+        forceAtlas2Based: {
+          gravitationalConstant: -26,
+          centralGravity: 0.005,
+          springLength: 230,
+          springConstant: 0.18,
+        },
+        maxVelocity: 146,
+        solver: "forceAtlas2Based",
+        timestep: 0.35,
+        stabilization: { iterations: 150 },
+      },
+    };
+
+    new vis.Network(container, data, options);
+
   }
 
   function httpRequest(url){

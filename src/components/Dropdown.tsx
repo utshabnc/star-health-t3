@@ -18,18 +18,20 @@ type Props = {
   value: string | undefined;
   onChange: (newValue?: string) => void;
   style: object;
+  id: string;
 };
 
-const Dropdown = ({ items, label, placeholder, onChange, value, style }: Props) => {
+const Dropdown = ({ items, label, placeholder, onChange, value, style, id }: Props) => {
   return (
     <div className="flex items-center">
       <div className="flex flex-row font-custom text-lg text-violet-700">
         {label}:&nbsp;
       </div>
       <select
+        id={id ?? 'state-filter'}
         onChange={(e) => onChange(e.target.value)}
         value={value}
-        className='bg-violet-500 my-2 text-white p-1 rounded-lg mx-1 hover:bg-violet-400 hover:text-violet-900 cursor-pointer' name="state-filter" id="state-filter"
+        className='bg-violet-500 my-2 text-white p-1 rounded-lg mx-1 hover:bg-violet-400 hover:text-violet-900 cursor-pointer' name="state-filter"
         style={{...style}}
         >
         <option value={""}>{placeholder}</option>
