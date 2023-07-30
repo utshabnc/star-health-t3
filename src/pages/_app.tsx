@@ -80,35 +80,46 @@ const MyApp: AppType<{ session: Session | null }> = ({
     
     httpRequest(urlDisease)
     .then(async (result) => {
-      console.log(`Using promise now`);
+      console.log(`**** Using promise now`);
 
       let disease = JSON.parse(result as string);
       disease = disease?.condition;
       const geneId: any = disease['related-gene-list'][0]['related-gene']['gene-symbol'];
-      let urlComplement = `chromosome/${geneId}`
-      if(isNaN(geneId))
-        urlComplement = `gene/${geneId.toString().toLowerCase()}`
-
-      const urlGenes = `${baseUrl}/genetics/${urlComplement}`;
+      const diseaseRelations: any = disease['related-gene-list'];
       
-      const geneRequest = await httpRequest(urlGenes);
-      const geneResult = JSON.parse(geneRequest as string);
-      
-      let parsedResult: any;
+      /** Start of multiple parsing */
+      let _geneRequest = null; //TOBE REMOVED
+      const allNodes = [];
+      for(const relation of diseaseRelations){
+        const _geneId = relation['related-gene']['gene-symbol'];
+        let _urlComplement = `chromosome/${_geneId}`
 
-      if(geneResult?.gene)
-        parsedResult = DiseaseRelationParser.genes(geneResult);
+        if(isNaN(_geneId))
+          _urlComplement = `gene/${_geneId.toString().toLowerCase()}`
 
-      if(geneResult?.chromosome)
-        parsedResult = DiseaseRelationParser.chromosomes(geneResult);
+        const _urlGenes = `${baseUrl}/genetics/${_urlComplement}`;
+        try{
+          _geneRequest = (await httpRequest(_urlGenes));
+          const _geneResult = JSON.parse(_geneRequest as string);
 
-      const { chromosomes, chromosomeNodes } = parsedResult;
+          let _parsedResult: any;
 
-      const chromosomeEdges = [...chromosomes].map(() => (
-        { from: DiseaseRelationParser.relationId--, to: 0 }
+          if(_geneResult?.gene)
+            _parsedResult = DiseaseRelationParser.genes(_geneResult);
+    
+          if(_geneResult?.chromosome)
+            _parsedResult = DiseaseRelationParser.chromosomes(_geneResult);
+    
+          allNodes.push(..._parsedResult.chromosomeNodes);
+
+        }catch(err){}
+      }
+
+      const chromosomeEdges = [...allNodes].map((edge) => (
+        { from: edge.id, to: 0 }
       ));
-
-      const nodes = [{ id: 0, label: `${disease?.name}`, group: 0 }, ...chromosomeNodes];
+      
+      const nodes = [{ id: 0, label: `${disease?.name}`, group: 0 }, ...allNodes];
       renderGraph({ nodes: nodes, edges: chromosomeEdges});
 
     });
@@ -157,12 +168,19 @@ const MyApp: AppType<{ session: Session | null }> = ({
     return new Promise((resolve, reject) => {
 
       const xhr = new XMLHttpRequest();
-      xhr.open('GET',url,true);
-      xhr.send();
-      xhr.onreadystatechange = function(){
-        if(xhr.readyState == 4){
-          resolve(xhr.responseText)
-        }
+      try {
+        xhr.open('GET',url,true);
+        xhr.send();
+        xhr.onreadystatechange = function(){
+          if(xhr.readyState == 4){
+            if(xhr.status == 500){
+              return reject('');    
+            }  
+            resolve(xhr.responseText);
+          }
+        }  
+      } catch (error) {
+        reject('');
       }
 
     })
@@ -174,16 +192,17 @@ const MyApp: AppType<{ session: Session | null }> = ({
     chromosomeNodes: Array<object> | string
   }
 
+  let relationId = 0;
   class DiseaseRelationParser {
-
-    static relationId = 0;
 
     static genes(dataSource: any): DisieaseRelationType {
       const chromosomes = dataSource['gene']['related-health-condition-list'] ?? [];
       const chromosomeNodes = [...chromosomes].map(gene => (
-        { id: ++this.relationId, label: `${gene['related-health-condition']?.name}`, group: 'gene' }
-      ))
-
+        { 
+          id: ++relationId, 
+          label: `${gene['related-health-condition']?.name}`, group: 'gene' 
+        }
+      ));
       return { chromosomes, chromosomeNodes }
     }
 
@@ -192,7 +211,10 @@ const MyApp: AppType<{ session: Session | null }> = ({
       if(chromosomes?.name)
         chromosomes = [chromosomes];
         const chromosomeNodes = [...chromosomes].map(chromo => (
-          { id: ++this.relationId, label: `${chromo?.name?._text}`, group: 'chromo' }
+          { 
+            id: ++relationId, 
+            label: `${chromo?.name?._text}`, group: 'chromo' 
+          }
       ));
       return { chromosomes, chromosomeNodes }
     }
