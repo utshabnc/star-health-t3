@@ -158,6 +158,7 @@ const Graphs = () => {
                 style={{
                   width: '90%'
                 }}
+                id="graphDiseaseDropDown"
               />
             </div>
 
@@ -165,10 +166,7 @@ const Graphs = () => {
               width: '80%',
               height: '100%',
               borderLeft: '1px solid #444444'
-            }}>
-              This is the Graph Visualization placeholder
-              to hold Diseases and Genesis Graph
-            </div>
+            }}></div>
 
           </div>
         }
