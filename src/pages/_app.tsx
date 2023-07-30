@@ -3,7 +3,6 @@ import type { Session } from "next-auth";
 import { SessionProvider } from "next-auth/react";
 
 import 'react-toastify/dist/ReactToastify.css';
-import '../assets/vis/dist/vis.css'
 import { ToastContainer } from 'react-toastify';
 
 import { trpc } from "../utils/trpc";
@@ -11,7 +10,6 @@ import { trpc } from "../utils/trpc";
 import "../styles/globals.css";
 import { NavFoot } from "../components/NavFoot";
 import Head from "next/head";
-import { chown } from "fs";
 
 {
   /* <React.StrictMode>
@@ -36,7 +34,7 @@ const MyApp: AppType<{ session: Session | null }> = ({
   Component,
   pageProps: { session, ...pageProps },
 }) => {
-
+  let domLoading: any = null;
   setTimeout(() => {
 
     const loadVisLib = setTimeout(() => {
@@ -47,16 +45,20 @@ const MyApp: AppType<{ session: Session | null }> = ({
         visLib.src = 'https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.js';
         document.getElementsByTagName('head')[0]?.appendChild(visLib);
 
-        document.domLoading = document.getElementById('domLoading')?.innerHTML;
+        domLoading = document.getElementById('domLoading')?.innerHTML;
 
-        document.addEventListener('click', (e) => {
+        document.addEventListener('click', (e: any) => {
           if(e?.target?.id == 'graphLauncher'){
-            document.getElementById("graphPlaceholder").innerHTML = document.domLoading;
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-ignore
+            document.getElementById("graphPlaceholder").innerHTML = domLoading;
             console.log('Graph Tab loaded');     
             setTimeout(() => {
               
-              document.getElementById('graphDiseaseDropDown')?.addEventListener('click', (e) => {
-                document.getElementById("graphPlaceholder").innerHTML = document.domLoading;
+              document.getElementById('graphDiseaseDropDown')?.addEventListener('click', (e: any) => {
+                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                // @ts-ignore
+                document.getElementById("graphPlaceholder").innerHTML = domLoading;
                 const diseaseName = e?.target?.value.toString().toLowerCase()
                                       .replace(/[\s,\,\/]{1,}/g,'-')
                                       .replace(/\./g,'')
@@ -161,6 +163,8 @@ const MyApp: AppType<{ session: Session | null }> = ({
       },
     };
 
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
     new vis.Network(container, data, options);
 
   }

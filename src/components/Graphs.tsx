@@ -15,7 +15,7 @@ const Graphs = () => {
   const { data: allStates } = trpc.db.allStates.useQuery({ drugType });
   const navigate = useRouter();
   const [selectedTab, setSelectedTab] = useState<Tab>(Tab.PaymentsToDoctors);
-  const [diseasesList, setDiseasesList] = useState<[]>([]);
+  const [diseasesList, setDiseasesList] = useState<Array<{title: { _text: string}}>>([]);
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
