@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { drugTypes } from "../utils";
 import UnitedStatesHeatmap from "./charts/UnitedStatesHeatmap";
 import Dropdown from "./Dropdown";
@@ -14,7 +14,26 @@ const Graphs = () => {
   const { data: allStates } = trpc.db.allStates.useQuery({ drugType });
   const navigate = useRouter();
   const [selectedTab, setSelectedTab] = useState<Tab>(Tab.PaymentsToDoctors);
+  const [diseasesList, setDiseasesList] = useState();
 
+  useEffect(() => {
+
+    fetch("/api/genetics/getAll")
+    .then(async (response) => {
+
+      const data = await response.json();
+      const diseases = data["topic"].filter(
+        (topic: any) => topic["title"]["_text"] == "Conditions"
+      )[0]["topics"]["topic"];
+      setDiseasesList(diseases);
+
+      console.log(`Diseases Loaded`);
+      console.log(diseases);
+      
+
+    });
+
+  }, [])
 
   if (!allStates) {
     return (
@@ -82,42 +101,61 @@ const Graphs = () => {
           <div className="my-1">
             <hr />
           </div>
-          <Dropdown
-            items={drugTypes.map((type) => ({
-              value: type,
-              label: _.capitalize(type),
-            }))}
-            label={"Filter Map By Drug Type"}
-            value={drugType}
-            placeholder={"All"}
-            onChange={setDrugType}
-          />
+          <div style={{ display: `${ selectedTab === Tab.PaymentsToDoctors ? 'block' : 'none' }` }}>
+            <Dropdown
+              items={drugTypes.map((type) => ({
+                value: type,
+                label: _.capitalize(type),
+              }))}
+              label={"Filter Map By Drug Type"}
+              value={drugType}
+              placeholder={"All"}
+              onChange={setDrugType}
+            />
+          </div>
         </div>
       </div>
-      <div className="w-1/2 m-auto relative">
+      <div style={{ height: '100%' }}>
         <PayWall />
         {selectedTab == Tab.PaymentsToDoctors &&
-          <UnitedStatesHeatmap
-            data={
-              allStates
-                ?.sort((a, b) => b.totalAmount - a.totalAmount)
-                .slice(0, 50)
-                .map((rec: { stateId: any; totalAmount: any }) => ({
-                  state: rec.stateId,
-                  value: rec.totalAmount,
-                })) ?? []
-            }
-          />
+          <div className="w-1/2 m-auto relative">
+            <UnitedStatesHeatmap
+              data={
+                allStates
+                  ?.sort((a, b) => b.totalAmount - a.totalAmount)
+                  .slice(0, 50)
+                  .map((rec: { stateId: any; totalAmount: any }) => ({
+                    state: rec.stateId,
+                    value: rec.totalAmount,
+                  })) ?? []
+              }
+            />
+          </div>
         }
         {selectedTab == Tab.DiseasesAndGenetics &&
-          <div id="graphPlaceholder" style={{
-            width: '800px',
-            height: '600px',
-            border: '1px solid #444444',
-            backgroundColor: '#222222'
+          <div style={{
+            display: 'flex',
+            flexDirection: 'row',
+            height: '100%'
           }}>
-            This is the Graph Visualization placeholder
-            to hold Diseases and Genesis Graph
+
+            <div id="graphMenu" style={{
+              width: '19%',
+              height: '100%',
+              background: 'grey'
+            }}>
+              This is the graph menu placeholder
+            </div>
+
+            <div id="graphPlaceholder" style={{
+              width: '80%',
+              height: '100%',
+              borderLeft: '1px solid #444444'
+            }}>
+              This is the Graph Visualization placeholder
+              to hold Diseases and Genesis Graph
+            </div>
+
           </div>
         }
       </div>

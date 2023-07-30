@@ -94,6 +94,8 @@ const MyApp: AppType<{ session: Session | null }> = ({
       
       // create a network
       const container = document.getElementById("graphPlaceholder");
+      //console.log();
+      
       const data = { nodes: nodes, edges: chromosomeEdges,};
   
       const options = {
@@ -101,7 +103,7 @@ const MyApp: AppType<{ session: Session | null }> = ({
           shape: "dot",
           size: 16,
           font: {
-            color: 'white'
+            color: 'black'
           }
         },
         physics: {
