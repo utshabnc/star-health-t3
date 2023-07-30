@@ -11,10 +11,11 @@ import { PayWall } from "./PayWall/PayWall";
 
 const Graphs = () => {
   const [drugType, setDrugType] = useState<string>();
+  const [selectedDisease, setSelectedDisease] = useState<string>();
   const { data: allStates } = trpc.db.allStates.useQuery({ drugType });
   const navigate = useRouter();
   const [selectedTab, setSelectedTab] = useState<Tab>(Tab.PaymentsToDoctors);
-  const [diseasesList, setDiseasesList] = useState();
+  const [diseasesList, setDiseasesList] = useState<[]>([]);
 
   useEffect(() => {
 
@@ -144,7 +145,20 @@ const Graphs = () => {
               height: '100%',
               background: 'grey'
             }}>
-              This is the graph menu placeholder
+              <p>&nbsp;</p>
+              <Dropdown
+                items={diseasesList.map((disease) => ({
+                  value: disease?.title?._text,
+                  label: _.capitalize(disease?.title?._text),
+                }))}
+                label={''}
+                value={selectedDisease}
+                placeholder={"Select The Disease"}
+                onChange={setSelectedDisease}
+                style={{
+                  width: '90%'
+                }}
+              />
             </div>
 
             <div id="graphPlaceholder" style={{

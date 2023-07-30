@@ -17,9 +17,10 @@ type Props = {
   placeholder: string;
   value: string | undefined;
   onChange: (newValue?: string) => void;
+  style: object;
 };
 
-const Dropdown = ({ items, label, placeholder, onChange, value }: Props) => {
+const Dropdown = ({ items, label, placeholder, onChange, value, style }: Props) => {
   return (
     <div className="flex items-center">
       <div className="flex flex-row font-custom text-lg text-violet-700">
@@ -28,7 +29,9 @@ const Dropdown = ({ items, label, placeholder, onChange, value }: Props) => {
       <select
         onChange={(e) => onChange(e.target.value)}
         value={value}
-        className='bg-violet-500 my-2 text-white p-1 rounded-lg mx-1 hover:bg-violet-400 hover:text-violet-900 cursor-pointer' name="state-filter" id="state-filter">
+        className='bg-violet-500 my-2 text-white p-1 rounded-lg mx-1 hover:bg-violet-400 hover:text-violet-900 cursor-pointer' name="state-filter" id="state-filter"
+        style={{...style}}
+        >
         <option value={""}>{placeholder}</option>
         {items.map((item, index) => (
           <option key={index} value={item.value}>{item.label}</option>
