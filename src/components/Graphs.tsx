@@ -148,8 +148,7 @@ const Graphs = () => {
 
             <div id="graphMenu" style={{
               width: '19%',
-              height: '100%',
-              background: 'grey'
+              height: '100%'
             }}>
               <p>&nbsp;</p>
               <Dropdown
@@ -162,7 +161,7 @@ const Graphs = () => {
                 placeholder={"Select The Disease"}
                 onChange={setSelectedDisease}
                 style={{
-                  width: '90%'
+                  width: '87%'
                 }}
                 id="graphDiseaseDropDown"
               />

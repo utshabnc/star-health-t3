@@ -57,7 +57,9 @@ const MyApp: AppType<{ session: Session | null }> = ({
               
               document.getElementById('graphDiseaseDropDown')?.addEventListener('click', (e) => {
                 document.getElementById("graphPlaceholder").innerHTML = document.domLoading;
-                const diseaseName = e?.target?.value.toString().toLowerCase().replace(/ /g,'-').replace(/\./g,'');                
+                const diseaseName = e?.target?.value.toString().toLowerCase()
+                                      .replace(/[\s,\,\/]{1,}/g,'-')
+                                      .replace(/\./g,'')
                 loadGraphToDisease(diseaseName);
               });
 
@@ -85,13 +87,12 @@ const MyApp: AppType<{ session: Session | null }> = ({
 
       let disease = JSON.parse(result as string);
       disease = disease?.condition;
-      const geneId: any = disease['related-gene-list'][0]['related-gene']['gene-symbol'];
       const diseaseRelations: any = disease['related-gene-list'];
       
       /** Start of multiple parsing */
       let _geneRequest = null; //TOBE REMOVED
       const allNodes = [];
-      for(const relation of diseaseRelations){
+      for(const relation of (diseaseRelations || [])){
         const _geneId = relation['related-gene']['gene-symbol'];
         let _urlComplement = `chromosome/${_geneId}`
 
