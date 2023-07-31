@@ -47,18 +47,25 @@ const MyApp: AppType<{ session: Session | null }> = ({
 
         domLoading = document.getElementById('domLoading')?.innerHTML;
 
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment  
+        //  @ts-ignore
+        document.getElementById('initialLoadingSpinner').style.display = 'none';
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment  
+        //  @ts-ignore
+        document.getElementById('headMapPlaceholder').style.display = 'block';
+
         document.addEventListener('click', (e: any) => {
           if(e?.target?.id == 'graphLauncher'){
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             // @ts-ignore
-            document.getElementById("graphPlaceholder").innerHTML = domLoading;
+            document.getElementById('graphPlaceholder').innerHTML = domLoading;
             console.log('Graph Tab loaded');     
             setTimeout(() => {
               
               document.getElementById('graphDiseaseDropDown')?.addEventListener('click', (e: any) => {
                 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                 // @ts-ignore
-                document.getElementById("graphPlaceholder").innerHTML = domLoading;
+                document.getElementById('graphPlaceholder').innerHTML = domLoading;
                 const diseaseName = e?.target?.value.toString().toLowerCase()
                                       .replace(/[\s,\,\/]{1,}/g,'-')
                                       .replace(/\./g,'')
@@ -77,25 +84,17 @@ const MyApp: AppType<{ session: Session | null }> = ({
 
   }, 5000);
 
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
-  const serverAddr = 'https://star-health-t3-k83u3ox0m-utshab-starhealthi.vercel.app/';
-  const baseUrl = `${serverAddr}/api/`;
-
   function loadGraphToDisease(disease = null){
 
     const urlDisease = `/api/genetics/condition/${disease ?? '10q26-deletion-syndrome'}`;
     
     fetch(urlDisease)
     .then(async (result) => {
-      console.log(`**** Using fetch to get data`);
 
       let disease = await result.json();
       disease = disease?.condition;
       const diseaseRelations: any = disease['related-gene-list'];
       
-      /** Start of multiple parsing */
-      let _geneRequest = null; //TOBE REMOVED
       const allNodes = [];
       for(const relation of (diseaseRelations || [])){
         const _geneId = relation['related-gene']['gene-symbol'];
@@ -106,26 +105,18 @@ const MyApp: AppType<{ session: Session | null }> = ({
 
         const _urlGenes = `/api/genetics/${_urlComplement}`;
         try{
-          _geneRequest = await fetch(_urlGenes);
+          const _geneRequest = await fetch(_urlGenes);
           const _geneResult = await _geneRequest.json();
-
           let _parsedResult: any;
 
-          if(_geneResult?.gene)
-            _parsedResult = DiseaseRelationParser.genes(_geneResult);
-    
-          if(_geneResult?.chromosome)
-            _parsedResult = DiseaseRelationParser.chromosomes(_geneResult);
-    
+          if(_geneResult?.gene) _parsedResult = DiseaseRelationParser.genes(_geneResult);
+          if(_geneResult?.chromosome) _parsedResult = DiseaseRelationParser.chromosomes(_geneResult);
           allNodes.push(..._parsedResult.chromosomeNodes);
 
         }catch(err){}
       }
 
-      const chromosomeEdges = [...allNodes].map((edge) => (
-        { from: edge.id, to: 0 }
-      ));
-      
+      const chromosomeEdges = [...allNodes].map((edge) => ({ from: edge.id, to: 0 }));
       const nodes = [{ id: 0, label: `${disease?.name}`, group: 0 }, ...allNodes];
       renderGraph({ nodes: nodes, edges: chromosomeEdges});
 
