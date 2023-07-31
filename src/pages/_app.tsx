@@ -83,14 +83,14 @@ const MyApp: AppType<{ session: Session | null }> = ({
   const baseUrl = `${serverAddr}/api/`;
 
   function loadGraphToDisease(disease = null){
-    console.log(`Passed value id: `, disease);
-    const urlDisease = `${baseUrl}/genetics/condition/${disease ?? '10q26-deletion-syndrome'}`;
-    
-    httpRequest(urlDisease)
-    .then(async (result) => {
-      console.log(`**** Using promise now`);
 
-      let disease = JSON.parse(result as string);
+    const urlDisease = `/api/genetics/condition/${disease ?? '10q26-deletion-syndrome'}`;
+    
+    fetch(urlDisease)
+    .then(async (result) => {
+      console.log(`**** Using fetch to get data`);
+
+      let disease = await result.json();
       disease = disease?.condition;
       const diseaseRelations: any = disease['related-gene-list'];
       
@@ -104,10 +104,10 @@ const MyApp: AppType<{ session: Session | null }> = ({
         if(isNaN(_geneId))
           _urlComplement = `gene/${_geneId.toString().toLowerCase()}`
 
-        const _urlGenes = `${baseUrl}/genetics/${_urlComplement}`;
+        const _urlGenes = `/api/genetics/${_urlComplement}`;
         try{
-          _geneRequest = (await httpRequest(_urlGenes));
-          const _geneResult = JSON.parse(_geneRequest as string);
+          _geneRequest = await fetch(_urlGenes);
+          const _geneResult = await _geneRequest.json();
 
           let _parsedResult: any;
 
@@ -169,30 +169,6 @@ const MyApp: AppType<{ session: Session | null }> = ({
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     new vis.Network(container, data, options);
-
-  }
-
-  function httpRequest(url: string){
-
-    return new Promise((resolve, reject) => {
-
-      const xhr = new XMLHttpRequest();
-      try {
-        xhr.open('GET',url,true);
-        xhr.send();
-        xhr.onreadystatechange = function(){
-          if(xhr.readyState == 4){
-            if(xhr.status == 500){
-              return reject('');    
-            }  
-            resolve(xhr.responseText);
-          }
-        }  
-      } catch (error) {
-        reject('');
-      }
-
-    })
 
   }
 
