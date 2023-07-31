@@ -15,7 +15,9 @@ const Graphs = () => {
   const { data: allStates } = trpc.db.allStates.useQuery({ drugType });
   const navigate = useRouter();
   const [selectedTab, setSelectedTab] = useState<Tab>(Tab.PaymentsToDoctors);
-  const [diseasesList, setDiseasesList] = useState<Array<{title: { _text: string}}>>([]);
+  const [diseasesList, setDiseasesList] = useState<Array<{
+    url: any;title: { _text: string}
+}>>([]);
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -159,7 +161,7 @@ const Graphs = () => {
               <p>&nbsp;</p>
               <Dropdown
                 items={diseasesList.map((disease) => ({
-                  value: disease?.title?._text,
+                  value: disease?.url?._text,
                   label: _.capitalize(disease?.title?._text),
                 }))}
                 label={''}
@@ -171,6 +173,12 @@ const Graphs = () => {
                 }}
                 id="graphDiseaseDropDown"
               />
+              <div>
+                Total Genes: <span id="totalGenesPlaceholder"></span>
+              </div>  
+              <div>
+                Total Chromosomes: <span id="totalChromosPlaceholder"></span>
+              </div>  
             </div>
 
             <div id="graphPlaceholder" style={{
