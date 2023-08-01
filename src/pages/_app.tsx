@@ -36,7 +36,10 @@ const MyApp: AppType<{ session: Session | null }> = ({
   Component,
   pageProps: { session, ...pageProps },
 }) => {
+  
   let domLoading: any = null;
+  let loadedNodes;
+
   setTimeout(() => {
 
     const loadVisLib = setTimeout(() => {
@@ -70,6 +73,10 @@ const MyApp: AppType<{ session: Session | null }> = ({
 
               });
 
+              document.getElementById('addNewNodeOnGraph')?.addEventListener('click', () => {
+                //
+              });
+
               loadGraphToDisease();
             },1000)
           }
@@ -93,30 +100,47 @@ const MyApp: AppType<{ session: Session | null }> = ({
       const diseaseRelations: any = disease['related-gene-list'];
       
       const allNodes = [];
+      const middleToUpEdges = [];
+      const middleNodes = [];
       DiseaseRelationParser.resetTotals();
 
       for(const relation of (diseaseRelations || [])){
         const _geneId = relation['related-gene']['gene-symbol'];
-        let _urlComplement = `chromosome/${_geneId}`
-
+        let _urlComplement = `chromosome/${_geneId}`;
+        
         if(isNaN(_geneId)) _urlComplement = `gene/${_geneId.toString().toLowerCase()}`
         const _urlGenes = `/api/genetics/${_urlComplement}`;
-
+        
         try{
           const _geneRequest = await fetch(_urlGenes);
           const _geneResult = await _geneRequest.json();
           let _parsedResult: any;
           
-          if(_geneResult?.gene) _parsedResult = DiseaseRelationParser.genes(_geneResult);
-          if(_geneResult?.chromosome) _parsedResult = DiseaseRelationParser.chromosomes(_geneResult);
+          if(_geneResult?.gene) _parsedResult = DiseaseRelationParser.genes(_geneResult, _geneId);
+          if(_geneResult?.chromosome) _parsedResult = DiseaseRelationParser.chromosomes(_geneResult, _geneId);
           allNodes.push(..._parsedResult.chromosomeNodes);
 
         }catch(err){}
       }
 
-      const chromosomeEdges = [...allNodes].map((edge) => ({ from: edge.id, to: 0 }));
-      const nodes = [{ id: 0, label: `${disease?.name}`, group: 0 }, ...allNodes];
-      renderGraph({ nodes: nodes, edges: chromosomeEdges});
+      console.log(`All Nodes Originally`);
+      console.log(allNodes);
+      
+      const chromosomeEdges = [...allNodes].map((edge) => ({ from: edge.linkNode, to: edge.id, }));
+      allNodes.push({ id: 0, label: `${disease?.name}`, group: 0, value: 7 });
+      const nodeCheck = [];
+      const nodes = [];
+      for(const node of allNodes){
+        if(!nodeCheck.includes(node.id)){
+          nodeCheck.push(node.id);
+          nodes.push(node); 
+        }
+      }
+
+      console.log(`Nodes Relations`);
+      console.log(chromosomeEdges);
+      
+      renderGraph({ nodes: nodes, edges: [...chromosomeEdges]});
 
     });
     
@@ -131,12 +155,9 @@ const MyApp: AppType<{ session: Session | null }> = ({
         font: { color: 'black' }
       },
       groups:{
-        gene: {
-          color: { background: 'red', border: 'black' }
-        },
-        chromo: {
-          color: { background: 'yellow', border: 'black' }
-        }
+        gene: {color: { background: 'red', border: 'darkred' }},
+        chromo: { color: { background: '#9998d7', border: '#504ed1' }},
+        middle: { color: { background: 'yellow', border: 'darkorange' }}
       },
       physics: {
         forceAtlas2Based: {
@@ -152,7 +173,11 @@ const MyApp: AppType<{ session: Session | null }> = ({
       },
     };
 
-    new vis.Network(container, data, options);
+    loadedNodes = {
+      nodes: new vis.DataSet(data.nodes),
+      edges: new vis.DataSet(data.edges)
+    };
+    new vis.Network(container, loadedNodes, options);
     document.getElementById('totalGenesPlaceholder').innerHTML = globals.totalGenes;
     document.getElementById('totalChromosPlaceholder').innerHTML = globals.totalChromosomes;
 
@@ -186,24 +211,44 @@ const MyApp: AppType<{ session: Session | null }> = ({
       return ++globals.relationId;
     }
 
-    static genes(dataSource: any): DisieaseRelationType {
+    static genes(dataSource: any, linkNode: any): DisieaseRelationType {
       const chromosomes = dataSource['gene']['related-health-condition-list'] ?? [];
       const chromosomeNodes = [...chromosomes].map(gene => (
-        {id: DiseaseRelationParser.addOneGenes(), label: `${gene['related-health-condition']?.name}`, group: 'gene'}
+        {
+          id: `${gene['related-health-condition']?.name}`, 
+          label: `${gene['related-health-condition']?.name}`, 
+          group: 'gene', 
+          linkNode,
+          value: 3
+        }
       ));
+
+      const middle = {id: linkNode, label: linkNode, group: 'middle', linkNode: 0, value: 5};
+      chromosomeNodes.push(middle);
+
       DiseaseRelationParser.totalGenes = chromosomeNodes.length;
       return { chromosomes, chromosomeNodes }
     }
 
-    static chromosomes(dataSource: any) : DisieaseRelationType {
+    static chromosomes(dataSource: any, linkNode: any) : DisieaseRelationType {
       let chromosomes = dataSource['chromosome']['chromosome-summary']['related-health-condition-list']['related-health-condition'] ?? [];
       if(chromosomes?.name)
         chromosomes = [chromosomes];
-        const chromosomeNodes = [...chromosomes].map(chromo => (
-          {id: DiseaseRelationParser.addOneChromo(), label: `${chromo?.name?._text}`, group: 'chromo'}
+      const chromosomeNodes = [...chromosomes].map(chromo => (
+          {
+            id: chromo?.name?._text, 
+            label: `${chromo?.name?._text}`, 
+            group: 'chromo', 
+            linkNode,
+            value: 3
+          }
       ));
+
+      const middle = {id: linkNode, label: linkNode, group: 'middle', linkNode: 0, value: 5};
+      chromosomeNodes.push(middle);
+
       DiseaseRelationParser.totalChromosomes = chromosomeNodes.length;
-      return { chromosomes, chromosomeNodes }
+      return { chromosomeNodes }
     }
 
   }
