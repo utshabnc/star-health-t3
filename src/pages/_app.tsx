@@ -58,23 +58,17 @@ const MyApp: AppType<{ session: Session | null }> = ({
           document.getElementById('headMapPlaceholder').style.display = 'block';
 
         document.addEventListener('click', (e: any) => {
-          if(e?.target?.id == 'graphLauncher'){
+          const clickedComponent = e?.target;
+          if(clickedComponent?.type == 'checkbox'){
+            callUpdateGraph(clickedComponent);
+          }
+
+          if(clickedComponent?.id == 'graphLauncher'){
 
             document.getElementById('graphPlaceholder').innerHTML = domLoading;
-            console.log('Graph Tab loaded');     
             setTimeout(() => {
-              
-              document.getElementById('graphDiseaseDropDown')?.addEventListener('click', (e: any) => {
-                
-                document.getElementById('graphPlaceholder').innerHTML = domLoading;
-                let diseaseName = e?.target?.value.toString().split('/');
-                diseaseName = diseaseName[diseaseName.length - 1];
-                loadGraphToDisease(diseaseName);
-
-              });
-
-              document.getElementById('addNewNodeOnGraph')?.addEventListener('click', () => {
-                //
+              document.getElementById('countryFilterContainer')?.addEventListener('click', () => {/**/
+                 loadedNodes.nodes.add({id: 'novoa', label: 'This is a new node'})
               });
 
               loadGraphToDisease();
@@ -89,8 +83,13 @@ const MyApp: AppType<{ session: Session | null }> = ({
 
   }, 5000);
 
-  function loadGraphToDisease(disease = null){
+  function loadGraphToDisease(diseaseName = null){
 
+    let disease = diseaseName?.toString().split('/');
+    if(diseaseName){
+      disease = disease[disease?.length - 1];
+    }
+    
     const urlDisease = `/api/genetics/condition/${disease ?? '10q26-deletion-syndrome'}`;
     
     fetch(urlDisease).then(async (result) => {
@@ -100,8 +99,6 @@ const MyApp: AppType<{ session: Session | null }> = ({
       const diseaseRelations: any = disease['related-gene-list'];
       
       const allNodes = [];
-      const middleToUpEdges = [];
-      const middleNodes = [];
       DiseaseRelationParser.resetTotals();
 
       for(const relation of (diseaseRelations || [])){
@@ -251,6 +248,15 @@ const MyApp: AppType<{ session: Session | null }> = ({
       return { chromosomeNodes }
     }
 
+  }
+
+  function callUpdateGraph(clickedComponent){
+    const checkParent = clickedComponent?.parentNode?.parentNode?.parentNode?.parentNode?.parentNode?.parentNode;
+    if(checkParent.id == 'diseaseFilterContainer'){
+      const disease = document.getElementById('filteredDisease')?.innerHTML?.trim();
+      document.getElementById('graphPlaceholder').innerHTML = domLoading;
+      loadGraphToDisease(disease);
+    }
   }
 
   return (

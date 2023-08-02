@@ -8,16 +8,17 @@ import { trpc } from "../utils/trpc";
 import LoadingStarHealth from "./Loading";
 import { Tab } from "../utils/Enums/Tab.enum";
 import { PayWall } from "./PayWall/PayWall";
+import MultiSelect from 'multiselect-react-dropdown';
 
 const Graphs = () => {
   const [drugType, setDrugType] = useState<string>();
-  const [selectedDisease, setSelectedDisease] = useState<string>();
   const { data: allStates } = trpc.db.allStates.useQuery({ drugType });
   const navigate = useRouter();
   const [selectedTab, setSelectedTab] = useState<Tab>(Tab.PaymentsToDoctors);
   const [diseasesList, setDiseasesList] = useState<Array<{
     url: any;title: { _text: string}
 }>>([]);
+  const [filteredContries, setFilteredContries] = useState<string>('');
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -156,23 +157,48 @@ const Graphs = () => {
 
             <div id="graphMenu" style={{
               width: '19%',
-              height: '100%'
+              height: '100%',
+              paddingRight: '5px'
             }}>
               <p>&nbsp;</p>
-              <Dropdown
-                items={diseasesList.map((disease) => ({
-                  value: disease?.url?._text,
-                  label: _.capitalize(disease?.title?._text),
-                }))}
-                label={''}
-                value={selectedDisease}
-                placeholder={"Select The Disease"}
-                onChange={setSelectedDisease}
-                style={{
-                  width: '87%'
-                }}
-                id="graphDiseaseDropDown"
-              />
+              <nav id="diseaseFilterContainer">
+                <button id="countryFilterContainer">Click me</button>
+                <MultiSelect 
+                  options={diseasesList.map((disease) => ({
+                    link: disease?.url?._text,
+                    name: _.capitalize(disease?.title?._text),
+                  }))}
+                  displayValue="name"
+                  showCheckbox={true}
+                  onSelect={
+                    (list, selItem) => {
+
+                      setFilteredContries(selItem.link);
+                      //setFilteredContries console.log(`List is`, list,`Sel Item is:`,slItem)
+                    }
+                  }
+                />
+                <span id="filteredDisease" style={{display: 'none'}}>{filteredContries}</span>
+              </nav>
+              {
+                /** 
+                <Dropdown
+                  items={diseasesList.map((disease) => ({
+                    value: disease?.url?._text,
+                    label: _.capitalize(disease?.title?._text),
+                  }))}
+                  label={''}
+                  value={selectedDisease}
+                  placeholder={"Select The Disease"}
+                  onChange={setSelectedDisease}
+                  style={{
+                    width: '87%'
+                  }}
+                  id="graphDiseaseDropDown"
+                />
+                 */
+              }
+              <button id="addNewNodeOnGraph" style={{ display: 'none'}}>Add new Node</button>
               <div>
                 Total Genes: <span id="totalGenesPlaceholder"></span>
               </div>  
