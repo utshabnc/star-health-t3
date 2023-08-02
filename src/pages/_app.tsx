@@ -39,6 +39,7 @@ const MyApp: AppType<{ session: Session | null }> = ({
   
   let domLoading: any = null;
   let loadedNodes;
+  const nodeCheck = [];
 
   setTimeout(() => {
 
@@ -120,12 +121,8 @@ const MyApp: AppType<{ session: Session | null }> = ({
         }catch(err){}
       }
 
-      console.log(`All Nodes Originally`);
-      console.log(allNodes);
-      
       const chromosomeEdges = [...allNodes].map((edge) => ({ from: edge.linkNode, to: edge.id, }));
       allNodes.push({ id: 0, label: `${disease?.name}`, group: 0, value: 7 });
-      const nodeCheck = [];
       const nodes = [];
       for(const node of allNodes){
         if(!nodeCheck.includes(node.id)){
@@ -134,10 +131,58 @@ const MyApp: AppType<{ session: Session | null }> = ({
         }
       }
 
-      console.log(`Nodes Relations`);
-      console.log(chromosomeEdges);
-      
       renderGraph({ nodes: nodes, edges: [...chromosomeEdges]});
+
+    });
+    
+  }
+
+  function addNodeToGraph(diseaseName = null){
+
+    let disease = diseaseName?.toString().split('/');
+    if(diseaseName){
+      disease = disease[disease?.length - 1];
+    }
+    
+    const urlDisease = `/api/genetics/condition/${disease ?? '10q26-deletion-syndrome'}`;
+    
+    fetch(urlDisease).then(async (result) => {
+
+      let disease = await result.json();
+      disease = disease?.condition;
+      const diseaseRelations: any = disease['related-gene-list'];
+      
+      const allNodes = [];
+
+      for(const relation of (diseaseRelations || [])){
+        const _geneId = relation['related-gene']['gene-symbol'];
+        let _urlComplement = `chromosome/${_geneId}`;
+        
+        if(isNaN(_geneId)) _urlComplement = `gene/${_geneId.toString().toLowerCase()}`
+        const _urlGenes = `/api/genetics/${_urlComplement}`;
+        
+        try{
+          const _geneRequest = await fetch(_urlGenes);
+          const _geneResult = await _geneRequest.json();
+          let _parsedResult: any;
+          
+          if(_geneResult?.gene) _parsedResult = DiseaseRelationParser.genes(_geneResult, _geneId);
+          if(_geneResult?.chromosome) _parsedResult = DiseaseRelationParser.chromosomes(_geneResult, _geneId);
+          allNodes.push(..._parsedResult.chromosomeNodes);
+
+        }catch(err){}
+      }
+
+      //const chromosomeEdges = [...allNodes].map((edge) => ({ from: edge.linkNode, to: edge.id, }));
+      for(const node of allNodes) {
+        console.log(`Called inside here`);
+        console.log(`Nodes found: `,node);
+        if(!nodeCheck[node.id]) {
+          loadedNodes.nodes.add(node);
+          nodeCheck.push(node.id);
+        }
+      }
+      document.getElementById('initialLoadingSpinner').style.display = 'none';
 
     });
     
@@ -254,8 +299,7 @@ const MyApp: AppType<{ session: Session | null }> = ({
     const checkParent = clickedComponent?.parentNode?.parentNode?.parentNode?.parentNode?.parentNode?.parentNode;
     if(checkParent.id == 'diseaseFilterContainer'){
       const disease = document.getElementById('filteredDisease')?.innerHTML?.trim();
-      document.getElementById('graphPlaceholder').innerHTML = domLoading;
-      loadGraphToDisease(disease);
+      addNodeToGraph(disease);
     }
   }
 
