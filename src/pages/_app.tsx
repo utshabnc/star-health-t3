@@ -64,13 +64,13 @@ const MyApp: AppType<{ session: Session | null }> = ({
           if(clickedComponent?.type == 'checkbox'){
             callUpdateGraph(clickedComponent);
           }
-
           if(clickedComponent?.id == 'graphLauncher'){
+            console.log(clickedComponent?.id);
 
             document.getElementById('graphPlaceholder').innerHTML = domLoading;
-            setTimeout(() => {
+            //setTimeout(() => {
               loadGraphToDisease('10q26-deletion-syndrome');
-            },1000)
+            //},1000)
           }
         });
         clearInterval(loadVisLib);     
