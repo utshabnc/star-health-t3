@@ -1,3 +1,5 @@
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-nocheck
 import type { AppType } from "next/app";
 import type { Session } from "next-auth";
 import { SessionProvider } from "next-auth/react";
@@ -46,23 +48,26 @@ const MyApp: AppType<{ session: Session | null }> = ({
         document.getElementsByTagName('head')[0]?.appendChild(visLib);
 
         domLoading = document.getElementById('domLoading')?.innerHTML;
+        if(document.getElementById('initialLoadingSpinner'))
+          document.getElementById('initialLoadingSpinner').style.display = 'none';
+        
+        if(document.getElementById('headMapPlaceholder'))
+          document.getElementById('headMapPlaceholder').style.display = 'block';
 
         document.addEventListener('click', (e: any) => {
           if(e?.target?.id == 'graphLauncher'){
-            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            // @ts-ignore
-            document.getElementById("graphPlaceholder").innerHTML = domLoading;
+
+            document.getElementById('graphPlaceholder').innerHTML = domLoading;
             console.log('Graph Tab loaded');     
             setTimeout(() => {
               
               document.getElementById('graphDiseaseDropDown')?.addEventListener('click', (e: any) => {
-                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                // @ts-ignore
-                document.getElementById("graphPlaceholder").innerHTML = domLoading;
-                const diseaseName = e?.target?.value.toString().toLowerCase()
-                                      .replace(/[\s,\,\/]{1,}/g,'-')
-                                      .replace(/\./g,'')
+                
+                document.getElementById('graphPlaceholder').innerHTML = domLoading;
+                let diseaseName = e?.target?.value.toString().split('/');
+                diseaseName = diseaseName[diseaseName.length - 1];
                 loadGraphToDisease(diseaseName);
+
               });
 
               loadGraphToDisease();
@@ -77,55 +82,39 @@ const MyApp: AppType<{ session: Session | null }> = ({
 
   }, 5000);
 
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
-  const serverAddr = 'https://star-health-t3-k83u3ox0m-utshab-starhealthi.vercel.app/';
-  const baseUrl = `${serverAddr}/api/`;
-
   function loadGraphToDisease(disease = null){
 
     const urlDisease = `/api/genetics/condition/${disease ?? '10q26-deletion-syndrome'}`;
     
-    fetch(urlDisease)
-    .then(async (result) => {
-      console.log(`**** Using fetch to get data`);
+    fetch(urlDisease).then(async (result) => {
 
       let disease = await result.json();
       disease = disease?.condition;
       const diseaseRelations: any = disease['related-gene-list'];
       
-      /** Start of multiple parsing */
-      let _geneRequest = null; //TOBE REMOVED
       const allNodes = [];
+      DiseaseRelationParser.resetTotals();
+
       for(const relation of (diseaseRelations || [])){
         const _geneId = relation['related-gene']['gene-symbol'];
         let _urlComplement = `chromosome/${_geneId}`
 
-        if(isNaN(_geneId))
-          _urlComplement = `gene/${_geneId.toString().toLowerCase()}`
-
+        if(isNaN(_geneId)) _urlComplement = `gene/${_geneId.toString().toLowerCase()}`
         const _urlGenes = `/api/genetics/${_urlComplement}`;
+
         try{
-          _geneRequest = await fetch(_urlGenes);
+          const _geneRequest = await fetch(_urlGenes);
           const _geneResult = await _geneRequest.json();
-
           let _parsedResult: any;
-
-          if(_geneResult?.gene)
-            _parsedResult = DiseaseRelationParser.genes(_geneResult);
-    
-          if(_geneResult?.chromosome)
-            _parsedResult = DiseaseRelationParser.chromosomes(_geneResult);
-    
+          
+          if(_geneResult?.gene) _parsedResult = DiseaseRelationParser.genes(_geneResult);
+          if(_geneResult?.chromosome) _parsedResult = DiseaseRelationParser.chromosomes(_geneResult);
           allNodes.push(..._parsedResult.chromosomeNodes);
 
         }catch(err){}
       }
 
-      const chromosomeEdges = [...allNodes].map((edge) => (
-        { from: edge.id, to: 0 }
-      ));
-      
+      const chromosomeEdges = [...allNodes].map((edge) => ({ from: edge.id, to: 0 }));
       const nodes = [{ id: 0, label: `${disease?.name}`, group: 0 }, ...allNodes];
       renderGraph({ nodes: nodes, edges: chromosomeEdges});
 
@@ -138,11 +127,8 @@ const MyApp: AppType<{ session: Session | null }> = ({
     const container = document.getElementById("graphPlaceholder");
     const options = {
       nodes: {
-        shape: "dot",
-        size: 16,
-        font: {
-          color: 'black'
-        }
+        shape: "dot", size: 16,
+        font: { color: 'black' }
       },
       groups:{
         gene: {
@@ -166,9 +152,9 @@ const MyApp: AppType<{ session: Session | null }> = ({
       },
     };
 
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
     new vis.Network(container, data, options);
+    document.getElementById('totalGenesPlaceholder').innerHTML = globals.totalGenes;
+    document.getElementById('totalChromosPlaceholder').innerHTML = globals.totalChromosomes;
 
   }
 
@@ -177,17 +163,35 @@ const MyApp: AppType<{ session: Session | null }> = ({
     chromosomeNodes: Array<object> | string
   }
 
-  let relationId = 0;
+  const globals = {
+    relationId: 0,
+    totalGenes: 0,
+    totalChromosomes: 0
+  }
+
   class DiseaseRelationParser {
+
+    static resetTotals(){
+      globals.totalGenes = 0;
+      globals.totalChromosomes = 0;
+    }
+
+    static addOneGenes(){
+      globals.totalGenes++;
+      return ++globals.relationId;
+    }
+
+    static addOneChromo(){
+      globals.totalChromosomes++;
+      return ++globals.relationId;
+    }
 
     static genes(dataSource: any): DisieaseRelationType {
       const chromosomes = dataSource['gene']['related-health-condition-list'] ?? [];
       const chromosomeNodes = [...chromosomes].map(gene => (
-        { 
-          id: ++relationId, 
-          label: `${gene['related-health-condition']?.name}`, group: 'gene' 
-        }
+        {id: DiseaseRelationParser.addOneGenes(), label: `${gene['related-health-condition']?.name}`, group: 'gene'}
       ));
+      DiseaseRelationParser.totalGenes = chromosomeNodes.length;
       return { chromosomes, chromosomeNodes }
     }
 
@@ -196,11 +200,9 @@ const MyApp: AppType<{ session: Session | null }> = ({
       if(chromosomes?.name)
         chromosomes = [chromosomes];
         const chromosomeNodes = [...chromosomes].map(chromo => (
-          { 
-            id: ++relationId, 
-            label: `${chromo?.name?._text}`, group: 'chromo' 
-          }
+          {id: DiseaseRelationParser.addOneChromo(), label: `${chromo?.name?._text}`, group: 'chromo'}
       ));
+      DiseaseRelationParser.totalChromosomes = chromosomeNodes.length;
       return { chromosomes, chromosomeNodes }
     }
 

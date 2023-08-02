@@ -15,7 +15,9 @@ const Graphs = () => {
   const { data: allStates } = trpc.db.allStates.useQuery({ drugType });
   const navigate = useRouter();
   const [selectedTab, setSelectedTab] = useState<Tab>(Tab.PaymentsToDoctors);
-  const [diseasesList, setDiseasesList] = useState<Array<{title: { _text: string}}>>([]);
+  const [diseasesList, setDiseasesList] = useState<Array<{
+    url: any;title: { _text: string}
+}>>([]);
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -124,21 +126,27 @@ const Graphs = () => {
       </div>
       <div style={{ height: '100%' }}>
         <PayWall />
-        {selectedTab == Tab.PaymentsToDoctors &&
-          <div className="w-1/2 m-auto relative">
-            <UnitedStatesHeatmap
-              data={
-                allStates
-                  ?.sort((a, b) => b.totalAmount - a.totalAmount)
-                  .slice(0, 50)
-                  .map((rec: { stateId: any; totalAmount: any }) => ({
-                    state: rec.stateId,
-                    value: rec.totalAmount,
-                  })) ?? []
-              }
-            />
-          </div>
-        }
+        <div id="initialLoadingSpinner">
+          <LoadingStarHealth />
+        </div>
+        <div id="headMapPlaceholder" style={{ display: 'none' }}>
+          {selectedTab == Tab.PaymentsToDoctors &&
+            <div className="w-1/2 m-auto relative">
+              <UnitedStatesHeatmap
+                data={
+                  allStates
+                    ?.sort((a, b) => b.totalAmount - a.totalAmount)
+                    .slice(0, 50)
+                    .map((rec: { stateId: any; totalAmount: any }) => ({
+                      state: rec.stateId,
+                      value: rec.totalAmount,
+                    })) ?? []
+                }
+              />
+            </div>
+          }
+        </div>
+
         {selectedTab == Tab.DiseasesAndGenetics &&
           <div style={{
             display: 'flex',
@@ -153,7 +161,7 @@ const Graphs = () => {
               <p>&nbsp;</p>
               <Dropdown
                 items={diseasesList.map((disease) => ({
-                  value: disease?.title?._text,
+                  value: disease?.url?._text,
                   label: _.capitalize(disease?.title?._text),
                 }))}
                 label={''}
@@ -165,6 +173,12 @@ const Graphs = () => {
                 }}
                 id="graphDiseaseDropDown"
               />
+              <div>
+                Total Genes: <span id="totalGenesPlaceholder"></span>
+              </div>  
+              <div>
+                Total Chromosomes: <span id="totalChromosPlaceholder"></span>
+              </div>  
             </div>
 
             <div id="graphPlaceholder" style={{
