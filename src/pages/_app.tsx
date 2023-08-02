@@ -40,6 +40,7 @@ const MyApp: AppType<{ session: Session | null }> = ({
   let domLoading: any = null;
   let loadedNodes;
   const nodeCheck = [];
+  const checkEdged = [];
 
   setTimeout(() => {
 
@@ -68,11 +69,7 @@ const MyApp: AppType<{ session: Session | null }> = ({
 
             document.getElementById('graphPlaceholder').innerHTML = domLoading;
             setTimeout(() => {
-              document.getElementById('countryFilterContainer')?.addEventListener('click', () => {/**/
-                 loadedNodes.nodes.add({id: 'novoa', label: 'This is a new node'})
-              });
-
-              loadGraphToDisease();
+              loadGraphToDisease('10q26-deletion-syndrome');
             },1000)
           }
         });
@@ -86,12 +83,12 @@ const MyApp: AppType<{ session: Session | null }> = ({
 
   function loadGraphToDisease(diseaseName = null){
 
-    let disease = diseaseName?.toString().split('/');
+    let diseaseParam = diseaseName?.toString().split('/');
     if(diseaseName){
-      disease = disease[disease?.length - 1];
+      diseaseParam = diseaseParam[diseaseParam?.length - 1];
     }
     
-    const urlDisease = `/api/genetics/condition/${disease ?? '10q26-deletion-syndrome'}`;
+    const urlDisease = `/api/genetics/condition/${diseaseParam}`;
     
     fetch(urlDisease).then(async (result) => {
 
@@ -114,15 +111,18 @@ const MyApp: AppType<{ session: Session | null }> = ({
           const _geneResult = await _geneRequest.json();
           let _parsedResult: any;
           
-          if(_geneResult?.gene) _parsedResult = DiseaseRelationParser.genes(_geneResult, _geneId);
-          if(_geneResult?.chromosome) _parsedResult = DiseaseRelationParser.chromosomes(_geneResult, _geneId);
+          if(_geneResult?.gene) _parsedResult = DiseaseRelationParser.genes(_geneResult, _geneId, diseaseParam);
+          if(_geneResult?.chromosome) _parsedResult = DiseaseRelationParser.chromosomes(_geneResult, _geneId, diseaseParam);
           allNodes.push(..._parsedResult.chromosomeNodes);
 
         }catch(err){}
       }
 
-      const chromosomeEdges = [...allNodes].map((edge) => ({ from: edge.linkNode, to: edge.id, }));
-      allNodes.push({ id: 0, label: `${disease?.name}`, group: 0, value: 7 });
+      const chromosomeEdges = [...allNodes].map((edge) => {
+        checkEdged.push(`${edge.linkNode}|${edge.id}`);
+        return { from: edge.linkNode, to: edge.id, }
+      });
+      allNodes.push({ id: diseaseParam, label: `${disease?.name}`, group: 0, value: 7 });
       const nodes = [];
       for(const node of allNodes){
         if(!nodeCheck.includes(node.id)){
@@ -139,12 +139,12 @@ const MyApp: AppType<{ session: Session | null }> = ({
 
   function addNodeToGraph(diseaseName = null){
 
-    let disease = diseaseName?.toString().split('/');
+    let diseaseParam = diseaseName?.toString().split('/');
     if(diseaseName){
-      disease = disease[disease?.length - 1];
+      diseaseParam = diseaseParam[diseaseParam?.length - 1];
     }
     
-    const urlDisease = `/api/genetics/condition/${disease ?? '10q26-deletion-syndrome'}`;
+    const urlDisease = `/api/genetics/condition/${diseaseParam}`;
     
     fetch(urlDisease).then(async (result) => {
 
@@ -166,23 +166,36 @@ const MyApp: AppType<{ session: Session | null }> = ({
           const _geneResult = await _geneRequest.json();
           let _parsedResult: any;
           
-          if(_geneResult?.gene) _parsedResult = DiseaseRelationParser.genes(_geneResult, _geneId);
-          if(_geneResult?.chromosome) _parsedResult = DiseaseRelationParser.chromosomes(_geneResult, _geneId);
+          if(_geneResult?.gene) _parsedResult = DiseaseRelationParser.genes(_geneResult, _geneId, diseaseParam);
+          if(_geneResult?.chromosome) _parsedResult = DiseaseRelationParser.chromosomes(_geneResult, _geneId, diseaseParam);
           allNodes.push(..._parsedResult.chromosomeNodes);
 
         }catch(err){}
       }
 
-      //const chromosomeEdges = [...allNodes].map((edge) => ({ from: edge.linkNode, to: edge.id, }));
-      for(const node of allNodes) {
-        console.log(`Called inside here`);
-        console.log(`Nodes found: `,node);
+      allNodes.forEach((edge) => {
+        if(!checkEdged.includes(`${edge.linkNode}|${edge.id}`)){
+          checkEdged.push(`${edge.linkNode}|${edge.id}`);
+          loadedNodes.edges.add({ from: edge.linkNode, to: edge.id, });
+        }
+      });
+      loadedNodes.nodes.add({ id: diseaseParam, label: `${disease?.name}`, group: 0, value: 7 });
+      const middleNodes = allNodes.filter(node => node.value == 5);
+      const remainingNodes = allNodes.filter(node => node.value == 3);
+
+      for(const node of middleNodes) {
         if(!nodeCheck[node.id]) {
           loadedNodes.nodes.add(node);
           nodeCheck.push(node.id);
         }
       }
-      document.getElementById('initialLoadingSpinner').style.display = 'none';
+
+      for(const node of remainingNodes) {
+        if(!nodeCheck[node.id]) {
+          loadedNodes.nodes.add(node);
+          nodeCheck.push(node.id);
+        }
+      }
 
     });
     
@@ -253,7 +266,7 @@ const MyApp: AppType<{ session: Session | null }> = ({
       return ++globals.relationId;
     }
 
-    static genes(dataSource: any, linkNode: any): DisieaseRelationType {
+    static genes(dataSource: any, linkNode: any, diseaseLink: any): DisieaseRelationType {
       const chromosomes = dataSource['gene']['related-health-condition-list'] ?? [];
       const chromosomeNodes = [...chromosomes].map(gene => (
         {
@@ -265,14 +278,14 @@ const MyApp: AppType<{ session: Session | null }> = ({
         }
       ));
 
-      const middle = {id: linkNode, label: linkNode, group: 'middle', linkNode: 0, value: 5};
+      const middle = {id: linkNode, label: linkNode, group: 'middle', linkNode: diseaseLink || 0, value: 5};
       chromosomeNodes.push(middle);
 
       DiseaseRelationParser.totalGenes = chromosomeNodes.length;
       return { chromosomes, chromosomeNodes }
     }
 
-    static chromosomes(dataSource: any, linkNode: any) : DisieaseRelationType {
+    static chromosomes(dataSource: any, linkNode: any, diseaseLink: any) : DisieaseRelationType {
       let chromosomes = dataSource['chromosome']['chromosome-summary']['related-health-condition-list']['related-health-condition'] ?? [];
       if(chromosomes?.name)
         chromosomes = [chromosomes];
@@ -286,7 +299,7 @@ const MyApp: AppType<{ session: Session | null }> = ({
           }
       ));
 
-      const middle = {id: linkNode, label: linkNode, group: 'middle', linkNode: 0, value: 5};
+      const middle = {id: linkNode, label: linkNode, group: 'middle', linkNode: diseaseLink || 0, value: 5};
       chromosomeNodes.push(middle);
 
       DiseaseRelationParser.totalChromosomes = chromosomeNodes.length;
