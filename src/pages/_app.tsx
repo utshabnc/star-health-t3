@@ -66,11 +66,8 @@ const MyApp: AppType<{ session: Session | null }> = ({
           }
           if(clickedComponent?.id == 'graphLauncher'){
             console.log(clickedComponent?.id);
-
             document.getElementById('graphPlaceholder').innerHTML = domLoading;
-            //setTimeout(() => {
-              loadGraphToDisease('10q26-deletion-syndrome');
-            //},1000)
+            loadGraphToDisease('10q26-deletion-syndrome');
           }
         });
         clearInterval(loadVisLib);     
