@@ -123,6 +123,29 @@ const Graphs = () => {
               onChange={setDrugType}
             />
           </div>
+          <nav 
+            id="diseaseFilterContainer"
+            style={{ display: `${ selectedTab === Tab.DiseasesAndGenetics ? 'block' : 'none' }` }}
+            >
+                <MultiSelect 
+                  options={diseasesList.map((disease) => ({
+                    link: disease?.url?._text,
+                    name: _.capitalize(disease?.title?._text),
+                  }))}
+                  displayValue="name"
+                  showCheckbox={true}
+                  onSelect={
+                    (list, selItem) => {
+
+                      setFilteredContries(selItem.link);
+                      //setFilteredContries console.log(`List is`, list,`Sel Item is:`,slItem)
+                    }
+                  }
+                  placeholder="Type/Select the Disease"
+                  selectedValues={[{link: diseasesList[0]?.url?._text, name: diseasesList[0]?.title?._text}]}
+                />
+                <span id="filteredDisease" style={{display: 'none'}}>{filteredContries}</span>
+              </nav>
         </div>
       </div>
       <div style={{ height: '100%' }}>
@@ -160,45 +183,6 @@ const Graphs = () => {
               height: '100%',
               paddingRight: '5px'
             }}>
-              <p>&nbsp;</p>
-              <nav id="diseaseFilterContainer">
-                <button id="countryFilterContainer">Click me</button>
-                <MultiSelect 
-                  options={diseasesList.map((disease) => ({
-                    link: disease?.url?._text,
-                    name: _.capitalize(disease?.title?._text),
-                  }))}
-                  displayValue="name"
-                  showCheckbox={true}
-                  onSelect={
-                    (list, selItem) => {
-
-                      setFilteredContries(selItem.link);
-                      //setFilteredContries console.log(`List is`, list,`Sel Item is:`,slItem)
-                    }
-                  }
-                />
-                <span id="filteredDisease" style={{display: 'none'}}>{filteredContries}</span>
-              </nav>
-              {
-                /** 
-                <Dropdown
-                  items={diseasesList.map((disease) => ({
-                    value: disease?.url?._text,
-                    label: _.capitalize(disease?.title?._text),
-                  }))}
-                  label={''}
-                  value={selectedDisease}
-                  placeholder={"Select The Disease"}
-                  onChange={setSelectedDisease}
-                  style={{
-                    width: '87%'
-                  }}
-                  id="graphDiseaseDropDown"
-                />
-                 */
-              }
-              <button id="addNewNodeOnGraph" style={{ display: 'none'}}>Add new Node</button>
               <div>
                 Total Genes: <span id="totalGenesPlaceholder"></span>
               </div>  
