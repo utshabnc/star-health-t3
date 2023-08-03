@@ -128,6 +128,7 @@ const Graphs = () => {
             id="diseaseFilterContainer"
             style={{ display: `${ selectedTab === Tab.DiseasesAndGenetics ? 'block' : 'none' }` }}
             >
+              Disease Filter: 
                 <MultiSelect 
                   options={diseasesList.map((disease) => ({
                     link: disease?.url?._text,
@@ -140,7 +141,7 @@ const Graphs = () => {
                     const name = remItem.link.toString().split('/');
                     setRemovedDisease(name[name.length - 1])
                   }}
-                  placeholder="Type/Select the Disease"
+                  placeholder="Select the Disease"
                   selectedValues={[{link: diseasesList[0]?.url?._text, name: diseasesList[0]?.title?._text}]}
                 />
                 <span id="filteredDisease" style={{display: 'none'}}>{filteredDisease}</span>

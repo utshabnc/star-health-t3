@@ -51,6 +51,12 @@ const MyApp: AppType<{ session: Session | null }> = ({
 
       if(document != undefined){
 
+        const multiSelComp = document.getElementById('search_input');
+        multiSelComp.caretColor = 'transparent';
+        multiSelComp.onkeyup = function(){
+          multiSelComp.readOnly = true;
+        }
+
         const visLib = document.createElement('script');
         visLib.src = 'https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.js';
         document.getElementsByTagName('head')[0]?.appendChild(visLib);
@@ -66,7 +72,7 @@ const MyApp: AppType<{ session: Session | null }> = ({
           const clickedComponent = e?.target;
           
           if(clickedComponent?.type == 'checkbox' || clickedComponent?.classList[0]?.trim() == 'option'){
-            callUpdateGraph(clickedComponent);
+            return callUpdateGraph(clickedComponent);
           }
           
           if(clickedComponent?.id == 'graphLauncher'){
@@ -82,19 +88,13 @@ const MyApp: AppType<{ session: Session | null }> = ({
             loadGraphToDisease('10q26-deletion-syndrome');
           }
 
+          /** Remove Disease and relations from Graph when removed from filter  */
           if(
             clickedComponent?.classList[0]?.trim() == 'icon_cancel' &&
             clickedComponent?.classList[1]?.trim() == 'closeIcon'
             ){
-              const removeDisease = document.getElementById('removedDisease')?.innerHTML;
-              const diseaseToRemove = `${removeDisease?.trim()}`;
-              for(const nodeId of Object.keys(loadedNodesId[diseaseToRemove])){
-                loadedNodes.nodes.remove({ id: nodeId });
-                for(const subNodeId of Object.keys(loadedSubNodesId[nodeId])){
-                  loadedNodes.nodes.remove({ id: subNodeId });
-                }                
-              }
-              loadedNodes.nodes.remove({id: diseaseToRemove})
+              // REMOVE DESELECTED DISEASE
+              removeDiseaseFromGraph();
             }
 
         });
@@ -213,6 +213,7 @@ const MyApp: AppType<{ session: Session | null }> = ({
           if(!loadedNodesId.hasOwnProperty(`${node.linkNode}`)){
             loadedNodesId[`${node.linkNode}`] = {};
           } 
+          
           loadedNodesId[`${node.linkNode}`][`${node.id}`] = null;
           try{
             loadedNodes.nodes.add(node);
@@ -236,8 +237,8 @@ const MyApp: AppType<{ session: Session | null }> = ({
         }
       }
 
-      console.log(loadedNodesId);
-      console.log(loadedSubNodesId);
+      console.log(`Middles: `, loadedNodesId);
+      console.log(`Extreme: `, loadedSubNodesId);
       
 
     });
@@ -311,17 +312,18 @@ const MyApp: AppType<{ session: Session | null }> = ({
 
     static genes(dataSource: any, linkNode: any, diseaseLink: any): DisieaseRelationType {
       const chromosomes = dataSource['gene']['related-health-condition-list'] ?? [];
+      const _linkNode = linkNode == 1 ? '_1000' : linkNode;
       const chromosomeNodes = [...chromosomes].map(gene => (
         {
           id: `${gene['related-health-condition']?.name}`, 
           label: `${gene['related-health-condition']?.name}`, 
           group: 'gene', 
-          linkNode,
+          linkNode: _linkNode,
           value: 3
         }
       ));
 
-      const middle = {id: linkNode, label: linkNode, group: 'middle', linkNode: diseaseLink || 0, value: 5};
+      const middle = {id: _linkNode, label: linkNode, group: 'middle', linkNode: diseaseLink || 0, value: 5};
       chromosomeNodes.push(middle);
 
       DiseaseRelationParser.totalGenes = chromosomeNodes.length;
@@ -330,6 +332,7 @@ const MyApp: AppType<{ session: Session | null }> = ({
 
     static chromosomes(dataSource: any, linkNode: any, diseaseLink: any) : DisieaseRelationType {
       let chromosomes = dataSource['chromosome']['chromosome-summary']['related-health-condition-list']['related-health-condition'] ?? [];
+      const _linkNode = linkNode == 1 ? '_1000' : linkNode;
       if(chromosomes?.name)
         chromosomes = [chromosomes];
       const chromosomeNodes = [...chromosomes].map(chromo => (
@@ -337,12 +340,12 @@ const MyApp: AppType<{ session: Session | null }> = ({
             id: chromo?.name?._text, 
             label: `${chromo?.name?._text}`, 
             group: 'chromo', 
-            linkNode,
+            linkNode: _linkNode,
             value: 3
           }
       ));
 
-      const middle = {id: linkNode, label: linkNode, group: 'middle', linkNode: diseaseLink || 0, value: 5};
+      const middle = {id: _linkNode, label: linkNode, group: 'middle', linkNode: diseaseLink || 0, value: 5};
       chromosomeNodes.push(middle);
 
       DiseaseRelationParser.totalChromosomes = chromosomeNodes.length;
@@ -354,10 +357,40 @@ const MyApp: AppType<{ session: Session | null }> = ({
   function callUpdateGraph(clickedComponent){
     const checkParent = clickedComponent?.parentNode?.parentNode?.parentNode?.parentNode?.parentNode?.parentNode;
     const optParent = clickedComponent?.parentNode?.parentNode?.parentNode?.parentNode?.parentNode;
+
+    console.log(`Calling the update1: `, clickedComponent?.childNodes[0]?.innerHTML);
+    console.log(`Calling the update2: `, clickedComponent?.innerHTML);
+    
+
     if(checkParent.id == 'diseaseFilterContainer' || optParent.id == 'diseaseFilterContainer'){
+      if(clickedComponent?.childNodes[0]?.checked == false || clickedComponent?.checked == false){
+        return removeDiseaseFromGraph();
+      }
       const disease = document.getElementById('filteredDisease')?.innerHTML?.trim();
       addNodeToGraph(disease);
     }
+  }
+
+  function removeDiseaseFromGraph(){
+
+    const removeDisease = document.getElementById('removedDisease')?.innerHTML;
+    const diseaseToRemove = `${removeDisease?.trim()}`;
+
+    console.log(`The removing disease is: `, diseaseToRemove);
+
+    for(const nodeId of Object.keys(loadedNodesId[diseaseToRemove])){
+      loadedNodes.nodes.remove({ id: nodeId });
+      //loadedNodes.edges.remove({ from: diseaseToRemove, to: nodeId });
+      nodeCheck.splice(nodeCheck.indexOf(nodeId), 1);
+      for(const subNodeId of Object.keys(loadedSubNodesId[nodeId])){
+        loadedNodes.nodes.remove({ id: subNodeId });
+        nodeCheck.splice(nodeCheck.indexOf(subNodeId), 1);
+        //loadedNodes.edges.remove({ from: nodeId, to: subNodeId });
+      }
+    }
+    loadedNodes.nodes.remove({id: diseaseToRemove});
+    nodeCheck.splice(nodeCheck.indexOf(diseaseToRemove), 1);
+
   }
 
   return (
