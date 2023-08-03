@@ -144,7 +144,7 @@ const Graphs = () => {
                   selectedValues={[{link: diseasesList[0]?.url?._text, name: diseasesList[0]?.title?._text}]}
                 />
                 <span id="filteredDisease" style={{display: 'none'}}>{filteredDisease}</span>
-                <span id="removedDisease">{removedDisease}</span>
+                <span id="removedDisease" style={{display: 'none'}}>{removedDisease}</span>
               </nav>
         </div>
       </div>

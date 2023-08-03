@@ -65,7 +65,7 @@ const MyApp: AppType<{ session: Session | null }> = ({
         document.addEventListener('click', (e: any) => {
           const clickedComponent = e?.target;
           
-          if(clickedComponent?.type == 'checkbox'){
+          if(clickedComponent?.type == 'checkbox' || clickedComponent?.classList[0]?.trim() == 'option'){
             callUpdateGraph(clickedComponent);
           }
           
@@ -353,7 +353,8 @@ const MyApp: AppType<{ session: Session | null }> = ({
 
   function callUpdateGraph(clickedComponent){
     const checkParent = clickedComponent?.parentNode?.parentNode?.parentNode?.parentNode?.parentNode?.parentNode;
-    if(checkParent.id == 'diseaseFilterContainer'){
+    const optParent = clickedComponent?.parentNode?.parentNode?.parentNode?.parentNode?.parentNode;
+    if(checkParent.id == 'diseaseFilterContainer' || optParent.id == 'diseaseFilterContainer'){
       const disease = document.getElementById('filteredDisease')?.innerHTML?.trim();
       addNodeToGraph(disease);
     }
