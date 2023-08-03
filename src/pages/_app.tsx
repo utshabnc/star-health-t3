@@ -45,21 +45,49 @@ const MyApp: AppType<{ session: Session | null }> = ({
   const loadedNodesId = {};
   const loadedSubNodesId = {};
 
+  function formatMultiSelect(){
+
+    if(!document.getElementById('arrowText')){
+
+      try {
+        
+        const multiSelComp = document.getElementById('search_input');
+        multiSelComp.readOnly = true;
+    
+        const searchComponent = document.getElementsByClassName('searchWrapper')
+        const arrCantainer = document.createElement('div');
+        arrCantainer.id = 'arrowText';
+        arrCantainer.innerHTML = "&#8964;";
+        searchComponent[0].appendChild(arrCantainer);
+        const arrowText = document.getElementById('arrowText');
+        arrowText.style.float = 'right';
+        arrowText.style.fontSize = '30px';
+        arrowText.style.marginTop = '-10px';
+    
+        multiSelComp.onkeyup = function(){
+          multiSelComp.readOnly = true;
+        }
+
+      } catch (error) {
+        
+      }
+
+    }
+
+  }
+
+
   setTimeout(() => {
 
     const loadVisLib = setTimeout(() => {
 
       if(document != undefined){
 
-        const multiSelComp = document.getElementById('search_input');
-        multiSelComp.caretColor = 'transparent';
-        multiSelComp.onkeyup = function(){
-          multiSelComp.readOnly = true;
-        }
-
         const visLib = document.createElement('script');
         visLib.src = 'https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.js';
         document.getElementsByTagName('head')[0]?.appendChild(visLib);
+
+        formatMultiSelect();
 
         domLoading = document.getElementById('domLoading')?.innerHTML;
         if(document.getElementById('initialLoadingSpinner'))
@@ -373,23 +401,27 @@ const MyApp: AppType<{ session: Session | null }> = ({
 
   function removeDiseaseFromGraph(){
 
-    const removeDisease = document.getElementById('removedDisease')?.innerHTML;
-    const diseaseToRemove = `${removeDisease?.trim()}`;
-
-    console.log(`The removing disease is: `, diseaseToRemove);
-
-    for(const nodeId of Object.keys(loadedNodesId[diseaseToRemove])){
-      loadedNodes.nodes.remove({ id: nodeId });
-      //loadedNodes.edges.remove({ from: diseaseToRemove, to: nodeId });
-      nodeCheck.splice(nodeCheck.indexOf(nodeId), 1);
-      for(const subNodeId of Object.keys(loadedSubNodesId[nodeId])){
-        loadedNodes.nodes.remove({ id: subNodeId });
-        nodeCheck.splice(nodeCheck.indexOf(subNodeId), 1);
-        //loadedNodes.edges.remove({ from: nodeId, to: subNodeId });
+    try {
+      
+      const removeDisease = document.getElementById('removedDisease')?.innerHTML;
+      const diseaseToRemove = `${removeDisease?.trim()}`;
+  
+      for(const nodeId of Object.keys(loadedNodesId[diseaseToRemove])){
+        loadedNodes.nodes.remove({ id: nodeId });
+        //loadedNodes.edges.remove({ from: diseaseToRemove, to: nodeId });
+        nodeCheck.splice(nodeCheck.indexOf(nodeId), 1);
+        for(const subNodeId of Object.keys(loadedSubNodesId[nodeId])){
+          loadedNodes.nodes.remove({ id: subNodeId });
+          nodeCheck.splice(nodeCheck.indexOf(subNodeId), 1);
+          //loadedNodes.edges.remove({ from: nodeId, to: subNodeId });
+        }
       }
+      loadedNodes.nodes.remove({id: diseaseToRemove});
+      nodeCheck.splice(nodeCheck.indexOf(diseaseToRemove), 1);  
+
+    } catch (error) {
+      
     }
-    loadedNodes.nodes.remove({id: diseaseToRemove});
-    nodeCheck.splice(nodeCheck.indexOf(diseaseToRemove), 1);
 
   }
 
