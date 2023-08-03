@@ -18,7 +18,8 @@ const Graphs = () => {
   const [diseasesList, setDiseasesList] = useState<Array<{
     url: any;title: { _text: string}
 }>>([]);
-  const [filteredContries, setFilteredContries] = useState<string>('');
+  const [filteredDisease, setFilteredDisease] = useState<string>('');
+  const [removedDisease, setRemovedDisease] = useState<string>('');
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -134,17 +135,16 @@ const Graphs = () => {
                   }))}
                   displayValue="name"
                   showCheckbox={true}
-                  onSelect={
-                    (list, selItem) => {
-
-                      setFilteredContries(selItem.link);
-                      //setFilteredContries console.log(`List is`, list,`Sel Item is:`,slItem)
-                    }
-                  }
+                  onSelect={(list, selItem) => setFilteredDisease(selItem.link)}
+                  onRemove={(list, remItem) => {
+                    const name = remItem.link.toString().split('/');
+                    setRemovedDisease(name[name.length - 1])
+                  }}
                   placeholder="Type/Select the Disease"
                   selectedValues={[{link: diseasesList[0]?.url?._text, name: diseasesList[0]?.title?._text}]}
                 />
-                <span id="filteredDisease" style={{display: 'none'}}>{filteredContries}</span>
+                <span id="filteredDisease" style={{display: 'none'}}>{filteredDisease}</span>
+                <span id="removedDisease">{removedDisease}</span>
               </nav>
         </div>
       </div>

@@ -41,6 +41,9 @@ const MyApp: AppType<{ session: Session | null }> = ({
   let loadedNodes;
   const nodeCheck = [];
   const checkEdged = [];
+  let graphPreviouslyLoaded = false;
+  const loadedNodesId = {};
+  const loadedSubNodesId = {};
 
   setTimeout(() => {
 
@@ -61,16 +64,41 @@ const MyApp: AppType<{ session: Session | null }> = ({
 
         document.addEventListener('click', (e: any) => {
           const clickedComponent = e?.target;
+          
           if(clickedComponent?.type == 'checkbox'){
             callUpdateGraph(clickedComponent);
           }
+          
           if(clickedComponent?.id == 'graphLauncher'){
             console.log(clickedComponent?.id);
+            if(graphPreviouslyLoaded){
+
+              loadedNodes.nodes.clear();
+              loadedNodes.edges.clear();
+            }else{
+              graphPreviouslyLoaded = true;
+            }
             document.getElementById('graphPlaceholder').innerHTML = domLoading;
             loadGraphToDisease('10q26-deletion-syndrome');
           }
+
+          if(
+            clickedComponent?.classList[0]?.trim() == 'icon_cancel' &&
+            clickedComponent?.classList[1]?.trim() == 'closeIcon'
+            ){
+              const removeDisease = document.getElementById('removedDisease')?.innerHTML;
+              const diseaseToRemove = `${removeDisease?.trim()}`;
+              for(const nodeId of Object.keys(loadedNodesId[diseaseToRemove])){
+                loadedNodes.nodes.remove({ id: nodeId });
+                for(const subNodeId of Object.keys(loadedSubNodesId[nodeId])){
+                  loadedNodes.nodes.remove({ id: subNodeId });
+                }                
+              }
+              loadedNodes.nodes.remove({id: diseaseToRemove})
+            }
+
         });
-        clearInterval(loadVisLib);     
+        clearInterval(loadVisLib);
         
       }
 
@@ -182,17 +210,35 @@ const MyApp: AppType<{ session: Session | null }> = ({
 
       for(const node of middleNodes) {
         if(!nodeCheck[node.id]) {
-          loadedNodes.nodes.add(node);
+          if(!loadedNodesId.hasOwnProperty(`${node.linkNode}`)){
+            loadedNodesId[`${node.linkNode}`] = {};
+          } 
+          loadedNodesId[`${node.linkNode}`][`${node.id}`] = null;
+          try{
+            loadedNodes.nodes.add(node);
+          }catch(err){}
           nodeCheck.push(node.id);
+        }
+      }
+      const obj1 = {};
+      for(const node of remainingNodes) {
+        if(!nodeCheck[node.id]) {
+          if(!loadedSubNodesId.hasOwnProperty(`${node.linkNode}`)){
+            loadedSubNodesId[`${node.linkNode}`] = {};
+          }
+          try{
+            loadedNodes.nodes.add(node);
+          }catch(err){}
+          nodeCheck.push(node.id);
+          loadedSubNodesId[`${node.linkNode}`][`${node.id}`] = null;
+          obj1[node.id] = '';
+          
         }
       }
 
-      for(const node of remainingNodes) {
-        if(!nodeCheck[node.id]) {
-          loadedNodes.nodes.add(node);
-          nodeCheck.push(node.id);
-        }
-      }
+      console.log(loadedNodesId);
+      console.log(loadedSubNodesId);
+      
 
     });
     
