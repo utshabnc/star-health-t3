@@ -1,4 +1,4 @@
-import Graphs from "../../components/Graphs";
+import { Graphs } from "../../components/Graph";
 
 const Visualization = () => {
   return (
