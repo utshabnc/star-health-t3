@@ -60,6 +60,7 @@ function formatMultiSelect(){
 
           if(clickedComponent?.type == 'checkbox' || clickedComponent?.classList[0]?.trim() == 'option'){
             dropDownList.className = 'optionListContainer displayNone';
+            document.getElementById('graphUpdateLoader').style.display = '';
             return callUpdateGraph(clickedComponent);
           }
 
@@ -234,6 +235,7 @@ function formatMultiSelect(){
 
       console.log(`Middles: `, loadedNodesId);
       console.log(`Extreme: `, loadedSubNodesId);
+      document.getElementById('graphUpdateLoader').style.display = 'none';
       
 
     });

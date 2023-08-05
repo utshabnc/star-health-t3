@@ -6,6 +6,7 @@
 
 @layer components {
   @media screen and (max-width: 700px) {
+
     html,
     body {
       width: 200%;
@@ -33,10 +34,12 @@ input[type="range"]::-webkit-slider-thumb {
   0% {
     transform: rotate(0deg);
   }
+
   100% {
     transform: rotate(360deg);
   }
 }
+
 .suggestions li {
   padding: 0.5rem;
   background-color: white;
@@ -49,16 +52,18 @@ input[type="range"]::-webkit-slider-thumb {
   cursor: pointer;
   font-weight: 700;
 }
-.closeSuggestions{
+
+.closeSuggestions {
   margin-top: 0;
   padding-top: 2px;
   max-height: 143px;
   display: flex;
   position: absolute;
-  top:0;
+  top: 0;
   right: 0;
   background-color: white;
 }
+
 .suggestions {
   border: 1px solid #999;
   border-top-width: 0;
@@ -72,9 +77,11 @@ input[type="range"]::-webkit-slider-thumb {
   /* position: absolute; */
   padding-left: 0;
 }
+
 .suggestions li:not(:last-of-type) {
   border-bottom: 1px solid #999;
 }
+
 .no-suggestions {
   z-index: 2;
   background-color: white;
@@ -82,7 +89,7 @@ input[type="range"]::-webkit-slider-thumb {
   padding: 0.5rem;
 }
 
-.NoResultComp{
+.NoResultComp {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -94,7 +101,7 @@ input[type="range"]::-webkit-slider-thumb {
   color: rgb(109 40 217);
 }
 
-.errorIcon{
+.errorIcon {
   font-size: 100px;
   margin-bottom: 15px;
 }
@@ -135,4 +142,38 @@ input[type="range"]::-webkit-slider-thumb {
   color: #666;
   margin-top: 5px;
   word-break: break-all;
+}
+
+
+
+/* 
+* Updating Graph Loader
+*/
+.loader {
+  font-size: 48px;
+  font-weight: 600;
+  display: inline-block;
+  letter-spacing: 2px;
+  font-family: Arial, Helvetica, sans-serif;
+  color: rgb(153, 152, 215);
+  box-sizing: border-box;
+  animation: spotlight 1s linear infinite alternate;
+  margin: 10px auto;
+  border-radius: 24px;
+  position: absolute;
+}
+
+@keyframes spotlight {
+
+  0%,
+  20% {
+    opacity: 1;
+    letter-spacing: 2px;
+  }
+
+  80%,
+  100% {
+    opacity: 0;
+    letter-spacing: 32px;
+  }
 }

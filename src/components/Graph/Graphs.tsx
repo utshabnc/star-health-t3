@@ -146,10 +146,23 @@ const Graphs = () => {
                   placeholder="Select the Disease"
                   selectedValues={[]}
                 />
+                <div 
+                  id="graphUpdateLoaderContainer"
+                  style={{
+                    width: '80%',
+                    marginLeft: '10.5%',
+                    textAlign: 'center',
+                  }}
+                  >
+                  <span 
+                      id="graphUpdateLoader" style={{display: 'none'}} 
+                      className="loader">Loading</span>
+                </div>
                 <span id="filteredDisease" style={{display: 'none'}}>{filteredDisease}</span>
                 <span id="removedDisease" style={{display: 'none'}}>{removedDisease}</span>
               </nav>
         </div>
+        
       </div>
       <div style={{ height: '100%' }}>
         <PayWall />
@@ -173,14 +186,13 @@ const Graphs = () => {
             </div>
           }
         </div>
-
+          
         {selectedTab == Tab.DiseasesAndGenetics &&
           <div style={{
             display: 'flex',
             flexDirection: 'row',
             height: '100%'
           }}>
-
             <div id="graphMenu" style={{
               width: '19%',
               height: '100%',
@@ -206,7 +218,7 @@ const Graphs = () => {
                 ></span> &nbsp;Related Conditions
               </div>  
             </div>
-
+              
             <div id="graphPlaceholder" style={{
               width: '80%',
               height: '100%',
