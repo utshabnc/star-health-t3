@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useSession } from "next-auth/react";
+import { useEffect, useState } from "react";
 
 const PatientIntakeForm: React.FC = () => {
   const headingStyle = {
@@ -6,8 +7,10 @@ const PatientIntakeForm: React.FC = () => {
     color: "#885CF6",
 
   };
-
-  const [firstName, setFirstName] = useState("");
+  const { data: session, status } = useSession();
+  const name = session?.user?.name || '';
+  const userId = session?.user?.id || '';
+  const [firstName, setFirstName] = useState(name);
   const [lastName, setLastName] = useState("");
   const [dateOfBirth, setDateOfBirth] = useState("");
   const [sex, setSex] = useState("");
@@ -58,6 +61,7 @@ const PatientIntakeForm: React.FC = () => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
+          userId,
           firstName,
           lastName,
           dateOfBirth,
@@ -99,46 +103,93 @@ const PatientIntakeForm: React.FC = () => {
       setFormSubmitted(true);
 
       // Clear form input fields
-      setFirstName("");
-      setLastName("");
-      setDateOfBirth("");
-      setSex("");
-      setMaritialStatus("");
-      setEmail("");
-      setPhoneNumber("");
-      setHomePhone1("");
-      setCellPhone1("");
-      setWorkPhone1("");
-      setHomePhone2("");
-      setCellPhone2("");
-      setWorkPhone2("");
-      setHomePhone3("");
-      setCellPhone3("");
-      setWorkPhone3("");
-      setMedications("");
-      setAllergies("");
-      setAddress("");
-      setEmergencyContact1("");
-      setRelationship1("");
-      setEmergencyContactPhone1("");
-      setEmergencyContact2("");
-      setRelationship2("");
-      setEmergencyContactPhone2("");
-      setInsuranceCarried("");
-      setInsurancePlan("");
-      setContactNumber("");
-      setPolicyNumber("");
-      setGroupNumber("");
-      setSsn("");
-      setUnderMedicalCare("");
-      setMedicalCareReason("");
-      setPrimaryCarePhysician("");
-      setHealthConcerns("");
+      // setFirstName("");
+      // setLastName("");
+      // setDateOfBirth("");
+      // setSex("");
+      // setMaritialStatus("");
+      // setEmail("");
+      // setPhoneNumber("");
+      // setHomePhone1("");
+      // setCellPhone1("");
+      // setWorkPhone1("");
+      // setHomePhone2("");
+      // setCellPhone2("");
+      // setWorkPhone2("");
+      // setHomePhone3("");
+      // setCellPhone3("");
+      // setWorkPhone3("");
+      // setMedications("");
+      // setAllergies("");
+      // setAddress("");
+      // setEmergencyContact1("");
+      // setRelationship1("");
+      // setEmergencyContactPhone1("");
+      // setEmergencyContact2("");
+      // setRelationship2("");
+      // setEmergencyContactPhone2("");
+      // setInsuranceCarried("");
+      // setInsurancePlan("");
+      // setContactNumber("");
+      // setPolicyNumber("");
+      // setGroupNumber("");
+      // setSsn("");
+      // setUnderMedicalCare("");
+      // setMedicalCareReason("");
+      // setPrimaryCarePhysician("");
+      // setHealthConcerns("");
     } catch (error) {
       console.error("An error occurred while submitting the form", error);
     }
   };
+  useEffect(()=>{
 
+    const fetchData = async()=>{
+        fetch(`/api/patientIntakeForm/getForm?userId=${userId}`,{method:'GET'})
+        .then((response) => response.json())
+        .then((formData) => {
+          setFirstName(formData['firstName']);
+          setLastName(formData['lastName']);
+          setDateOfBirth(formData['dateOfBirth']);
+          setSex(formData['sex']);
+          setMaritialStatus(formData['maritialStatus']);
+          setEmail(formData['email']);
+          setPhoneNumber(formData['phoneNumber']);
+          setHomePhone1(formData['homePhone1']);
+          setCellPhone1(formData['cellPhone1']);
+          setWorkPhone1(formData['workPhone1']);
+          setHomePhone2(formData['homePhone2']);
+          setCellPhone2(formData['cellPhone2']);
+          setWorkPhone2(formData['workPhone2']);
+          setHomePhone3(formData['homePhone3']);
+          setCellPhone3(formData['cellPhone3']);
+          setWorkPhone3(formData['workPhone3']);
+          setMedications(formData['medications']);
+          setAllergies(formData['allergies']);
+          setAddress(formData['address']);
+          setEmergencyContact1(formData['emergencyContact1']);
+          setRelationship1(formData['relationship1']);
+          setEmergencyContactPhone1(formData['emergencyContactPhone1']);
+          setEmergencyContact2(formData['emergencyContact2']);
+          setRelationship2(formData['relationship2']);
+          setEmergencyContactPhone2(formData['emergencyContactPhone2']);
+          setInsuranceCarried(formData['insuranceCarried']);
+          setInsurancePlan(formData['insurancePlan']);
+          setContactNumber(formData['contactNumber']);
+          setPolicyNumber(formData['policyNumber']);
+          setGroupNumber(formData['groupNumber']);
+          setSsn(formData['ssn']);
+          setUnderMedicalCare(formData['underMedicalCare']);
+          setMedicalCareReason(formData['medicalCareReason']);
+          setPrimaryCarePhysician(formData['primaryCarePhysician']);
+          setHealthConcerns(formData['healthConcerns']);          // Handle the retrieved form data here
+        })
+        .catch((error) => {
+          console.error("Error fetching form data:", error);
+        })};
+      
+  fetchData();  
+},[])
   return (
     <div className="container mx-auto p-4">
       <h1 className="mb-4 text-2xl font-bold" style={{ fontSize: "35px" }}>

@@ -7,6 +7,7 @@ export default async function handler(
   req: {
     method: string;
     body: {
+      userId:string;
       firstName: string;
       lastName: string;
       dateOfBirth: string;
@@ -59,6 +60,7 @@ export default async function handler(
 
   try {
     const {
+      userId,
       firstName,
       lastName,
       dateOfBirth,
@@ -100,8 +102,11 @@ export default async function handler(
     const formattedDateOfBirth = parseISO(dateOfBirth);
 
     // Store the form data in the database
-    await prisma.patientIntakeForm.create({
-      data: {
+    await prisma.patientIntakeForm.upsert({
+      where:
+      {userId},
+      create:{ 
+        userId,
         firstName,
         lastName,
         dateOfBirth: formattedDateOfBirth,
@@ -138,7 +143,45 @@ export default async function handler(
         primaryCarePhysician,
         healthConcerns,
       },
-    });
+      update:{ 
+        firstName,
+        lastName,
+        dateOfBirth: formattedDateOfBirth,
+        sex,
+        maritialStatus,
+        email,
+        phoneNumber,
+        homePhone1,
+        cellPhone1,
+        workPhone1,
+        homePhone2,
+        cellPhone2,
+        workPhone2,
+        homePhone3,
+        cellPhone3,
+        workPhone3,
+        medications,
+        allergies,
+        address,
+        emergencyContact1,
+        relationship1,
+        emergencyContactPhone1,
+        emergencyContact2,
+        relationship2,
+        emergencyContactPhone2,
+        insuranceCarried,
+        insurancePlan,
+        contactNumber,
+        policyNumber,
+        groupNumber,
+        ssn,
+        underMedicalCare,
+        medicalCareReason,
+        primaryCarePhysician,
+        healthConcerns,
+      },
+    }
+  );
 
   } catch (error) {
     console.error("An error occurred while submitting the form", error);
