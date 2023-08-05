@@ -292,6 +292,7 @@ model User {
   accounts      Account[]
   Review        Review[]
   sessions      Session[]
+  patientIntakeForm  PatientIntakeForm?
 }
 
 model VerificationToken {
@@ -360,6 +361,8 @@ model Bookmark {
 
 model PatientIntakeForm {
   id                    Int      @id @default(autoincrement())
+  userId                String   @unique
+  user                  User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   firstName             String
   lastName              String
   dateOfBirth           DateTime
