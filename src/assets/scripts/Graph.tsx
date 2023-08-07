@@ -1,6 +1,6 @@
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-nocheck
-let domLoading: string = null;
+let domLoading;
 let loadedNodes;
 const nodeCheck = [];
 const checkEdged = [];
@@ -37,66 +37,67 @@ function formatMultiSelect(){
 
   setTimeout(() => {
 
-    const loadVisLib = setTimeout(() => {
+    const loadVisLib = setInterval(() => {
+      try{
+        if(document != undefined){
 
-      if(document != undefined){
-
-        const visLib = document.createElement('script');
-        visLib.src = 'https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.js';
-        document.getElementsByTagName('head')[0]?.appendChild(visLib);
-
-        formatMultiSelect();
-
-        domLoading = document.getElementById('domLoading')?.innerHTML;
-        if(document.getElementById('initialLoadingSpinner'))
-          document.getElementById('initialLoadingSpinner').style.display = 'none';
-        
-        if(document.getElementById('headMapPlaceholder'))
-          document.getElementById('headMapPlaceholder').style.display = 'block';
-
-        document.addEventListener('click', (e) => {
-          const clickedComponent = e?.target;
-          const dropDownList = document.getElementsByClassName('optionListContainer')[0];
-
-          if(clickedComponent?.type == 'checkbox' || clickedComponent?.classList[0]?.trim() == 'option'){
-            dropDownList.className = 'optionListContainer displayNone';
-            document.getElementById('graphUpdateLoader').style.display = '';
-            return callUpdateGraph(clickedComponent);
-          }
-
-          if(
-              clickedComponent?.classList[1] == 'searchWrapper' ||
-              clickedComponent?.parentNode.classList[1] == 'searchWrapper'
-            ){
-            dropDownList.className = 'optionListContainer displayBlock';
-          }
+          const visLib = document.createElement('script');
+          visLib.src = 'https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.js';
+          document.getElementsByTagName('head')[0]?.appendChild(visLib);
+  
+          formatMultiSelect();
+  
+          domLoading = document.getElementById('domLoading')?.innerHTML;
+          if(document.getElementById('initialLoadingSpinner'))
+            document.getElementById('initialLoadingSpinner').style.display = 'none';
           
-          if(clickedComponent?.id == 'graphLauncher'){
-            console.log(clickedComponent?.id);
-            if(graphPreviouslyLoaded){
-
-              loadedNodes.nodes.clear();
-              loadedNodes.edges.clear();
-            }else{
-              graphPreviouslyLoaded = true;
+          if(document.getElementById('headMapPlaceholder'))
+            document.getElementById('headMapPlaceholder').style.display = 'block';
+  
+          document.addEventListener('click', (e) => {
+            const clickedComponent = e?.target;
+            const dropDownList = document.getElementsByClassName('optionListContainer')[0];
+  
+            if(clickedComponent?.type == 'checkbox' || clickedComponent?.classList[0]?.trim() == 'option'){
+              dropDownList.className = 'optionListContainer displayNone';
+              document.getElementById('graphUpdateLoader').style.display = '';
+              return callUpdateGraph(clickedComponent);
             }
-            document.getElementById('graphPlaceholder').innerHTML = domLoading;
-            loadGraphToDisease('10q26-deletion-syndrome');
-          }
-
-          /** Remove Disease and relations from Graph when removed from filter  */
-          if(
-            clickedComponent?.classList[0]?.trim() == 'icon_cancel' &&
-            clickedComponent?.classList[1]?.trim() == 'closeIcon'
-            ){
-              // REMOVE DESELECTED DISEASE
-              removeDiseaseFromGraph();
+  
+            if(
+                clickedComponent?.classList[1] == 'searchWrapper' ||
+                clickedComponent?.parentNode.classList[1] == 'searchWrapper'
+              ){
+              dropDownList.className = 'optionListContainer displayBlock';
             }
-
-        });
-        clearInterval(loadVisLib);
-        
-      }
+            
+            if(clickedComponent?.id == 'graphLauncher'){
+              console.log(clickedComponent?.id);
+              if(graphPreviouslyLoaded){
+  
+                loadedNodes.nodes.clear();
+                loadedNodes.edges.clear();
+              }else{
+                graphPreviouslyLoaded = true;
+              }
+              document.getElementById('graphPlaceholder').innerHTML = domLoading;
+              loadGraphToDisease('10q26-deletion-syndrome');
+            }
+  
+            /** Remove Disease and relations from Graph when removed from filter  */
+            if(
+              clickedComponent?.classList[0]?.trim() == 'icon_cancel' &&
+              clickedComponent?.classList[1]?.trim() == 'closeIcon'
+              ){
+                // REMOVE DESELECTED DISEASE
+                removeDiseaseFromGraph();
+              }
+  
+          });
+          clearInterval(loadVisLib);
+          
+        }
+      }catch(err){}
 
     }, 2000);
 
@@ -387,3 +388,5 @@ function formatMultiSelect(){
     } catch (error) {}
 
   }
+
+  export {};

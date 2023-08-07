@@ -200,23 +200,14 @@ const Graphs = () => {
             }}>
               <p>Legend:</p>
               <div style={labelContainer}>
-                <span 
-                  id="totalGenesPlaceholder"
-                  style={{ ...labelStyle, ...diseaseStyle   }}
-                ></span> &nbsp;Disease
+                <div style={{...labelStyle, ...diseaseStyle, float: 'left'}}></div> &nbsp;Disease
               </div>  
               <div style={labelContainer}>
-                <span 
-                  id="totalChromosPlaceholder"
-                  style={{ ...labelStyle, ...genesStyle }}
-                ></span> &nbsp;Chromosome/Genes
+                <span style={{...labelStyle, ...genesStyle, float: 'left'}}></span> &nbsp;Chromosome/Genes
               </div>  
               <div style={labelContainer}>
-                <span 
-                  id="totalChromosPlaceholder"
-                  style={{ ...labelStyle, ...conditionStyle }}
-                ></span> &nbsp;Related Conditions
-              </div>  
+                <span style={{...labelStyle, ...conditionStyle, float: 'left'}}></span> &nbsp;Related Conditions
+              </div>
             </div>
               
             <div id="graphPlaceholder" style={{
