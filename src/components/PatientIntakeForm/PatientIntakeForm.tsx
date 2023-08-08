@@ -1,3 +1,4 @@
+import { parseISO } from "date-fns";
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 
@@ -9,8 +10,8 @@ const PatientIntakeForm: React.FC = () => {
   };
   const { data: session, status } = useSession();
   const name = session?.user?.name || '';
-  const userId = session?.user?.id || '';
-  const [firstName, setFirstName] = useState(name);
+  const userId = session?.user?.id || 'clkruomvr0000mj088c28m3a6';
+  const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [dateOfBirth, setDateOfBirth] = useState("");
   const [sex, setSex] = useState("");
@@ -64,7 +65,7 @@ const PatientIntakeForm: React.FC = () => {
           userId,
           firstName,
           lastName,
-          dateOfBirth,
+          dateOfBirth: dateOfBirth?parseISO(dateOfBirth):null,
           sex,
           maritialStatus,
           email,
@@ -98,9 +99,11 @@ const PatientIntakeForm: React.FC = () => {
          primaryCarePhysician,
           healthConcerns,
         }),
-      });
+      }).then(()=>{
+        setFormSubmitted(true);
+      }
+      );
 
-      setFormSubmitted(true);
 
       // Clear form input fields
       // setFirstName("");
@@ -145,7 +148,7 @@ const PatientIntakeForm: React.FC = () => {
   useEffect(()=>{
 
     const fetchData = async()=>{
-        fetch(`/api/patientIntakeForm/getForm?userId=${userId}`,{method:'GET'})
+        fetch(`/api/patientIntakeForm/getForm/?userId=${userId}`,{method:'GET'})
         .then((response) => response.json())
         .then((formData) => {
           setFirstName(formData['firstName']);

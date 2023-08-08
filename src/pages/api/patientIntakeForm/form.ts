@@ -16,7 +16,7 @@ export default async function handler(
       email: string;
       phoneNumber: string;
       homePhone1?: string | null;
-      cellPhone1: string;
+      cellPhone1: string ;
       workPhone1?: string | null;
       homePhone2?: string | null;
       cellPhone2?: string | null;
@@ -104,16 +104,15 @@ export default async function handler(
     // Store the form data in the database
     await prisma.patientIntakeForm.upsert({
       where:
-      {userId},
+      {userId:userId+''},
       create:{ 
-        userId,
-        firstName,
-        lastName,
+        firstName:firstName??"",
+        lastName:lastName??"",
         dateOfBirth: formattedDateOfBirth,
         sex,
         maritialStatus,
-        email,
-        phoneNumber,
+        email:email??"",
+        phoneNumber:"",
         homePhone1,
         cellPhone1,
         workPhone1,
@@ -128,7 +127,7 @@ export default async function handler(
         address,
         emergencyContact1,
         relationship1,
-        emergencyContactPhone1,
+        emergencyContactPhone1:"",
         emergencyContact2,
         relationship2,
         emergencyContactPhone2,
@@ -142,6 +141,11 @@ export default async function handler(
         medicalCareReason,
         primaryCarePhysician,
         healthConcerns,
+        user:{
+          connect: {
+            id: userId+"", // Replace with the actual user ID
+          },
+        },
       },
       update:{ 
         firstName,
@@ -150,7 +154,7 @@ export default async function handler(
         sex,
         maritialStatus,
         email,
-        phoneNumber,
+        phoneNumber:"",
         homePhone1,
         cellPhone1,
         workPhone1,
@@ -165,7 +169,7 @@ export default async function handler(
         address,
         emergencyContact1,
         relationship1,
-        emergencyContactPhone1,
+        emergencyContactPhone1:"",
         emergencyContact2,
         relationship2,
         emergencyContactPhone2,
@@ -182,6 +186,7 @@ export default async function handler(
       },
     }
   );
+  res.status(200).json({ message: "Success" });
 
   } catch (error) {
     console.error("An error occurred while submitting the form", error);
