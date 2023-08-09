@@ -7,6 +7,7 @@ import Dropdown from "../../components/Dropdown";
 import { trpc } from "../../utils/trpc";
 import LoadingStarHealth from "../../components/Loading";
 import PatientIntakeForm from "../../components/PatientIntakeForm/PatientIntakeForm";
+import FoodJournal from "../../components/FoodJournal/FoodJournal";
 import { PayWall } from "../../components/PayWall/PayWall";
 
 
@@ -42,6 +43,8 @@ const ProfilePage: React.FC = () => {
   const [showForm, setShowForm] = useState<boolean>(false);
   const [showBookmark, setShowBookmark] = useState(false);
   const [showCompare, setShowCompare] = useState(false);
+  const [showFoodJournal, setShowFoodJournal] = useState(false);
+
   const [selectedCategory, setSelectedCategory] = useState('');
   
 
@@ -90,22 +93,31 @@ const ProfilePage: React.FC = () => {
   }
   const handleFormToggle = () => {
     setShowForm(true);
+    setShowFoodJournal(false);
     setShowBookmark(false);
     setShowCompare(false);
   };
 
   const handleBookmarkToggle = () => {
     setShowForm(false);
+    setShowFoodJournal(false);
     setShowBookmark(true);
     setShowCompare(false);
   };
 
   const handleCompareToggle = () => {
     setShowForm(false);
+    setShowFoodJournal(false);
     setShowBookmark(false);
     setShowCompare(true);
   };
 
+  const handleFoodJournalToggle = () => {
+    setShowForm(false);
+    setShowFoodJournal(true);
+    setShowBookmark(false);
+    setShowCompare(false);
+  };
 
   return status === 'loading' ?
     (
@@ -133,7 +145,7 @@ const ProfilePage: React.FC = () => {
         <button
           className={`bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded}`}
           onClick={handleFormToggle}
-          disabled={showForm && !showBookmark && !showCompare}
+          disabled={showForm && !showBookmark && !showCompare && !showFoodJournal}
           style={{
             color: !showForm ? '#885CF6' : 'white',
             backgroundColor: !showForm ? 'white' : '#885CF6',
@@ -145,7 +157,7 @@ const ProfilePage: React.FC = () => {
         <button
           className={`bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded }`}
           onClick={handleBookmarkToggle}
-          disabled={showBookmark && !showForm && !showCompare}
+          disabled={showBookmark && !showForm && !showCompare && !showFoodJournal}
           style={{
             color: !showBookmark ? '#885CF6' : 'white',
             backgroundColor: !showBookmark ? 'white' : '#885CF6',
@@ -157,7 +169,7 @@ const ProfilePage: React.FC = () => {
         <button
           className={`bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded }`}
           onClick={handleCompareToggle}
-          disabled={showCompare && !showForm && !showBookmark}
+          disabled={showCompare && !showForm && !showBookmark && !showFoodJournal}
           style={{
             color: !showCompare ? '#885CF6' : 'white',
             backgroundColor: !showCompare ? 'white' : '#885CF6',
@@ -165,6 +177,18 @@ const ProfilePage: React.FC = () => {
           }}
         >
           Comparison Tool
+        </button>
+        <button
+          className={`bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded }`}
+          onClick={handleFoodJournalToggle}
+          disabled={showFoodJournal&&!showCompare && !showForm && !showBookmark}
+          style={{
+            color: !showFoodJournal ? '#885CF6' : 'white',
+            backgroundColor: !showFoodJournal ? 'white' : '#885CF6',
+            border: !showFoodJournal ? '1px solid #885CF6' : 'node',
+          }}
+        >
+          Food Journal
         </button>
       </div>
       {showForm ? (
@@ -199,7 +223,11 @@ const ProfilePage: React.FC = () => {
         </>
       ) : showCompare ? (
         <Compare />
-      ) : (
+      ) :showFoodJournal ?(
+        <FoodJournal></FoodJournal>
+      ) 
+      
+      : (
         <h2>No content to display</h2>
       )}
     </div>

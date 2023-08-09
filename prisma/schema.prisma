@@ -293,6 +293,7 @@ model User {
   Review        Review[]
   sessions      Session[]
   patientIntakeForm  PatientIntakeForm?
+  userFoodJournal UserFoodJournal[]
 }
 
 model VerificationToken {
@@ -398,4 +399,15 @@ model PatientIntakeForm {
   medicalCareReason     String?
   primaryCarePhysician  String?
   healthConcerns        String?
+}
+
+model UserFoodJournal {
+  id                    Int      @id @default(autoincrement())
+  userId                String   
+  user                  User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  foodItemID            String?
+  foodItemAPI           String?
+  dateTimeOfMeal        DateTime
+  nutrientResponse      Json?
+  numberOfServings      Float? 
 }
