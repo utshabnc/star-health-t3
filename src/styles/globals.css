@@ -136,3 +136,17 @@ input[type="range"]::-webkit-slider-thumb {
   margin-top: 5px;
   word-break: break-all;
 }
+.foodModal{
+  width: 100vh;
+  position: absolute ;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  border: 2px solid #000;
+  box-shadow: 24;
+  padding : 4;
+}
+.foodNutrientsSection{
+  height: 400px;
+  overflow-y: scroll;}
