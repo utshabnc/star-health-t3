@@ -1,14 +1,24 @@
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
-
+import {GrClose} from 'react-icons/gr'
 import { toTitleCase } from "../../utils";
 import FoodAutocompleteInput from "../FoodAutoCompleteInput";
 import Modal from '@mui/material/Modal';
 import FoodDetailsTable from "../FoodDetailsTable";
 import LoadingStarHealth from "../Loading";
+import { IconContext } from "react-icons";
+import { AiOutlineClose, AiOutlineMinus, AiOutlinePlus } from "react-icons/ai";
+import { BsChevronCompactRight } from "react-icons/bs";
+import {MdWaterDrop} from 'react-icons/md'
+import { update } from "lodash";
 
 const FoodJournal: React.FC = () => {
-
+  const getFormattedCurrentTime = () => {
+    const now = new Date();
+    const hours = now.getHours().toString().padStart(2, '0');
+    const minutes = now.getMinutes().toString().padStart(2, '0');
+    return `${hours}:${minutes}`;
+  };
     const { data: session, status } = useSession();
     const userId = session?.user?.id || 'clkruomvr0000mj088c28m3a6';
     const [foodList,setFoodList]=useState<any[]>([])
@@ -21,13 +31,31 @@ const FoodJournal: React.FC = () => {
     const [numOfServings,setNumOfServings]= useState<any>(1)
     const [showAll, setShowAll] = useState(false);
     const [mealDate,setMealDate]= useState<any>('')
-    const [mealTime,setMealTime]= useState<any>('')
-    const [foodJournalDate,setFoodJournalDate]=useState<any>('')
+    const [mealTime,setMealTime]= useState<any>(getFormattedCurrentTime())
+    const [foodJournalDate,setFoodJournalDate]=useState<any>(new Date().toISOString().split('T')[0])
     const [foodJournalData,setFoodJournalData]=useState<any[]>([])
     const [foodJournalSummary,setFoodJournalSummary]=useState<any>({})
     const [openOverallNutrientsModal,setOpenOverallNutrientsModal]=useState<boolean>(false)
     const [addStatus,setAddStatus] = useState<number>(1)
     const [entryError,setEntryError] = useState<boolean>(false)
+    const mealCategoryOptions = ['Breakfast','Lunch','Dinner','Snack']
+    const [mealCategory,setMealCategory]=useState(0)
+    const [selectedID,setSelectedID]=useState()
+    const [waterIntake,setWaterIntake]=useState(0)
+    const [waterIntakeBtn,setWaterIntakeBtn] =useState<boolean>(false)
+    function waterIntakeComp()
+    {
+      const icons = [];
+
+  for (let i = 0; i < waterIntake; i++) {
+    icons.push(<MdWaterDrop key={i} size={40} color="#21b6f5" />);
+  }
+
+  for (let i = 0; i < 8-waterIntake; i++) {
+    icons.push(<MdWaterDrop key={i} size={40} color="grey" />);
+  }
+  return <div className="flex flex-row">{icons}</div>;
+    }
     function overallFoodNutrients() {
       let count=0;
       return (
@@ -41,7 +69,7 @@ const FoodJournal: React.FC = () => {
               {nutrient[1].name}
             </td>
             <td className="px-4 py-1 whitespace-nowrap text-md text-gray-800">
-              {(nutrient[1].amount+0).toFixed(2) + " " + nutrient[1].unit}
+              {(nutrient[1].amount+0).toFixed(0) + " " + nutrient[1].unit}
             </td>
           </tr>
         );
@@ -50,7 +78,21 @@ const FoodJournal: React.FC = () => {
     </div>
     )
     }
-
+    function editMeal(row:any){
+      setOpenFoodModal(true)
+      setSelectedID(row.id)
+      setCurrentFood({id:row.foodID})  
+      setSearchStr(row.title)
+      setNumOfServings(row.numOfServings)
+      const d = row.dateTimeofMeal.split('T')
+      setMealDate(d[0])
+      console.log(d[1])
+      setMealTime(d[1].slice(0,-8))
+      setMealCategory(mealCategoryOptions.indexOf(row.mealCategory))
+    }
+    useEffect(()=>{
+      console.log('Getting Data')
+    },[selectedID])
     function foodNutrients(foodData: any) {
         try {
           let foodNutrients = foodData["foodNutrients"];
@@ -78,7 +120,7 @@ const FoodJournal: React.FC = () => {
                   {nutrient.name}
                 </td>
                 <td className="px-4 py-1 whitespace-nowrap text-md text-gray-800">
-                  {(nutrient.number*(portionOptions[selectedPortion]['gram']/100)*numOfServings).toFixed(2) + " " + nutrient.unitName}
+                  {(nutrient.number*(portionOptions[selectedPortion]['gram']/100)*numOfServings).toFixed(0) + " " + nutrient.unitName}
                 </td>
               </tr>
             );
@@ -99,8 +141,35 @@ const FoodJournal: React.FC = () => {
             console.log("error", error);
           }
     }
+      const submitWaterIntake=()=>{
+        const body = {
+          userId,
+          date:foodJournalDate,
+          waterIntake:waterIntake
+        }
+        setWaterIntakeBtn(true)
+        try{
+          
+          setAddStatus(2)
+          fetch("/api/foodJournal/postWaterIntake", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(body)}).then((message:any)=>{
+            console.log(message)
+            setWaterIntakeBtn(false)
 
-
+            }
+            )
+          }
+          catch (error) {
+            setEntryError(true)
+            console.error("An error occurred while submitting the form", error);
+          }
+          
+      }
+    
     const returnFoodNames =(list:any[])=>{
     const output:any = []
         if ( list === undefined)
@@ -122,6 +191,11 @@ const FoodJournal: React.FC = () => {
             response.json().then((data) => {
               setFoodJournalData(data['foodlist'])
               setFoodJournalSummary(data['nutrientSummary'])
+              fetch(`/api/foodJournal/getWaterIntake/?userId=${userId}&date=${foodJournalDate}`).then((response)=>{
+                response.json().then((data2) => {
+                setWaterIntake(data2['waterIntakeData'][0]?data2['waterIntakeData'][0]['numberOfGlasses']:0)
+                })
+              });
             });
            })
           }
@@ -181,6 +255,7 @@ const FoodJournal: React.FC = () => {
         })
         setSelectedPortion(0)
         setPortionOptions(output)
+
         });
     })}, 250);
     return () => clearTimeout(delayDebounceFn);
@@ -198,8 +273,9 @@ const submitFood = async (e: React.FormEvent) =>{
     }
     setEntryError(false)
     const dateTimeOfMeal = `${mealDate}T${mealTime}:00`;
-
+    console.log(dateTimeOfMeal)
     const body= {
+      id:selectedID,
       userId : userId,
       foodItemID: currentFood.id+'',
       foodItemAPI:'FDC API',
@@ -209,7 +285,8 @@ const submitFood = async (e: React.FormEvent) =>{
         selectedPortion:portionOptions[selectedPortion]['gram'],
         nutrientFacts:currentFoodDetails['foodNutrients']
       } ,
-      numberOfServings: parseFloat(numOfServings)
+      numberOfServings: parseFloat(numOfServings),
+      mealCategory:mealCategoryOptions[mealCategory]
     }
     try{
     setAddStatus(2)
@@ -235,15 +312,22 @@ const submitFood = async (e: React.FormEvent) =>{
 
         <div className="mb-2">
                 <div className="font-semibold mb-1">Pick date to retrieve the Food Journal for that day</div>
-                <input onChange={(e)=>{setFoodJournalDate(e.target.value)}} className="rounded-lg border border-violet-900 bg-violet-100 p-1 text-slate-900 placeholder:text-violet-800 hover:bg-violet-300 hover:text-violet-900" type="date"></input>
+                <input value={foodJournalDate} onChange={(e)=>{setFoodJournalDate(e.target.value)}} className="rounded-lg border border-violet-900 bg-violet-100 p-1 text-slate-900 placeholder:text-violet-800 hover:bg-violet-300 hover:text-violet-900" type="date"></input>
         </div>
         <Modal
         open={openFoodModal}
-        onClose={()=>{if(addStatus!=2){setOpenFoodModal(false);setAddStatus(1)}}}>
+        onClose={()=>{if(addStatus!=2){setOpenFoodModal(false);setAddStatus(1);setNumOfServings(1);setCurrentFood('');setSearchStr('');setMealCategory(0)}}}>
             <div>
 
-<div className="foodModal rounded-lg">
-        <div className="bg-violet-700 px-4 py-2 text-white w-100 text-center font-bold text-xl">ADD MEAL</div>
+<div className="foodModal rounded-lg overflow-hidden">
+        <div className="bg-violet-700  px-4 py-2 text-white w-100 text-center font-bold text-xl">
+          <div>
+          ADD MEAL
+          </div>
+          <div onClick={(e)=>{if(addStatus!=2){setOpenFoodModal(false);setAddStatus(1);setNumOfServings(1);setCurrentFood('');setSearchStr('');setMealCategory(0)}}} className='closeFoodModal bg-violet-700 mt-3 mr-2 justify-end'>
+                    <AiOutlineClose size={25} color="white"  ></AiOutlineClose>
+          </div>
+                            </div>
         {addStatus==2&&<LoadingStarHealth></LoadingStarHealth>}
         {addStatus!=2&&<div className="flex justify-between p-3">
             <div className="w-[50%] mr-2">
@@ -256,7 +340,7 @@ const submitFood = async (e: React.FormEvent) =>{
             {currentFood&&
             <div className="mb-1">
                 <div className="font-semibold mb-1">Serving Size:</div>
-                <select className="rounded-lg border border-violet-900 bg-violet-100 p-1 text-slate-900 placeholder:text-violet-800 hover:bg-violet-300 hover:text-violet-900" onChange={(e)=>{setSelectedPortion(e.target.selectedIndex)}}>
+                <select  className="rounded-lg border border-violet-900 bg-violet-100 p-1 text-slate-900 placeholder:text-violet-800 hover:bg-violet-300 hover:text-violet-900" onChange={(e)=>{setSelectedPortion(e.target.selectedIndex)}}>
           {portionOptions.map((option) => (
             <option key={option.name} value={option.gram}>
               {option.name}
@@ -268,6 +352,16 @@ const submitFood = async (e: React.FormEvent) =>{
             <div className="mb-1">
                 <div className="font-semibold mb-1">Number Of Servings:</div>
                 <input value={numOfServings} onChange={(e)=>{setNumOfServings(e.target.value)}} className="rounded-lg border border-violet-900 bg-violet-100 p-1 text-slate-900 placeholder:text-violet-800 hover:bg-violet-300 hover:text-violet-900" type="number" step=".1" min="0.1"></input>
+            </div>
+            <div className="mb-1">
+                <div className="font-semibold mb-1">Meal Category:</div>
+                <select value={mealCategory} className="rounded-lg border border-violet-900 bg-violet-100 p-1 text-slate-900 placeholder:text-violet-800 hover:bg-violet-300 hover:text-violet-900" onChange={(e)=>{setMealCategory(e.target.selectedIndex)}}>
+          {mealCategoryOptions.map((option,index) => (
+            <option key={option} value={index}>
+              {option}
+            </option>
+          ))}
+        </select>
             </div>
             <div className="mb-1">
                 <div className="font-semibold mb-1">Meal Time:</div>
@@ -300,15 +394,15 @@ const submitFood = async (e: React.FormEvent) =>{
         </div>
         </div>
         </Modal>
-        {foodJournalSummary&&foodJournalDate&& <div className="Summary mt-3 mb-3">
-        
-       <div className="text-center text-violet-900 text-3xl font-semibold mt-3 mb-3">
-          Overall Nutrients Summary
-        </div>
-        <div className="flex w-[100%] justify-evenly mt-3 mb-3">
-          <div className="flex flex-col items-center">
+        {foodJournalSummary&&foodJournalDate&& 
+        <div className="Summary mt-3 mb-3">
+          <div className="text-center text-violet-900 text-3xl font-semibold mt-3 mb-3">
+            Overall Nutrients Summary
+          </div>
+        <div className="flex w-[100%] justify-between  mt-3 mb-3">
+          <div className="flex flex-col items-center  mr-1 ml-1 ">
             <div className="text-2xl font-semibold text-violet-700">
-              {foodJournalSummary['1008']?(foodJournalSummary['1008']['amount'].toFixed(2)+ " "+foodJournalSummary['1008']['unit']):'0 kcal'}
+              {foodJournalSummary['1008']?(foodJournalSummary['1008']['amount'].toFixed(0)+ " "+foodJournalSummary['1008']['unit']):'0 kcal'}
             </div>
             <div className="text-md font-bold text-violet-500">
               {
@@ -318,7 +412,7 @@ const submitFood = async (e: React.FormEvent) =>{
           </div>
           <div className="flex flex-col items-center">
             <div className="text-2xl font-semibold text-violet-700">
-              {foodJournalSummary['1003']?(foodJournalSummary['1003']['amount'].toFixed(2)+ " "+foodJournalSummary['1003']['unit']):'0 g'}
+              {foodJournalSummary['1003']?(foodJournalSummary['1003']['amount'].toFixed(0)+ " "+foodJournalSummary['1003']['unit']):'0 g'}
             </div>
             <div className="text-md font-bold text-violet-500">
               {
@@ -329,7 +423,7 @@ const submitFood = async (e: React.FormEvent) =>{
           </div>
           <div className="flex flex-col items-center">
             <div className="text-2xl font-semibold text-violet-700">
-              {foodJournalSummary['1004']?(foodJournalSummary['1004']['amount'].toFixed(2)+ " "+foodJournalSummary['1004']['unit']):'0 g'}
+              {foodJournalSummary['1004']?(foodJournalSummary['1004']['amount'].toFixed(0)+ " "+foodJournalSummary['1004']['unit']):'0 g'}
             </div>
             <div className="text-md font-bold text-violet-500">
               {
@@ -340,7 +434,7 @@ const submitFood = async (e: React.FormEvent) =>{
           </div>
           <div className="flex flex-col items-center">
             <div className="text-2xl font-semibold text-violet-700">
-              {foodJournalSummary['1005']?(foodJournalSummary['1005']['amount'].toFixed(2)+ " "+foodJournalSummary['1005']['unit']):'0 g'}
+              {foodJournalSummary['1005']?(foodJournalSummary['1005']['amount'].toFixed(0)+ " "+foodJournalSummary['1005']['unit']):'0 g'}
             </div>
             <div className="text-md font-bold text-violet-500">
               {
@@ -351,7 +445,7 @@ const submitFood = async (e: React.FormEvent) =>{
           </div>
           <div className="flex flex-col items-center">
             <div className="text-2xl font-semibold text-violet-700">
-              {foodJournalSummary['1057']?(foodJournalSummary['1057']['amount'].toFixed(2)+ " "+foodJournalSummary['1057']['unit']):'0 mg'}
+              {foodJournalSummary['1057']?(foodJournalSummary['1057']['amount'].toFixed(0)+ " "+foodJournalSummary['1057']['unit']):'0 mg'}
             </div>
             <div className="text-md font-bold text-violet-500">
               {
@@ -360,17 +454,86 @@ const submitFood = async (e: React.FormEvent) =>{
               }
             </div>
           </div>
+          <div className="flex flex-col items-center">
+            <div className="text-2xl font-semibold text-violet-700">
+              {foodJournalSummary['1253']?(foodJournalSummary['1253']['amount'].toFixed(0)+ " "+foodJournalSummary['1253']['unit']):'0 mg'}
+            </div>
+            <div className="text-md font-bold text-violet-500">
+              {
+            foodJournalSummary['1253']?foodJournalSummary['1253']['name']:'Colestrol'
+
+              }
+            </div>
+          </div>
+          <div className="flex flex-col items-center">
+            <div className="text-2xl font-semibold text-violet-700">
+              {foodJournalSummary['2000']?(foodJournalSummary['2000']['amount'].toFixed(0)+ " "+foodJournalSummary['2000']['unit']):'0 g'}
+            </div>
+            <div className="text-md font-bold text-violet-500">
+              {
+            foodJournalSummary['2000']?foodJournalSummary['2000']['name']:'Sugar'
+
+              }
+            </div>
+          
+          </div>
+          <div>
+          <button onClick={(e)=>setOpenOverallNutrientsModal(true)} className="w-[100%] h-[100%] ease focus:shadow-outline select-none rounded-md border border-violet-700 bg-violet-700 px-4 py-2 text-white transition duration-500 hover:bg-violet-900 focus:outline-none">
+              <div className="flex h-[100%] justify-center items-center">
+              <div>
+              Expand Details
+              </div>
+              </div>
+        </button>
+          </div>
         </div>
         <div className="flex flex-row">
-        <button onClick={(e)=>setOpenOverallNutrientsModal(true)} className="w-[100%] ease mr-1 ml-2  focus:shadow-outline select-none rounded-md border border-violet-700 bg-violet-700 px-4 py-2 text-white transition duration-500 hover:bg-violet-900 focus:outline-none">
-                    See Overall Nutrients Intake of the Day 
-        </button>
         <button 
-        className="w-[100%] ease focus:shadow-outline select-none rounded-md border mr-2 ml-1 border-violet-700 bg-violet-700 px-4 py-2 text-white transition duration-500 hover:bg-violet-900 focus:outline-none"
-        onClick={(e)=>{setOpenFoodModal(true); setMealDate(foodJournalDate)}}>
+        className="w-[100%] ease focus:shadow-outline select-none rounded-md border border-violet-700 bg-violet-700 px-4 py-2 text-white transition duration-500 hover:bg-violet-900 focus:outline-none"
+        onClick={(e)=>{setOpenFoodModal(true); setSelectedID(undefined); setMealDate(foodJournalDate)}}>
         Add Meal
         </button>
         </div>
+        <div className="rounded-lg bg-white shadow-lg p-3 mt-3">
+          <div className="text-center text-violet-900 text-3xl font-semibold mt-3 mb-3">
+              Daily Water Intake
+          </div>
+            <div className="flex flex-row justify-between items-center mb-3" >
+              <div className="flex flex-col items-center">
+                <div className="flex flex-row items-center mb-1">
+                  <AiOutlineMinus className="text-2xl font-semibold text-violet-700" size={30} onClick={()=>{setWaterIntake(waterIntake==0?0:waterIntake-1)}}></AiOutlineMinus>
+                  <div className="text-2xl font-semibold text-violet-700 mx-5">{waterIntake}</div>
+                  <AiOutlinePlus className="text-2xl font-semibold text-violet-700" size={30} onClick={()=>{setWaterIntake(waterIntake+1)}}></AiOutlinePlus>
+                </div>
+                <div className="text-xl font-semibold text-violet-700 mb-1">Cups</div>
+                <div className="text-lg font-semibold text-violet-500">{8*waterIntake} fl oz</div>
+              </div>
+            <div className="flex flex-col items-center">
+
+            <div className="flex flex-row">
+            {Array(((waterIntake==0)?0:(waterIntake>=8)?8:waterIntake)).fill(0).map((key)=>{
+              return(
+              <MdWaterDrop key={key} size={40} color="#21b6f5" />
+              )
+            })}
+            {Array(((8-waterIntake<0)?0:8-waterIntake)).fill(0).map((key)=>{
+              return(
+              <MdWaterDrop key={key} size={40} color="grey" />
+              )
+            })}
+            </div>
+            <div className="text-xl font-semibold text-violet-700 mt-3">
+              Recommended Cups of Water
+            </div>
+            </div>
+            </div>
+            <button 
+        className="w-[100%] ease focus:shadow-outline select-none rounded-md border border-violet-700 bg-violet-700 px-4 py-2 text-white transition duration-500 hover:bg-violet-900 focus:outline-none"
+        disabled={waterIntakeBtn}
+        onClick={(e)=>{submitWaterIntake()}}>
+        Save Water Intake
+        </button>
+          </div>
         </div>}
         <Modal
         open={openOverallNutrientsModal}
@@ -396,16 +559,25 @@ const submitFood = async (e: React.FormEvent) =>{
         {
           id: product['id']??"",
           title: product['nutrientResponse']['foodName'] ?? "",
+          dateTimeofMeal:product['dateTimeOfMeal'],
           date: new Intl.DateTimeFormat("en-US", {
           year: "numeric",
           month: "long",
           day: "numeric",}).format(new Date(product['dateTimeOfMeal'])),
-          time: product['dateTimeOfMeal'].split("T")[1].split(":").slice(0, 2).join(":") ?? "",
+          time: new Intl.DateTimeFormat("en-US", {
+            hour: 'numeric',
+            minute: 'numeric',
+            hour12: true,
+            timeZoneName: 'short'}).format(new Date(product['dateTimeOfMeal'])),
           numOfServings: product['numberOfServings'] ?? "",
           nutrientFact: product['nutrientResponse']['nutrientFacts'] ?? "",
           portionSize: product['nutrientResponse']['selectedPortion'] ?? "",
           link:'/food/?id='+product['foodItemID'],
+          foodID:product['foodItemID'],
+          mealCategory:product['mealCategory'],
+          editFunction:editMeal,
           }))??[]]}/>
+
         </>
     )
 }

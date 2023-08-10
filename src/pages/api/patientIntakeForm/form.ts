@@ -1,5 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 import { parseISO } from "date-fns";
+import { date } from "zod";
 
 const prisma = new PrismaClient();
 
@@ -8,15 +9,15 @@ export default async function handler(
     method: string;
     body: {
       userId:string;
-      firstName: string;
-      lastName: string;
-      dateOfBirth: string;
-      sex: string;
-      maritialStatus: string;
-      email: string;
-      phoneNumber: string;
+      firstName: string| null;
+      lastName: string| null;
+      dateOfBirth: string| null;
+      sex: string| null;
+      maritialStatus: string| null;
+      email: string| null;
+      phoneNumber: string| null;
       homePhone1?: string | null;
-      cellPhone1: string ;
+      cellPhone1: string | null;
       workPhone1?: string | null;
       homePhone2?: string | null;
       cellPhone2?: string | null;
@@ -26,10 +27,10 @@ export default async function handler(
       workPhone3?: string | null;
       medications?: string | null;
       allergies?: string | null;
-      address: string;
-      emergencyContact1: string;
-      relationship1: string;
-      emergencyContactPhone1: string;
+      address: string| null;
+      emergencyContact1: string| null;
+      relationship1: string| null;
+      emergencyContactPhone1: string| null;
       emergencyContact2?: string | null;
       relationship2?: string | null;
       emergencyContactPhone2?: string | null;
@@ -99,7 +100,8 @@ export default async function handler(
     } = req.body;
 
     // Convert dateOfBirth to DateTime format
-    const formattedDateOfBirth = parseISO(dateOfBirth);
+    console.log(dateOfBirth)
+    const formattedDateOfBirth = (!dateOfBirth||dateOfBirth==null)?'':(dateOfBirth.length>0?parseISO(dateOfBirth):'');
 
     // Store the form data in the database
     await prisma.patientIntakeForm.upsert({
@@ -109,12 +111,12 @@ export default async function handler(
         firstName:firstName??"",
         lastName:lastName??"",
         dateOfBirth: formattedDateOfBirth,
-        sex,
-        maritialStatus,
+        sex:sex??"",
+        maritialStatus:maritialStatus??"",
         email:email??"",
         phoneNumber:"",
         homePhone1,
-        cellPhone1,
+        cellPhone1:cellPhone1??"",
         workPhone1,
         homePhone2,
         cellPhone2,
@@ -124,9 +126,9 @@ export default async function handler(
         workPhone3,
         medications,
         allergies,
-        address,
-        emergencyContact1,
-        relationship1,
+        address:address??"",
+        emergencyContact1:emergencyContact1??"",
+        relationship1:relationship1??"",
         emergencyContactPhone1:"",
         emergencyContact2,
         relationship2,
@@ -148,15 +150,15 @@ export default async function handler(
         },
       },
       update:{ 
-        firstName,
-        lastName,
+        firstName:firstName??"",
+        lastName:lastName??"",
         dateOfBirth: formattedDateOfBirth,
-        sex,
-        maritialStatus,
-        email,
+        sex:sex??"",
+        maritialStatus:maritialStatus??"",
+        email:email??"",
         phoneNumber:"",
         homePhone1,
-        cellPhone1,
+        cellPhone1:cellPhone1??"",
         workPhone1,
         homePhone2,
         cellPhone2,
@@ -166,9 +168,9 @@ export default async function handler(
         workPhone3,
         medications,
         allergies,
-        address,
-        emergencyContact1,
-        relationship1,
+        address:address??"",
+        emergencyContact1:emergencyContact1??"",
+        relationship1:relationship1??"",
         emergencyContactPhone1:"",
         emergencyContact2,
         relationship2,
