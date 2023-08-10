@@ -3,6 +3,7 @@ import React from "react";
 import { RiCheckboxCircleFill } from "react-icons/ri";
 import { BsCheck2, BsLightningFill } from "react-icons/bs";
 import Logo from "../../assets/Logo.png";
+import { useSession, signIn, signOut } from "next-auth/react";
 
 const pricing = () => {
   return (
@@ -10,14 +11,12 @@ const pricing = () => {
       <div className="header-container mx-auto my-0 flex w-[100%] max-w-[1140px] justify-center pb-[50px]">
         <div className="block-column min-w-0 break-words text-center">
           <div className="clear-both h-[60px] leading-tight"></div>
-          <h2 className="text-[36px] font-bold">
-            Choose a StarHealth Solution For You
-          </h2>
+          <h2 className="text-[36px] font-bold">Pricing Options</h2>
         </div>
       </div>
 
       <div className="container mx-auto my-0 flex w-[100%] max-w-[1140px] justify-center pb-[50px]">
-        <div className="relative mx-4 w-[300px] border border-[#d0d0d0] p-[25px] text-center leading-tight md:mb-8 ">
+        {/* <div className="relative mx-4 w-[300px] border border-[#d0d0d0] p-[25px] text-center leading-tight md:mb-8 ">
           <h2 className="py-[10px] text-[36px] font-bold">Basic</h2>
           <h5 className="mb-2 py-4 text-[22px] font-bold ">
             Try StarHealth for free
@@ -50,49 +49,252 @@ const pricing = () => {
               </a>
             </div>
           </div>
-        </div>
-        <div className="relative  mx-4 w-[300px] border border-[#d0d0d0] p-[25px] text-center leading-tight md:mb-8 ">
-          <h2 className="py-[10px] text-[36px] font-bold">Pro</h2>
-          <h5 className="mb-2 py-4 text-[22px] font-bold ">$19</h5>
-          <p className="mb-[20px] font-medium ">
-            / user / month, billed annually
-          </p>
-          <p className="mb-[20px] font-medium ">
+        </div> */}
+        <div className="relative mx-4 flex  w-[300px]  flex-col border border-[#d0d0d0] bg-purple-200 p-[25px] text-center leading-tight md:mb-8">
+          <h2 className="py-[10px] text-[36px] font-bold ">Basic </h2>
+          <h5 className="mb-2 py-4 text-[22px] font-bold ">$10 / month</h5>
+          <p className="mb-[20px] font-medium ">Limited Features</p>
+          {/* <p className="mb-[20px] font-medium ">
             Unlock StarHealth&apos;s full suite of tools fueled by proprietary
             data
           </p>
           <p className="mb-[65px] font-medium italic">
             Best for Individuals and Small Teams
-          </p>
-          <div className="flex flex-wrap items-center justify-center ">
-            <div className="button m-0 inline-block w-[205px] rounded-lg bg-[#8D47FC] p-[18px] text-white">
-              <a className="font-medium">
+          </p> */}
+          <div className="mt-auto flex flex-wrap items-center justify-center">
+            <div
+              className="button m-0 inline-block  w-[205px] cursor-pointer rounded-lg bg-[#8D47FC] p-[18px] text-white"
+              onClick={() => signIn("google")}
+            >
+              <a className=" font-medium">
                 <BsLightningFill className="absolute left-[54px] mt-[3px]" />{" "}
-                TRY PRO FREE
+                Sign-Up
               </a>
             </div>
           </div>
         </div>
-        <div className="relative  mx-4 w-[300px] border border-[#d0d0d0] p-[25px] text-center leading-tight md:mb-8 ">
-          <h2 className="py-[10px] text-[36px] font-bold">Enterprise</h2>
-          <h5 className="mb-2 py-4 text-[22px] font-bold ">Contact Us</h5>
-          <p className="mb-[20px] font-medium ">Custom billing</p>
+        <div className="relative mx-4 flex  w-[300px]  flex-col border border-[#d0d0d0] bg-purple-400 p-[25px] text-center leading-tight md:mb-8">
+          <h2 className="py-[10px] text-[36px] font-bold ">Standard </h2>
+          <h5 className="mb-2 py-4 text-[22px] font-bold ">$100 / month</h5>
+          {/* <p className="mb-[20px] font-medium ">
+            / user / month, billed annually
+          </p> */}
+          {/* <p className="mb-[20px] font-medium ">
+            Unlock StarHealth&apos;s full suite of tools fueled by proprietary
+            data
+          </p>
+          <p className="mb-[65px] font-medium italic">
+            Best for Individuals and Small Teams
+          </p> */}
+          <div className="mt-auto flex flex-wrap items-center justify-center">
+            <div
+              onClick={() => signIn("google")}
+              className="button m-0 inline-block  w-[205px] cursor-pointer rounded-lg bg-[#8D47FC] p-[18px] text-white"
+            >
+              <a className=" font-medium">
+                <BsLightningFill className="absolute left-[54px] mt-[3px]" />{" "}
+                Register
+              </a>
+            </div>
+          </div>
+        </div>
+        <div className="relative mx-4  flex w-[300px] flex-col border   border-[#d0d0d0] bg-purple-600 p-[25px] text-center leading-tight md:mb-8 ">
+          <h2 className="py-[10px] text-[36px] font-bold text-white">
+            Enterprise
+          </h2>
+          <h5 className="mb-2 py-4 text-[22px] font-bold text-white">
+            Request a Quote
+          </h5>
+          {/* <p className="mb-[20px] font-medium ">Custom billing</p>
           <p className="mb-[20px] font-medium ">
             A custom solution that scales as teams do
           </p>
-          <p className="mb-[125px] font-medium italic">Best for Large Teams</p>
-          <div className="flex flex-wrap items-center justify-center ">
-            <div className="button m-0 inline-block w-[205px] rounded-lg bg-[#8D47FC] p-[18px] text-white">
-              <a className="font-medium">
+          <p className="mb-[125px] font-medium italic">Best for Large Teams</p> */}
+          <div className="mt-auto flex flex-wrap items-center justify-center">
+            <div
+              onClick={() => signIn("google")}
+              className="button m-0 inline-block  w-[205px] cursor-pointer rounded-lg bg-purple-800 p-[18px] text-white"
+            >
+              <a className=" font-medium">
                 <BsLightningFill className="absolute left-[57px] mt-[3px]" />
-                CONTACT US
+                Contact Us
               </a>
             </div>
           </div>
         </div>
       </div>
+      <div
+        id="Features"
+        className="section l4 wf-section [rgba(255, 255, 255, 0.65)] bg-[#8345FE] px-[80px] pb-[150px] pt-[40px] font-custom text-customgrey"
+      >
+        <div className="container mx-auto flex max-w-[1040px] flex-col items-center justify-center">
+          <div className="title-wrapper mb-[40px] flex max-w-[900px] flex-col text-center text-white">
+            <h2 className="h2-title my-0 flex justify-center whitespace-nowrap bg-transparent pl-0 pt-[40px] text-[4vw] font-[700] leading-[1.1] tracking-[-0.0375em]">
+              Comprehensive Healthcare Tool
+            </h2>
+          </div>
+          <div className="features-grid flex w-[100%]   items-stretch gap-x-[40px] gap-y-[40px]">
+            <div className="node features-card  col-start-1 row-start-1 row-end-3 flex flex-1 flex-col items-center rounded-[6px] border border-2 border-solid border-bordercolor p-[35px]">
+              <div className="features-row mb-[25px] flex flex-col items-start text-blue-500 ">
+                {/* <FaPencilRuler size={27} className="mb-[25px]" /> */}
+                <div className="fontfeatures-card-title text-center text-[18px] font-[700] leading-[1.25] text-white">
+                  StarHealth Data Directory
+                </div>
+              </div>
+              <div className="check-row mb-[20px] flex flex-row items-center text-white">
+                {/* <BsCheck2 size={30} color="#7CFC00" className="mr-2 " /> */}
+                <div className="check-text">450,000+ Clinical Trials</div>
+              </div>
+              <div className="check-row mb-[20px] flex flex-row items-center text-white">
+                {/* <BsCheck2 size={30} color="#7CFC00" className="mr-2 " /> */}
+                <div className="check-text">3,000+ Companies</div>
+              </div>
+              {/* <div className="check-row mb-[20px] flex flex-row items-center text-white">
+                <BsCheck2 size={30} color="#7CFC00" className="mr-2 " />
+                <div className="check-text">3,000+ Companies</div>
+              </div> */}
+              <div className="check-row mb-[20px] flex flex-row items-center text-white">
+                {/* <BsCheck2 size={30} color="#7CFC00" className="mr-2 " /> */}
+                <div className="check-text">1,000,000+ Doctors</div>
+              </div>
+              <div className="check-row mb-[20px] flex flex-row items-center text-white">
+                {/* <BsCheck2 size={30} color="#7CFC00" className="mr-2 " /> */}
+                <div className="check-text">1,500+ Drugs</div>
+              </div>
+              <div className="check-row mb-[20px] flex flex-row items-center text-white">
+                {/* <BsCheck2 size={30} color="#7CFC00" className="mr-2 " /> */}
+                <div className="check-text">5,000+ Foods</div>
+              </div>
+              <div className="check-row mb-[20px] flex flex-row items-center text-white">
+                {/* <BsCheck2 size={30} color="#7CFC00" className="mr-2 " /> */}
+                <div className="check-text">26 Genetics & Chromosomes</div>
+              </div>
+              <div className="check-row mb-[20px] flex flex-row items-center text-white">
+                {/* <BsCheck2 size={30} color="#7CFC00" className="mr-2 " /> */}
+                <div className="check-text">2,000+ Hospitals</div>
+              </div>
+              <div className="check-row mb-[20px] flex flex-row items-center text-white">
+                {/* <BsCheck2 size={30} color="#7CFC00" className="mr-2 " /> */}
+                <div className="check-text">700+ Insurance Plans</div>
+              </div>
+              <div className="check-row mb-[20px] flex flex-row items-center text-white">
+                {/* <BsCheck2 size={30} color="#7CFC00" className="mr-2 " /> */}
+                <div className="check-text">200+ Medical Devices</div>
+              </div>
+              <div className="check-row mb-[20px] flex flex-row items-center text-center text-white">
+                {/* <BsCheck2 size={30} color="#7CFC00" className="mr-2 " /> */}
+                <div className="check-text">
+                  10,000+ Opioid Treatment Centers
+                </div>
+              </div>
+              <div className="check-row mb-[20px] flex flex-row items-center text-white">
+                {/* <BsCheck2 size={30} color="#7CFC00" className="mr-2 " /> */}
+                <div className="check-text">$100,000,000+ Transactions</div>
+              </div>
+              <div className="check-row mb-[20px] flex flex-row items-center text-white">
+                {/* <BsCheck2 size={30} color="#7CFC00" className="mr-2 " /> */}
+                <div className="check-text">50 States</div>
+              </div>
+            </div>
+            <div className="node features-card col-start-1  row-start-1 row-end-3 flex flex-1 flex-col items-center rounded-[6px] border border-2 border-solid border-bordercolor p-[35px]">
+              <div className="features-row mb-[25px] flex flex-col items-start text-blue-500 ">
+                {/* <FaPencilRuler size={27} className="mb-[25px]" /> */}
+                <div className="fontfeatures-card-title text-center text-[18px] font-[700] leading-[1.25] text-white">
+                  Features
+                </div>
+              </div>
+              <div className="check-row mb-[20px] flex flex-row items-center text-white">
+                {/* <BsCheck2 size={30} color="#7CFC00" className="mr-2 " /> */}
+                <div className="check-text">Bookmarks</div>
+              </div>
+              <div className="check-row mb-[20px] flex flex-row items-center text-white">
+                {/* <BsCheck2 size={30} color="#7CFC00" className="mr-2 " /> */}
+                <div className="check-text">Citation Generator</div>
+              </div>
+              <div className="check-row mb-[20px] flex flex-row items-center text-white">
+                {/* <BsCheck2 size={30} color="#7CFC00" className="mr-2 " /> */}
+                <div className="check-text">Comparison Tool</div>
+              </div>
+              <div className="check-row mb-[20px] flex flex-row items-center text-white">
+                {/* <BsCheck2 size={30} color="#7CFC00" className="mr-2 " /> */}
+                <div className="check-text">Customizable Dashboards</div>
+              </div>
+              <div className="check-row mb-[20px] flex flex-row items-center text-white">
+                {/* <BsCheck2 size={30} color="#7CFC00" className="mr-2 " /> */}
+                <div className="check-text">Data Analytics</div>
+              </div>
+              <div className="check-row mb-[20px] flex flex-row items-center text-white">
+                {/* <BsCheck2 size={30} color="#7CFC00" className="mr-2 " /> */}
+                <div className="check-text">Data Visualization</div>
+              </div>
+              <div className="check-row mb-[20px] flex flex-row items-center text-white">
+                {/* <BsCheck2 size={30} color="#7CFC00" className="mr-2 " /> */}
+                <div className="check-text">Mapping</div>
+              </div>
 
-      <div className="container mx-auto my-0 flex w-[100%] max-w-[1330px] justify-center pb-[50px] text-[16px] leading-relaxed ">
+              <div className="check-row mb-[20px] flex flex-row items-center text-white">
+                {/* <BsCheck2 size={30} color="#7CFC00" className="mr-2 " /> */}
+                <div className="check-text">Patient Intake Form</div>
+              </div>
+              <div className="check-row mb-[20px] flex flex-row items-center text-center text-white">
+                {/* <BsCheck2 size={30} color="#7CFC00" className="mr-2 " /> */}
+                <div className="check-text">
+                  Proprietary Insights & Clinical Intelligence
+                </div>
+              </div>
+              <div className="check-row mb-[20px] flex flex-row items-center text-white">
+                {/* <BsCheck2 size={30} color="#7CFC00" className="mr-2 " /> */}
+                <div className="check-text">Ratings & Reviews</div>
+              </div>
+              <div className="check-row mb-[20px] flex flex-row items-center text-white">
+                {/* <BsCheck2 size={30} color="#7CFC00" className="mr-2 " /> */}
+                <div className="check-text">Search</div>
+              </div>
+            </div>
+            <div className="node features-card col-start-1 row-start-1 row-end-3 flex flex-1 flex-col items-center rounded-[6px] border-2 border-solid border-bordercolor p-[35px]">
+              <div className="features-row mb-[25px] flex flex-col items-start text-blue-500 ">
+                {/* <FaPencilRuler size={27} className="mb-[25px]" /> */}
+                <div className="fontfeatures-card-title text-center text-[18px] font-[700] leading-[1.25] text-white">
+                  Data Partners
+                </div>
+              </div>
+              <div className="check-row mb-[20px] flex flex-row items-center text-white">
+                {/* <BsCheck2 size={30} color="#7CFC00" className="mr-2 " /> */}
+                <div className="check-text">NIH.gov</div>
+              </div>
+              <div className="check-row mb-[20px] flex flex-row items-center text-white">
+                {/* <BsCheck2 size={30} color="#7CFC00" className="mr-2 " /> */}
+                <div className="check-text">Community Benefit Insight</div>
+              </div>
+              <div className="check-row mb-[20px] flex flex-row items-center text-white">
+                {/* <BsCheck2 size={30} color="#7CFC00" className="mr-2 " /> */}
+                <div className="check-text">CMS</div>
+              </div>
+              <div className="check-row mb-[20px] flex flex-row items-center text-white">
+                {/* <BsCheck2 size={30} color="#7CFC00" className="mr-2 " /> */}
+                <div className="check-text">Data.CMS.gov</div>
+              </div>
+              <div className="check-row mb-[20px] flex flex-row items-center text-white">
+                {/* <BsCheck2 size={30} color="#7CFC00" className="mr-2 " /> */}
+                <div className="check-text">FDA</div>
+              </div>
+              <div className="check-row mb-[20px] flex flex-row items-center text-white">
+                {/* <BsCheck2 size={30} color="#7CFC00" className="mr-2 " /> */}
+                <div className="check-text">Medline Plus</div>
+              </div>
+              <div className="check-row mb-[20px] flex flex-row items-center text-white">
+                {/* <BsCheck2 size={30} color="#7CFC00" className="mr-2 " /> */}
+                <div className="check-text">Open Payments</div>
+              </div>
+              <div className="check-row mb-[20px] flex flex-row items-center text-white">
+                {/* <BsCheck2 size={30} color="#7CFC00" className="mr-2 " /> */}
+                <div className="check-text">USDA</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      {/* <div className="container mx-auto my-0 flex w-[100%] max-w-[1330px] justify-center pb-[50px] text-[16px] leading-relaxed ">
         <div className="mr-1 w-[37%] break-words p-[25px]">
           <p className="mb-[15px] font-bold">Includes:</p>
           <ul className="font-medium">
@@ -660,9 +862,9 @@ const pricing = () => {
             </div>
           </div>
         </div>
-      </div>
+      </div> */}
 
-      <div className="container mx-auto my-0 mt-3 flex w-[100%] max-w-[1300px] justify-center pb-[50px] text-[16px] leading-relaxed">
+      {/* <div className="container mx-auto my-0 mt-3 flex w-[100%] max-w-[1300px] justify-center pb-[50px] text-[16px] leading-relaxed">
         <div className="justify-center break-words">
           <div
             className="block-spacer clear-both box-border h-[30px]"
@@ -679,7 +881,7 @@ const pricing = () => {
             <Image alt="logo" src={Logo} className="w-[250px]" />
           </figure>
         </div>
-      </div>
+      </div> */}
     </>
   );
 };

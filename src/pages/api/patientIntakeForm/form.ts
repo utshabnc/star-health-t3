@@ -7,6 +7,7 @@ export default async function handler(
   req: {
     method: string;
     body: {
+      userId:string;
       firstName: string;
       lastName: string;
       dateOfBirth: string;
@@ -15,7 +16,7 @@ export default async function handler(
       email: string;
       phoneNumber: string;
       homePhone1?: string | null;
-      cellPhone1: string;
+      cellPhone1: string ;
       workPhone1?: string | null;
       homePhone2?: string | null;
       cellPhone2?: string | null;
@@ -59,6 +60,7 @@ export default async function handler(
 
   try {
     const {
+      userId,
       firstName,
       lastName,
       dateOfBirth,
@@ -100,15 +102,17 @@ export default async function handler(
     const formattedDateOfBirth = parseISO(dateOfBirth);
 
     // Store the form data in the database
-    await prisma.patientIntakeForm.create({
-      data: {
-        firstName,
-        lastName,
+    await prisma.patientIntakeForm.upsert({
+      where:
+      {userId:userId+''},
+      create:{ 
+        firstName:firstName??"",
+        lastName:lastName??"",
         dateOfBirth: formattedDateOfBirth,
         sex,
         maritialStatus,
-        email,
-        phoneNumber,
+        email:email??"",
+        phoneNumber:"",
         homePhone1,
         cellPhone1,
         workPhone1,
@@ -123,7 +127,49 @@ export default async function handler(
         address,
         emergencyContact1,
         relationship1,
-        emergencyContactPhone1,
+        emergencyContactPhone1:"",
+        emergencyContact2,
+        relationship2,
+        emergencyContactPhone2,
+        insuranceCarried,
+        insurancePlan,
+        contactNumber,
+        policyNumber,
+        groupNumber,
+        ssn,
+        underMedicalCare,
+        medicalCareReason,
+        primaryCarePhysician,
+        healthConcerns,
+        user:{
+          connect: {
+            id: userId+"", // Replace with the actual user ID
+          },
+        },
+      },
+      update:{ 
+        firstName,
+        lastName,
+        dateOfBirth: formattedDateOfBirth,
+        sex,
+        maritialStatus,
+        email,
+        phoneNumber:"",
+        homePhone1,
+        cellPhone1,
+        workPhone1,
+        homePhone2,
+        cellPhone2,
+        workPhone2,
+        homePhone3,
+        cellPhone3,
+        workPhone3,
+        medications,
+        allergies,
+        address,
+        emergencyContact1,
+        relationship1,
+        emergencyContactPhone1:"",
         emergencyContact2,
         relationship2,
         emergencyContactPhone2,
@@ -138,7 +184,9 @@ export default async function handler(
         primaryCarePhysician,
         healthConcerns,
       },
-    });
+    }
+  );
+  res.status(200).json({ message: "Success" });
 
   } catch (error) {
     console.error("An error occurred while submitting the form", error);
