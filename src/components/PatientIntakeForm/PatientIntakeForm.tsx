@@ -153,7 +153,7 @@ const PatientIntakeForm: React.FC = () => {
         .then((formData) => {
           setFirstName(formData['firstName']);
           setLastName(formData['lastName']);
-          setDateOfBirth(formData['dateOfBirth']);
+          setDateOfBirth(formData['dateOfBirth'].split('T')[0]);
           setSex(formData['sex']);
           setMaritialStatus(formData['maritialStatus']);
           setEmail(formData['email']);

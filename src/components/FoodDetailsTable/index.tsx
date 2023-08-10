@@ -10,18 +10,22 @@ import NoResultComponent from "../NoResultComponent";
 import Search from "../Search";
 import { toTitleCase } from "../../utils";
 import { BsFillTrashFill } from "react-icons/bs";
+import { AiOutlineEdit } from "react-icons/ai";
 
 
 interface ResultSchema {
     id: string | null;
     title: string | null;
+    dateTimeofMeal: string|null;
     date: string | null;
     time: string | null;
     numOfServings: number|null;
     nutrientFact:JSON|null;
     portionSize:number|null
     link: string;
-  
+    mealCategory:string;
+    foodID:string;
+    editFunction:any;
   }
 
 
@@ -101,6 +105,12 @@ function FoodDetailsTable({ rows }: { rows: ResultSchema[] }) {
 
                     </h5>
                   </div>
+                  <div className="flex flex-row justify-between">
+                    <h5 className="text-md mb-2 text-gray-900">
+                    Meal: {row.mealCategory}
+
+                    </h5>
+                  </div>
                   <div className="flex flex-col items-start text-sm">
                     <p className="mb-1 text-sm text-violet-400">
                       Date: {row.date}
@@ -111,11 +121,17 @@ function FoodDetailsTable({ rows }: { rows: ResultSchema[] }) {
 
                   </div>
                 </div>
+                <div className="flex">
+                <button className="bg-blue-600 w-[70px] flex justify-center items-center hover:bg-blue-900 " onClick={()=>{row.editFunction(row)}}>
+                  <AiOutlineEdit size={35} color="white"></AiOutlineEdit>
+                </button>
                 <button className="bg-red-600  rounded-r-lg w-[70px] flex justify-center items-center hover:bg-red-900 " onClick={()=>deleteFoodItem(row.id)}>
-                  <BsFillTrashFill size={40} color="white"></BsFillTrashFill>
+                  <BsFillTrashFill size={35} color="white"></BsFillTrashFill>
 
                 </button>
                 </div>
+                </div>
+
               </div>
                  ))}
 
