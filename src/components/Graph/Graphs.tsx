@@ -1,24 +1,28 @@
 import { useState, useEffect } from "react";
-import { drugTypes } from "../utils";
-import UnitedStatesHeatmap from "./charts/UnitedStatesHeatmap";
-import Dropdown from "./Dropdown";
+import { drugTypes } from "../../utils";
+import UnitedStatesHeatmap from "../charts/UnitedStatesHeatmap";
+import Dropdown from "../Dropdown";
 import { useRouter } from 'next/router';
 import _ from "lodash";
-import { trpc } from "../utils/trpc";
-import LoadingStarHealth from "./Loading";
-import { Tab } from "../utils/Enums/Tab.enum";
-import { PayWall } from "./PayWall/PayWall";
+import { trpc } from "../../utils/trpc";
+import LoadingStarHealth from "../Loading";
+import { Tab } from "../../utils/Enums/Tab.enum";
+import { PayWall } from "../PayWall/PayWall";
+import MultiSelect from 'multiselect-react-dropdown';
+import { labelStyle, diseaseStyle, genesStyle, labelContainer, conditionStyle } from "./style";
 
 const Graphs = () => {
   const [drugType, setDrugType] = useState<string>();
-  const [selectedDisease, setSelectedDisease] = useState<string>();
   const { data: allStates } = trpc.db.allStates.useQuery({ drugType });
   const navigate = useRouter();
   const [selectedTab, setSelectedTab] = useState<Tab>(Tab.PaymentsToDoctors);
   const [diseasesList, setDiseasesList] = useState<Array<{
     url: any;title: { _text: string}
 }>>([]);
-  const [loading, setLoading] = useState(true)
+  const [filteredDisease, setFilteredDisease] = useState<string>('');
+  const [removedDisease, setRemovedDisease] = useState<string>('');
+  const [loading, setLoading] = useState(true);
+
 
   useEffect(() => {
 
@@ -122,7 +126,43 @@ const Graphs = () => {
               onChange={setDrugType}
             />
           </div>
+          <nav 
+            id="diseaseFilterContainer"
+            style={{ display: `${ selectedTab === Tab.DiseasesAndGenetics ? 'block' : 'none' }` }}
+            >
+              Disease Filter: 
+                <MultiSelect 
+                  options={diseasesList.slice(1).map((disease) => ({
+                    link: disease?.url?._text,
+                    name: _.capitalize(disease?.title?._text),
+                  }))}
+                  displayValue="name"
+                  showCheckbox={true}
+                  onSelect={(list, selItem) => setFilteredDisease(selItem.link)}
+                  onRemove={(list, remItem) => {
+                    const name = remItem.link.toString().split('/');
+                    setRemovedDisease(name[name.length - 1])
+                  }}
+                  placeholder="Select the Disease"
+                  selectedValues={[]}
+                />
+                <div 
+                  id="graphUpdateLoaderContainer"
+                  style={{
+                    width: '80%',
+                    marginLeft: '10.5%',
+                    textAlign: 'center',
+                  }}
+                  >
+                  <span 
+                      id="graphUpdateLoader" style={{display: 'none'}} 
+                      className="loader">Loading</span>
+                </div>
+                <span id="filteredDisease" style={{display: 'none'}}>{filteredDisease}</span>
+                <span id="removedDisease" style={{display: 'none'}}>{removedDisease}</span>
+              </nav>
         </div>
+        
       </div>
       <div style={{ height: '100%' }}>
         <PayWall />
@@ -146,41 +186,30 @@ const Graphs = () => {
             </div>
           }
         </div>
-
+          
         {selectedTab == Tab.DiseasesAndGenetics &&
           <div style={{
             display: 'flex',
             flexDirection: 'row',
             height: '100%'
           }}>
-
             <div id="graphMenu" style={{
               width: '19%',
-              height: '100%'
+              height: '100%',
+              paddingRight: '5px'
             }}>
-              <p>&nbsp;</p>
-              <Dropdown
-                items={diseasesList.map((disease) => ({
-                  value: disease?.url?._text,
-                  label: _.capitalize(disease?.title?._text),
-                }))}
-                label={''}
-                value={selectedDisease}
-                placeholder={"Select The Disease"}
-                onChange={setSelectedDisease}
-                style={{
-                  width: '87%'
-                }}
-                id="graphDiseaseDropDown"
-              />
-              <div>
-                Total Genes: <span id="totalGenesPlaceholder"></span>
+              <p>Legend:</p>
+              <div style={labelContainer}>
+                <div style={{...labelStyle, ...diseaseStyle, float: 'left'}}></div> &nbsp;Disease
               </div>  
-              <div>
-                Total Chromosomes: <span id="totalChromosPlaceholder"></span>
+              <div style={labelContainer}>
+                <span style={{...labelStyle, ...genesStyle, float: 'left'}}></span> &nbsp;Chromosome/Genes
               </div>  
+              <div style={labelContainer}>
+                <span style={{...labelStyle, ...conditionStyle, float: 'left'}}></span> &nbsp;Related Conditions
+              </div>
             </div>
-
+              
             <div id="graphPlaceholder" style={{
               width: '80%',
               height: '100%',
