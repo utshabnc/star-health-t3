@@ -14,4 +14,5 @@ export enum Tab {
   Hospitals = "Hospitals",
   HospitalOwners = "HospitalOwners",
   OpioidTreatmentProviders = "OpioidTreatmentProviders",
+  DiseasesAndGenetics = "DiseasesAndGenetics",
 }

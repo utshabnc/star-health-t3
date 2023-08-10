@@ -149,10 +149,10 @@ const pricing = () => {
                 {/* <BsCheck2 size={30} color="#7CFC00" className="mr-2 " /> */}
                 <div className="check-text">3,000+ Companies</div>
               </div>
-              <div className="check-row mb-[20px] flex flex-row items-center text-white">
-                {/* <BsCheck2 size={30} color="#7CFC00" className="mr-2 " /> */}
+              {/* <div className="check-row mb-[20px] flex flex-row items-center text-white">
+                <BsCheck2 size={30} color="#7CFC00" className="mr-2 " />
                 <div className="check-text">3,000+ Companies</div>
-              </div>
+              </div> */}
               <div className="check-row mb-[20px] flex flex-row items-center text-white">
                 {/* <BsCheck2 size={30} color="#7CFC00" className="mr-2 " /> */}
                 <div className="check-text">1,000,000+ Doctors</div>
