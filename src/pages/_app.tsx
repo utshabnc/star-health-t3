@@ -6,6 +6,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer } from 'react-toastify';
 
 import { trpc } from "../utils/trpc";
+import "../assets/scripts/Graph";
 
 import "../styles/globals.css";
 import { NavFoot } from "../components/NavFoot";
@@ -34,10 +35,12 @@ const MyApp: AppType<{ session: Session | null }> = ({
   Component,
   pageProps: { session, ...pageProps },
 }) => {
+
   return (
     <SessionProvider session={session}>
       <Head>
         <title>StarHealth</title>
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.css" rel="stylesheet" type="text/css" />
       </Head>
       <NavFoot>
         <Component {...pageProps} />
