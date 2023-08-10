@@ -145,6 +145,37 @@ input[type="range"]::-webkit-slider-thumb {
 }
 
 
+/*
+* Graph Labels
+*/
+.labellegend {
+  width: '23px';
+  height: '23px';
+  display: 'block';
+  border-radius: '100%';
+  float: 'left';
+  padding-right: '5px';
+}
+
+.labelgenes {
+  background: 'yellow';
+  border: '1px solid orange';
+}
+
+.labeldisease {
+  background: '#afc8e1';
+  border: '1px solid blue';
+}
+
+.labelcondition {
+  background: '#9998d7';
+  border: '#504ed1';
+}
+
+.label-container {
+  margin-top: '6px';
+}
+
 
 /* 
 * Updating Graph Loader
