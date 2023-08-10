@@ -315,6 +315,7 @@ const submitFood = async (e: React.FormEvent) =>{
                 <input value={foodJournalDate} onChange={(e)=>{setFoodJournalDate(e.target.value)}} className="rounded-lg border border-violet-900 bg-violet-100 p-1 text-slate-900 placeholder:text-violet-800 hover:bg-violet-300 hover:text-violet-900" type="date"></input>
         </div>
         <Modal
+        className="bg-white width-[100%] height-[100%]"
         open={openFoodModal}
         onClose={()=>{if(addStatus!=2){setOpenFoodModal(false);setAddStatus(1);setNumOfServings(1);setCurrentFood('');setSearchStr('');setMealCategory(0)}}}>
             <div>
@@ -536,6 +537,8 @@ const submitFood = async (e: React.FormEvent) =>{
           </div>
         </div>}
         <Modal
+                className="bg-white width-[100%] height-[100%]"
+
         open={openOverallNutrientsModal}
         onClose={()=>setOpenOverallNutrientsModal(false)}>
           <>
