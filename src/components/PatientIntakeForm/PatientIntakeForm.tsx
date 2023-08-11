@@ -10,7 +10,7 @@ const PatientIntakeForm: React.FC = () => {
   };
   const { data: session, status } = useSession();
   const name = session?.user?.name || '';
-  const userId = session?.user?.id || 'clkruomvr0000mj088c28m3a6';
+  const userId = session?.user?.id || '';
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [dateOfBirth, setDateOfBirth] = useState("");
@@ -46,6 +46,9 @@ const PatientIntakeForm: React.FC = () => {
   const [medicalCareReason, setMedicalCareReason] = useState("");
   const [primaryCarePhysician, setPrimaryCarePhysician] = useState("");
   const [healthConcerns, setHealthConcerns] = useState("");
+  const [weight, setWeight] = useState(0);
+  const [heightFoot, setHeightFoot] = useState(0);
+  const [heightInch, setHeightInch] = useState(0);
 
   const [formSubmitted, setFormSubmitted] = useState(false); // State variable for tracking form submission
   
@@ -98,6 +101,8 @@ const PatientIntakeForm: React.FC = () => {
           medicalCareReason,
          primaryCarePhysician,
           healthConcerns,
+          weight:weight,
+          height:heightFoot+(heightInch/100)
         }),
       }).then(()=>{
         setFormSubmitted(true);
@@ -153,7 +158,7 @@ const PatientIntakeForm: React.FC = () => {
         .then((formData) => {
           setFirstName(formData['firstName']);
           setLastName(formData['lastName']);
-          setDateOfBirth(formData['dateOfBirth'].split('T')[0]);
+          setDateOfBirth(formData['dateOfBirth']?formData['dateOfBirth'].split('T')[0]:'');
           setSex(formData['sex']);
           setMaritialStatus(formData['maritialStatus']);
           setEmail(formData['email']);
@@ -185,7 +190,14 @@ const PatientIntakeForm: React.FC = () => {
           setUnderMedicalCare(formData['underMedicalCare']);
           setMedicalCareReason(formData['medicalCareReason']);
           setPrimaryCarePhysician(formData['primaryCarePhysician']);
-          setHealthConcerns(formData['healthConcerns']);          // Handle the retrieved form data here
+          setHealthConcerns(formData['healthConcerns']);
+          const height= formData['height']
+          const foot = Math.floor(height);
+          const diff = parseFloat((height - foot).toFixed(2))
+          const inch = Math.ceil(diff * 100);
+          setHeightFoot(foot)
+          setHeightInch(inch)
+          setWeight(formData['weight'])        // Handle the retrieved form data here
         })
         .catch((error) => {
           console.error("Error fetching form data:", error);
@@ -267,6 +279,51 @@ const PatientIntakeForm: React.FC = () => {
                 <option value="Female">Female</option>
                 <option value="Other">Other</option>
               </select>
+            </div>
+            <div>
+              <label htmlFor="height" className="font-semibold">
+                Height:
+              </label>
+              <div>
+              <input
+                type="number"
+                id="height"
+                value={heightFoot}
+                onChange={(e) => setHeightFoot(Math.floor(parseInt(e.target.value)))}
+                className="w-[35%] border border-gray-300 px-2 py-1 mr-1"
+                style={{ border: "1px solid #000", borderRadius: "10px" }
+              }
+              min={0}
+              step={1}
+              />
+              ft
+               <input
+                type="number"
+                id="height"
+                value={heightInch}
+                onChange={(e) => setHeightInch(Math.floor(parseInt(e.target.value)))}
+                className="w-[35%] border border-gray-300 px-2 py-1 mx-1"
+                style={{ border: "1px solid #000", borderRadius: "10px" }}
+                min={0}
+                max={11}
+                step={1}
+              />
+              in
+              </div>
+              
+            </div>
+            <div>
+              <label htmlFor="weight" className="font-semibold">
+                Weight:
+              </label>
+              <input
+                type="number"
+                id="weight"
+                value={weight}
+                onChange={(e) => setWeight(parseFloat(e.target.value))}
+                className="w-full border border-gray-300 px-2 py-1"
+                style={{ border: "1px solid #000", borderRadius: "10px" }}
+              />
             </div>
             <div>
                 <label htmlFor="maritialStatus" className="font-semibold">

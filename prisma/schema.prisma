@@ -400,6 +400,8 @@ model PatientIntakeForm {
   medicalCareReason     String?
   primaryCarePhysician  String?
   healthConcerns        String?
+  weight                Float?            
+  height                Float?            
 }
 
 model UserFoodJournal {
