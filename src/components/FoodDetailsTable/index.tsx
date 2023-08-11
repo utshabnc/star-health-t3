@@ -29,7 +29,7 @@ interface ResultSchema {
   }
 
 
-function FoodDetailsTable({ rows }: { rows: ResultSchema[] }) {
+function FoodDetailsTable({ rows,foodData,setFoodData }: { rows: ResultSchema[],foodData:any[],setFoodData:any }) {
   const resultsPerPage = 15; // Number of results to display per page
   const [foodJournalEntries, setFoodJournalEntries] = useState<ResultSchema[]>(rows);
 
@@ -52,9 +52,10 @@ function FoodDetailsTable({ rows }: { rows: ResultSchema[] }) {
         if (response.ok) {
           console.log("Food item deleted successfully");
           // Perform any additional actions you need after successful deletion
-          setFoodJournalEntries((prevEntries) =>
-          prevEntries.filter((entry) => entry.id !== id)
-        );
+
+        setFoodData((prevEntries:any) =>
+        prevEntries.filter((entry:any) => entry.id !== id)
+      );
         } else {
           console.error("Failed to delete food item");
           // Handle the error scenario here
