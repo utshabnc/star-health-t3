@@ -3,14 +3,33 @@ import { useEffect, useState } from "react";
 import {GrClose} from 'react-icons/gr'
 import { toTitleCase } from "../../utils";
 import FoodAutocompleteInput from "../FoodAutoCompleteInput";
-import Modal from '@mui/material/Modal';
 import FoodDetailsTable from "../FoodDetailsTable";
 import LoadingStarHealth from "../Loading";
 import { IconContext } from "react-icons";
 import { AiOutlineClose, AiOutlineMinus, AiOutlinePlus } from "react-icons/ai";
 import { BsChevronCompactRight } from "react-icons/bs";
 import {MdWaterDrop} from 'react-icons/md'
-import { update } from "lodash";
+import { set, update } from "lodash";
+
+const Modal = ({
+  open,
+  children,
+  onClose,
+}: {
+  open: boolean;
+  onClose: () => void;
+  children?: React.ReactNode;
+}) => {
+  const showHideClassName = open ? 'modal display-block' : 'modal display-none';
+
+  return (
+    <div className={showHideClassName}>
+      <section className='modal-main rounded-lg '>
+        {children}
+      </section>
+    </div>
+  );
+};
 
 const FoodJournal: React.FC = () => {
   const getFormattedCurrentTime = () => {
@@ -150,7 +169,6 @@ const FoodJournal: React.FC = () => {
         setWaterIntakeBtn(true)
         try{
           
-          setAddStatus(2)
           fetch("/api/foodJournal/postWaterIntake", {
             method: "POST",
             headers: {
@@ -189,6 +207,8 @@ const FoodJournal: React.FC = () => {
         try{
            fetch(`/api/foodJournal/getFoodbyDate/?userId=${userId}&date=${foodJournalDate}`).then((response)=>{
             response.json().then((data) => {
+              console.log(data['foodlist'])
+
               setFoodJournalData(data['foodlist'])
               setFoodJournalSummary(data['nutrientSummary'])
               fetch(`/api/foodJournal/getWaterIntake/?userId=${userId}&date=${foodJournalDate}`).then((response)=>{
@@ -210,6 +230,7 @@ const FoodJournal: React.FC = () => {
       try{
          fetch(`/api/foodJournal/getFoodbyDate/?userId=${userId}&date=${foodJournalDate}`).then((response)=>{
           response.json().then((data) => {
+            console.log(data['foodlist'])
             setFoodJournalData(data['foodlist'])
             setFoodJournalSummary(data['nutrientSummary'])
           });
@@ -315,7 +336,6 @@ const submitFood = async (e: React.FormEvent) =>{
                 <input value={foodJournalDate} onChange={(e)=>{setFoodJournalDate(e.target.value)}} className="rounded-lg border border-violet-900 bg-violet-100 p-1 text-slate-900 placeholder:text-violet-800 hover:bg-violet-300 hover:text-violet-900" type="date"></input>
         </div>
         <Modal
-        className="bg-white width-[100%] height-[100%]"
         open={openFoodModal}
         onClose={()=>{if(addStatus!=2){setOpenFoodModal(false);setAddStatus(1);setNumOfServings(1);setCurrentFood('');setSearchStr('');setMealCategory(0)}}}>
             <div>
@@ -537,7 +557,6 @@ const submitFood = async (e: React.FormEvent) =>{
           </div>
         </div>}
         <Modal
-                className="bg-white width-[100%] height-[100%]"
 
         open={openOverallNutrientsModal}
         onClose={()=>setOpenOverallNutrientsModal(false)}>
@@ -546,17 +565,24 @@ const submitFood = async (e: React.FormEvent) =>{
 
   <div className="foodModal rounded-lg">
     <div>
-    <div className="text-center text-violet-700 font-bold text-lg">
-                Food Nutrients
+    <div className="bg-violet-700  px-4 py-2 text-white w-100 text-center font-bold text-xl">
+          <div>
+            Food Nutrients
             </div>
-            <div className="foodNutrientsSection">
+          <div onClick={(e)=>{setOpenOverallNutrientsModal(false)}} className='closeFoodModal bg-violet-700 mt-3 mr-2 justify-end'>
+                    <AiOutlineClose size={25} color="white"  ></AiOutlineClose>
+          </div>
+                            </div>
+            <div className="foodNutrientsSection ">
             {foodJournalSummary&&overallFoodNutrients()}
             </div>
     </div>
   </div>
   </div></>
   </Modal>
-        <FoodDetailsTable 
+        <FoodDetailsTable
+        foodData = {foodJournalData}
+        setFoodData = {setFoodJournalData}
       rows={ [...foodJournalData?.map((product:any) => (
         
         {
