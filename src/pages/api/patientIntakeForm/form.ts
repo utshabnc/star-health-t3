@@ -44,6 +44,9 @@ export default async function handler(
       medicalCareReason?: string | null;
       primaryCarePhysician?: string | null;
       healthConcerns?: string | null;
+      height?: number | null;
+      weight?: number | null;
+
     };
   },
   res: {
@@ -97,11 +100,13 @@ export default async function handler(
       medicalCareReason,
       primaryCarePhysician,
       healthConcerns,
+      height,
+      weight
     } = req.body;
 
     // Convert dateOfBirth to DateTime format
     console.log(dateOfBirth)
-    const formattedDateOfBirth = (!dateOfBirth||dateOfBirth==null)?'':(dateOfBirth.length>0?parseISO(dateOfBirth):'');
+    const formattedDateOfBirth = (!dateOfBirth||dateOfBirth==null)?null:(dateOfBirth.length>0?parseISO(dateOfBirth):null);
 
     // Store the form data in the database
     await prisma.patientIntakeForm.upsert({
@@ -143,6 +148,8 @@ export default async function handler(
         medicalCareReason,
         primaryCarePhysician,
         healthConcerns,
+        height,
+        weight,
         user:{
           connect: {
             id: userId+"", // Replace with the actual user ID
@@ -185,6 +192,8 @@ export default async function handler(
         medicalCareReason,
         primaryCarePhysician,
         healthConcerns,
+        height,
+        weight
       },
     }
   );

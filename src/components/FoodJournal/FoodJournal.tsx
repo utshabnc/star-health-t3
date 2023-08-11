@@ -105,7 +105,6 @@ const FoodJournal: React.FC = () => {
       setNumOfServings(row.numOfServings)
       const d = row.dateTimeofMeal.split('T')
       setMealDate(d[0])
-      console.log(d[1])
       setMealTime(d[1].slice(0,-8))
       setMealCategory(mealCategoryOptions.indexOf(row.mealCategory))
     }
@@ -175,7 +174,6 @@ const FoodJournal: React.FC = () => {
               "Content-Type": "application/json",
             },
             body: JSON.stringify(body)}).then((message:any)=>{
-            console.log(message)
             setWaterIntakeBtn(false)
 
             }
@@ -207,7 +205,6 @@ const FoodJournal: React.FC = () => {
         try{
            fetch(`/api/foodJournal/getFoodbyDate/?userId=${userId}&date=${foodJournalDate}`).then((response)=>{
             response.json().then((data) => {
-              console.log(data['foodlist'])
 
               setFoodJournalData(data['foodlist'])
               setFoodJournalSummary(data['nutrientSummary'])
@@ -230,7 +227,6 @@ const FoodJournal: React.FC = () => {
       try{
          fetch(`/api/foodJournal/getFoodbyDate/?userId=${userId}&date=${foodJournalDate}`).then((response)=>{
           response.json().then((data) => {
-            console.log(data['foodlist'])
             setFoodJournalData(data['foodlist'])
             setFoodJournalSummary(data['nutrientSummary'])
           });
@@ -294,7 +290,6 @@ const submitFood = async (e: React.FormEvent) =>{
     }
     setEntryError(false)
     const dateTimeOfMeal = `${mealDate}T${mealTime}:00`;
-    console.log(dateTimeOfMeal)
     const body= {
       id:selectedID,
       userId : userId,
@@ -459,7 +454,7 @@ const submitFood = async (e: React.FormEvent) =>{
             </div>
             <div className="text-md font-bold text-violet-500">
               {
-            foodJournalSummary['1005']?foodJournalSummary['1005']['name']:'Carbohydrate, by difference'
+            'Carbohydrate'
 
               }
             </div>
@@ -470,7 +465,7 @@ const submitFood = async (e: React.FormEvent) =>{
             </div>
             <div className="text-md font-bold text-violet-500">
               {
-            foodJournalSummary['1057']?foodJournalSummary['1057']['name']:'Caffiene'
+            foodJournalSummary['1057']?foodJournalSummary['1057']['name']:'Caffeine'
 
               }
             </div>
@@ -481,7 +476,7 @@ const submitFood = async (e: React.FormEvent) =>{
             </div>
             <div className="text-md font-bold text-violet-500">
               {
-            foodJournalSummary['1253']?foodJournalSummary['1253']['name']:'Colestrol'
+            foodJournalSummary['1253']?foodJournalSummary['1253']['name']:'Cholesterol'
 
               }
             </div>
@@ -549,7 +544,7 @@ const submitFood = async (e: React.FormEvent) =>{
             </div>
             </div>
             <button 
-        className="w-[100%] ease focus:shadow-outline select-none rounded-md border border-violet-700 bg-violet-700 px-4 py-2 text-white transition duration-500 hover:bg-violet-900 focus:outline-none"
+        className="w-[100%] ease focus:shadow-outline select-none rounded-md border border-[#21b6f5] bg-[#21b6f5] px-4 py-2 text-white transition duration-500 hover:bg-[#098ac1] focus:outline-none"
         disabled={waterIntakeBtn}
         onClick={(e)=>{submitWaterIntake()}}>
         Save Water Intake
