@@ -92,9 +92,11 @@ function formatMultiSelect(){
                 // REMOVE DESELECTED DISEASE
                 removeDiseaseFromGraph();
               }
-  
+
+              clearInterval(loadVisLib);
+
           });
-          clearInterval(loadVisLib);
+          
           
         }
       }catch(err){}
