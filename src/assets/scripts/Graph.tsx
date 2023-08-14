@@ -92,9 +92,13 @@ function formatMultiSelect(){
                 // REMOVE DESELECTED DISEASE
                 removeDiseaseFromGraph();
               }
-  
+
+              setTimeout(() => {
+                clearInterval(loadVisLib);
+              }, 2000);
+
           });
-          clearInterval(loadVisLib);
+          
           
         }
       }catch(err){}
@@ -321,7 +325,7 @@ function formatMultiSelect(){
         }
       ));
 
-      const middle = {id: _linkNode, label: linkNode, group: 'middle', linkNode: diseaseLink || 0, value: 5};
+      const middle = {id: _linkNode, label: linkNode, group: isNaN(_linkNode) ? 'middle' : 'middle1', linkNode: diseaseLink || 0, value: 5};
       chromosomeNodes.push(middle);
 
       DiseaseRelationParser.totalGenes = chromosomeNodes.length;
