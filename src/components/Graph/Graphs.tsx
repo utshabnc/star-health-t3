@@ -78,37 +78,39 @@ const Graphs = () => {
             <p className="flex text-2xl font-semibold text-violet-700">
               StarHealth Data Visualization
             </p>
-            <div className="flex gap-2">
-              {/* Map tab */}
-              <button
-                onClick={() => setSelectedTab(Tab.PaymentsToDoctors)}
-                className={`border-b-2 hover:border-zinc-500 ${
-                  selectedTab === Tab.PaymentsToDoctors
-                    ? "border-violet-600"
-                    : "border-zinc-200"
-                }`}
-              >
-                Company Payments to Doctors
-              </button>
-            </div>
-            <div className="flex gap-2">
-              {/* Diseases and Genetics tab */}
-              <button
-                id="graphLauncher"
-                onClick={
-                  () => {
-                    setSelectedTab(Tab.DiseasesAndGenetics);
-                    setLoading(true);
+            <div style={{ display: 'flex', gap: '20px' }}>
+              <div className="flex gap-2">
+                {/* Map tab */}
+                <button
+                  onClick={() => setSelectedTab(Tab.PaymentsToDoctors)}
+                  className={`border-b-2 hover:border-zinc-500 ${
+                    selectedTab === Tab.PaymentsToDoctors
+                      ? "border-violet-600"
+                      : "border-zinc-200"
+                  }`}
+                >
+                  Company Payments to Doctors
+                </button>
+              </div>
+              <div className="flex gap-2">
+                {/* Diseases and Genetics tab */}
+                <button
+                  id="graphLauncher"
+                  onClick={
+                    () => {
+                      setSelectedTab(Tab.DiseasesAndGenetics);
+                      setLoading(true);
+                    }
                   }
-                }
-                className={`border-b-2 hover:border-zinc-500 ${
-                  selectedTab === Tab.DiseasesAndGenetics
-                    ? "border-violet-600"
-                    : "border-zinc-200"
-                }`}
-              >
-                Diseases & Genetics
-              </button>
+                  className={`border-b-2 hover:border-zinc-500 ${
+                    selectedTab === Tab.DiseasesAndGenetics
+                      ? "border-violet-600"
+                      : "border-zinc-200"
+                  }`}
+                >
+                  Diseases & Genetics
+                </button>
+              </div>
             </div>
           </div>
           <div className="my-1">
