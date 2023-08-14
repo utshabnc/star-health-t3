@@ -8,6 +8,7 @@ export enum Tab {
   Products = "Products",
   Drugs = "Drugs",
   Food = "Food",
+  Tools = "Tools",
   ClinicalTrials = "ClinicalTrials",
   Plans = "Plans",
   PaymentsToDoctors = "PaymentsToDoctors",

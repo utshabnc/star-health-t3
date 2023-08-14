@@ -125,13 +125,19 @@ function NavBar() {
               Data Directory
             </Link>
             <Link
-              href={"/visualization"}
+              href={"/tools"}
               className="w-30 md:w-22 hidden rounded px-3 py-1 font-custom font-medium 
 							text-white hover:text-blue-300 md:block"
             >
+              Tools
+            </Link>
+            <Link
+              href={"/visualization"}
+              className="w-30 md:w-22 hidden rounded px-3 py-1 font-custom font-medium 
+              text-white hover:text-blue-300 md:block"
+            >
               Data Visualization
             </Link>
-
             <Link
               href={"/pricing"}
               className="w-30 md:w-22 hidden rounded px-3 py-1 font-custom font-medium 
@@ -204,6 +210,14 @@ function NavBar() {
                   onClick={() => setNavbarOpen((prev) => !prev)}
                 >
                   Data Directory
+                </Link>
+                <Link
+                  href={"/tools"}
+                  className="text-[2.7rem] font-medium 
+												text-white hover:text-blue-300"
+                  onClick={() => setNavbarOpen((prev) => !prev)}
+                >
+                  Tools
                 </Link>
                 <Link
                   href={"/pricing"}
