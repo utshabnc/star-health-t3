@@ -408,9 +408,8 @@ const submitFood = async (e: React.FormEvent) =>{
                     Add Meal
                     {gettingDataForAdd&&
                     <>
-                            <div className="lds-ring"><div></div><div></div><div></div><div></div></div>
+                    <div className="lds-ring"><div></div><div></div><div></div><div></div></div>
                     </>
-                    
                     }
                 </button>}
                 {addStatus==3&&
