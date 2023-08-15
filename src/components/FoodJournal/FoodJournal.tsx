@@ -405,7 +405,12 @@ const submitFood = async (e: React.FormEvent) =>{
             </div>
             <div>
                 {addStatus==1&&<button onClick={(e)=>{if(!gettingDataForAdd){setAddStatus(2);submitFood(e);}}} className="w-[100%] ease focus:shadow-outline select-none rounded-md border border-violet-700 bg-violet-700 px-4 py-2 text-white transition duration-500 hover:bg-violet-900 focus:outline-none">
-                    Add Meal 
+                    Add Meal
+                    {gettingDataForAdd&&
+                    <>
+                            <div className="lds-ring"><div></div><div></div><div></div><div></div></div>
+                    </>
+                    }
                 </button>}
                 {addStatus==3&&
                 
