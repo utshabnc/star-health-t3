@@ -410,7 +410,6 @@ const submitFood = async (e: React.FormEvent) =>{
                     <>
                             <div className="lds-ring"><div></div><div></div><div></div><div></div></div>
                     </>
-                    
                     }
                 </button>}
                 {addStatus==3&&
