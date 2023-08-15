@@ -4,7 +4,7 @@ const CALORIENINJA_APIKEY = "eqN/IEjKazPTJFm+jUDzRQ==UelyF4RjxBImKrcf";
 export default async function handler(req: NextApiRequest, res: NextApiResponse<any>) {
   try {
     const { recipe } = req.query;
-    const response = await fetch(`https://api.calorieninjas.com/v1/recipe?query=${encodeURIComponent(recipe)}`, {
+    const response = await fetch(`https://api.calorieninjas.com/v1/recipe?query=${encodeURIComponent(recipe as string)}`, {
       method: "GET",
       headers: {
         'X-Api-Key': CALORIENINJA_APIKEY,

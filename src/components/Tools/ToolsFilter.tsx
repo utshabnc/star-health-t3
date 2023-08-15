@@ -65,7 +65,6 @@ const Recipe = () => {
                         setRecipes(data);
                         setRecipeNum(data.length);
                         setRecipeId(0);
-                        let cnt = 0;
 
                         renderRecipeTable(data,0);
                     } catch (error) {
@@ -203,7 +202,7 @@ const Recipe = () => {
         }
     };
 
-    const renderRecipeTable = (items: Array<any>, id) => {
+    const renderRecipeTable = (items: Array<any>, id: number) => {
         if (!!items && items.length > 0) {
             const classText = `className="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider"`;
 
