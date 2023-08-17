@@ -1526,6 +1526,7 @@ export const db = router({
       };
     });
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars 
     opioidTreatmentProviderNames = opioidTreatmentProviders.map((item) => {
       return {
         id: item.id,
@@ -1544,6 +1545,7 @@ export const db = router({
     //   return item.payments.length > 0
     // })
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     productNameList = products.map((item) => {
       return {
         id: item.id,
