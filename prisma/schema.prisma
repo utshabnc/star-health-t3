@@ -293,6 +293,7 @@ model User {
   Review        Review[]
   sessions      Session[]
   patientIntakeForm  PatientIntakeForm?
+  userWaterIntake UserWaterIntake[]
   userFoodJournal UserFoodJournal[]
 }
 
@@ -364,15 +365,15 @@ model PatientIntakeForm {
   id                    Int      @id @default(autoincrement())
   userId                String   @unique
   user                  User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  firstName             String
-  lastName              String
-  dateOfBirth           DateTime
-  sex                   String
-  maritialStatus        String
-  email                 String
-  phoneNumber           String
+  firstName             String?
+  lastName              String?
+  dateOfBirth           DateTime?
+  sex                   String?
+  maritialStatus        String?
+  email                 String?
+  phoneNumber           String?
   homePhone1            String?
-  cellPhone1            String
+  cellPhone1            String?
   workPhone1            String?
   homePhone2            String?
   cellPhone2            String?
@@ -382,10 +383,10 @@ model PatientIntakeForm {
   workPhone3            String?
   medications           String?
   allergies             String?
-  address               String
-  emergencyContact1     String
-  relationship1         String
-  emergencyContactPhone1 String
+  address               String?
+  emergencyContact1     String?
+  relationship1         String?
+  emergencyContactPhone1 String?
   emergencyContact2     String?
   relationship2         String?
   emergencyContactPhone2 String?
@@ -399,6 +400,8 @@ model PatientIntakeForm {
   medicalCareReason     String?
   primaryCarePhysician  String?
   healthConcerns        String?
+  weight                Float?            
+  height                Float?            
 }
 
 model UserFoodJournal {
@@ -410,4 +413,12 @@ model UserFoodJournal {
   dateTimeOfMeal        DateTime
   nutrientResponse      Json?
   numberOfServings      Float? 
+  mealCategory          String?
+}
+model UserWaterIntake {
+    id                    Int      @id @default(autoincrement())
+    userId                String   
+    user                  User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+    dateTimeOfIntake      DateTime
+    numberOfGlasses       Int
 }
