@@ -28,6 +28,7 @@ export default function ClinicalTrialsFilters(
   const [searchExpr, setSearchExpr] = useState<string>('');
 
   useEffect(() => {
+    //Search Expression
     const searchExprArr = [];
     if (orgFullName.length > 1) {
       searchExprArr.push(`AREA[${Field.OrgFullName}]${orgFullName}`);
