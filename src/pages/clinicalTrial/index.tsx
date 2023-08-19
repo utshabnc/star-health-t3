@@ -9,6 +9,7 @@ import Citation from "../../components/Citation";
 import BookmarkButton from "../../components/BookmarkButton";
 import { DataDirectoryCategory } from "../../utils/Enums/DataDirectoryCategory.enum";
 import type { SingleStudyLegacy } from '../../components/ClinicalTrials/ClinicalTrialsFullStudyResponse.model';
+import NoResultComponent from "../../components/NoResultComponent";
 
 
 const ClinicalTrialDetails = () => {
@@ -129,6 +130,9 @@ const removeCompare = () => {
   }
 };
 
+if (!NCTId) {
+  return <NoResultComponent title="Clinical Trail" />;
+}
 
 return (
   isProcessing ? (
