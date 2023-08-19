@@ -9,8 +9,6 @@ import type {
 import { Field } from "./Fields.enum";
 import type {  ClinicalTrialStudies , ClinicalTrialStudy} from "./ClinicalTrialsStudyFieldsResponse.model";
 import type { ClinicalTrialsFieldValuesResponseLegacy, FieldValueLegacy } from "./ClinicalTrialsFieldValuesResponse.model";
-import type { SingleStudyLegacy } from '../../components/ClinicalTrials/ClinicalTrialsFullStudyResponse.model';
-
 
 const clinicalTrialsQueryURL = "https://clinicaltrials.gov/api/v2";
 
@@ -27,14 +25,12 @@ export const getClinicalTrialsList = (
 };
 
 export const getClinicalTrialByNCTId = (
-  NCTId: string,
-  
-): Observable<SingleStudyLegacy> => {
-  return ajax.getJSON<SingleStudyLegacy>(
-    `${clinicalTrialsQueryURL}/studies/${NCTId}?format=json`
+  NCTId: string
+): Observable<ClinicalTrialsFullStudyResponse> => {
+  return ajax.getJSON<ClinicalTrialsFullStudyResponse>(
+    `${clinicalTrialsQueryURL}/full_studies?expr=AREA[${Field.NCTId}]${NCTId}&min_rnk=1&max_rnk=1&fmt=json`
   );
 };
-
 
 export const getClinicalTrialFieldValues = (
   fieldValue: Field

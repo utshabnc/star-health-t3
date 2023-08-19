@@ -72,7 +72,7 @@ interface StatusModule {
 }
 
 interface ProtocolSection {
-  descriptionModule: DescriptionModule;
+  DescriptionModule: DescriptionModule;
   IdentificationModule: IdentificationModule;
   StatusModule: StatusModule;
   ContactsLocationsModule: ContactsLocationsModule;
@@ -81,9 +81,9 @@ interface ProtocolSection {
   DesignModule: DesignModule;
 }
 
-export interface Study {
+interface Study {
   DerivedSection: object;
-  protocolSection: ProtocolSection;
+  ProtocolSection: ProtocolSection;
 }
 
 export interface FullStudy {
@@ -105,91 +105,4 @@ interface FullStudiesResponse {
 
 export interface ClinicalTrialsFullStudyResponse {
   FullStudiesResponse: FullStudiesResponse;
-}
-
-// LEGACY API
-
-interface DescriptionModuleLegacy {
-  briefSummary: string;
-  detailedDescription: string;
-}
-
-interface EligibilityModuleLegacy {
-  eligibilityCriteria: string;
-  sex: string;
-  healthyVolunteers: boolean;
-  maximumAge: string;
-  minimumAge: string;
-}
-
-interface DesignInfoLegacy {
-  allocation: string;
-  interventionModel: string;
-  interventionModelDescription: string;
-  maskingInfo: { 
-    masking: string ;
-    whoMasked:  string[];
-    maskingDescription: string;
-  };
-  primaryPurpose: string;
-}
-
-
-interface EnrollmentInfoLegacy {
-  count: number;
-  type: string;
-}
-
-
-interface DesignModuleLegacy {
-  designInfo: DesignInfoLegacy;
-  enrollmentInfo: EnrollmentInfoLegacy;
-  phases: string[] ;
-  studyType: string;
-}
-
-interface IdentificationModuleLegacy {
-  acronym: string;
-  briefTitle: string;
-  nctId: string;
-  officialTitle: string;
-  orgStudyIdInfo: { id: string };
-  organization: { class: string; fullName: string };
-}
-
-interface StatusModuleLegacy {
-  startDateStruct: { date: string; };
-  overallStatus: string;
-  primaryCompletionDateStruct: {
-    date: string;
-  };
-}
-
-interface ConditionsModuleLegacy {
-  conditions: string[];
-}
-
-interface ContactsLocationsModuleLegacy {
-  CentralContactEMail: string;
-  CentralContactName: string;
-  CentralContactPhone: string;
-  CentralContactRole: string;
-
-  overallOfficials: [ { name: string; affiliation : string;  role : string } ];
-}
-
-interface ProtocolSectionLegacy {
-  descriptionModule: DescriptionModuleLegacy;
-  eligibilityModule: EligibilityModuleLegacy;
-  designModule: DesignModuleLegacy;
-  identificationModule: IdentificationModuleLegacy;
-  statusModule: StatusModuleLegacy;
-  conditionsModule: ConditionsModuleLegacy;
-  contactsLocationsModule: ContactsLocationsModuleLegacy;
-}
-
-
-
-export interface SingleStudyLegacy {
-  protocolSection: ProtocolSectionLegacy;
 }

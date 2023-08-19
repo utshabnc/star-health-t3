@@ -2,81 +2,75 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { finalize } from "rxjs";
 import { getClinicalTrialByNCTId } from "../../components/ClinicalTrials/helpers";
-import type { SingleStudyLegacy } from '../../components/ClinicalTrials/ClinicalTrialsFullStudyResponse.model';
+import type { ClinicalTrialsFullStudyResponse } from '../../components/ClinicalTrials/ClinicalTrialsFullStudyResponse.model';
 import ExpansionPanel from "../../components/ExpansionPanel";
 import { MailIcon, OfficeBuildingIcon, PhoneIcon, UserIcon } from '@heroicons/react/solid';
 import Citation from "../../components/Citation";
 import BookmarkButton from "../../components/BookmarkButton";
 import { DataDirectoryCategory } from "../../utils/Enums/DataDirectoryCategory.enum";
-import { GetServerSideProps } from "next";
-import NoResultComponent from "../../components/NoResultComponent";
 
 const ClinicalTrialDetails = () => {
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
-  const [clinicalTrialData, setClinicalTrialData] = useState<SingleStudyLegacy>();
+  const [clinicalTrialData, setClinicalTrialData] = useState<ClinicalTrialsFullStudyResponse>();
   const [isCompared, setIsCompared] = useState(false);
   const navigate = useRouter();
   const NCTId = navigate.query?.NCTId as string;
-
-
-  
-
-
+ 
   useEffect(() => {
     if (NCTId) {
       setIsProcessing(true);
       const clinicalTrialRequest = getClinicalTrialByNCTId(NCTId);
       clinicalTrialRequest.pipe(
         finalize(() => setIsProcessing(false))
-      ).subscribe((data: SingleStudyLegacy) => {
+      ).subscribe((data: ClinicalTrialsFullStudyResponse) => {
         setClinicalTrialData(data);
       });
     }
 
   }, [NCTId]);
 
-  const SummaryJSX = clinicalTrialData?.protocolSection?.descriptionModule?.briefSummary ?
+  const SummaryJSX = clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.DescriptionModule?.BriefSummary ?
     <div className="text-purp-5 pt-1 sm:text-xs lg:text-lg whitespace-pre-wrap">
-      {clinicalTrialData?.protocolSection?.descriptionModule?.briefSummary || '-'}
+      {clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.DescriptionModule?.BriefSummary || '-'}
     </div> :
     <div>-</div>;
 
   const DescriptionJSX =
-    clinicalTrialData?.protocolSection.descriptionModule ?
+    clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.DescriptionModule ?
       <div className="flex-col">
         <div className="whitespace-pre-wrap text-purp-5 pt-1 sm:text-xs lg:text-lg">
-          {clinicalTrialData?.protocolSection?.descriptionModule?.detailedDescription || '-'}
+          {clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.DescriptionModule?.DetailedDescription || '-'}
         </div>
       </div> :
       <div>-</div>;
 
   const EligibilityJSX =
-    clinicalTrialData?.protocolSection.eligibilityModule ?
+    clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.EligibilityModule ?
       <div className="flex flex-col whitespace-pre-wrap text-purp-5 pt-1 sm:text-xs lg:text-lg">
         <div className="mb-2 flex flex-col">
-          <div>Gender: {clinicalTrialData?.protocolSection?.eligibilityModule?.sex || '-'}</div>
-          <div>Healthy Volunteers : {clinicalTrialData?.protocolSection?.eligibilityModule?.healthyVolunteers ? 'Yes' : 'No' || '-'}</div>
-          <div>Min Age: {clinicalTrialData?.protocolSection?.eligibilityModule?.minimumAge || '-'}</div>
-          <div>Max Age: {clinicalTrialData?.protocolSection?.eligibilityModule?.maximumAge || '-'}</div>
+          <div>Gender: {clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.EligibilityModule?.Gender || '-'}</div>
+          <div>Healthy Volunteers: {clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.EligibilityModule?.HealthyVolunteers || '-'}</div>
+          <div>Min Age: {clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.EligibilityModule?.MinimumAge || '-'}</div>
+          <div>Min Age: {clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.EligibilityModule?.MaximumAge || '-'}</div>
         </div>
         <div>
-          {clinicalTrialData?.protocolSection.eligibilityModule.eligibilityCriteria || '-'}
+          {clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.EligibilityModule?.EligibilityCriteria || '-'}
         </div>
       </div> :
       <div>-</div>;
 
-  const DesignJSX = clinicalTrialData?.protocolSection.designModule ?
+  const DesignJSX = clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.DesignModule ?
     <div className="flex flex-col whitespace-pre-wrap text-purp-5 pt-1 sm:text-xs lg:text-lg">
       <div className="mb-2 flex flex-col">
-        <div><span className="font-semibold">Description:</span> {clinicalTrialData?.protocolSection?.designModule?.designInfo?.interventionModelDescription || '-'}</div>
-        <div><span className="font-semibold">Study Type:</span> {clinicalTrialData?.protocolSection?.designModule?.studyType || '-'}</div>
-        <div><span className="font-semibold">Primary Purpose:</span> {clinicalTrialData?.protocolSection?.designModule?.designInfo?.primaryPurpose || '-'}</div>
-        <div><span className="font-semibold">Allocation:</span> {clinicalTrialData?.protocolSection?.designModule?.designInfo?.allocation || '-'}</div>
-        <div><span className="font-semibold">Intervention Model:</span> {clinicalTrialData?.protocolSection?.designModule?.designInfo?.interventionModel || '-'}</div>
-        <div><span className="font-semibold">Masking:</span> {clinicalTrialData?.protocolSection.designModule?.designInfo?.maskingInfo?.maskingDescription || '-'}</div>
-        <div><span className="font-semibold">Enrollment Count:</span> {clinicalTrialData?.protocolSection?.designModule?.enrollmentInfo?.count || '-'}</div>
-        <div><span className="font-semibold">Enrollment Type:</span> {clinicalTrialData?.protocolSection?.designModule?.enrollmentInfo?.type || '-'}</div>
-        <div><span className="font-semibold">Phase:</span> {clinicalTrialData?.protocolSection?.designModule?.phases.join(', ') || '-'}</div>
+        <div><span className="font-semibold">Description:</span> {clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.DesignModule.DesignInfo?.DesignInterventionModelDescription || '-'}</div>
+        <div><span className="font-semibold">Study Type:</span> {clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.DesignModule?.StudyType || '-'}</div>
+        <div><span className="font-semibold">Primary Purpose:</span> {clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.DesignModule.DesignInfo?.DesignPrimaryPurpose || '-'}</div>
+        <div><span className="font-semibold">Allocation:</span> {clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.DesignModule.DesignInfo?.DesignAllocation || '-'}</div>
+        <div><span className="font-semibold">Intervention Model:</span> {clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.DesignModule.DesignInfo?.DesignInterventionModel || '-'}</div>
+        <div><span className="font-semibold">Masking:</span> {clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.DesignModule.DesignInfo?.DesignMaskingInfo?.DesignMasking || '-'}</div>
+        <div><span className="font-semibold">Enrollment Count:</span> {clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.DesignModule.EnrollmentInfo?.EnrollmentCount || '-'}</div>
+        <div><span className="font-semibold">Enrollment Type:</span> {clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.DesignModule.EnrollmentInfo?.EnrollmentType || '-'}</div>
+        <div><span className="font-semibold">Phase:</span> {clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.DesignModule.PhaseList?.Phase.join(', ') || '-'}</div>
       </div>
     </div> :
     <div>-</div>;
@@ -94,7 +88,7 @@ const ClinicalTrialDetails = () => {
     const isTrialInCompareList = () => {
       if (typeof window !== 'undefined' && clinicalTrialData) {
         const compareTrials = JSON.parse(localStorage.getItem('compareTrials') || '[]');
-        return compareTrials.some((compTrial: SingleStudyLegacy) => compTrial?.protocolSection.identificationModule?.briefTitle === clinicalTrialData?.protocolSection.identificationModule?.briefTitle);
+        return compareTrials.some((compTrial: ClinicalTrialsFullStudyResponse) => compTrial?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.IdentificationModule?.BriefTitle === clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.IdentificationModule?.BriefTitle);
       }
       
       return false;
@@ -107,7 +101,8 @@ const ClinicalTrialDetails = () => {
     if (typeof window !== 'undefined') {
       const compareTrials = JSON.parse(localStorage.getItem('compareTrials') || '[]');
       console.log(compareTrials);
-      if (compareTrials.some((compTrial: SingleStudyLegacy) => compTrial?.protocolSection.identificationModule?.briefTitle === clinicalTrialData?.protocolSection.identificationModule?.briefTitle)) {
+      if (compareTrials.some((compTrial: ClinicalTrialsFullStudyResponse) => compTrial?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.IdentificationModule?.BriefTitle === clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.IdentificationModule?.BriefTitle)) {
+        
         return;
       }
       
@@ -122,7 +117,7 @@ const ClinicalTrialDetails = () => {
     if (typeof window !== 'undefined' && clinicalTrialData) {
       const compareTrials = JSON.parse(localStorage.getItem('compareTrials') || '[]');
 
-      const index = compareTrials.findIndex((compTrial: SingleStudyLegacy) => compTrial?.protocolSection.identificationModule?.briefTitle === clinicalTrialData?.protocolSection.identificationModule?.briefTitle);
+      const index = compareTrials.findIndex((compTrial: ClinicalTrialsFullStudyResponse) => compTrial?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.IdentificationModule?.BriefTitle === clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.IdentificationModule?.BriefTitle);
 
       if (index !== -1) {
         compareTrials.splice(index, 1);
@@ -135,9 +130,7 @@ const ClinicalTrialDetails = () => {
 
 
   return (
-    !NCTId ? (
-      <NoResultComponent title="Clinical Trail" />
-    ) : isProcessing ? (
+    isProcessing ? (
       <>
         <div className="bgColor">
           <div
@@ -208,14 +201,12 @@ const ClinicalTrialDetails = () => {
             <div className="flex flex-col justify-end sm:px-2 lg:px-28">
               <div className="flex flex-row justify-between	items-start">
                 <p className="text-2xl font-semibold text-violet-700">
-                  {clinicalTrialData?.protocolSection?.identificationModule?.briefTitle || '-'}
+                  {clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.IdentificationModule?.BriefTitle || '-'}
                 </p>
                 <div className="flex justify-end min-w-[375px]">
-                <div>
-                    <Citation title={clinicalTrialData?.protocolSection?.identificationModule?.briefTitle || '-'} />
-                  </div> 
+                  <Citation title={clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.IdentificationModule?.BriefTitle || '-'} />
                   <div className="ml-1">
-                    <BookmarkButton title={clinicalTrialData?.protocolSection?.identificationModule?.briefTitle || ''} categoryId={DataDirectoryCategory.ClinicalTrials} />
+                    <BookmarkButton title={clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.IdentificationModule?.BriefTitle || ''} categoryId={DataDirectoryCategory.ClinicalTrials} />
                   </div>
                   <div className="ml-1">
                   <button
@@ -239,24 +230,24 @@ const ClinicalTrialDetails = () => {
                     <hr />
                   </div>
                   <p className="text-purp-2 font-semibold sm:text-sm lg:text-xl mt-2 mb-2">
-                    Organization: <span className="font-normal">{clinicalTrialData?.protocolSection?.identificationModule?.organization?.fullName || '-'}</span>
+                    Organization: <span className="font-normal">{clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.IdentificationModule?.Organization?.OrgFullName || '-'}</span>
                   </p>
                   <p className="text-purp-2 font-semibold sm:text-sm lg:text-xl mt-2 mb-2">
-                    Status: <span className="font-normal">{clinicalTrialData?.protocolSection?.statusModule?.overallStatus || '-'}</span>
+                    Status: <span className="font-normal">{clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.StatusModule?.OverallStatus || '-'}</span>
                   </p>
                   <p className="text-purp-2 font-semibold sm:text-sm lg:text-xl mt-2 mb-2">
-                    Start Date: <span className="font-normal">{clinicalTrialData?.protocolSection?.statusModule?.startDateStruct?.date || '-'}</span>
+                    Start Date: <span className="font-normal">{clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.StatusModule?.StartDateStruct?.StartDate || '-'}</span>
                   </p>
                   <p className="text-purp-2 font-semibold sm:text-sm lg:text-xl mt-2 mb-2">
-                    Completion Date: <span className="font-normal">{clinicalTrialData?.protocolSection?.statusModule?.primaryCompletionDateStruct?.date || '-'}</span>
+                    Completion Date: <span className="font-normal">{clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.StatusModule?.PrimaryCompletionDateStruct?.PrimaryCompletionDate || '-'}</span>
                   </p>
                   <p className="text-purp-2 font-semibold sm:text-sm lg:text-xl mt-2 mb-2">
-                    Completion Date Status: <span className="font-normal">{clinicalTrialData?.protocolSection?.statusModule?.primaryCompletionDateStruct?.date || '-'}</span>
+                    Completion Date Status: <span className="font-normal">{clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.StatusModule?.PrimaryCompletionDateStruct?.PrimaryCompletionDateType || '-'}</span>
                   </p>
                   <p className="text-purp-2 font-semibold sm:text-sm lg:text-xl mt-2 mb-2">
                     Conditions: {
-                      clinicalTrialData?.protocolSection?.conditionsModule?.conditions?.length ?
-                        <span className="font-normal">{clinicalTrialData?.protocolSection?.conditionsModule?.conditions.join(', ')}</span> :
+                      clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.ConditionsModule.ConditionList.Condition.length ?
+                        <span className="font-normal">{clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.ConditionsModule.ConditionList.Condition.join(', ')}</span> :
                         '-'
                     }
                   </p>
@@ -269,22 +260,22 @@ const ClinicalTrialDetails = () => {
                     <div className="my-1">
                       <hr />
                     </div>
-                    {clinicalTrialData?.protocolSection?.contactsLocationsModule?.overallOfficials?.map((official, index) => {
+                    {clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.ContactsLocationsModule.OverallOfficialList?.OverallOfficial.map((official, index) => {
                       return <div key={index} className="flex flex-row mb-2">
-                        <div className="flex-auto">{official.name}</div>
+                        <div className="flex-auto">{official.OverallOfficialName}</div>
                         <div className="flex flex-col w-[50%]">
                           <div className="flex flex-row items-center">
                             <UserIcon className="h-4 w-4 mr-1" />
-                            {official?.role || '-'}
+                            {official?.OverallOfficialRole || '-'}
                           </div>
                           <div className="flex flex-row items-center">
                             <OfficeBuildingIcon className="h-4 w-4 mr-1" />
-                            {official?.affiliation || '-'}
+                            {official?.OverallOfficialAffiliation || '-'}
                           </div>
                         </div>
                       </div>
                     })}
-                    {/*{clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.ContactsLocationsModule.CentralContactList?.CentralContact.map((contact, index) => {
+                    {clinicalTrialData?.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.ContactsLocationsModule.CentralContactList?.CentralContact.map((contact, index) => {
                       return <div key={index} className="flex flex-row mb-2">
                         <div className="flex-auto">{contact.CentralContactName}</div>
                         <div className="flex flex-col w-[50%]">
@@ -302,7 +293,7 @@ const ClinicalTrialDetails = () => {
                           </div>
                         </div>
                       </div>
-                    })}*/}
+                    })}
                   </div>
                 </div>
               </div>
