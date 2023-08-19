@@ -15,7 +15,7 @@ const ClinicalTrialDetails = () => {
   const [isCompared, setIsCompared] = useState(false);
   const navigate = useRouter();
   const NCTId = navigate.query?.NCTId as string;
-
+ 
   useEffect(() => {
     if (NCTId) {
       setIsProcessing(true);

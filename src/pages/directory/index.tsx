@@ -14,8 +14,12 @@ import { catchError, finalize, tap } from "rxjs/operators";
 import ClinicalTrialsComponent from "../../components/ClinicalTrials";
 import type {
   ClinicalTrialsFieldValuesResponse,
+  ClinicalTrialsFieldValuesResponseLegacy,
+  FieldValueLegacy,
   FieldValue,
 } from "../../components/ClinicalTrials/ClinicalTrialsFieldValuesResponse.model";
+import type {  ClinicalTrialStudies , ClinicalTrialStudy} from "../../components/ClinicalTrials/ClinicalTrialsStudyFieldsResponse.model";
+
 import ClinicalTrialsFilters from "../../components/ClinicalTrials/ClinicalTrialsFilters";
 import AutocompleteInput from "../../components/AutoCompleteInput";
 import type {
@@ -140,8 +144,8 @@ export default function Directory() {
   const [selectedTab, setSelectedTab] = useState<Tab>(Tab.Transactions);
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
   const [clinicalTrialsData, setClinicalTrialsData] = useState<
-    ClinicalTrialsStudyFieldsResponse<ClinicalTrialsListItem>
-  >({} as ClinicalTrialsStudyFieldsResponse<ClinicalTrialsListItem>);
+  ClinicalTrialStudies<ClinicalTrialStudy>
+  >({} as ClinicalTrialStudies<ClinicalTrialStudy>);
   const [hospitalsData, setHospitalsData] = useState<Hospital[]>(
     [] as Hospital[]
   );
@@ -155,18 +159,18 @@ export default function Directory() {
   const [
     clinicalTrialOverallStatusFilters,
     setClinicalTrialOverallStatusFilters,
-  ] = useState<FieldValue[]>([] as FieldValue[]);
+  ] = useState<FieldValueLegacy[]>([] as FieldValueLegacy[]);
   const [clinicalTrialGenderFilters, setClinicalTrialGenderFilters] = useState<
-    FieldValue[]
-  >([] as FieldValue[]);
+    FieldValueLegacy[]
+  >([] as FieldValueLegacy[]);
   const [
     clinicalTrialHealthyVolunteersFilters,
     setClinicalTrialHealthyVolunteersFilters,
-  ] = useState<FieldValue[]>([] as FieldValue[]);
+  ] = useState<FieldValueLegacy[]>([] as FieldValueLegacy[]);
   const [clinicalTrialMinimumAgeFilters, setClinicalTrialMinimumAgeFilters] =
-    useState<FieldValue[]>([] as FieldValue[]);
+    useState<FieldValueLegacy[]>([] as FieldValueLegacy[]);
   const [clinicalTrialMaximumAgeFilters, setClinicalTrialMaximumAgeFilters] =
-    useState<FieldValue[]>([] as FieldValue[]);
+    useState<FieldValueLegacy[]>([] as FieldValueLegacy[]);
   const [genetics, setGenetics] = useState<Genetic[]>([] as Genetic[]);
   const [filteredGenetics, setFilteredGenetics] = useState<Genetic[]>(
     [] as Genetic[]
@@ -276,12 +280,12 @@ export default function Directory() {
     debounce((expr: string) => {
       setIsProcessing(true);
       const getClinicalTrialsListRequest: Observable<
-        ClinicalTrialsStudyFieldsResponse<ClinicalTrialsListItem>
+      ClinicalTrialStudies<ClinicalTrialStudy>
       > = getClinicalTrialsList(defaultClinicalTrialFields, expr);
       getClinicalTrialsListRequest
         .pipe(finalize(() => setIsProcessing(false)))
         .subscribe(
-          (data: ClinicalTrialsStudyFieldsResponse<ClinicalTrialsListItem>) => {
+          (data: ClinicalTrialStudies<ClinicalTrialStudy>) => {
             setClinicalTrialsData(data);
           }
         );
@@ -494,7 +498,7 @@ export default function Directory() {
       return [];
     }
     list.forEach((element: any) => {
-      output.push(element[name][0]);
+      output.push(element.protocolSection.identificationModule[name]);
     });
     return output;
   };
@@ -764,7 +768,7 @@ export default function Directory() {
 
                     // Gather requests for filters
                     const getClinicalTrialsListRequest: Observable<
-                      ClinicalTrialsStudyFieldsResponse<ClinicalTrialsListItem>
+                    ClinicalTrialStudies<ClinicalTrialStudy>
                     > = getClinicalTrialsList(defaultClinicalTrialFields);
                     const filterRequests = [
                       Field.OverallStatus,
@@ -774,35 +778,35 @@ export default function Directory() {
                       Field.MaximumAge,
                     ].map((field: Field) =>
                       getClinicalTrialFieldValues(field).pipe(
-                        tap((data: ClinicalTrialsFieldValuesResponse) => {
+                        tap((data: ClinicalTrialsFieldValuesResponseLegacy) => {
                           switch (field) {
                             case Field.OverallStatus: {
                               setClinicalTrialOverallStatusFilters(
-                                data.FieldValuesResponse.FieldValues
+                                data.topValues
                               );
                               break;
                             }
                             case Field.Gender: {
                               setClinicalTrialGenderFilters(
-                                data.FieldValuesResponse.FieldValues
+                                data.topValues
                               );
                               break;
                             }
                             case Field.HealthyVolunteers: {
                               setClinicalTrialHealthyVolunteersFilters(
-                                data.FieldValuesResponse.FieldValues
+                                data.topValues
                               );
                               break;
                             }
                             case Field.MinimumAge: {
                               setClinicalTrialMinimumAgeFilters(
-                                data.FieldValuesResponse.FieldValues
+                                data.topValues
                               );
                               break;
                             }
                             case Field.MaximumAge: {
                               setClinicalTrialMaximumAgeFilters(
-                                data.FieldValuesResponse.FieldValues
+                                data.topValues
                               );
                               break;
                             }
@@ -816,7 +820,7 @@ export default function Directory() {
                       getClinicalTrialsListRequest.pipe(
                         tap(
                           (
-                            data: ClinicalTrialsStudyFieldsResponse<ClinicalTrialsListItem>
+                            data: ClinicalTrialStudies<ClinicalTrialStudy>
                           ) => {
                             setClinicalTrialsData(data);
                           }
@@ -1073,8 +1077,8 @@ export default function Directory() {
                     expr={clinicalTrialSearchKeywordExpr}
                     setExpr={setClinicalTrialSearchKeywordExpr}
                     options={returnNamesOfClincalNames(
-                      clinicalTrialsData.StudyFieldsResponse
-                        ? clinicalTrialsData.StudyFieldsResponse.StudyFields
+                      clinicalTrialsData.studies
+                        ? clinicalTrialsData.studies
                         : [],
                       "BriefTitle"
                     )}

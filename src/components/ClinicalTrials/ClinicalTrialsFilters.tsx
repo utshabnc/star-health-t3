@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import type { FieldValue } from "./ClinicalTrialsFieldValuesResponse.model";
+import type { FieldValue , FieldValueLegacy} from "./ClinicalTrialsFieldValuesResponse.model";
+
 import { Field } from "./Fields.enum";
 
 export default function ClinicalTrialsFilters(
@@ -11,11 +12,11 @@ export default function ClinicalTrialsFilters(
     OverallStatus,
     OnSearchExprChange,
   }: {
-    Gender: FieldValue[],
-    HealthyVolunteers: FieldValue[],
-    MinimumAge: FieldValue[],
-    MaximumAge: FieldValue[],
-    OverallStatus: FieldValue[],
+    Gender: FieldValueLegacy[],
+    HealthyVolunteers: FieldValueLegacy[],
+    MinimumAge: FieldValueLegacy[],
+    MaximumAge: FieldValueLegacy[],
+    OverallStatus: FieldValueLegacy[],
     OnSearchExprChange: (expr: string) => void,
   }) {
   const [orgFullName, setOrgFullName] = useState<string>('');
@@ -102,7 +103,7 @@ export default function ClinicalTrialsFilters(
               >
                 {overallStatus.length < 1 ? <option value="">Status</option> : <option value="">-</option>}
                 {OverallStatus?.map((item, index: number) => (
-                  <option key={index} value={item.FieldValue}>{item.FieldValue}</option>
+                  <option key={index} value={item.value}>{item.value}</option>
                 ))}
               </select>
               <select
@@ -114,7 +115,7 @@ export default function ClinicalTrialsFilters(
               >
                 {gender.length < 1 ? <option value="">Gender</option> : <option value="">-</option>}
                 {Gender?.map((item, index: number) => (
-                  <option key={index} value={item.FieldValue}>{item.FieldValue}</option>
+                  <option key={index} value={item.value}>{item.value}</option>
                 ))}
               </select>
               <select
@@ -124,12 +125,12 @@ export default function ClinicalTrialsFilters(
                 }}
                 placeholder="Healthy Volunteers"
               >
-                {healthyVolunteers.length < 1 ? <option value="">Healthy Volunteers</option> : <option value="">-</option>}
-                {HealthyVolunteers?.map((item, index: number) => (
-                  <option key={index} value={item.FieldValue}>{item.FieldValue}</option>
-                ))}
+                 <option value="">Healthy Volunteers</option>
+
+                <option value="true">Yes</option>
+                <option value="false">No</option>
               </select>
-              <select
+              {/**<select
                 className='bg-violet-500 my-2 text-white w-[20%] p-1 rounded-lg mx-1 hover:bg-violet-400 hover:text-violet-900 cursor-pointer'
                 onChange={(e) => {
                   setMinimumAge(e.target.value);
@@ -152,7 +153,7 @@ export default function ClinicalTrialsFilters(
                 {MaximumAge?.map((item, index: number) => (
                   <option key={index} value={item.FieldValue}>{item.FieldValue}</option>
                 ))}
-              </select>
+                </select>**/}
             </div>
           </div>
         </div>
