@@ -163,14 +163,34 @@ export default function Directory() {
   const [clinicalTrialGenderFilters, setClinicalTrialGenderFilters] = useState<
     FieldValueLegacy[]
   >([] as FieldValueLegacy[]);
-  const [
-    clinicalTrialHealthyVolunteersFilters,
-    setClinicalTrialHealthyVolunteersFilters,
-  ] = useState<FieldValueLegacy[]>([] as FieldValueLegacy[]);
-  const [clinicalTrialMinimumAgeFilters, setClinicalTrialMinimumAgeFilters] =
+
+
+    const [clinicalTrialAcronymFilters, setClinicalTrialAcronymFilters] =
     useState<FieldValueLegacy[]>([] as FieldValueLegacy[]);
-  const [clinicalTrialMaximumAgeFilters, setClinicalTrialMaximumAgeFilters] =
+
+    const [clinicalTrialOfficialTitleFilters, setClinicalTrialOfficialTitleFilters] =
     useState<FieldValueLegacy[]>([] as FieldValueLegacy[]);
+
+    const [clinicalTrialConditionFilters, setClinicalTrialConditionFilters] =
+    useState<FieldValueLegacy[]>([] as FieldValueLegacy[]);
+
+    const [clinicalTrialLocationStateFilters, setClinicalTrialLocationStateFilters] =
+    useState<FieldValueLegacy[]>([] as FieldValueLegacy[]);
+
+    const [clinicalTrialLocationCityFilters, setClinicalTrialLocationCityFilters] =
+    useState<FieldValueLegacy[]>([] as FieldValueLegacy[]);
+
+    const [clinicalTrialLocationCountryFilters, setClinicalTrialLocationCountryFilters] =
+    useState<FieldValueLegacy[]>([] as FieldValueLegacy[]);
+
+    const [clinicalTrialCollaboratorNameFilters, setClinicalTrialCollaboratorNameFilters] =
+    useState<FieldValueLegacy[]>([] as FieldValueLegacy[]);
+
+    const [clinicalTrialLeadSponsorNameFilters, setClinicalTrialLeadSponsorNameFilters] =
+    useState<FieldValueLegacy[]>([] as FieldValueLegacy[]);
+
+
+
   const [genetics, setGenetics] = useState<Genetic[]>([] as Genetic[]);
   const [filteredGenetics, setFilteredGenetics] = useState<Genetic[]>(
     [] as Genetic[]
@@ -191,8 +211,7 @@ export default function Directory() {
     Field.NCTId,
     Field.OverallStatus,
   ];
-  const [selectedClinicalTrialFieldValues, setSelectedClinicalTrialFieldValues] = useState<Field>()
-  const session = useSession();
+
 
   const {
     data: searchResults,
@@ -462,6 +481,14 @@ export default function Directory() {
       Field.HealthyVolunteers,
       Field.MinimumAge,
       Field.MaximumAge,
+      Field.Acronym,
+      Field.OfficialTitle,
+      Field.Condition,
+      Field.LocationState,
+      Field.LocationCity,
+      Field.LocationCountry,
+      Field.CollaboratorName,
+      Field.LeadSponsorName
     ].map((field : Field) => getClinicalTrialFieldValuesRequest(field));
 
     const filterResponses = await Promise.all(filterRequests);
@@ -474,6 +501,14 @@ export default function Directory() {
         Field.HealthyVolunteers,
         Field.MinimumAge,
         Field.MaximumAge,
+        Field.Acronym,
+        Field.OfficialTitle,
+        Field.Condition,
+        Field.LocationState,
+        Field.LocationCity,
+        Field.LocationCountry,
+        Field.CollaboratorName,
+        Field.LeadSponsorName
       ][index]
 
       switch (field) {
@@ -483,14 +518,29 @@ export default function Directory() {
         case Field.Gender:
           setClinicalTrialGenderFilters(data.topValues)
         break;
-        case Field.HealthyVolunteers:
-          setClinicalTrialHealthyVolunteersFilters(data.topValues)
+        case Field.Acronym:
+          setClinicalTrialAcronymFilters(data.topValues)
         break;
-        case Field.MinimumAge:
-          setClinicalTrialMinimumAgeFilters(data.topValues)
+        case Field.OfficialTitle:
+          setClinicalTrialOfficialTitleFilters(data.topValues)
         break;
-        case Field.MaximumAge:
-          setClinicalTrialMaximumAgeFilters(data.topValues)
+        case Field.Condition:
+          setClinicalTrialConditionFilters(data.topValues)
+        break;
+        case Field.LocationState:
+          setClinicalTrialLocationStateFilters(data.topValues)
+        break;
+        case Field.LocationCity:
+          setClinicalTrialLocationCityFilters(data.topValues)
+        break;
+        case Field.LocationCountry:
+          setClinicalTrialLocationCountryFilters(data.topValues)
+        break;
+        case Field.CollaboratorName:
+          setClinicalTrialCollaboratorNameFilters(data.topValues)
+        break;
+        case Field.LeadSponsorName:
+          setClinicalTrialLeadSponsorNameFilters(data.topValues)
         break;
       }
     })
@@ -553,15 +603,12 @@ export default function Directory() {
       } else {
 
         searchExpr = clinicalTrialSearchKeywordExpr;
-        console.log(searchExpr)
 
       }
     } else {
       searchExpr = clinicalTrialSearchExpr;
-      console.log(searchExpr)
 
     }
-    console.log(searchExpr)
 
     clinicalTrialsSearch(searchExpr);
   }, [
@@ -1093,9 +1140,14 @@ export default function Directory() {
               <div className="relative">
                 <ClinicalTrialsFilters
                   Gender={clinicalTrialGenderFilters}
-                  HealthyVolunteers={clinicalTrialHealthyVolunteersFilters}
-                  MinimumAge={clinicalTrialMinimumAgeFilters}
-                  MaximumAge={clinicalTrialMaximumAgeFilters}
+                  Acronym={clinicalTrialAcronymFilters}
+                  OfficialTitle={clinicalTrialOfficialTitleFilters}
+                  Condition={clinicalTrialConditionFilters}
+                  LocationState={clinicalTrialLocationStateFilters}
+                  LocationCity={clinicalTrialLocationCityFilters}
+                  LocationCountry={clinicalTrialLocationCountryFilters}
+                  CollaboratorName={clinicalTrialCollaboratorNameFilters}
+                  LeadSponsorName={clinicalTrialLeadSponsorNameFilters}
                   OverallStatus={clinicalTrialOverallStatusFilters}
                   OnSearchExprChange={(expr: string) => {
                     setClinicalTrialSearchExpr(expr);

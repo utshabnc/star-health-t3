@@ -1,3 +1,5 @@
+//  Deprecated
+
 import type { Observable } from "rxjs";
 import { ajax } from "rxjs/ajax";
 import type { ClinicalTrialsFieldValuesResponse } from "./ClinicalTrialsFieldValuesResponse.model";

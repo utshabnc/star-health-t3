@@ -6,16 +6,26 @@ import { Field } from "./Fields.enum";
 export default function ClinicalTrialsFilters(
   {
     Gender,
-    HealthyVolunteers,
-    MaximumAge,
-    MinimumAge,
+    Acronym,
+    OfficialTitle,
+    LocationState,
+    LocationCity,
+    LocationCountry,
+    CollaboratorName,
+    LeadSponsorName,
+    Condition,
     OverallStatus,
     OnSearchExprChange,
   }: {
     Gender: FieldValueLegacy[],
-    HealthyVolunteers: FieldValueLegacy[],
-    MinimumAge: FieldValueLegacy[],
-    MaximumAge: FieldValueLegacy[],
+    Acronym: FieldValueLegacy[],
+    OfficialTitle: FieldValueLegacy[],
+    Condition: FieldValueLegacy[],
+    LocationState : FieldValueLegacy[],
+    LocationCity : FieldValueLegacy[],
+    LocationCountry : FieldValueLegacy[],
+    CollaboratorName : FieldValueLegacy[],
+    LeadSponsorName : FieldValueLegacy[],
     OverallStatus: FieldValueLegacy[],
     OnSearchExprChange: (expr: string) => void,
   }) {
@@ -24,9 +34,15 @@ export default function ClinicalTrialsFilters(
   const [overallStatus, setOverallStatus] = useState<string>('');
   const [gender, setGender] = useState<string>('');
   const [healthyVolunteers, setHealthyVolunteers] = useState<string>('');
-  const [minimumAge, setMinimumAge] = useState<string>('');
-  const [maximumAge, setMaximumAge] = useState<string>('');
   const [searchExpr, setSearchExpr] = useState<string>('');
+  const [condition, setCondition] = useState<string>('');
+  const [locationState, setLocationState] = useState<string>('');
+  const [locationCity, setLocationCity] = useState<string>('');
+  const [locationCountry, setLocationCountry] = useState<string>('');
+  const [collaboratorName, setCollaboratorName] = useState<string>('');
+  const [leadSponsorName, setLeadSponsorName] = useState<string>('');
+  const [acronym, setAcronym] = useState<string>('');
+  const [officialTitle, setOfficialTitle] = useState<string>('');
 
   useEffect(() => {
     //Search Expression
@@ -46,15 +62,32 @@ export default function ClinicalTrialsFilters(
     if (healthyVolunteers.length > 1) {
       searchExprArr.push(`AREA[${Field.HealthyVolunteers}]${healthyVolunteers}`);
     }
-    if (minimumAge.length > 1) {
-      searchExprArr.push(`AREA[${Field.MinimumAge}]${minimumAge}`);
+    if(condition.length > 1){
+      searchExprArr.push(`AREA[${Field.Condition}]${condition}`);
     }
-    if (maximumAge.length > 1) {
-      searchExprArr.push(`AREA[${Field.MaximumAge}]${maximumAge}`);
+    if(locationState.length > 1){
+      searchExprArr.push(`AREA[${Field.LocationState}]${locationState}`);
     }
-
+    if(locationCity.length > 1){
+      searchExprArr.push(`AREA[${Field.LocationCity}]${locationCity}`);
+    }
+    if(locationCountry.length > 1){
+      searchExprArr.push(`AREA[${Field.LocationCountry}]${locationCountry}`);
+    }
+    if(collaboratorName.length > 1){
+      searchExprArr.push(`AREA[${Field.CollaboratorName}]${collaboratorName}`);
+    }
+    if(leadSponsorName.length > 1){
+      searchExprArr.push(`AREA[${Field.LeadSponsorName}]${leadSponsorName}`);
+    }
+    if(acronym.length > 1){
+      searchExprArr.push(`AREA[${Field.Acronym}]${acronym}`);
+    }
+    if(officialTitle.length > 1){
+      searchExprArr.push(`AREA[${Field.OfficialTitle}]${officialTitle}`);
+    }
     setSearchExpr(searchExprArr.join(' AND '));
-  }, [gender, healthyVolunteers, maximumAge, minimumAge, orgFullName, overallOfficialName, overallStatus])
+  }, [gender, healthyVolunteers,  orgFullName, overallOfficialName, overallStatus, condition, locationState, locationCity, locationCountry, collaboratorName, leadSponsorName, acronym, officialTitle])
 
   useEffect(() => {
     OnSearchExprChange(searchExpr)
@@ -65,18 +98,19 @@ export default function ClinicalTrialsFilters(
     <>
       <div className='w-full'>
         <div>
-          <div className="filters flex w-full items-center">
-            <p className='text-violet-700 w-20 text-lg  my-2'>
+        <p className='text-violet-700 w-20 text-lg  my-2'>
               Filter By:
             </p>
-            <div className="wrap-filters flex w-full items-center py-2">
+          <div className="filters flex w-full items-center">
+           
+            <div className="py-2 flex flex-wrap ">
               <input
                 type="text"
                 placeholder={
                   `Organization`
                 }
                 className={`
-                          bg-violet-100 border border-violet-900 my-2 placeholder:text-violet-800 text-slate-900 w-[30%] p-1 rounded-lg mx-1 hover:bg-violet-300 hover:text-violet-900 cursor-pointer`}
+                          bg-violet-100 border border-violet-900 my-2 placeholder:text-violet-800 text-slate-900 w-[20%] p-1 rounded-lg mx-1 hover:bg-violet-300 hover:text-violet-900 cursor-pointer`}
                 value={orgFullName}
                 onChange={(e) => {
                   setOrgFullName(e.target.value);
@@ -88,36 +122,40 @@ export default function ClinicalTrialsFilters(
                   `Contact`
                 }
                 className={`
-                          bg-violet-100 border border-violet-900 my-2 placeholder:text-violet-800 text-slate-900 w-[30%] p-1 rounded-lg mx-1 hover:bg-violet-300 hover:text-violet-900 cursor-pointer`}
+                          bg-violet-100 border border-violet-900 my-2 placeholder:text-violet-800 text-slate-900 w-[20%] p-1 rounded-lg mx-1 hover:bg-violet-300 hover:text-violet-900 cursor-pointer`}
                 value={overallOfficialName}
                 onChange={(e) => {
                   setOverallOfficialName(e.target.value);
                 }}
               />
-              <select
-                className='bg-violet-500 my-2 text-white w-[20%] p-1 rounded-lg mx-1 hover:bg-violet-400 hover:text-violet-900 cursor-pointer'
-                onChange={(e) => {
-                  setOverallStatus(e.target.value);
-                }}
-                placeholder="Status"
-              >
-                {overallStatus.length < 1 ? <option value="">Status</option> : <option value="">-</option>}
-                {OverallStatus?.map((item, index: number) => (
-                  <option key={index} value={item.value}>{item.value}</option>
-                ))}
-              </select>
-              <select
-                className='bg-violet-500 my-2 text-white w-[20%] p-1 rounded-lg mx-1 hover:bg-violet-400 hover:text-violet-900 cursor-pointer'
-                onChange={(e) => {
-                  setGender(e.target.value);
-                }}
-                placeholder="Gender"
-              >
-                {gender.length < 1 ? <option value="">Gender</option> : <option value="">-</option>}
-                {Gender?.map((item, index: number) => (
-                  <option key={index} value={item.value}>{item.value}</option>
-                ))}
-              </select>
+              
+                  <select
+                    className='bg-violet-500 my-2 text-white w-[20%] p-1 rounded-lg mx-1 hover:bg-violet-400 hover:text-violet-900 cursor-pointer'
+                    onChange={(e) => {
+                      setOverallStatus(e.target.value);
+                    }}
+                    placeholder="Status"
+                  >
+                    {overallStatus.length < 1 ? <option value="">Status</option> : <option value="">-</option>}
+                    {OverallStatus?.map((item, index: number) => (
+                      <option key={index} value={item.value}>{item.value}</option>
+                    ))}
+                  </select>
+              
+             
+                <select
+                  className='bg-violet-500 my-2 text-white w-[20%] p-1 rounded-lg mx-1 hover:bg-violet-400 hover:text-violet-900 cursor-pointer'
+                  onChange={(e) => {
+                    setGender(e.target.value);
+                  }}
+                  placeholder="Gender"
+                >
+                  {gender.length < 1 ? <option value="">Gender</option> : <option value="">-</option>}
+                  {Gender?.map((item, index: number) => (
+                    <option key={index} value={item.value}>{item.value}</option>
+                  ))}
+                </select>
+              
               <select
                 className='bg-violet-500 my-2 text-white w-[20%] p-1 rounded-lg mx-1 hover:bg-violet-400 hover:text-violet-900 cursor-pointer'
                 onChange={(e) => {
@@ -130,30 +168,97 @@ export default function ClinicalTrialsFilters(
                 <option value="true">Yes</option>
                 <option value="false">No</option>
               </select>
-              {/**<select
-                className='bg-violet-500 my-2 text-white w-[20%] p-1 rounded-lg mx-1 hover:bg-violet-400 hover:text-violet-900 cursor-pointer'
-                onChange={(e) => {
-                  setMinimumAge(e.target.value);
-                }}
-                placeholder="Minimum Age"
+              <select
+              className='bg-violet-500 my-2 text-white w-[20%] p-1 rounded-lg mx-1 hover:bg-violet-400 hover:text-violet-900 cursor-pointer'
+              onChange={(e) => {
+                setAcronym(e.target.value);
+              }}
               >
-                {minimumAge.length < 1 ? <option value="">Minimum Age</option> : <option value="">-</option>}
-                {MinimumAge?.map((item, index: number) => (
-                  <option key={index} value={item.FieldValue}>{item.FieldValue}</option>
+                {acronym.length < 1 ? <option value="">Acronym</option> : <option value="">-</option>}
+                {Acronym?.map((item, index: number) => (
+                  <option key={index} value={item.value}>{item.value}</option>
+                ))}
+              </select>
+              
+              <select
+              className='bg-violet-500 my-2 text-white w-[20%] p-1 rounded-lg mx-1 hover:bg-violet-400 hover:text-violet-900 cursor-pointer'
+              onChange={(e) => {
+                setOfficialTitle(e.target.value);
+              }}
+              >
+                {officialTitle.length < 1 ? <option value="">Official Title</option> : <option value="">-</option>}
+                {OfficialTitle?.map((item, index: number) => (
+                  <option key={index} value={item.value}>{item.value}</option>
                 ))}
               </select>
               <select
-                className='bg-violet-500 my-2 text-white w-[20%] p-1 rounded-lg mx-1 hover:bg-violet-400 hover:text-violet-900 cursor-pointer'
-                onChange={(e) => {
-                  setMaximumAge(e.target.value);
-                }}
-                placeholder="Maximum Age"
+              className='bg-violet-500 my-2 text-white w-[20%] p-1 rounded-lg mx-1 hover:bg-violet-400 hover:text-violet-900 cursor-pointer'
+              onChange={(e) => {
+                setCondition(e.target.value);
+              }}
               >
-                {maximumAge.length < 1 ? <option value="">Maximum Age</option> : <option value="">-</option>}
-                {MaximumAge?.map((item, index: number) => (
-                  <option key={index} value={item.FieldValue}>{item.FieldValue}</option>
+                {condition.length < 1 ? <option value="">Condition</option> : <option value="">-</option>}
+                {Condition?.map((item, index: number) => (
+                  <option key={index} value={item.value}>{item.value}</option>
                 ))}
-                </select>**/}
+              </select>
+              <select
+              className='bg-violet-500 my-2 text-white w-[20%] p-1 rounded-lg mx-1 hover:bg-violet-400 hover:text-violet-900 cursor-pointer'
+              onChange={(e) => {
+                setLocationState(e.target.value);
+              }}
+              >
+                {locationState.length < 1 ? <option value="">Location State</option> : <option value="">-</option>}
+                {LocationState?.map((item, index: number) => (
+                  <option key={index} value={item.value}>{item.value}</option>
+                
+                ))}
+              </select>
+              <select
+              className='bg-violet-500 my-2 text-white w-[20%] p-1 rounded-lg mx-1 hover:bg-violet-400 hover:text-violet-900 cursor-pointer'
+              onChange={(e) => {
+                setLocationCity(e.target.value);
+              }}
+              >
+                {locationCity.length < 1 ? <option value="">Location City</option> : <option value="">-</option>}
+                {LocationCity?.map((item, index: number) => (
+                  <option key={index} value={item.value}>{item.value}</option>
+                ))}
+              </select>
+              <select
+              className='bg-violet-500 my-2 text-white w-[20%] p-1 rounded-lg mx-1 hover:bg-violet-400 hover:text-violet-900 cursor-pointer'
+              onChange={(e) => {
+                setLocationCountry(e.target.value);
+              }}
+              >
+                {locationCountry.length < 1 ? <option value="">Location Country</option> : <option value="">-</option>}
+                {LocationCountry?.map((item, index: number) => (
+                  <option key={index} value={item.value}>{item.value}</option>
+                ))}
+              </select>
+              <select
+              className='bg-violet-500 my-2 text-white w-[20%] p-1 rounded-lg mx-1 hover:bg-violet-400 hover:text-violet-900 cursor-pointer'
+              onChange={(e) => {
+                setCollaboratorName(e.target.value);
+              }}
+              >
+                {collaboratorName.length < 1 ? <option value="">Collaborator Name</option> : <option value="">-</option>}
+                {CollaboratorName?.map((item, index: number) => (
+                  <option key={index} value={item.value}>{item.value}</option>
+                ))}
+              </select>
+              <select
+              className='bg-violet-500 my-2 text-white w-[20%] p-1 rounded-lg mx-1 hover:bg-violet-400 hover:text-violet-900 cursor-pointer'
+              onChange={(e) => {
+                setLeadSponsorName(e.target.value);
+              }}
+              >
+                {leadSponsorName.length < 1 ? <option value="">Lead Sponsor Name</option> : <option value="">-</option>}
+                {LeadSponsorName?.map((item, index: number) => (
+                  <option key={index} value={item.value}>{item.value}</option>
+                ))}
+              </select>
+
             </div>
           </div>
         </div>

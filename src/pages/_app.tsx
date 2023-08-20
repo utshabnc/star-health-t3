@@ -39,7 +39,6 @@ const MyApp: AppType<{ session: Session | null }> = ({
 }) => {
 
   return (
-    <QueryClientProvider client={queryClient}>
       <SessionProvider session={session}>
         <Head>
           <title>StarHealth</title>
@@ -50,8 +49,7 @@ const MyApp: AppType<{ session: Session | null }> = ({
           <ToastContainer />
         </NavFoot>
       </SessionProvider>
-      <ReactQueryDevtools initialIsOpen={false} />
-    </QueryClientProvider>
+      
   );
 };
 

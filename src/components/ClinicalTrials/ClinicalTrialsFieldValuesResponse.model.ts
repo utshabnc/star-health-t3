@@ -16,9 +16,6 @@ export interface FieldValueLegacy {
   studiesCount : number;
 }
 
-
-
-
 export interface ClinicalTrialsFieldValuesResponseLegacy {
   topValues :  FieldValueLegacy[] ;
   
