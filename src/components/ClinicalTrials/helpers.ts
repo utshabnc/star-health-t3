@@ -10,8 +10,9 @@ import { Field } from "./Fields.enum";
 import type {  ClinicalTrialStudies , ClinicalTrialStudy} from "./ClinicalTrialsStudyFieldsResponse.model";
 import type { ClinicalTrialsFieldValuesResponseLegacy, FieldValueLegacy } from "./ClinicalTrialsFieldValuesResponse.model";
 import type { SingleStudyLegacy } from '../../components/ClinicalTrials/ClinicalTrialsFullStudyResponse.model';
+import { useQuery } from "react-query";
 
-const clinicalTrialsQueryURL = "https://clinicaltrials.gov/api/v2";
+const clinicalTrialsQueryURL = "https://classic.clinicaltrials.gov/api/v2";
 
 export const getClinicalTrialsList = (
   fields: Field[],
@@ -21,7 +22,12 @@ export const getClinicalTrialsList = (
   return ajax.getJSON<
   ClinicalTrialStudies<ClinicalTrialStudy>
   >(
-    `${clinicalTrialsQueryURL}/studies?format=json&pageSize=100&fields=${fields}&query.term=${expr}`
+    `${clinicalTrialsQueryURL}/studies?format=json&pageSize=100&fields=${fieldsToStr}&query.term=${expr}` , 
+    {
+      origin: "http://localhost:3000", // Replace this with your allowed origin(s), or "*" to allow all origins
+      methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+      crossOrgin : "true"
+    }
   );
 };
 
@@ -30,7 +36,12 @@ export const getClinicalTrialByNCTId = (
   
 ): Observable<SingleStudyLegacy> => {
   return ajax.getJSON<SingleStudyLegacy>(
-    `${clinicalTrialsQueryURL}/studies/${NCTId}?format=json`
+    `${clinicalTrialsQueryURL}/studies/${NCTId}?format=json`,
+    {
+      origin: "http://localhost:3000", // Replace this with your allowed origin(s), or "*" to allow all origins
+      methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+      crossOrgin : "true"
+    }
   );
 };
 
@@ -39,6 +50,14 @@ export const getClinicalTrialFieldValues = (
   fieldValue: Field
 ): Observable<ClinicalTrialsFieldValuesResponseLegacy> => {
   return ajax.getJSON<ClinicalTrialsFieldValuesResponseLegacy>(
-    `${clinicalTrialsQueryURL}/stats/fieldValues/${fieldValue}`
+    `${clinicalTrialsQueryURL}/stats/fieldValues/${fieldValue}`,
+    {
+      origin: "http://localhost:3000", // Replace this with your allowed origin(s), or "*" to allow all origins
+      methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+      crossOrgin : "true",
+      "Access-Control-Allow-Origin" : "*",
+    }
   );
 };
+
+

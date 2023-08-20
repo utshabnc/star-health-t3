@@ -11,26 +11,35 @@ import { DataDirectoryCategory } from "../../utils/Enums/DataDirectoryCategory.e
 import type { SingleStudyLegacy } from '../../components/ClinicalTrials/ClinicalTrialsFullStudyResponse.model';
 import NoResultComponent from "../../components/NoResultComponent";
 
-
 const ClinicalTrialDetails = () => {
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
   const [clinicalTrialData, setClinicalTrialData] = useState<SingleStudyLegacy>();
   const [isCompared, setIsCompared] = useState(false);
   const navigate = useRouter();
-  const NCTId = navigate.query?.NCTId as string;
- 
-  useEffect(() => {
-    if (NCTId) {
-      setIsProcessing(true);
-      const clinicalTrialRequest = getClinicalTrialByNCTId(NCTId);
-      clinicalTrialRequest.pipe(
-        finalize(() => setIsProcessing(false))
-      ).subscribe((data: SingleStudyLegacy) => {
-        setClinicalTrialData(data);
-      });
-    }
 
-  }, [NCTId]);
+  const NCTId = navigate.query?.NCTId as string;
+
+
+    useEffect(() => {
+     if(NCTId) {
+      try {
+          setIsProcessing(true)
+          fetch(`/api/clinical-trial/clinical-trial?NCTId=${NCTId}`)
+          .then((res) => res.json())
+          .then((data) => {
+          setClinicalTrialData(data)
+        })
+      }
+      catch (error) {
+        console.log('An Error occurred   ',error)
+      }
+      finally{
+        setIsProcessing(false)
+      }
+     }
+    }, [NCTId])
+ 
+  
 
   const SummaryJSX = clinicalTrialData?.protocolSection?.descriptionModule?.briefSummary ?
   <div className="text-purp-5 pt-1 sm:text-xs lg:text-lg whitespace-pre-wrap">

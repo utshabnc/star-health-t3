@@ -12,6 +12,8 @@ import "../styles/globals.css";
 import { NavFoot } from "../components/NavFoot";
 import Head from "next/head";
 
+import { queryClient, QueryClientProvider , ReactQueryDevtools } from "../utils/queryClient";
+
 {
   /* <React.StrictMode>
     <BrowserRouter>
@@ -37,16 +39,19 @@ const MyApp: AppType<{ session: Session | null }> = ({
 }) => {
 
   return (
-    <SessionProvider session={session}>
-      <Head>
-        <title>StarHealth</title>
-        <link href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.css" rel="stylesheet" type="text/css" />
-      </Head>
-      <NavFoot>
-        <Component {...pageProps} />
-        <ToastContainer />
-      </NavFoot>
-    </SessionProvider>
+    <QueryClientProvider client={queryClient}>
+      <SessionProvider session={session}>
+        <Head>
+          <title>StarHealth</title>
+          <link href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.css" rel="stylesheet" type="text/css" />
+        </Head>
+        <NavFoot>
+          <Component {...pageProps} />
+          <ToastContainer />
+        </NavFoot>
+      </SessionProvider>
+      <ReactQueryDevtools initialIsOpen={false} />
+    </QueryClientProvider>
   );
 };
 
