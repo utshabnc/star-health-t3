@@ -191,6 +191,7 @@ export default function Directory() {
     Field.NCTId,
     Field.OverallStatus,
   ];
+  const [selectedClinicalTrialFieldValues, setSelectedClinicalTrialFieldValues] = useState<Field>()
   const session = useSession();
 
   const {
@@ -263,6 +264,8 @@ export default function Directory() {
     localStorage.setItem("curDirTab", JSON.stringify({ tab, subject }));
   };
 
+ 
+
   useEffect(() => {
     const searchParam = querySearch["search"] as string;
     if (searchParam) {
@@ -277,18 +280,24 @@ export default function Directory() {
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const clinicalTrialsSearch = useCallback(
-    debounce((expr: string) => {
+    debounce( async (expr: string) => {
       setIsProcessing(true);
-      const getClinicalTrialsListRequest: Observable<
-      ClinicalTrialStudies<ClinicalTrialStudy>
-      > = getClinicalTrialsList(defaultClinicalTrialFields, expr);
-      getClinicalTrialsListRequest
-        .pipe(finalize(() => setIsProcessing(false)))
-        .subscribe(
-          (data: ClinicalTrialStudies<ClinicalTrialStudy>) => {
-            setClinicalTrialsData(data);
-          }
-        );
+      
+     try {
+      const response = await fetch(`/api/clinical-trial/all-trials?fields=${defaultClinicalTrialFields.join(",")}&expr=${expr}`);
+      const data = await response.json();
+      if(response.status != 200) {
+        setError(data);
+      } else {
+        setClinicalTrialsData(data);
+      }
+     }
+     catch(error) {
+      setError(error);
+     }
+     finally {
+      setIsProcessing(false);
+     }
     }, 1000),
     []
   );
@@ -406,6 +415,88 @@ export default function Directory() {
     }
   }, [selectedTab]);
 
+
+  useEffect(() => {
+    if (selectedTab == Tab.ClinicalTrials) {
+      const fetchClinicalTrials = async () => {
+        try {
+          setIsApiProcessing(true);
+          const response = await fetch(`/api/clinical-trial/all-trials?fields=${defaultClinicalTrialFields.join(",")}`);
+          const data = await response.json();
+          if (response.status != 200) {
+            setError(data);
+          } else {
+            setClinicalTrialsData(data);
+          }
+        } catch (error) {
+          setError(error);
+        } finally {
+          setIsApiProcessing(false);
+        }
+      };
+      fetchClinicalTrials();
+      loadFilterData()
+    }
+  }, [selectedTab])
+
+  const getClinicalTrialFieldValuesRequest = async (field :  Field) => {
+    try {
+      const response = await fetch(`/api/clinical-trial/getFieldValues?fieldValue=${field}`);
+      const data = await response.json();
+      if (response.status != 200) {
+        setError(data);
+      }
+      else {
+        return data;
+      }
+    }
+    catch (error) {
+      setError(error);
+    }
+  }
+
+  const loadFilterData = async () => {
+    const filterRequests = [
+      Field.OverallStatus,
+      Field.Gender,
+      Field.HealthyVolunteers,
+      Field.MinimumAge,
+      Field.MaximumAge,
+    ].map((field : Field) => getClinicalTrialFieldValuesRequest(field));
+
+    const filterResponses = await Promise.all(filterRequests);
+   
+
+    filterResponses.forEach((data , index) => {
+      const field  = [
+        Field.OverallStatus,
+        Field.Gender,
+        Field.HealthyVolunteers,
+        Field.MinimumAge,
+        Field.MaximumAge,
+      ][index]
+
+      switch (field) {
+        case Field.OverallStatus:
+          setClinicalTrialOverallStatusFilters(data.topValues)
+        break;
+        case Field.Gender:
+          setClinicalTrialGenderFilters(data.topValues)
+        break;
+        case Field.HealthyVolunteers:
+          setClinicalTrialHealthyVolunteersFilters(data.topValues)
+        break;
+        case Field.MinimumAge:
+          setClinicalTrialMinimumAgeFilters(data.topValues)
+        break;
+        case Field.MaximumAge:
+          setClinicalTrialMaximumAgeFilters(data.topValues)
+        break;
+      }
+    })
+    
+  }
+
   useEffect(() => {
     if (selectedTab == Tab.HospitalOwners) {
       const data = HospitalOwnerData.data;
@@ -460,11 +551,18 @@ export default function Directory() {
       if (clinicalTrialSearchExpr.length > 1) {
         searchExpr = `${clinicalTrialSearchKeywordExpr} AND ${clinicalTrialSearchExpr}`;
       } else {
+
         searchExpr = clinicalTrialSearchKeywordExpr;
+        console.log(searchExpr)
+
       }
     } else {
       searchExpr = clinicalTrialSearchExpr;
+      console.log(searchExpr)
+
     }
+    console.log(searchExpr)
+
     clinicalTrialsSearch(searchExpr);
   }, [
     clinicalTrialsSearch,
@@ -765,71 +863,8 @@ export default function Directory() {
                   onClick={() => {
                     handleTabClick(Tab.ClinicalTrials, "");
                     setIsProcessing(true);
-
-                    // Gather requests for filters
-                    const getClinicalTrialsListRequest: Observable<
-                    ClinicalTrialStudies<ClinicalTrialStudy>
-                    > = getClinicalTrialsList(defaultClinicalTrialFields);
-                    const filterRequests = [
-                      Field.OverallStatus,
-                      Field.Gender,
-                      Field.HealthyVolunteers,
-                      Field.MinimumAge,
-                      Field.MaximumAge,
-                    ].map((field: Field) =>
-                      getClinicalTrialFieldValues(field).pipe(
-                        tap((data: ClinicalTrialsFieldValuesResponseLegacy) => {
-                          switch (field) {
-                            case Field.OverallStatus: {
-                              setClinicalTrialOverallStatusFilters(
-                                data.topValues
-                              );
-                              break;
-                            }
-                            case Field.Gender: {
-                              setClinicalTrialGenderFilters(
-                                data.topValues
-                              );
-                              break;
-                            }
-                            case Field.HealthyVolunteers: {
-                              setClinicalTrialHealthyVolunteersFilters(
-                                data.topValues
-                              );
-                              break;
-                            }
-                            case Field.MinimumAge: {
-                              setClinicalTrialMinimumAgeFilters(
-                                data.topValues
-                              );
-                              break;
-                            }
-                            case Field.MaximumAge: {
-                              setClinicalTrialMaximumAgeFilters(
-                                data.topValues
-                              );
-                              break;
-                            }
-                          }
-                        })
-                      )
-                    );
-
-                    // Execute filter requests all together
-                    forkJoin([
-                      getClinicalTrialsListRequest.pipe(
-                        tap(
-                          (
-                            data: ClinicalTrialStudies<ClinicalTrialStudy>
-                          ) => {
-                            setClinicalTrialsData(data);
-                          }
-                        )
-                      ),
-                      ...filterRequests,
-                    ])
-                      .pipe(finalize(() => setIsProcessing(false)))
-                      .subscribe();
+                    loadFilterData();
+                    
                   }}
                   className={`whitespace-nowrap border-b-2 hover:border-zinc-500 ${
                     selectedTab === Tab.ClinicalTrials
@@ -1080,7 +1115,7 @@ export default function Directory() {
                       clinicalTrialsData.studies
                         ? clinicalTrialsData.studies
                         : [],
-                      "BriefTitle"
+                      "briefTitle"
                     )}
                   ></AutocompleteInput>
                 </div>
