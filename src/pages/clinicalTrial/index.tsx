@@ -15,29 +15,41 @@ const ClinicalTrialDetails = () => {
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
   const [clinicalTrialData, setClinicalTrialData] = useState<SingleStudyLegacy>();
   const [isCompared, setIsCompared] = useState(false);
+  const [isError, setIsError] = useState(false);
   const navigate = useRouter();
 
   const NCTId = navigate.query?.NCTId as string;
 
 
-    useEffect(() => {
-     if(NCTId) {
-      try {
-          setIsProcessing(true)
-          fetch(`/api/clinical-trial/clinical-trial?NCTId=${NCTId}`)
-          .then((res) => res.json())
-          .then((data) => {
-          setClinicalTrialData(data)
+  useEffect(() => {
+    console.log(isError);
+  
+    if (NCTId) {
+      setIsProcessing(true);
+  
+      fetch(`/api/clinical-trial/clinical-trial?NCTId=${NCTId}`)
+        .then((res) => {
+          if (!res.ok) {
+           setIsError(true);
+          }
+          return res.json();
         })
-      }
-      catch (error) {
-        console.log('An Error occurred   ',error)
-      }
-      finally{
-        setIsProcessing(false)
-      }
-     }
-    }, [NCTId])
+        .then((data) => {
+          setClinicalTrialData(data);
+        })
+        .catch((error) => {
+          setIsError(true); // Network or other fetch error
+          console.log('An Error occurred: ', error);
+        })
+        .finally(() => {
+          setIsProcessing(false);
+        });
+    }
+  }, [NCTId]);
+  
+
+
+
  
   
 
@@ -48,7 +60,7 @@ const ClinicalTrialDetails = () => {
   <div>-</div>;
 
 const DescriptionJSX =
-  clinicalTrialData?.protocolSection.descriptionModule ?
+  clinicalTrialData?.protocolSection?.descriptionModule ?
     <div className="flex-col">
       <div className="whitespace-pre-wrap text-purp-5 pt-1 sm:text-xs lg:text-lg">
         {clinicalTrialData?.protocolSection?.descriptionModule?.detailedDescription || '-'}
@@ -57,7 +69,7 @@ const DescriptionJSX =
     <div>-</div>;
 
 const EligibilityJSX =
-  clinicalTrialData?.protocolSection.eligibilityModule ?
+  clinicalTrialData?.protocolSection?.eligibilityModule ?
     <div className="flex flex-col whitespace-pre-wrap text-purp-5 pt-1 sm:text-xs lg:text-lg">
       <div className="mb-2 flex flex-col">
         <div>Gender: {clinicalTrialData?.protocolSection?.eligibilityModule?.sex || '-'}</div>
@@ -71,7 +83,7 @@ const EligibilityJSX =
     </div> :
     <div>-</div>;
 
-const DesignJSX = clinicalTrialData?.protocolSection.designModule ?
+const DesignJSX = clinicalTrialData?.protocolSection?.designModule ?
   <div className="flex flex-col whitespace-pre-wrap text-purp-5 pt-1 sm:text-xs lg:text-lg">
     <div className="mb-2 flex flex-col">
       <div><span className="font-semibold">Description:</span> {clinicalTrialData?.protocolSection?.designModule?.designInfo?.interventionModelDescription || '-'}</div>
@@ -139,7 +151,7 @@ const removeCompare = () => {
   }
 };
 
-if (!NCTId) {
+if (!NCTId ) {
   return <NoResultComponent title="Clinical Trail" />;
 }
 
@@ -185,7 +197,7 @@ return (
         </div>
       </div>
     </>
-  ) : (
+  ) : !isError ? (
     <>
       <div className="bgColor">
         <div className="rounded bg-white p-5">
@@ -326,6 +338,10 @@ return (
           </div>
         </div>
       </div>
+    </>
+  ) : (
+    <>
+    <NoResultComponent title="Clinical Trail" />
     </>
   )
 )

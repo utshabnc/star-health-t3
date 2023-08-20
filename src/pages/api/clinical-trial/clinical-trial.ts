@@ -17,11 +17,18 @@ export default async function handler(req : NextApiRequest, res : NextApiRespons
     }
 
     const { NCTId  } = req.query;
+    if(!NCTId) {
+        return res.status(400).json({ message: 'NCTId is required' });
+    }
 
     try {
         const response = await fetch(`${clinicalTrialsQueryURL}/studies/${NCTId}?format=json`);
 
-        const data : SingleStudyLegacy = await response.json();
+        const data  = await response.json();
+
+        if(data.error) {
+            return res.status(500).json({ errors: data.error });
+        }
         
         return res.status(200).json(data);
     }
