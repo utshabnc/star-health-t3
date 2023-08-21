@@ -12,4 +12,11 @@ export enum Field {
   NCTId = "NCTId",
   OverallStatus = "OverallStatus",
   StartDate = "StartDate",
+  Acronym = "Acronym",
+  Condition = "Condition",
+  LocationState = "LocationState",
+  LocationCity = "LocationCity",
+  LocationCountry = "LocationCountry",
+  CollaboratorName = "CollaboratorName",
+  LeadSponsorName = "LeadSponsorName",
 }

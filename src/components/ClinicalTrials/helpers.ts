@@ -1,3 +1,5 @@
+//  Deprecated
+
 import type { Observable } from "rxjs";
 import { ajax } from "rxjs/ajax";
 import type { ClinicalTrialsFieldValuesResponse } from "./ClinicalTrialsFieldValuesResponse.model";
@@ -7,33 +9,57 @@ import type {
   ClinicalTrialsStudyFieldsResponse,
 } from "./ClinicalTrialsStudyFieldsResponse.model";
 import { Field } from "./Fields.enum";
+import type {  ClinicalTrialStudies , ClinicalTrialStudy} from "./ClinicalTrialsStudyFieldsResponse.model";
+import type { ClinicalTrialsFieldValuesResponseLegacy, FieldValueLegacy } from "./ClinicalTrialsFieldValuesResponse.model";
+import type { SingleStudyLegacy } from '../../components/ClinicalTrials/ClinicalTrialsFullStudyResponse.model';
+import { useQuery } from "react-query";
 
-const clinicalTrialsQueryURL = "https://clinicaltrials.gov/api/query";
+const clinicalTrialsQueryURL = "https://classic.clinicaltrials.gov/api/v2";
 
 export const getClinicalTrialsList = (
   fields: Field[],
   expr = ""
-): Observable<ClinicalTrialsStudyFieldsResponse<ClinicalTrialsListItem>> => {
+): Observable<ClinicalTrialStudies<ClinicalTrialStudy>> => {
   const fieldsToStr = fields.join();
   return ajax.getJSON<
-    ClinicalTrialsStudyFieldsResponse<ClinicalTrialsListItem>
+  ClinicalTrialStudies<ClinicalTrialStudy>
   >(
-    `${clinicalTrialsQueryURL}/study_fields?min_rnk=1&max_rnk=100&fmt=json&fields=${fieldsToStr}&expr=${expr}`
+    `${clinicalTrialsQueryURL}/studies?format=json&pageSize=100&fields=${fieldsToStr}&query.term=${expr}` , 
+    {
+      origin: "http://localhost:3000", // Replace this with your allowed origin(s), or "*" to allow all origins
+      methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+      crossOrgin : "true"
+    }
   );
 };
 
 export const getClinicalTrialByNCTId = (
-  NCTId: string
-): Observable<ClinicalTrialsFullStudyResponse> => {
-  return ajax.getJSON<ClinicalTrialsFullStudyResponse>(
-    `${clinicalTrialsQueryURL}/full_studies?expr=AREA[${Field.NCTId}]${NCTId}&min_rnk=1&max_rnk=1&fmt=json`
+  NCTId: string,
+  
+): Observable<SingleStudyLegacy> => {
+  return ajax.getJSON<SingleStudyLegacy>(
+    `${clinicalTrialsQueryURL}/studies/${NCTId}?format=json`,
+    {
+      origin: "http://localhost:3000", // Replace this with your allowed origin(s), or "*" to allow all origins
+      methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+      crossOrgin : "true"
+    }
   );
 };
 
+
 export const getClinicalTrialFieldValues = (
   fieldValue: Field
-): Observable<ClinicalTrialsFieldValuesResponse> => {
-  return ajax.getJSON<ClinicalTrialsFieldValuesResponse>(
-    `https://clinicaltrials.gov/api/query/field_values?expr=&field=${fieldValue}&fmt=json`
+): Observable<ClinicalTrialsFieldValuesResponseLegacy> => {
+  return ajax.getJSON<ClinicalTrialsFieldValuesResponseLegacy>(
+    `${clinicalTrialsQueryURL}/stats/fieldValues/${fieldValue}`,
+    {
+      origin: "http://localhost:3000", // Replace this with your allowed origin(s), or "*" to allow all origins
+      methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+      crossOrgin : "true",
+      "Access-Control-Allow-Origin" : "*",
+    }
   );
 };
+
+

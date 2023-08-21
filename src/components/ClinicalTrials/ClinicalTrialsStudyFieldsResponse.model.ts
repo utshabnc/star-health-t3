@@ -16,3 +16,32 @@ interface StudyFieldsResponse<StudyFieldsType> {
 export interface ClinicalTrialsStudyFieldsResponse<StudyFieldsType> {
   StudyFieldsResponse: StudyFieldsResponse<StudyFieldsType>;
 }
+
+interface StatusModule {
+  overallStatus : string;
+  startDateStruct : {
+    date : string;
+  };
+  completionDateStruct : {
+    date : string;
+  };
+}
+
+interface IdentificationModule {
+  nctId : string;
+  officialTitle : string;
+  briefTitle : string;
+  organization : {
+    fullName : string;
+  }
+}
+export interface ClinicalTrialStudy {
+  protocolSection : {
+    statusModule : StatusModule;
+    identificationModule : IdentificationModule;
+  };
+}
+
+export interface ClinicalTrialStudies<ClinicalTrialStudy> {
+ studies : [ClinicalTrialStudy]
+}

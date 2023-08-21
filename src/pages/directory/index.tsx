@@ -14,8 +14,12 @@ import { catchError, finalize, tap } from "rxjs/operators";
 import ClinicalTrialsComponent from "../../components/ClinicalTrials";
 import type {
   ClinicalTrialsFieldValuesResponse,
+  ClinicalTrialsFieldValuesResponseLegacy,
+  FieldValueLegacy,
   FieldValue,
 } from "../../components/ClinicalTrials/ClinicalTrialsFieldValuesResponse.model";
+import type {  ClinicalTrialStudies , ClinicalTrialStudy} from "../../components/ClinicalTrials/ClinicalTrialsStudyFieldsResponse.model";
+
 import ClinicalTrialsFilters from "../../components/ClinicalTrials/ClinicalTrialsFilters";
 import AutocompleteInput from "../../components/AutoCompleteInput";
 import type {
@@ -140,8 +144,8 @@ export default function Directory() {
   const [selectedTab, setSelectedTab] = useState<Tab>(Tab.Transactions);
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
   const [clinicalTrialsData, setClinicalTrialsData] = useState<
-    ClinicalTrialsStudyFieldsResponse<ClinicalTrialsListItem>
-  >({} as ClinicalTrialsStudyFieldsResponse<ClinicalTrialsListItem>);
+  ClinicalTrialStudies<ClinicalTrialStudy>
+  >({} as ClinicalTrialStudies<ClinicalTrialStudy>);
   const [hospitalsData, setHospitalsData] = useState<Hospital[]>(
     [] as Hospital[]
   );
@@ -155,18 +159,38 @@ export default function Directory() {
   const [
     clinicalTrialOverallStatusFilters,
     setClinicalTrialOverallStatusFilters,
-  ] = useState<FieldValue[]>([] as FieldValue[]);
+  ] = useState<FieldValueLegacy[]>([] as FieldValueLegacy[]);
   const [clinicalTrialGenderFilters, setClinicalTrialGenderFilters] = useState<
-    FieldValue[]
-  >([] as FieldValue[]);
-  const [
-    clinicalTrialHealthyVolunteersFilters,
-    setClinicalTrialHealthyVolunteersFilters,
-  ] = useState<FieldValue[]>([] as FieldValue[]);
-  const [clinicalTrialMinimumAgeFilters, setClinicalTrialMinimumAgeFilters] =
-    useState<FieldValue[]>([] as FieldValue[]);
-  const [clinicalTrialMaximumAgeFilters, setClinicalTrialMaximumAgeFilters] =
-    useState<FieldValue[]>([] as FieldValue[]);
+    FieldValueLegacy[]
+  >([] as FieldValueLegacy[]);
+
+
+    const [clinicalTrialAcronymFilters, setClinicalTrialAcronymFilters] =
+    useState<FieldValueLegacy[]>([] as FieldValueLegacy[]);
+
+    const [clinicalTrialOfficialTitleFilters, setClinicalTrialOfficialTitleFilters] =
+    useState<FieldValueLegacy[]>([] as FieldValueLegacy[]);
+
+    const [clinicalTrialConditionFilters, setClinicalTrialConditionFilters] =
+    useState<FieldValueLegacy[]>([] as FieldValueLegacy[]);
+
+    const [clinicalTrialLocationStateFilters, setClinicalTrialLocationStateFilters] =
+    useState<FieldValueLegacy[]>([] as FieldValueLegacy[]);
+
+    const [clinicalTrialLocationCityFilters, setClinicalTrialLocationCityFilters] =
+    useState<FieldValueLegacy[]>([] as FieldValueLegacy[]);
+
+    const [clinicalTrialLocationCountryFilters, setClinicalTrialLocationCountryFilters] =
+    useState<FieldValueLegacy[]>([] as FieldValueLegacy[]);
+
+    const [clinicalTrialCollaboratorNameFilters, setClinicalTrialCollaboratorNameFilters] =
+    useState<FieldValueLegacy[]>([] as FieldValueLegacy[]);
+
+    const [clinicalTrialLeadSponsorNameFilters, setClinicalTrialLeadSponsorNameFilters] =
+    useState<FieldValueLegacy[]>([] as FieldValueLegacy[]);
+
+
+
   const [genetics, setGenetics] = useState<Genetic[]>([] as Genetic[]);
   const [filteredGenetics, setFilteredGenetics] = useState<Genetic[]>(
     [] as Genetic[]
@@ -187,7 +211,7 @@ export default function Directory() {
     Field.NCTId,
     Field.OverallStatus,
   ];
-  const session = useSession();
+
 
   const {
     data: searchResults,
@@ -259,6 +283,8 @@ export default function Directory() {
     localStorage.setItem("curDirTab", JSON.stringify({ tab, subject }));
   };
 
+ 
+
   useEffect(() => {
     const searchParam = querySearch["search"] as string;
     if (searchParam) {
@@ -273,18 +299,24 @@ export default function Directory() {
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const clinicalTrialsSearch = useCallback(
-    debounce((expr: string) => {
+    debounce( async (expr: string) => {
       setIsProcessing(true);
-      const getClinicalTrialsListRequest: Observable<
-        ClinicalTrialsStudyFieldsResponse<ClinicalTrialsListItem>
-      > = getClinicalTrialsList(defaultClinicalTrialFields, expr);
-      getClinicalTrialsListRequest
-        .pipe(finalize(() => setIsProcessing(false)))
-        .subscribe(
-          (data: ClinicalTrialsStudyFieldsResponse<ClinicalTrialsListItem>) => {
-            setClinicalTrialsData(data);
-          }
-        );
+      
+     try {
+      const response = await fetch(`/api/clinical-trial/all-trials?fields=${defaultClinicalTrialFields.join(",")}&expr=${expr}`);
+      const data = await response.json();
+      if(response.status != 200) {
+        setError(data);
+      } else {
+        setClinicalTrialsData(data);
+      }
+     }
+     catch(error) {
+      setError(error);
+     }
+     finally {
+      setIsProcessing(false);
+     }
     }, 1000),
     []
   );
@@ -402,6 +434,119 @@ export default function Directory() {
     }
   }, [selectedTab]);
 
+
+  useEffect(() => {
+    if (selectedTab == Tab.ClinicalTrials) {
+      const fetchClinicalTrials = async () => {
+        try {
+          setIsApiProcessing(true);
+          const response = await fetch(`/api/clinical-trial/all-trials?fields=${defaultClinicalTrialFields.join(",")}`);
+          const data = await response.json();
+          if (response.status != 200) {
+            setError(data);
+          } else {
+            setClinicalTrialsData(data);
+          }
+        } catch (error) {
+          setError(error);
+        } finally {
+          setIsApiProcessing(false);
+        }
+      };
+      fetchClinicalTrials();
+      loadFilterData()
+    }
+  }, [selectedTab])
+
+  const getClinicalTrialFieldValuesRequest = async (field :  Field) => {
+    try {
+      const response = await fetch(`/api/clinical-trial/getFieldValues?fieldValue=${field}`);
+      const data = await response.json();
+      if (response.status != 200) {
+        setError(data);
+      }
+      else {
+        return data;
+      }
+    }
+    catch (error) {
+      setError(error);
+    }
+  }
+
+  const loadFilterData = async () => {
+    const filterRequests = [
+      Field.OverallStatus,
+      Field.Gender,
+      Field.HealthyVolunteers,
+      Field.MinimumAge,
+      Field.MaximumAge,
+      Field.Acronym,
+      Field.OfficialTitle,
+      Field.Condition,
+      Field.LocationState,
+      Field.LocationCity,
+      Field.LocationCountry,
+      Field.CollaboratorName,
+      Field.LeadSponsorName
+    ].map((field : Field) => getClinicalTrialFieldValuesRequest(field));
+
+    const filterResponses = await Promise.all(filterRequests);
+   
+
+    filterResponses.forEach((data , index) => {
+      const field  = [
+        Field.OverallStatus,
+        Field.Gender,
+        Field.HealthyVolunteers,
+        Field.MinimumAge,
+        Field.MaximumAge,
+        Field.Acronym,
+        Field.OfficialTitle,
+        Field.Condition,
+        Field.LocationState,
+        Field.LocationCity,
+        Field.LocationCountry,
+        Field.CollaboratorName,
+        Field.LeadSponsorName
+      ][index]
+
+      switch (field) {
+        case Field.OverallStatus:
+          setClinicalTrialOverallStatusFilters(data.topValues)
+        break;
+        case Field.Gender:
+          setClinicalTrialGenderFilters(data.topValues)
+        break;
+        case Field.Acronym:
+          setClinicalTrialAcronymFilters(data.topValues)
+        break;
+        case Field.OfficialTitle:
+          setClinicalTrialOfficialTitleFilters(data.topValues)
+        break;
+        case Field.Condition:
+          setClinicalTrialConditionFilters(data.topValues)
+        break;
+        case Field.LocationState:
+          setClinicalTrialLocationStateFilters(data.topValues)
+        break;
+        case Field.LocationCity:
+          setClinicalTrialLocationCityFilters(data.topValues)
+        break;
+        case Field.LocationCountry:
+          setClinicalTrialLocationCountryFilters(data.topValues)
+        break;
+        case Field.CollaboratorName:
+          setClinicalTrialCollaboratorNameFilters(data.topValues)
+        break;
+        case Field.LeadSponsorName:
+          setClinicalTrialLeadSponsorNameFilters(data.topValues)
+        break;
+      }
+    })
+    
+  }
+
   useEffect(() => {
     if (selectedTab == Tab.HospitalOwners) {
       const data = HospitalOwnerData.data;
@@ -456,11 +601,15 @@ export default function Directory() {
       if (clinicalTrialSearchExpr.length > 1) {
         searchExpr = `${clinicalTrialSearchKeywordExpr} AND ${clinicalTrialSearchExpr}`;
       } else {
+
         searchExpr = clinicalTrialSearchKeywordExpr;
+
       }
     } else {
       searchExpr = clinicalTrialSearchExpr;
+
     }
+
     clinicalTrialsSearch(searchExpr);
   }, [
     clinicalTrialsSearch,
@@ -494,7 +643,7 @@ export default function Directory() {
       return [];
     }
     list.forEach((element: any) => {
-      output.push(element[name][0]);
+      output.push(element.protocolSection.identificationModule[name]);
     });
     return output;
   };
@@ -761,71 +910,8 @@ export default function Directory() {
                   onClick={() => {
                     handleTabClick(Tab.ClinicalTrials, "");
                     setIsProcessing(true);
-
-                    // Gather requests for filters
-                    const getClinicalTrialsListRequest: Observable<
-                      ClinicalTrialsStudyFieldsResponse<ClinicalTrialsListItem>
-                    > = getClinicalTrialsList(defaultClinicalTrialFields);
-                    const filterRequests = [
-                      Field.OverallStatus,
-                      Field.Gender,
-                      Field.HealthyVolunteers,
-                      Field.MinimumAge,
-                      Field.MaximumAge,
-                    ].map((field: Field) =>
-                      getClinicalTrialFieldValues(field).pipe(
-                        tap((data: ClinicalTrialsFieldValuesResponse) => {
-                          switch (field) {
-                            case Field.OverallStatus: {
-                              setClinicalTrialOverallStatusFilters(
-                                data.FieldValuesResponse.FieldValues
-                              );
-                              break;
-                            }
-                            case Field.Gender: {
-                              setClinicalTrialGenderFilters(
-                                data.FieldValuesResponse.FieldValues
-                              );
-                              break;
-                            }
-                            case Field.HealthyVolunteers: {
-                              setClinicalTrialHealthyVolunteersFilters(
-                                data.FieldValuesResponse.FieldValues
-                              );
-                              break;
-                            }
-                            case Field.MinimumAge: {
-                              setClinicalTrialMinimumAgeFilters(
-                                data.FieldValuesResponse.FieldValues
-                              );
-                              break;
-                            }
-                            case Field.MaximumAge: {
-                              setClinicalTrialMaximumAgeFilters(
-                                data.FieldValuesResponse.FieldValues
-                              );
-                              break;
-                            }
-                          }
-                        })
-                      )
-                    );
-
-                    // Execute filter requests all together
-                    forkJoin([
-                      getClinicalTrialsListRequest.pipe(
-                        tap(
-                          (
-                            data: ClinicalTrialsStudyFieldsResponse<ClinicalTrialsListItem>
-                          ) => {
-                            setClinicalTrialsData(data);
-                          }
-                        )
-                      ),
-                      ...filterRequests,
-                    ])
-                      .pipe(finalize(() => setIsProcessing(false)))
-                      .subscribe();
+                    loadFilterData();
+                    
                   }}
                   className={`whitespace-nowrap border-b-2 hover:border-zinc-500 ${
                     selectedTab === Tab.ClinicalTrials
@@ -1054,9 +1140,14 @@ export default function Directory() {
               <div className="relative">
                 <ClinicalTrialsFilters
                   Gender={clinicalTrialGenderFilters}
-                  HealthyVolunteers={clinicalTrialHealthyVolunteersFilters}
-                  MinimumAge={clinicalTrialMinimumAgeFilters}
-                  MaximumAge={clinicalTrialMaximumAgeFilters}
+                  Acronym={clinicalTrialAcronymFilters}
+                  OfficialTitle={clinicalTrialOfficialTitleFilters}
+                  Condition={clinicalTrialConditionFilters}
+                  LocationState={clinicalTrialLocationStateFilters}
+                  LocationCity={clinicalTrialLocationCityFilters}
+                  LocationCountry={clinicalTrialLocationCountryFilters}
+                  CollaboratorName={clinicalTrialCollaboratorNameFilters}
+                  LeadSponsorName={clinicalTrialLeadSponsorNameFilters}
                   OverallStatus={clinicalTrialOverallStatusFilters}
                   OnSearchExprChange={(expr: string) => {
                     setClinicalTrialSearchExpr(expr);
@@ -1073,10 +1164,10 @@ export default function Directory() {
                     expr={clinicalTrialSearchKeywordExpr}
                     setExpr={setClinicalTrialSearchKeywordExpr}
                     options={returnNamesOfClincalNames(
-                      clinicalTrialsData.StudyFieldsResponse
-                        ? clinicalTrialsData.StudyFieldsResponse.StudyFields
+                      clinicalTrialsData.studies
+                        ? clinicalTrialsData.studies
                         : [],
-                      "BriefTitle"
+                      "briefTitle"
                     )}
                   ></AutocompleteInput>
                 </div>
