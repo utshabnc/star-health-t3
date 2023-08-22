@@ -19,4 +19,7 @@ export enum Field {
   LocationCountry = "LocationCountry",
   CollaboratorName = "CollaboratorName",
   LeadSponsorName = "LeadSponsorName",
+  LocationContactName = "LocationContactName",
+  LocationFacility = "LocationFacility",
+  InterventionName = "InterventionName",
 }

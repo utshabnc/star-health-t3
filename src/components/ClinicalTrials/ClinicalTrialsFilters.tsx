@@ -15,6 +15,9 @@ export default function ClinicalTrialsFilters(
     LeadSponsorName,
     Condition,
     OverallStatus,
+    LocationContactName,
+    LocationFacility,
+    InterventionName,
     OnSearchExprChange,
   }: {
     Gender: FieldValueLegacy[],
@@ -27,6 +30,9 @@ export default function ClinicalTrialsFilters(
     CollaboratorName : FieldValueLegacy[],
     LeadSponsorName : FieldValueLegacy[],
     OverallStatus: FieldValueLegacy[],
+    LocationContactName: FieldValueLegacy[],
+    LocationFacility: FieldValueLegacy[],
+    InterventionName: FieldValueLegacy[],
     OnSearchExprChange: (expr: string) => void,
   }) {
   const [orgFullName, setOrgFullName] = useState<string>('');
@@ -43,6 +49,9 @@ export default function ClinicalTrialsFilters(
   const [leadSponsorName, setLeadSponsorName] = useState<string>('');
   const [acronym, setAcronym] = useState<string>('');
   const [officialTitle, setOfficialTitle] = useState<string>('');
+  const [locationContactName, setLocationContactName] = useState<string>('');
+  const [locationFacility, setLocationFacility] = useState<string>('');
+  const [interventionName, setInterventionName] = useState<string>('');
 
   useEffect(() => {
     //Search Expression
@@ -85,6 +94,15 @@ export default function ClinicalTrialsFilters(
     }
     if(officialTitle.length > 1){
       searchExprArr.push(`AREA[${Field.OfficialTitle}]${officialTitle}`);
+    }
+    if(locationContactName.length > 1){
+      searchExprArr.push(`AREA[${Field.LocationContactName}]${locationContactName}`);
+    }
+    if(locationFacility.length > 1){
+      searchExprArr.push(`AREA[${Field.LocationFacility}]${locationFacility}`);
+    }
+    if(interventionName.length > 1){
+      searchExprArr.push(`AREA[${Field.InterventionName}]${interventionName}`);
     }
     setSearchExpr(searchExprArr.join(' AND '));
   }, [gender, healthyVolunteers,  orgFullName, overallOfficialName, overallStatus, condition, locationState, locationCity, locationCountry, collaboratorName, leadSponsorName, acronym, officialTitle])
@@ -129,21 +147,45 @@ export default function ClinicalTrialsFilters(
                 }}
               />
               
-                  <select
-                    className='bg-violet-500 my-2 text-white w-[20%] p-1 rounded-lg mx-1 hover:bg-violet-400 hover:text-violet-900 cursor-pointer'
-                    onChange={(e) => {
-                      setOverallStatus(e.target.value);
-                    }}
-                    placeholder="Status"
-                  >
-                    {overallStatus.length < 1 ? <option value="">Status</option> : <option value="">-</option>}
-                    {OverallStatus?.map((item, index: number) => (
-                      <option key={index} value={item.value}>{item.value}</option>
-                    ))}
-                  </select>
-              
-             
-                <select
+
+              <select
+              className='bg-violet-500 my-2 text-white w-[20%] p-1 rounded-lg mx-1 hover:bg-violet-400 hover:text-violet-900 cursor-pointer'
+              onChange={(e) => {
+                setAcronym(e.target.value);
+              }}
+              placeholder="Acronym"
+              >
+                {acronym.length < 1 ? <option value="">Acronym</option> : <option value="">-</option>}
+                {Acronym?.sort?.((a , b) => a.value.localeCompare(b.value)).map((item, index: number) => (
+                  <option key={index} value={item.value}>{item.value}</option>
+                ))}
+              </select>
+
+              <select
+              className='bg-violet-500 my-2 text-white w-[20%] p-1 rounded-lg mx-1 hover:bg-violet-400 hover:text-violet-900 cursor-pointer'
+              onChange={(e) => {
+                setCollaboratorName(e.target.value);
+              }}
+              >
+                {collaboratorName.length < 1 ? <option value="">Collaborator Name</option> : <option value="">-</option>}
+                {CollaboratorName?.sort?.((a , b) => a.value.localeCompare(b.value)).map((item, index: number) => (
+                  <option key={index} value={item.value}>{item.value}</option>
+                ))}
+              </select>
+
+              <select
+              className='bg-violet-500 my-2 text-white w-[20%] p-1 rounded-lg mx-1 hover:bg-violet-400 hover:text-violet-900 cursor-pointer'
+              onChange={(e) => {
+                setCondition(e.target.value);
+              }}
+              >
+                {condition.length < 1 ? <option value="">Condition</option> : <option value="">-</option>}
+                {Condition?.sort?.((a , b) => a.value.localeCompare(b.value)).map((item, index: number) => (
+                  <option key={index} value={item.value}>{item.value}</option>
+                ))}
+              </select>
+
+              <select
                   className='bg-violet-500 my-2 text-white w-[20%] p-1 rounded-lg mx-1 hover:bg-violet-400 hover:text-violet-900 cursor-pointer'
                   onChange={(e) => {
                     setGender(e.target.value);
@@ -152,11 +194,10 @@ export default function ClinicalTrialsFilters(
                 >
                   {gender.length < 1 ? <option value="">Gender</option> : <option value="">-</option>}
                   {Gender?.map((item, index: number) => (
-                    <option key={index} value={item.value}>{item.value}</option>
+                    <option key={index} value={item.value} >{item.value[0]?.toUpperCase() + item.value?.slice(1).toLowerCase()}</option>
                   ))}
                 </select>
-              
-              <select
+                 <select
                 className='bg-violet-500 my-2 text-white w-[20%] p-1 rounded-lg mx-1 hover:bg-violet-400 hover:text-violet-900 cursor-pointer'
                 onChange={(e) => {
                   setHealthyVolunteers(e.target.value);
@@ -168,17 +209,26 @@ export default function ClinicalTrialsFilters(
                 <option value="true">Yes</option>
                 <option value="false">No</option>
               </select>
+
               <select
               className='bg-violet-500 my-2 text-white w-[20%] p-1 rounded-lg mx-1 hover:bg-violet-400 hover:text-violet-900 cursor-pointer'
               onChange={(e) => {
-                setAcronym(e.target.value);
+                setInterventionName(e.target.value);
               }}
               >
-                {acronym.length < 1 ? <option value="">Acronym</option> : <option value="">-</option>}
-                {Acronym?.map((item, index: number) => (
+                {interventionName.length < 1 ? <option value="">Intervention Name</option> : <option value="">-</option>}
+                {InterventionName?.sort?.((a , b) => a.value.localeCompare(b.value)).map((item, index: number) => (
                   <option key={index} value={item.value}>{item.value}</option>
+                
                 ))}
-              </select>
+              </select> 
+              
+                 
+              
+             
+               
+              
+             
               
               <select
               className='bg-violet-500 my-2 text-white w-[20%] p-1 rounded-lg mx-1 hover:bg-violet-400 hover:text-violet-900 cursor-pointer'
@@ -187,33 +237,12 @@ export default function ClinicalTrialsFilters(
               }}
               >
                 {officialTitle.length < 1 ? <option value="">Official Title</option> : <option value="">-</option>}
-                {OfficialTitle?.map((item, index: number) => (
+                {OfficialTitle?.sort?.((a , b) => a.value.localeCompare(b.value)).map((item, index: number) => (
                   <option key={index} value={item.value}>{item.value}</option>
                 ))}
               </select>
-              <select
-              className='bg-violet-500 my-2 text-white w-[20%] p-1 rounded-lg mx-1 hover:bg-violet-400 hover:text-violet-900 cursor-pointer'
-              onChange={(e) => {
-                setCondition(e.target.value);
-              }}
-              >
-                {condition.length < 1 ? <option value="">Condition</option> : <option value="">-</option>}
-                {Condition?.map((item, index: number) => (
-                  <option key={index} value={item.value}>{item.value}</option>
-                ))}
-              </select>
-              <select
-              className='bg-violet-500 my-2 text-white w-[20%] p-1 rounded-lg mx-1 hover:bg-violet-400 hover:text-violet-900 cursor-pointer'
-              onChange={(e) => {
-                setLocationState(e.target.value);
-              }}
-              >
-                {locationState.length < 1 ? <option value="">Location State</option> : <option value="">-</option>}
-                {LocationState?.map((item, index: number) => (
-                  <option key={index} value={item.value}>{item.value}</option>
-                
-                ))}
-              </select>
+            
+              
               <select
               className='bg-violet-500 my-2 text-white w-[20%] p-1 rounded-lg mx-1 hover:bg-violet-400 hover:text-violet-900 cursor-pointer'
               onChange={(e) => {
@@ -221,7 +250,7 @@ export default function ClinicalTrialsFilters(
               }}
               >
                 {locationCity.length < 1 ? <option value="">Location City</option> : <option value="">-</option>}
-                {LocationCity?.map((item, index: number) => (
+                {LocationCity?.sort?.((a , b) => a.value.localeCompare(b.value)).map((item, index: number) => (
                   <option key={index} value={item.value}>{item.value}</option>
                 ))}
               </select>
@@ -232,21 +261,59 @@ export default function ClinicalTrialsFilters(
               }}
               >
                 {locationCountry.length < 1 ? <option value="">Location Country</option> : <option value="">-</option>}
-                {LocationCountry?.map((item, index: number) => (
+                {LocationCountry?.sort?.((a,b) => {
+                   if (a.value === LocationCountry[0]?.value) {
+                    return -1; // Keep the first element at the beginning
+                  }
+                  if (b.value === LocationCountry[0]?.value) {
+                    return 1; // Keep the first element at the beginning
+                  }
+
+                  return a.value.localeCompare(b.value)
+                
+                })
+                .map((item, index: number) => (
                   <option key={index} value={item.value}>{item.value}</option>
                 ))}
               </select>
               <select
               className='bg-violet-500 my-2 text-white w-[20%] p-1 rounded-lg mx-1 hover:bg-violet-400 hover:text-violet-900 cursor-pointer'
               onChange={(e) => {
-                setCollaboratorName(e.target.value);
+                setLocationContactName(e.target.value);
               }}
               >
-                {collaboratorName.length < 1 ? <option value="">Collaborator Name</option> : <option value="">-</option>}
-                {CollaboratorName?.map((item, index: number) => (
+                {locationContactName.length < 1 ? <option value="">Location Contact Name</option> : <option value="">-</option>}
+                {LocationContactName?.sort?.((a , b) => a.value.localeCompare(b.value)).map((item, index: number) => (
                   <option key={index} value={item.value}>{item.value}</option>
+                
                 ))}
               </select>
+              <select
+              className='bg-violet-500 my-2 text-white w-[20%] p-1 rounded-lg mx-1 hover:bg-violet-400 hover:text-violet-900 cursor-pointer'
+              onChange={(e) => {
+                setLocationFacility(e.target.value);
+              }}
+              >
+                {locationFacility.length < 1 ? <option value="">Location Facility</option> : <option value="">-</option>}
+                {LocationFacility?.sort?.((a , b) => a.value.localeCompare(b.value)).map((item, index: number) => (
+                  <option key={index} value={item.value}>{item.value}</option>
+                
+                ))}
+              </select> 
+              <select
+              className='bg-violet-500 my-2 text-white w-[20%] p-1 rounded-lg mx-1 hover:bg-violet-400 hover:text-violet-900 cursor-pointer'
+              onChange={(e) => {
+                setLocationState(e.target.value);
+              }}
+              >
+                {locationState.length < 1 ? <option value="">Location State</option> : <option value="">-</option>}
+                {LocationState?.sort?.((a , b) => a.value.localeCompare(b.value)).map((item, index: number) => (
+                  <option key={index} value={item.value}>{item.value}</option>
+                
+                ))}
+              </select>
+          
+              
               <select
               className='bg-violet-500 my-2 text-white w-[20%] p-1 rounded-lg mx-1 hover:bg-violet-400 hover:text-violet-900 cursor-pointer'
               onChange={(e) => {
@@ -254,12 +321,25 @@ export default function ClinicalTrialsFilters(
               }}
               >
                 {leadSponsorName.length < 1 ? <option value="">Lead Sponsor Name</option> : <option value="">-</option>}
-                {LeadSponsorName?.map((item, index: number) => (
+                {LeadSponsorName?.sort?.((a , b) => a.value.localeCompare(b.value)).map((item, index: number) => (
                   <option key={index} value={item.value}>{item.value}</option>
                 ))}
               </select>
 
-            </div>
+              <select
+                    className='bg-violet-500 my-2 text-white w-[20%] p-1 rounded-lg mx-1 hover:bg-violet-400 hover:text-violet-900 cursor-pointer'
+                    onChange={(e) => {
+                      setOverallStatus(e.target.value);
+                    }}
+                    placeholder="Status"
+                  >
+                    {overallStatus.length < 1 ? <option value="">Status</option> : <option value="">-</option>}
+                    {OverallStatus?.sort?.((a , b) => a.value.localeCompare(b.value)).map((item, index: number) => (
+                      <option key={index} value={item.value} >{item.value[0]?.toUpperCase() + item?.value?.slice(1).toLowerCase()}</option>
+                    ))}
+                  </select>
+
+            </div> 
           </div>
         </div>
       </div>

@@ -190,7 +190,14 @@ export default function Directory() {
     useState<FieldValueLegacy[]>([] as FieldValueLegacy[]);
 
 
+    const [locationContactNameFilters, setLocationContactNameFilters] = 
+    useState<FieldValueLegacy[]>([] as FieldValueLegacy[]);
 
+    const [locationFacilityFilters, setLocationFacilityFilters] =
+    useState<FieldValueLegacy[]>([] as FieldValueLegacy[]);
+
+    const [interventionNameFilters, setInterventionNameFilters] =
+    useState<FieldValueLegacy[]>([] as FieldValueLegacy[]);
   const [genetics, setGenetics] = useState<Genetic[]>([] as Genetic[]);
   const [filteredGenetics, setFilteredGenetics] = useState<Genetic[]>(
     [] as Genetic[]
@@ -488,7 +495,10 @@ export default function Directory() {
       Field.LocationCity,
       Field.LocationCountry,
       Field.CollaboratorName,
-      Field.LeadSponsorName
+      Field.LeadSponsorName,
+      Field.LocationContactName,
+      Field.LocationFacility,
+      Field.InterventionName
     ].map((field : Field) => getClinicalTrialFieldValuesRequest(field));
 
     const filterResponses = await Promise.all(filterRequests);
@@ -508,7 +518,10 @@ export default function Directory() {
         Field.LocationCity,
         Field.LocationCountry,
         Field.CollaboratorName,
-        Field.LeadSponsorName
+        Field.LeadSponsorName ,
+        Field.LocationContactName,
+        Field.LocationFacility,
+        Field.InterventionName
       ][index]
 
       switch (field) {
@@ -541,6 +554,15 @@ export default function Directory() {
         break;
         case Field.LeadSponsorName:
           setClinicalTrialLeadSponsorNameFilters(data.topValues)
+        break;
+        case Field.LocationContactName:
+          setLocationContactNameFilters(data.topValues)
+        break;
+        case Field.LocationFacility:
+          setLocationFacilityFilters(data.topValues)
+        break;
+        case Field.InterventionName:
+          setInterventionNameFilters(data.topValues)
         break;
       }
     })
@@ -1149,6 +1171,9 @@ export default function Directory() {
                   CollaboratorName={clinicalTrialCollaboratorNameFilters}
                   LeadSponsorName={clinicalTrialLeadSponsorNameFilters}
                   OverallStatus={clinicalTrialOverallStatusFilters}
+                  LocationContactName={locationContactNameFilters}
+                  LocationFacility={locationFacilityFilters}
+                  InterventionName={interventionNameFilters}
                   OnSearchExprChange={(expr: string) => {
                     setClinicalTrialSearchExpr(expr);
                   }}
