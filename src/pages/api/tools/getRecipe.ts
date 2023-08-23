@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 
-const CALORIENINJA_APIKEY = "eqN/IEjKazPTJFm+jUDzRQ==UelyF4RjxBImKrcf";
+const CALORIENINJA_APIKEY = "STxbK5ZwjGUA+BhOyURfqQ==2JxCpBThyqsXTcWV";
 export default async function handler(req: NextApiRequest, res: NextApiResponse<any>) {
   try {
     const { recipe } = req.query;

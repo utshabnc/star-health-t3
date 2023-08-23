@@ -1,6 +1,6 @@
 import { ajax } from "rxjs/ajax";
 
-const CALORIENINJA_APIKEY = "eqN/IEjKazPTJFm+jUDzRQ==UelyF4RjxBImKrcf";
+const CALORIENINJA_APIKEY = "STxbK5ZwjGUA+BhOyURfqQ==2JxCpBThyqsXTcWV";
 
 export function getNutritionByText(text: string) {
     return ajax({
