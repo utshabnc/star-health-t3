@@ -283,3 +283,9 @@ input[type="range"]::-webkit-slider-thumb {
 .tools-container {
   max-width: 100%;
 }
+
+.tools-info-sec {
+  margin: 0 auto;
+    background-color: transparent;
+    padding-bottom: 1rem !important;
+} 

@@ -2,7 +2,7 @@ import ToolsFilter from "../../components/Tools/ToolsFilter";
 
 const Tools = () => {
   return (
-    <div className="flex h-screen w-full items-center justify-center">
+    <div className="min-h-screen rounded p-5 pb-44 justify-center">
       <ToolsFilter/>
     </div>
   );

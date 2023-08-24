@@ -1,23 +1,54 @@
 import { useEffect, useRef, useState } from "react";
 import { getNutritionByText } from './httpsRequests'
 import { catchError, finalize } from "rxjs";
+import text2nutrients from "../../assets/logos/text2nutrients.png";
+import recipesimg from "../../assets/logos/recipes.png";
+import ToolsTab from "./ToolsTab";
+import { useRouter } from "next/router";
 
 export default function ToolsFilter() {
-    const [tool, setTool] = useState<string>("text_input");
+    const [tool, setTool] = useState<string>("");
 
-const [tableHtml, setTableHtml] = useState<string>("");
+    const [tableHtml, setTableHtml] = useState<string>("");
     const [recipeHtml, setRecipeHtml] = useState<string>("");
-    const [recipeNum, setRecipeNum] = useState(0);
-    const [recipeId, setRecipeId] = useState(0);
-    const [recipes, setRecipes] = useState([]);
+
+    const [showNutritions, setShowNutritions] = useState(false);
+    const [showRecipes, setShowRecipes] = useState(false);
+
+    const navigate = useRouter();
+    const toolName = navigate.query?.tab;
+    console.log(toolName);
+
+    useEffect(() => {
+        if (!!toolName) {
+            setTool(toolName as string);
+            setShowNutritions(false);
+            setShowRecipes(false);
+        }
+
+    }, [toolName, setTool, setShowNutritions, setShowRecipes]);
+
+    const features = [{
+        label: "Text 2 Nutrients",
+        img: text2nutrients,
+        route: '/tools',
+        linkparam: 'text_input'
+    },
+    {
+        label: "Recipes",
+        img: recipesimg,
+        route: '/tools',
+        linkparam: 'recipe'
+    }
+    ];
 
     const NutritioinTextInput = () => {
         return (
             <div>
                 <input
-                type="text"
-                placeholder="Type in food data..."
-                className={`my-2 mx-1 w-[30%] cursor-pointer rounded-lg border border-violet-900 bg-violet-100 p-1 text-slate-900 placeholder:text-violet-800 hover:bg-violet-300 hover:text-violet-900`}
+                    type="text"
+                    placeholder="Type in food eaten..."
+                    className={`my-2 mx-1 w-[30%] cursor-pointer rounded-lg border border-violet-900 bg-violet-100 p-1 text-slate-900 placeholder:text-violet-800 hover:bg-violet-300 hover:text-violet-900`}
                     id='foodInput'
                 />
                 <button
@@ -32,48 +63,47 @@ const [tableHtml, setTableHtml] = useState<string>("");
                                 })
                             )
                             .subscribe((resp: any) => {
-                                console.log(resp?.response);
-                                if(!!resp?.response?.items)
+                                if (!!resp?.response?.items)
                                     renderTable(resp?.response?.items);
+                                else
+                                    console.log(resp?.response);
+
                             });
                     }}>
-                    Get Nutrition
+                    Get Nutritions
                 </button>
             </div>
         )
     }
 
 
-const Recipe = () => {
-    return (
-        <div>
-            <input
-                type="text"
-                placeholder="Type in food..."
-                className={`
+    const Recipe = () => {
+        return (
+            <div>
+                <input
+                    type="text"
+                    placeholder="Type in food..."
+                    className={`
             my-2 mx-1 w-[30%] cursor-pointer rounded-lg border border-violet-900 bg-violet-100 p-1 text-slate-900 placeholder:text-violet-800 hover:bg-violet-300 hover:text-violet-900`}
-                id='recipeInput'
-            />
-            <button
-                className="mx-1 cursor-pointer rounded-lg border border-violet-900 bg-transparent p-1 text-sm text-slate-900 placeholder:text-violet-800 hover:bg-violet-300 hover:text-violet-900"
-                onClick={async () => {
-                    const recipeFoodText = (document.getElementById('recipeInput') as HTMLInputElement).value;
-                    try {
-                        const response = await fetch(`/api/tools/getRecipe?recipe=${encodeURIComponent(recipeFoodText)}`);
-                        const data = await response.json();
-                        console.log(data);
-                        setRecipes(data);
-                        setRecipeNum(data.length);
-                        setRecipeId(0);
+                    id='recipeInput'
+                />
+                <button
+                    className="mx-1 cursor-pointer rounded-lg border border-violet-900 bg-transparent p-1 text-sm text-slate-900 placeholder:text-violet-800 hover:bg-violet-300 hover:text-violet-900"
+                    onClick={async () => {
+                        const recipeFoodText = (document.getElementById('recipeInput') as HTMLInputElement).value;
+                        try {
+                            const response = await fetch(`/api/tools/getRecipe?recipe=${encodeURIComponent(recipeFoodText)}`);
+                            const data = await response.json();
+                            // console.log(data);
 
-                        renderRecipeTable(data,0);
-                    } catch (error) {
-                        console.error(error);
-                    }
-                }}>
-                Get Recipe
-            </button>
-            <button
+                            renderRecipeTable(data);
+                        } catch (error) {
+                            console.error(error);
+                        }
+                    }}>
+                    Get Recipes
+                </button>
+                {/* <button
                 disabled={recipeNum==0}
                 className={recipeNum==0 || recipeId==0? 
                     "mx-1 rounded-lg border bg-transparent p-1 text-sm text-slate-500"
@@ -101,12 +131,15 @@ const Recipe = () => {
                     }
                     }}>
                     Next
-            </button>
-        </div>
-    )
-};
+            </button> */}
+            </div>
+        )
+    };
 
     const NutritionTableHead = () => {
+        if (!showNutritions) {
+            return null;
+        }
         const texts = ['Name',
             'Calories',
             'Serving Size (g)',
@@ -126,7 +159,7 @@ const Recipe = () => {
         return (
             <div id="foodTable" className="min-w-full divide-y divide-gray-200">
 
-                <table className="min-w-full divide-y divide-gray-200" style={{ borderCollapse: 'collapse'}}>
+                <table className="min-w-full divide-y divide-gray-200" style={{ borderCollapse: 'collapse' }}>
                     <thead className="thead-dark">
                         <tr dangerouslySetInnerHTML={{ __html: tableHeadTxt }}></tr>
                     </thead>
@@ -138,8 +171,11 @@ const Recipe = () => {
     }
 
     const RecipeTableHead = () => {
+        if (!showRecipes) {
+            return null;
+        }
         const texts = ['Title',
-        'Ingredients',
+            'Ingredients',
             'Servings',
             'Instructions'
         ]
@@ -162,10 +198,10 @@ const Recipe = () => {
 
 
     const renderTable = (items: Array<any>) => {
-        if (!!items) {
+        if (!!items && items.length > 0) {
             const classText = `className="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider"`;
 
-            let html =  "<tr>" +
+            let html = "<tr>" +
                 `<td ${classText}>Total</td>` +
                 `<td ${classText}>${items.reduce((acc, item) => acc + item.calories, 0).toFixed(2)}</td>` +
                 `<td ${classText}>${items.reduce((acc, item) => acc + item.serving_size_g, 0).toFixed(2)}</td>` +
@@ -196,54 +232,63 @@ const Recipe = () => {
                     `<td ${classText}>${item.sugar_g}</td></tr>`;
 
             });
+            setShowNutritions(true);
+
             setTableHtml(html);
         } else {
+            setShowNutritions(false);
             setTableHtml('');
+            alert('No nutritions found!');
         }
     };
 
-    const renderRecipeTable = (items: Array<any>, id: number) => {
+    const renderRecipeTable = (items: Array<any>) => {
         if (!!items && items.length > 0) {
             const classText = `className="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider"`;
 
-            let html =  "";
+            let html = "";
 
-            const item = items[id];
+            items.forEach((item: any) => {
 
-            const ingredtxt = item.ingredients.split('|').join('</br>');
-            html = html + "<tr style='border-bottom: #e5e7eb 1px solid;max-height: 100px; overflow: hidden;'>" +
-            `<td ${classText}>${item.title}</td>` +
-            `<td className="px-8 py-3 text-left text-xs font-small text-gray-900 uppercase tracking-wider" style="width: 200px;">${ingredtxt}</td>` +
-            `<td ${classText}>${item.servings}</td>` +
-            `<td ${classText}>${item.instructions}</td></tr>`;
+                const ingredtxt = item.ingredients.split('|').join('</br>');
+                html = html + "<tr style='border-bottom: #e5e7eb 1px solid;max-height: 100px; overflow: hidden;'>" +
+                    `<td ${classText}>${item.title}</td>` +
+                    `<td className="px-8 py-3 text-left text-xs font-small text-gray-900 uppercase tracking-wider" style="width: 300px;">${ingredtxt}</td>` +
+                    `<td ${classText}>${item.servings}</td>` +
+                    `<td ${classText} style="padding: 0 100px;">${item.instructions}</td></tr>`;
+            });
 
+            setShowRecipes(true);
             setRecipeHtml(html);
+
         } else {
+            setShowRecipes(false);
             setRecipeHtml('');
+            alert('No recipes found!');
         }
     };
 
     const renderComponent = () => {
         switch (tool) {
-          case 'text_input':
-            return <NutritioinTextInput/>;
-          case 'recipe':
-            return <Recipe/>;
+            case 'text_input':
+                return <NutritioinTextInput />;
+            case 'recipe':
+                return <Recipe />;
             default:
                 return null;
         }
-      };
+    };
 
-      const renderResult = () => {
+    const renderResult = () => {
         switch (tool) {
-          case 'text_input':
-            return <NutritionTableHead/>;
-          case 'recipe':
-            return <RecipeTableHead/>;
+            case 'text_input':
+                return <NutritionTableHead />;
+            case 'recipe':
+                return <RecipeTableHead />;
             default:
                 return null;
         }
-      };
+    };
 
     return (
         <>
@@ -251,28 +296,21 @@ const Recipe = () => {
                 <div>
                     <div className="filters flex w-full items-center">
                         <div className="wrap-filters flex w-full items-center py-2">
-                            <select
-                                className="my-2 mx-5 w-[20%] cursor-pointer rounded-lg bg-violet-500 p-1 text-white hover:bg-violet-400 hover:text-violet-900"
-                                onChange={(e) => {
-                                    setTool(e.target.value);
-                                    setTableHtml('');
-                                }}
-                                defaultValue={tool}
-                            >
-                                <option value="text_input">
-                                    Text Input
-                                </option>
-                                <option value="recipe">
-                                    Recipes
-                                </option>
-                            </select>
+                            <ToolsTab
+                                items={features}
+                                textColor="font-custom"
+                                boxStyle="tools-info-sec"
+                                itemTextSpacing={true}
+                            />
                         </div>
                     </div>
                 </div>
 
                 <div className="tools-container text-center">
                     {renderComponent()}
-                    {renderResult()}
+                    <div className="relative flex h-[100%] w-full justify-center">
+                        {renderResult()}
+                    </div>
                 </div>
             </div>
         </>
