@@ -8,6 +8,7 @@ import { trpc } from "../../utils/trpc";
 import LoadingStarHealth from "../../components/Loading";
 import PatientIntakeForm from "../../components/PatientIntakeForm/PatientIntakeForm";
 import FoodJournal from "../../components/FoodJournal/FoodJournal";
+import SubstanceTracker from "../../components/SubstanceTracker/SubstanceTracker"
 import { PayWall } from "../../components/PayWall/PayWall";
 
 
@@ -44,6 +45,7 @@ const ProfilePage: React.FC = () => {
   const [showBookmark, setShowBookmark] = useState(false);
   const [showCompare, setShowCompare] = useState(false);
   const [showFoodJournal, setShowFoodJournal] = useState(false);
+  const [showSubstanceTracker, setShowSubstanceTracker] = useState(false);
 
   const [selectedCategory, setSelectedCategory] = useState('');
   
@@ -96,6 +98,7 @@ const ProfilePage: React.FC = () => {
     setShowFoodJournal(false);
     setShowBookmark(false);
     setShowCompare(false);
+    setShowSubstanceTracker(false)
   };
 
   const handleBookmarkToggle = () => {
@@ -103,6 +106,8 @@ const ProfilePage: React.FC = () => {
     setShowFoodJournal(false);
     setShowBookmark(true);
     setShowCompare(false);
+    setShowSubstanceTracker(false)
+
   };
 
   const handleCompareToggle = () => {
@@ -110,6 +115,8 @@ const ProfilePage: React.FC = () => {
     setShowFoodJournal(false);
     setShowBookmark(false);
     setShowCompare(true);
+    setShowSubstanceTracker(false)
+
   };
 
   const handleFoodJournalToggle = () => {
@@ -117,8 +124,18 @@ const ProfilePage: React.FC = () => {
     setShowFoodJournal(true);
     setShowBookmark(false);
     setShowCompare(false);
+    setShowSubstanceTracker(false)
+
   };
 
+  const handleSubstanceTrackerToggle = () => {
+    setShowForm(false);
+    setShowFoodJournal(false);
+    setShowBookmark(false);
+    setShowCompare(false);
+    setShowSubstanceTracker(true)
+
+  };
   return status === 'loading' ?
     (
       <LoadingStarHealth />
@@ -145,7 +162,7 @@ const ProfilePage: React.FC = () => {
         <button
           className={`bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded}`}
           onClick={handleFormToggle}
-          disabled={showForm && !showBookmark && !showCompare && !showFoodJournal}
+          disabled={showForm && !showBookmark && !showCompare && !showFoodJournal && !showSubstanceTracker}
           style={{
             color: !showForm ? '#885CF6' : 'white',
             backgroundColor: !showForm ? 'white' : '#885CF6',
@@ -157,7 +174,7 @@ const ProfilePage: React.FC = () => {
         <button
           className={`bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded }`}
           onClick={handleBookmarkToggle}
-          disabled={showBookmark && !showForm && !showCompare && !showFoodJournal}
+          disabled={showBookmark && !showForm && !showCompare && !showFoodJournal && !showSubstanceTracker}
           style={{
             color: !showBookmark ? '#885CF6' : 'white',
             backgroundColor: !showBookmark ? 'white' : '#885CF6',
@@ -169,7 +186,7 @@ const ProfilePage: React.FC = () => {
         <button
           className={`bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded }`}
           onClick={handleCompareToggle}
-          disabled={showCompare && !showForm && !showBookmark && !showFoodJournal}
+          disabled={showCompare && !showForm && !showBookmark && !showFoodJournal && !showSubstanceTracker}
           style={{
             color: !showCompare ? '#885CF6' : 'white',
             backgroundColor: !showCompare ? 'white' : '#885CF6',
@@ -181,7 +198,7 @@ const ProfilePage: React.FC = () => {
         <button
           className={`bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded }`}
           onClick={handleFoodJournalToggle}
-          disabled={showFoodJournal&&!showCompare && !showForm && !showBookmark}
+          disabled={showFoodJournal&&!showCompare && !showForm && !showBookmark && !showSubstanceTracker}
           style={{
             color: !showFoodJournal ? '#885CF6' : 'white',
             backgroundColor: !showFoodJournal ? 'white' : '#885CF6',
@@ -189,6 +206,18 @@ const ProfilePage: React.FC = () => {
           }}
         >
           Food Journal
+        </button>
+        <button
+          className={`bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded }`}
+          onClick={handleSubstanceTrackerToggle}
+          disabled={!showFoodJournal&&!showCompare && !showForm && !showBookmark&& showSubstanceTracker}
+          style={{
+            color: !showSubstanceTracker ? '#885CF6' : 'white',
+            backgroundColor: !showSubstanceTracker ? 'white' : '#885CF6',
+            border: !showSubstanceTracker ? '1px solid #885CF6' : 'node',
+          }}
+        >
+          Substance Tracker
         </button>
       </div>
       {showForm ? (
@@ -225,8 +254,10 @@ const ProfilePage: React.FC = () => {
         <Compare />
       ) :showFoodJournal ?(
         <FoodJournal></FoodJournal>
-      ) 
-      
+      )  
+      :showSubstanceTracker ?(
+        <SubstanceTracker></SubstanceTracker>
+      )  
       : (
         <h2>No content to display</h2>
       )}
