@@ -653,6 +653,7 @@ const SubstanceTracker: React.FC = () => {
                 <textarea
                   value={moodBefore}
                   cols={10}
+                  maxLength={200}
                   className="w-full rounded-lg border border-violet-900 bg-violet-100 p-1 text-slate-900 placeholder:text-violet-800 hover:bg-violet-300 hover:text-violet-900"
                   onChange={(e) => setMoodBefore(e.target.value)}
                 />
@@ -664,6 +665,7 @@ const SubstanceTracker: React.FC = () => {
                 <textarea
                   value={moodAfter}
                   cols={10}
+                  maxLength={200}
                   className="w-full rounded-lg border border-violet-900 bg-violet-100 p-1 text-slate-900 placeholder:text-violet-800 hover:bg-violet-300 hover:text-violet-900"
                   onChange={(e) => setMoodAfter(e.target.value)}
                 />
