@@ -65,7 +65,7 @@ export default async function handler(
           const trackerWeekEntries = await prisma.substanceTracker.findMany({
             where: { substance: substanceId ,entryDateTime: { 
               gte: startWeekDate,
-              lt: endWeekDate,
+              lte: endWeekDate,
           }},
           });
           // Calculate the total dosage for this substance
