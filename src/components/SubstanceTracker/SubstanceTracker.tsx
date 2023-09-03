@@ -82,12 +82,16 @@ const SubstanceTracker: React.FC = () => {
       `/api/substanceTracker/getSubstancesByDate/?userId=${userId}&date=${substanceTrackerDate}`
     ).then((response) => {
       response.json().then((data) => {
-        console.log(data);
         setSubstanceTrackerData(data.substanceTracker);
         setSubLimitArr(data.customSubstancesWithTotal);
       });
     });
-  }, [substanceTrackerDate, addSubstanceisLoading]);
+  }, [
+    substanceTrackerDate,
+    addSubstanceisLoading,
+    saveDailyStatus,
+    saveWeeklyStatus,
+  ]);
   const resetAllInputs = () => {
     setDosageAmount("");
     setDate("");
@@ -103,14 +107,12 @@ const SubstanceTracker: React.FC = () => {
     fetch(`/api/substanceTracker/getAllCustomSub/?userId=${userId}`).then(
       (response) => {
         response.json().then((data) => {
-          console.log(data);
           setCustomSubstanceArr(data.customSubstance);
         });
       }
     );
   };
   const editFunction = (substance: any) => {
-    console.log(substance);
     setOpenModal(true);
     setSelectedID(substance["id"]);
     setDosageAmount(substance["dosageAmount"] + "");
@@ -122,11 +124,8 @@ const SubstanceTracker: React.FC = () => {
     setMoodBefore(substance["moodBefore"]);
     setSubstanceNameInput("");
     setAddNewSubBtn(false);
-    console.log("Hello");
-    console.log(customSubstanceArr);
     for (let i = 0; i < subLimitArr.length; i++) {
       if (subLimitArr[i]["substance"] == substance["substance"]) {
-        console.log("Found");
         setSelectedSubstance(i);
         break; // Stop the loop once a match is found
       }
@@ -178,9 +177,8 @@ const SubstanceTracker: React.FC = () => {
       time == "" ||
       parseFloat(dosageAmount) == 0 ||
       (addNewSubBtn && (substancNameInput == "" || dosageUnitInput == "")) ||
-      (!addNewSubBtn && selectedSubstance == undefined)
+      (!addNewSubBtn && subLimitArr.length == 0)
     ) {
-      console.log("Invalid Input");
       setEntryError(true);
 
       return;
@@ -259,6 +257,9 @@ const SubstanceTracker: React.FC = () => {
                   setSelectedSubstanceLimit(e.target.selectedIndex);
                   setDailyLimit(
                     subLimitArr[e.target.selectedIndex]["dailylimit"]
+                  );
+                  setWeeklyLimit(
+                    subLimitArr[e.target.selectedIndex]["weeklylimit"]
                   );
                 }}
                 value={selectedSubstanceLimit}
