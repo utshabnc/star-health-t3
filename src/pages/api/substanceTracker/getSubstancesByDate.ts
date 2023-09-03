@@ -51,7 +51,7 @@ export default async function handler(
         startWeekDate.setDate(today.getDate() - dayOfWeek);
 
 // Calculate the end date of the week
-        endWeekDate.setDate(today.getDate() + (6 - dayOfWeek));
+        endWeekDate.setDate(today.getDate() + (6 - dayOfWeek+1));
         for (const customSubstance of customSubstances) {
           const substanceId = customSubstance.id;
       
