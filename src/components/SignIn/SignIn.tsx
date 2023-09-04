@@ -73,7 +73,6 @@ export const SignIn = () => {
 
   const onSubmit =  (data : FieldValues) => {
     alert('success!')
-    console.log(data)
   
     /*try{
       const response = await fetch("/api/update-auth/update-user-field",{
