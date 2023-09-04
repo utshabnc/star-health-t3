@@ -295,6 +295,10 @@ model User {
   patientIntakeForm  PatientIntakeForm?
   userWaterIntake UserWaterIntake[]
   userFoodJournal UserFoodJournal[]
+  mentalHealthJournal MentalHealthJournal[]
+  exerciseTrackers ExerciseTracker[]
+  substanceTrackers  SubstanceTracker[]
+  customSubstances   customSubstance[] 
 }
 
 model VerificationToken {
@@ -415,10 +419,61 @@ model UserFoodJournal {
   numberOfServings      Float? 
   mealCategory          String?
 }
+
 model UserWaterIntake {
     id                    Int      @id @default(autoincrement())
     userId                String   
     user                  User     @relation(fields: [userId], references: [id], onDelete: Cascade)
     dateTimeOfIntake      DateTime
     numberOfGlasses       Int
+}
+
+model MentalHealthJournal {
+  id                Int      @id @default(autoincrement())
+  entryDate         DateTime 
+  moodScale         Int
+  emotionTags       String
+  freeFormJournal   String   @db.VarChar(1000)
+  dailyGratitude    String   @db.VarChar(500)
+  triggerIdentification String @db.VarChar(500)
+  copingStrategies  String   @db.VarChar(500)
+  userId            String   
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model ExerciseTracker {
+  id                Int      @id @default(autoincrement())
+  entryDateTime     DateTime 
+  activityType      String
+  userId            String
+  duration          Int
+  intensity         Int
+  calorieBurned     Int
+  goalSettingVal    Int
+  goalSettingUnit   String 
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model SubstanceTracker {
+  id                Int      @id @default(autoincrement())
+  entryDateTime     DateTime 
+  substance         Int
+  dosageAmount      Float
+  methodOfConsumption String
+  moodBefore  String   @db.VarChar(500)
+  moodAfter  String   @db.VarChar(500)
+  userId            String
+  customSubstance   customSubstance @relation(fields: [substance], references: [id])
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model customSubstance {
+  id                Int      @id @default(autoincrement())
+  substance         String
+  dosageUnit        String
+  dailylimit        Float @default(0)
+  weeklylimit       Float @default(0)
+  userId            String
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  substanceTrackers SubstanceTracker[]
 }

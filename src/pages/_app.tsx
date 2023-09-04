@@ -4,6 +4,7 @@ import { SessionProvider } from "next-auth/react";
 
 import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer } from 'react-toastify';
+import Script from 'next/script'
 
 import { trpc } from "../utils/trpc";
 import "../assets/scripts/Graph";
@@ -45,6 +46,7 @@ const MyApp: AppType<{ session: Session | null }> = ({
           <link href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.css" rel="stylesheet" type="text/css" />
         </Head>
         <NavFoot>
+          <Script/>
           <Component {...pageProps} />
           <ToastContainer />
         </NavFoot>

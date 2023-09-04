@@ -16,6 +16,6 @@
     "incremental": true,
     "noUncheckedIndexedAccess": true
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "**/*.cjs", "**/*.mjs", "src/pages/directory", "src/components/HospitalOwners/StaticAndAPIFiles/processJSONStaticScript.jsx"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "**/*.cjs", "**/*.mjs", "src/pages/directory", "src/components/HospitalOwners/StaticAndAPIFiles/processJSONStaticScript.jsx", "src/components/SignIn/GoogleSignIn.tsx", "src/components/SignIn/SignIn.tsx"],
   "exclude": ["node_modules"]
 }

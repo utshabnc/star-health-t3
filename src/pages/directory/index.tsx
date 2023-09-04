@@ -6,6 +6,7 @@ import DirectoryCards from "../../components/DirectoryCards";
 import Filters from "../../components/Filters";
 import { formatMoney } from "../../utils";
 import { trpc } from "../../utils/trpc";
+import { SignIn } from "../../components/SignIn/SignIn";
 import { toTitleCase } from "../../utils";
 
 import type { Observable } from "rxjs";
@@ -64,6 +65,7 @@ import HospitalsFilters from "../../components/Hospitals/HospitalsFilters";
 import LoadingStarHealth from "../../components/Loading";
 import { PayWall } from "../../components/PayWall/PayWall";
 import { id } from "date-fns/locale";
+import  SignInFlow  from "../../components/SignIn/SignInFlow";
 
 interface PriceFilter {
   min: number;
@@ -890,7 +892,7 @@ export default function Directory() {
 
   return (
     <>
-      <div className="min-h-screen rounded bg-white p-5 pb-44">
+      <div className="min-h-screen rounded bg-white p-5 pb-44 w-full h-full ">
         <div className="flex flex-row">
           <div>
             <button
@@ -913,7 +915,7 @@ export default function Directory() {
               </svg>
             </button>
           </div>
-          <div className="flex w-full flex-col justify-end px-8 pb-10">
+          <div className="flex w-full flex-col justify-end px-8 pb-10 ">
             <div className="wrap-opt flex justify-between">
               <div className="flex w-[60%] items-center gap-5">
                 <p className="flex text-2xl font-semibold text-violet-700">
@@ -1159,7 +1161,7 @@ export default function Directory() {
               <hr />
             </div>
             {selectedTab === Tab.ClinicalTrials && (
-              <div className="relative">
+              <div className=" ">
                 <ClinicalTrialsFilters
                   Gender={clinicalTrialGenderFilters}
                   Acronym={clinicalTrialAcronymFilters}
@@ -1435,14 +1437,14 @@ export default function Directory() {
                           />
                         )}
                       </div>
-                    </>
+                    </> 
                   )}
                 </>
               )}
           </div>
         </div>
         <div className="relative flex h-[100%] w-full justify-center">
-          <PayWall />
+          <SignIn/>
 
           <div className="ml-5 flex min-h-[100%] w-[95%] flex-col overflow-scroll p-1">
             {isApiProcessing && <LoadingStarHealth />}
