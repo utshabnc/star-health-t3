@@ -22,13 +22,13 @@ const MentalHealthDiary: React.FC = () => {
   const [copingMechUsed, setCopingMechUsed] = useState("");
   const [isSaving, setIsSaving] = useState(false);
   const [moodGraphData, setMoodGraphData] = useState([
-    { id: 1, day: "Sunday", mood: 0 },
     { id: 2, day: "Monday", mood: 0 },
     { id: 3, day: "Tuesday", mood: 0 },
     { id: 4, day: "Wednesday", mood: 0 },
     { id: 5, day: "Thursday", mood: 0 },
     { id: 6, day: "Friday", mood: 0 },
     { id: 7, day: "Saturday", mood: 0 },
+    { id: 1, day: "Sunday", mood: 0 },
   ]);
   const [chartData, setCharData] = useState({
     labels: moodGraphData.map((data) => data.day),
@@ -170,6 +170,7 @@ const MentalHealthDiary: React.FC = () => {
           <div>
             <div className="mb-1 font-semibold">
               Select your mood on a wcale from 1 to 10:
+              <div className="font-bold text-purple-700">{moodScale}</div>
             </div>
             <div className="flex">
               <BiSad size={40} color="#7e22ce"></BiSad>

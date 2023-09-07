@@ -298,7 +298,8 @@ model User {
   mentalHealthJournal MentalHealthJournal[]
   exerciseTrackers ExerciseTracker[]
   substanceTrackers  SubstanceTracker[]
-  customSubstances   customSubstance[] 
+  customSubstances   customSubstance[]
+  userDrugTracker    UserDrugTracker[]
 }
 
 model VerificationToken {
@@ -477,3 +478,22 @@ model customSubstance {
   user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   substanceTrackers SubstanceTracker[]
 }
+
+model UserDrugTracker{
+  id                Int      @id @default(autoincrement())
+  spl_id            String
+  brand_name        String?
+  manufacturer_name String?
+  dosge_descrip     String?
+  userId            String
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  drugLog           UserDrugLog[]
+ }
+
+ model UserDrugLog{
+  id                Int      @id @default(autoincrement())
+  amount            Int
+  dateOfLog         DateTime
+  drugId            Int 
+  drug              UserDrugTracker @relation(fields: [drugId], references: [id], onDelete: Cascade)
+ }

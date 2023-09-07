@@ -11,6 +11,7 @@ import FoodJournal from "../../components/FoodJournal/FoodJournal";
 import SubstanceTracker from "../../components/SubstanceTracker/SubstanceTracker";
 import { PayWall } from "../../components/PayWall/PayWall";
 import MentalHealthDiary from "../../components/MentalHealthDiary";
+import DrugJournal from "../../components/DrugJournal/DrugJournal";
 
 interface BookmarkInterface {
   id: number;
@@ -47,6 +48,7 @@ const ProfilePage: React.FC = () => {
   const [showFoodJournal, setShowFoodJournal] = useState(false);
   const [showSubstanceTracker, setShowSubstanceTracker] = useState(false);
   const [showMentalDiary, setShowSMentalDiary] = useState(false);
+  const [showDrugJournal, setShowDrugJournal] = useState(false);
 
   const [selectedCategory, setSelectedCategory] = useState("");
 
@@ -100,6 +102,7 @@ const ProfilePage: React.FC = () => {
     setShowCompare(false);
     setShowSubstanceTracker(false);
     setShowSMentalDiary(false);
+    setShowDrugJournal(false);
   };
 
   const handleBookmarkToggle = () => {
@@ -109,6 +112,8 @@ const ProfilePage: React.FC = () => {
     setShowCompare(false);
     setShowSubstanceTracker(false);
     setShowSMentalDiary(false);
+    setShowDrugJournal(false);
+    setShowDrugJournal(false);
   };
 
   const handleCompareToggle = () => {
@@ -118,6 +123,7 @@ const ProfilePage: React.FC = () => {
     setShowCompare(true);
     setShowSubstanceTracker(false);
     setShowSMentalDiary(false);
+    setShowDrugJournal(false);
   };
 
   const handleFoodJournalToggle = () => {
@@ -127,6 +133,7 @@ const ProfilePage: React.FC = () => {
     setShowCompare(false);
     setShowSubstanceTracker(false);
     setShowSMentalDiary(false);
+    setShowDrugJournal(false);
   };
 
   const handleSubstanceTrackerToggle = () => {
@@ -136,6 +143,7 @@ const ProfilePage: React.FC = () => {
     setShowCompare(false);
     setShowSubstanceTracker(true);
     setShowSMentalDiary(false);
+    setShowDrugJournal(false);
   };
 
   const handleMentalDiaryToggle = () => {
@@ -145,6 +153,16 @@ const ProfilePage: React.FC = () => {
     setShowCompare(false);
     setShowSubstanceTracker(false);
     setShowSMentalDiary(true);
+    setShowDrugJournal(false);
+  };
+  const handleDrugJournalToggle = () => {
+    setShowForm(false);
+    setShowFoodJournal(false);
+    setShowBookmark(false);
+    setShowCompare(false);
+    setShowSubstanceTracker(false);
+    setShowSMentalDiary(false);
+    setShowDrugJournal(true);
   };
   return status === "loading" ? (
     <LoadingStarHealth />
@@ -176,7 +194,9 @@ const ProfilePage: React.FC = () => {
             !showBookmark &&
             !showCompare &&
             !showFoodJournal &&
-            !showSubstanceTracker
+            !showSubstanceTracker &&
+            !showMentalDiary &&
+            !showDrugJournal
           }
           style={{
             color: !showForm ? "#885CF6" : "white",
@@ -194,7 +214,9 @@ const ProfilePage: React.FC = () => {
             !showForm &&
             !showCompare &&
             !showFoodJournal &&
-            !showSubstanceTracker
+            !showSubstanceTracker &&
+            !showMentalDiary &&
+            !showDrugJournal
           }
           style={{
             color: !showBookmark ? "#885CF6" : "white",
@@ -212,7 +234,9 @@ const ProfilePage: React.FC = () => {
             !showForm &&
             !showBookmark &&
             !showFoodJournal &&
-            !showSubstanceTracker
+            !showSubstanceTracker &&
+            !showMentalDiary &&
+            !showDrugJournal
           }
           style={{
             color: !showCompare ? "#885CF6" : "white",
@@ -230,7 +254,9 @@ const ProfilePage: React.FC = () => {
             !showCompare &&
             !showForm &&
             !showBookmark &&
-            !showSubstanceTracker
+            !showSubstanceTracker &&
+            !showMentalDiary &&
+            !showDrugJournal
           }
           style={{
             color: !showFoodJournal ? "#885CF6" : "white",
@@ -248,7 +274,9 @@ const ProfilePage: React.FC = () => {
             !showCompare &&
             !showForm &&
             !showBookmark &&
-            showSubstanceTracker
+            showSubstanceTracker &&
+            !showMentalDiary &&
+            !showDrugJournal
           }
           style={{
             color: !showSubstanceTracker ? "#885CF6" : "white",
@@ -267,15 +295,36 @@ const ProfilePage: React.FC = () => {
             !showForm &&
             !showBookmark &&
             !showSubstanceTracker &&
-            showMentalDiary
+            showMentalDiary &&
+            !showDrugJournal
           }
           style={{
-            color: !showSubstanceTracker ? "#885CF6" : "white",
-            backgroundColor: !showSubstanceTracker ? "white" : "#885CF6",
-            border: !showSubstanceTracker ? "1px solid #885CF6" : "node",
+            color: !showMentalDiary ? "#885CF6" : "white",
+            backgroundColor: !showMentalDiary ? "white" : "#885CF6",
+            border: !showMentalDiary ? "1px solid #885CF6" : "node",
           }}
         >
           Mental Health Diary
+        </button>
+        <button
+          className={`} rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600`}
+          onClick={handleDrugJournalToggle}
+          disabled={
+            !showFoodJournal &&
+            !showCompare &&
+            !showForm &&
+            !showBookmark &&
+            !showSubstanceTracker &&
+            !showMentalDiary &&
+            showDrugJournal
+          }
+          style={{
+            color: !showDrugJournal ? "#885CF6" : "white",
+            backgroundColor: !showDrugJournal ? "white" : "#885CF6",
+            border: !showDrugJournal ? "1px solid #885CF6" : "node",
+          }}
+        >
+          Drug Journal
         </button>
       </div>
       {showForm ? (
@@ -318,6 +367,8 @@ const ProfilePage: React.FC = () => {
         <SubstanceTracker></SubstanceTracker>
       ) : showMentalDiary ? (
         <MentalHealthDiary></MentalHealthDiary>
+      ) : showDrugJournal ? (
+        <DrugJournal></DrugJournal>
       ) : (
         <h2>No content to display</h2>
       )}
