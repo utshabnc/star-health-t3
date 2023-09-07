@@ -34,7 +34,7 @@ function DrugDetailsTable({ rows, date }: { rows: any[]; date: any }) {
   const [dosageList, setDosageList] = useState<any>({});
   useEffect(() => {
     setDrugJournalEntries(rows);
-    var list = {};
+    let list = {};
     rows &&
       rows.map((row) => {
         // Assuming each 'row' object has a unique 'id' and a 'dosage' property
