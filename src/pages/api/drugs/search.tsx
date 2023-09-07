@@ -6,7 +6,6 @@ export default async function handler(
   res: NextApiResponse
 ) {
   const { exp } = req.query;
-  const formatData = () => {};
   try {
     console.log(exp);
     const drugURL = `https://api.fda.gov/drug/label.json?search=openfda.brand_name:"${exp}"&limit=10`;
