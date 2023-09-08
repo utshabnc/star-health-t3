@@ -505,10 +505,10 @@ model ExerciseTracker {
   userId            String
   entryDateTime     DateTime 
   customExerciseId  Int
-  duration          Float?
+  duration          Float
   intensity         String
-  calorieBurned     Float?
-  unitToTrackValue  Float?
+  calorieBurned     Float
+  unitToTrackValue  Float
   customExercise   customExercise @relation(fields: [customExerciseId], references: [id])
   user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
