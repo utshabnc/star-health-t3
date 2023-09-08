@@ -297,6 +297,7 @@ model User {
   userFoodJournal UserFoodJournal[]
   mentalHealthJournal MentalHealthJournal[]
   exerciseTrackers ExerciseTracker[]
+  customExercises customExercise[]
   substanceTrackers  SubstanceTracker[]
   customSubstances   customSubstance[]
   userDrugTracker    UserDrugTracker[]
@@ -442,18 +443,7 @@ model MentalHealthJournal {
   user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
-model ExerciseTracker {
-  id                Int      @id @default(autoincrement())
-  entryDateTime     DateTime 
-  activityType      String
-  userId            String
-  duration          Int
-  intensity         Int
-  calorieBurned     Int
-  goalSettingVal    Int
-  goalSettingUnit   String 
-  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-}
+
 
 model SubstanceTracker {
   id                Int      @id @default(autoincrement())
@@ -497,3 +487,28 @@ model UserDrugTracker{
   drugId            Int 
   drug              UserDrugTracker @relation(fields: [drugId], references: [id], onDelete: Cascade)
  }
+
+model customExercise {
+  id                Int      @id @default(autoincrement())
+  exerciseName      String
+  unitToTrack       String
+  userId            String?
+  dailyGoal         Float @default(0)
+  weeklyGoal        Float @default(0)
+  monthlyGoal       Float @default(0)
+  user              User?     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  exerciseTrackers ExerciseTracker[]
+}
+
+model ExerciseTracker {
+  id                Int      @id @default(autoincrement())
+  userId            String
+  entryDateTime     DateTime 
+  customExerciseId  Int
+  duration          Float?
+  intensity         String
+  calorieBurned     Float?
+  unitToTrackValue  Float?
+  customExercise   customExercise @relation(fields: [customExerciseId], references: [id])
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
