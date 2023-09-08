@@ -41,7 +41,7 @@ export default async function handler(req: any, res: any) {
           }
         }
 
-        const newEntry = await prisma.ExerciseTracker.update({
+        const newEntry = await prisma.exerciseTracker.update({
           where: {
             id: id,
           },
@@ -99,7 +99,7 @@ export default async function handler(req: any, res: any) {
           }
         }
 
-        const newEntry = await prisma.ExerciseTracker.create({
+        const newEntry = await prisma.exerciseTracker.create({
           data: {
             entryDateTime: formattedEntryDateTime,
             customExerciseId: isNewExercise

@@ -72,19 +72,18 @@ export default async function handler(
           let totalWeek=0
           if(customExercise.unitToTrack==='Calories')
           { 
-            total = trackerEntries.reduce((acc, entry) => acc + entry.calorieBurned, 0);
-           totalWeek = trackerWeekEntries.reduce((acc, entry) => acc + entry.calorieBurned, 0);
+            total = trackerEntries?trackerEntries.reduce((acc, entry) => acc + entry.calorieBurned, 0):0;
+           totalWeek = trackerWeekEntries?trackerWeekEntries.reduce((acc, entry) => acc + entry.calorieBurned, 0):0;
           }
           else if(customExercise.unitToTrack==='Minutes')
           { 
-            total = trackerEntries.reduce((acc, entry) => acc + entry.duration, 0);
-           totalWeek = trackerWeekEntries.reduce((acc, entry) => acc + entry.
-           duration, 0);
+            total = trackerEntries?trackerEntries.reduce((acc, entry) => acc + entry.duration, 0):0;
+            totalWeek = trackerWeekEntries?trackerWeekEntries.reduce((acc, entry) => acc + entry.duration, 0):0;
           }
           else       
           { 
-            total = trackerEntries.reduce((acc, entry) => acc + entry.unitToTrackValue, 0);
-           totalWeek = trackerWeekEntries.reduce((acc, entry) => acc + entry.unitToTrackValue, 0);
+            total = trackerEntries?trackerEntries.reduce((acc, entry) => acc + entry.unitToTrackValue, 0):0;
+           totalWeek = trackerWeekEntries?trackerWeekEntries.reduce((acc, entry) => acc + entry.unitToTrackValue, 0):0;
           }
           // Store the total dosage in the totalDosage object
           customExerciseWithTotal.push({
