@@ -123,7 +123,18 @@ const ExerciseTracker: React.FC = () => {
       });
     });
   }, [exerciseTrackerDate]);
-  const resetAllInputs = () => {};
+  const resetAllInputs = () => {
+    setSelectedID(undefined);
+    setExerciseCalories(0);
+    setDate("");
+    setTime("");
+    setExerciseUnit(0);
+    setExerciseUnitVal("Steps");
+    setExerciseDuration(0);
+    setExerciseIntensity(0);
+    setExerciseNameInput("");
+    setAddNewExBtn(false);
+  };
 
   const submitExercise = async (e: React.FormEvent) => {
     const dateTimeInput = `${date}T${time}:00`;
