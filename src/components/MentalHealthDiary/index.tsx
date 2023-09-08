@@ -116,7 +116,7 @@ const MentalHealthDiary: React.FC = () => {
         },
         body: JSON.stringify(body),
       }).then((message: any) => {
-        toast(`Successfully added custom Substance.`, {});
+        toast(`Successfully added to diary.`, {});
         setIsSaving(false);
 
         // setaddCustomSubstanceStatus(0)

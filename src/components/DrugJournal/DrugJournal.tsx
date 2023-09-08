@@ -116,6 +116,7 @@ const DrugJournal: React.FC = () => {
       }).then((message: any) => {
         toast(`Successfully added Drug item.`, {});
         setSearchStr("");
+        setDate(date);
         setCurrentDrug(undefined);
       });
     } catch (error) {
