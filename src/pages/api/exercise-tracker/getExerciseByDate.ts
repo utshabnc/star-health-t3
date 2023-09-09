@@ -51,6 +51,15 @@ export default async function handler(
 
 // Calculate the end date of the week
         endWeekDate.setDate(today.getDate() + (6 - dayOfWeek+1));
+
+        const startMonthDate = new Date(date);
+startMonthDate.setDate(1); // Set the day of the month to 1 (beginning of the month)
+startMonthDate.setHours(0, 0, 0, 0); // Set the time to midnight
+
+// Calculate end of the month
+const endMonthDate = new Date(date);
+endMonthDate.setMonth(endMonthDate.getMonth() + 1, 0); // Set to the last day of the current month
+endMonthDate.setHours(23, 59, 59, 999); 
         for (const customExercise of customExercises) {
           const exerciseId = customExercise.id;
       
@@ -67,29 +76,44 @@ export default async function handler(
               lte: endWeekDate,
           }},
           });
+          const trackerMonthEntries = await prisma.exerciseTracker.findMany({
+            where: { customExerciseId: exerciseId ,entryDateTime: { 
+              gte: startMonthDate,
+              lte: endMonthDate,
+          }},
+          });
           // Calculate the total dosage for this substance
           let total=0
           let totalWeek=0
+          let totalMonth=0
+
           if(customExercise.unitToTrack==='Calories')
           { 
             total = trackerEntries?trackerEntries.reduce((acc, entry) => acc + entry.calorieBurned, 0):0;
            totalWeek = trackerWeekEntries?trackerWeekEntries.reduce((acc, entry) => acc + entry.calorieBurned, 0):0;
+           totalMonth = trackerMonthEntries?trackerMonthEntries.reduce((acc, entry) => acc + entry.calorieBurned, 0):0;
+
           }
           else if(customExercise.unitToTrack==='Minutes')
           { 
             total = trackerEntries?trackerEntries.reduce((acc, entry) => acc + entry.duration, 0):0;
             totalWeek = trackerWeekEntries?trackerWeekEntries.reduce((acc, entry) => acc + entry.duration, 0):0;
+            totalMonth = trackerMonthEntries?trackerMonthEntries.reduce((acc, entry) => acc + entry.duration, 0):0;
+
           }
           else       
           { 
             total = trackerEntries?trackerEntries.reduce((acc, entry) => acc + entry.unitToTrackValue, 0):0;
            totalWeek = trackerWeekEntries?trackerWeekEntries.reduce((acc, entry) => acc + entry.unitToTrackValue, 0):0;
+           totalMonth = trackerMonthEntries?trackerMonthEntries.reduce((acc, entry) => acc + entry.unitToTrackValue, 0):0;
+
           }
           // Store the total dosage in the totalDosage object
           customExerciseWithTotal.push({
             ...customExercise,
             totalDaily: total,
-            totalWeekly:totalWeek
+            totalWeekly:totalWeek,
+            totalMonthly:totalMonth
           })
         }
 

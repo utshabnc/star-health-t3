@@ -53,7 +53,7 @@ export default async function handler(req: any, res: any) {
             duration,
             intensity,
             calorieBurned,
-            unitToTrackValue,
+            unitToTrackValue: unitToTrackValue == null ? 0 : unitToTrackValue,
             userId,
           },
         });
@@ -98,9 +98,10 @@ export default async function handler(req: any, res: any) {
             return;
           }
         }
-
+        console.log(newExercise["id"]);
         const newEntry = await prisma.exerciseTracker.create({
           data: {
+            userId,
             entryDateTime: formattedEntryDateTime,
             customExerciseId: isNewExercise
               ? newExercise["id"]
@@ -108,8 +109,7 @@ export default async function handler(req: any, res: any) {
             duration,
             intensity,
             calorieBurned,
-            unitToTrackValue,
-            userId,
+            unitToTrackValue: unitToTrackValue == null ? 0 : unitToTrackValue,
           },
         });
 

@@ -14,6 +14,7 @@ import { error } from "console";
 import { duration } from "@mui/material";
 import ExerciseDetailsTable from "../ExerciseDetailsTable";
 import { custom } from "zod";
+import { combineLatest } from "rxjs";
 
 const Modal = ({
   open,
@@ -69,9 +70,12 @@ const ExerciseTracker: React.FC = () => {
   );
   const [dailyGoal, setDailyGoal] = useState<number>(0);
   const [weeklyGoal, setWeeklyGoal] = useState<number>(0);
+  const [monthlyGoal, setMonthlyGoal] = useState<number>(0);
 
   const [saveDailyStatus, setSaveDailyStatus] = useState<boolean>(false);
   const [saveWeeklyStatus, setSaveWeeklyStatus] = useState<boolean>(false);
+  const [saveMonthlyStatus, setSaveMonthlyStatus] = useState<boolean>(false);
+
   const [selectedExerciseGoal, setSelectedExerciseGoal] = useState<number>(0);
   const getAllExercise = () => {
     fetch(`/api/exercise-tracker/getAllCustomExercise/?userId=${userId}`).then(
@@ -93,9 +97,7 @@ const ExerciseTracker: React.FC = () => {
     const d = exercise["entryDateTime"].split("T");
     setDate(d[0]);
     setTime(d[1].slice(0, -8));
-    console.log(exercise);
     setExerciseUnit(exercise["unit"]);
-
     setExerciseUnitVal(
       exercise["unit"] === "Calories" || exercise["unit"] === "Minutes"
         ? 0
@@ -106,7 +108,10 @@ const ExerciseTracker: React.FC = () => {
     setExerciseNameInput("");
     setAddNewExBtn(false);
     for (let i = 0; i < customExerciseArr.length; i++) {
-      if (customExerciseArr[i]["exerciseName"] == exercise["exerciseName"]) {
+      if (
+        customExerciseArr[i]["exerciseName"] == exercise["exerciseName"] &&
+        customExerciseArr[i]["unitToTrack"] == exercise["unit"]
+      ) {
         setSelectedExercise(i);
         break; // Stop the loop once a match is found
       }
@@ -230,7 +235,7 @@ const ExerciseTracker: React.FC = () => {
             </div>
             <div>
               <div className="mb-1 font-semibold">
-                Pick substance to view execrsie summary
+                Pick Exercise to view summary
               </div>
               <select
                 className="w-full rounded-lg border border-violet-900 bg-violet-100 p-1 text-slate-900 placeholder:text-violet-800 hover:bg-violet-300 hover:text-violet-900"
@@ -244,6 +249,7 @@ const ExerciseTracker: React.FC = () => {
                       "weeklyGoal"
                     ]
                   );
+                  setMonthlyGoal(0);
                 }}
                 value={selectedExerciseGoal}
               >
@@ -324,13 +330,27 @@ const ExerciseTracker: React.FC = () => {
                         className="text-2xl font-semibold text-violet-700"
                         size={30}
                         onClick={() => {
-                          setDailyGoal(
-                            Math.round((dailyGoal - 0.1) * 100) / 100
-                          );
+                          if (dailyGoal < 0) {
+                            setDailyGoal(0);
+                          }
+                          setDailyGoal(Math.round(dailyGoal - 1));
                         }}
                       ></AiOutlineMinus>
                       <div className="mx-5 text-xl font-semibold text-violet-700">
-                        {dailyGoal}{" "}
+                        <input
+                          value={dailyGoal}
+                          onChange={(e) => {
+                            if (e.target.value == "") {
+                              setDailyGoal(0);
+                            } else {
+                              if (parseFloat(e.target.value) < 9999999) {
+                                setDailyGoal(parseFloat(e.target.value));
+                              }
+                            }
+                          }}
+                          className="mr-2 w-[100px] rounded-lg border border-violet-900 bg-violet-100 p-1 text-slate-900 placeholder:text-violet-800 hover:bg-violet-300 hover:text-violet-900"
+                          type="text"
+                        ></input>
                         {
                           customExerciseGoalsData[selectedExerciseGoal][
                             "unitToTrack"
@@ -341,9 +361,9 @@ const ExerciseTracker: React.FC = () => {
                         className="text-2xl font-semibold text-violet-700"
                         size={30}
                         onClick={() => {
-                          setDailyGoal(
-                            Math.round((dailyGoal + 0.1) * 100) / 100
-                          );
+                          if (dailyGoal < 999999) {
+                            setDailyGoal(Math.round(dailyGoal + 1));
+                          }
                         }}
                       ></AiOutlinePlus>
                     </div>
@@ -429,13 +449,27 @@ const ExerciseTracker: React.FC = () => {
                         className="text-2xl font-semibold text-violet-700"
                         size={30}
                         onClick={() => {
-                          setWeeklyGoal(
-                            Math.round((weeklyGoal - 0.1) * 100) / 100
-                          );
+                          if (weeklyGoal < 0) {
+                            setWeeklyGoal(0);
+                          }
+                          setWeeklyGoal(Math.round(weeklyGoal - 1));
                         }}
                       ></AiOutlineMinus>
                       <div className="mx-5 text-xl font-semibold text-violet-700">
-                        {weeklyGoal}{" "}
+                        <input
+                          value={weeklyGoal}
+                          onChange={(e) => {
+                            if (e.target.value == "") {
+                              setWeeklyGoal(0);
+                            } else {
+                              if (parseFloat(e.target.value) < 9999999) {
+                                setWeeklyGoal(parseFloat(e.target.value));
+                              }
+                            }
+                          }}
+                          className="mr-2 w-[100px] rounded-lg border border-violet-900 bg-violet-100 p-1 text-slate-900 placeholder:text-violet-800 hover:bg-violet-300 hover:text-violet-900"
+                          type="text"
+                        ></input>
                         {
                           customExerciseGoalsData[selectedExerciseGoal][
                             "unitToTrack"
@@ -446,9 +480,9 @@ const ExerciseTracker: React.FC = () => {
                         className="text-2xl font-semibold text-violet-700"
                         size={30}
                         onClick={() => {
-                          setWeeklyGoal(
-                            Math.round((weeklyGoal + 0.1) * 100) / 100
-                          );
+                          if (weeklyGoal < 999999) {
+                            setWeeklyGoal(Math.round(weeklyGoal + 1));
+                          }
                         }}
                       ></AiOutlinePlus>
                     </div>
@@ -461,6 +495,125 @@ const ExerciseTracker: React.FC = () => {
                     >
                       Save Weekly Goal
                       {saveWeeklyStatus && (
+                        <>
+                          <div className="lds-ring">
+                            <div></div>
+                            <div></div>
+                            <div></div>
+                            <div></div>
+                          </div>
+                        </>
+                      )}
+                    </button>
+                  </div>
+                </div>
+                <div>
+                  <div className="flex flex-col items-center">
+                    <div className="text-xl font-semibold text-violet-700">
+                      Total Monthly Workout and Goal
+                    </div>
+                    <div className="text-2xl font-semibold text-violet-700">
+                      {
+                        customExerciseGoalsData[selectedExerciseGoal][
+                          "totalMonthly"
+                        ]
+                      }{" "}
+                      {
+                        customExerciseGoalsData[selectedExerciseGoal][
+                          "unitToTrack"
+                        ]
+                      }
+                    </div>
+                    <div
+                      className={`text-m font-semibold ${
+                        customExerciseGoalsData[selectedExerciseGoal][
+                          "totalMonthly"
+                        ] -
+                          monthlyGoal >
+                        0
+                          ? "text-green-700 "
+                          : "text-red-700 "
+                      }`}
+                    >
+                      {" "}
+                      {customExerciseGoalsData[selectedExerciseGoal][
+                        "totalMonthly"
+                      ] -
+                        monthlyGoal >
+                      0
+                        ? "+"
+                        : "-"}{" "}
+                      {Math.round(
+                        Math.abs(
+                          parseFloat(
+                            customExerciseGoalsData[selectedExerciseGoal][
+                              "totalMonthly"
+                            ]
+                          ) - monthlyGoal
+                        ) * 100
+                      ) / 100}{" "}
+                      {
+                        customExerciseGoalsData[selectedExerciseGoal][
+                          "unitToTrack"
+                        ]
+                      }
+                    </div>
+                  </div>
+                  <div className="flex flex-col items-center">
+                    <div className="text-xl font-semibold text-violet-700">
+                      Monthly Goal
+                    </div>
+                    <div className="mb-1 flex flex-row items-center">
+                      <AiOutlineMinus
+                        className="text-2xl font-semibold text-violet-700"
+                        size={30}
+                        onClick={() => {
+                          if (monthlyGoal < 0) {
+                            setMonthlyGoal(0);
+                          }
+                          setMonthlyGoal(Math.round(monthlyGoal - 1));
+                        }}
+                      ></AiOutlineMinus>
+                      <div className="mx-5 text-xl font-semibold text-violet-700">
+                        <input
+                          value={monthlyGoal}
+                          onChange={(e) => {
+                            if (e.target.value == "") {
+                              setMonthlyGoal(0);
+                            } else {
+                              if (parseFloat(e.target.value) < 9999999) {
+                                setMonthlyGoal(parseFloat(e.target.value));
+                              }
+                            }
+                          }}
+                          className="mr-2 w-[100px] rounded-lg border border-violet-900 bg-violet-100 p-1 text-slate-900 placeholder:text-violet-800 hover:bg-violet-300 hover:text-violet-900"
+                          type="text"
+                        ></input>
+                        {
+                          customExerciseGoalsData[selectedExerciseGoal][
+                            "unitToTrack"
+                          ]
+                        }{" "}
+                      </div>
+                      <AiOutlinePlus
+                        className="text-2xl font-semibold text-violet-700"
+                        size={30}
+                        onClick={() => {
+                          if (monthlyGoal < 999999) {
+                            setMonthlyGoal(Math.round(monthlyGoal + 1));
+                          }
+                        }}
+                      ></AiOutlinePlus>
+                    </div>
+                    <button
+                      className="ease focus:shadow-outline w-full select-none rounded-md border border-violet-700 bg-violet-700 px-4 py-2 text-white transition duration-500 hover:bg-violet-900 focus:outline-none"
+                      onClick={(e) => {
+                        setSaveMonthlyStatus(true);
+                        // saveWeekly(e);
+                      }}
+                    >
+                      Save Monthly Goal
+                      {saveMonthlyStatus && (
                         <>
                           <div className="lds-ring">
                             <div></div>
