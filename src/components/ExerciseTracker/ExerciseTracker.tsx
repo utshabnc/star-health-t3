@@ -462,8 +462,10 @@ const ExerciseTracker: React.FC = () => {
                     <button
                       className="ease focus:shadow-outline w-full select-none rounded-md border border-violet-700 bg-violet-700 px-4 py-2 text-white transition duration-500 hover:bg-violet-900 focus:outline-none"
                       onClick={(e) => {
-                        setSaveDailyStatus(true);
-                        saveDaily(e);
+                        if (!saveDailyStatus) {
+                          setSaveDailyStatus(true);
+                          saveDaily(e);
+                        }
                       }}
                     >
                       Save Daily Goal
@@ -581,8 +583,10 @@ const ExerciseTracker: React.FC = () => {
                     <button
                       className="ease focus:shadow-outline w-full select-none rounded-md border border-violet-700 bg-violet-700 px-4 py-2 text-white transition duration-500 hover:bg-violet-900 focus:outline-none"
                       onClick={(e) => {
-                        setSaveWeeklyStatus(true);
-                        saveWeekly(e);
+                        if (!saveWeeklyStatus) {
+                          setSaveWeeklyStatus(true);
+                          saveWeekly(e);
+                        }
                       }}
                     >
                       Save Weekly Goal
@@ -700,8 +704,10 @@ const ExerciseTracker: React.FC = () => {
                     <button
                       className="ease focus:shadow-outline w-full select-none rounded-md border border-violet-700 bg-violet-700 px-4 py-2 text-white transition duration-500 hover:bg-violet-900 focus:outline-none"
                       onClick={(e) => {
-                        setSaveMonthlyStatus(true);
-                        saveMonthly(e);
+                        if (!saveMonthlyStatus) {
+                          setSaveMonthlyStatus(true);
+                          saveMonthly(e);
+                        }
                       }}
                     >
                       Save Monthly Goal
@@ -726,9 +732,11 @@ const ExerciseTracker: React.FC = () => {
       <section>
         <button
           onClick={(e) => {
-            setOpenModal(true);
-            setSelectedID(undefined);
-            setDate(exerciseTrackerDate);
+            if (!isGettingData) {
+              setOpenModal(true);
+              setSelectedID(undefined);
+              setDate(exerciseTrackerDate);
+            }
           }}
           className=" ease focus:shadow-outline mb-2 w-[100%] select-none rounded-md border border-violet-700 bg-violet-700 px-4 py-2 text-white transition duration-500 hover:bg-violet-900 focus:outline-none"
         >
