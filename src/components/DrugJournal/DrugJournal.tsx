@@ -31,7 +31,7 @@ const Modal = ({
 
   return (
     <div className={showHideClassName}>
-      <section className="modal-main rounded-lg ">{children}</section>
+      <section className="modal-tracker rounded-lg ">{children}</section>
     </div>
   );
 };
@@ -53,7 +53,7 @@ const DrugJournal: React.FC = () => {
   const [errorEntry, setErrorEntry] = useState<boolean>(false);
   const [date, setDate] = useState<any>(new Date().toISOString().split("T")[0]);
   useEffect(() => {
-    if (searchStr.length >= 3) {
+    if (searchStr.length >= 1) {
       const delayDebounceFn = setTimeout(() => {
         try {
           fetch(`/api/drugs/search?exp=${searchStr}`).then((response) => {
@@ -103,7 +103,6 @@ const DrugJournal: React.FC = () => {
       dosge_descrip: currentDrug["dosage"],
       userId: userId,
     };
-    console.log(body);
     try {
       setIsAdding(true);
       setErrorEntry(false);
@@ -123,7 +122,6 @@ const DrugJournal: React.FC = () => {
       setErrorEntry(true);
       console.error("An error occurred while submitting the form", error);
     }
-    console.log(currentDrug);
     setIsAdding(false);
   };
   return (

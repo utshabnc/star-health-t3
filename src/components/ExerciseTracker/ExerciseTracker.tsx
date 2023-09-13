@@ -28,7 +28,7 @@ const Modal = ({
 
   return (
     <div className={showHideClassName}>
-      <section className="modal-main rounded-lg ">{children}</section>
+      <section className="modal-tracker rounded-lg ">{children}</section>
     </div>
   );
 };
@@ -55,7 +55,7 @@ const ExerciseTracker: React.FC = () => {
   //Custom
   const [exerciseNameInput, setExerciseNameInput] = useState<any>("");
   const [exerciseUnit, setExerciseUnit] = useState<any>(0);
-  const exerciseUnitList = ["Steps", "Calories", "Minutes"];
+  const exerciseUnitList = ["Calories", "Minutes", "Steps"];
   const [addNewExBtn, setAddNewExBtn] = useState<boolean>(false);
   const [selectedID, setSelectedID] = useState();
 
@@ -87,13 +87,11 @@ const ExerciseTracker: React.FC = () => {
   }, [openModal]);
   const editFunction = (exercise: any) => {
     setOpenModal(true);
-    console.log(exercise["id"]);
     setSelectedID(exercise["id"]);
     setExerciseCalories(exercise["calorieBurned"] + "");
     const d = exercise["entryDateTime"].split("T");
     setDate(d[0]);
     setTime(d[1].slice(0, -8));
-    console.log(exercise);
     setExerciseUnit(exercise["unit"]);
 
     setExerciseUnitVal(
@@ -138,15 +136,7 @@ const ExerciseTracker: React.FC = () => {
 
   const submitExercise = async (e: React.FormEvent) => {
     const dateTimeInput = `${date}T${time}:00`;
-    console.log(
-      (addNewExBtn &&
-        !(exerciseUnitList[exerciseUnit] === "Calories") &&
-        !(exerciseUnitList[exerciseUnit] === "Minutes") &&
-        parseFloat(exerciseUnitVal) == 0) ||
-        parseFloat(exerciseCalories) == 0 ||
-        parseFloat(exerciseDuration) == 0 ||
-        (addNewExBtn && (exerciseNameInput == "" || exerciseUnit == ""))
-    );
+
     e.preventDefault();
     if (
       date == "" ||
@@ -548,8 +538,8 @@ const ExerciseTracker: React.FC = () => {
             )}
             <div className="mb-1">
               <div className="mb-1 font-semibold">Type of Exercise:</div>
-              <div className="flex">
-                <div className="flex w-[47.5%] items-center justify-center">
+              <div className="flex flex-col items-center">
+                <div className="flex w-[100%] items-center justify-center">
                   {addNewExBtn && (
                     <>
                       <button
@@ -585,10 +575,10 @@ const ExerciseTracker: React.FC = () => {
                     </select>
                   )}
                 </div>
-                <div className="flex w-[5%] items-center justify-center">
+                <div className="my-1 flex w-[5%] flex-col items-center justify-center font-semibold">
                   OR
                 </div>
-                <div className="w-[47.5%]">
+                <div className="w-[100%]">
                   {!addNewExBtn && (
                     <>
                       <button
@@ -638,7 +628,9 @@ const ExerciseTracker: React.FC = () => {
               </div>
             </div>
             <div className="mb-1">
-              <div className="mb-1 font-semibold">Duration:</div>
+              <div className="mb-1 font-semibold">
+                Minutes spent on execrsie:
+              </div>
               <input
                 type="number"
                 value={exerciseDuration}
@@ -698,7 +690,7 @@ const ExerciseTracker: React.FC = () => {
             <div className="mb-1">
               <div className="mb-1 font-semibold">Intensity Level</div>
               <select
-                className="w-full rounded-lg border border-violet-900 bg-violet-100 p-1 text-slate-900 placeholder:text-violet-800 hover:bg-violet-300 hover:text-violet-900"
+                className=" rounded-lg border border-violet-900 bg-violet-100 p-1 text-slate-900 placeholder:text-violet-800 hover:bg-violet-300 hover:text-violet-900"
                 onChange={(e) => {
                   setExerciseIntensity(e.target.selectedIndex);
                 }}
@@ -730,24 +722,26 @@ const ExerciseTracker: React.FC = () => {
               />
             </div>
           </div>
-          <button
-            onClick={(e) => {
-              submitExercise(e);
-            }}
-            className="ease focus:shadow-outline w-[100%] select-none rounded-md border border-violet-700 bg-violet-700 px-4 py-2 text-white transition duration-500 hover:bg-violet-900 focus:outline-none"
-          >
-            Add Exercise
-            {addExerciseisLoading && (
-              <>
-                <div className="lds-ring">
-                  <div></div>
-                  <div></div>
-                  <div></div>
-                  <div></div>
-                </div>
-              </>
-            )}
-          </button>
+          <div className="flex w-full py-2">
+            <button
+              onClick={(e) => {
+                submitExercise(e);
+              }}
+              className="ease focus:shadow-outline mx-2 my-2 w-[100%] select-none rounded-md border border-violet-700 bg-violet-700 px-4 py-2 text-white transition duration-500 hover:bg-violet-900 focus:outline-none"
+            >
+              Add Exercise
+              {addExerciseisLoading && (
+                <>
+                  <div className="lds-ring">
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                  </div>
+                </>
+              )}
+            </button>
+          </div>
         </section>
       </Modal>
     </>

@@ -28,7 +28,7 @@ const Modal = ({
 
   return (
     <div className={showHideClassName}>
-      <section className="modal-main rounded-lg ">{children}</section>
+      <section className="modal-tracker rounded-lg ">{children}</section>
     </div>
   );
 };
@@ -527,8 +527,8 @@ const SubstanceTracker: React.FC = () => {
             )}
             <div className="mb-1">
               <div className="mb-1 font-semibold">Substance Consumed:</div>
-              <div className="flex">
-                <div className="flex w-[47.5%] items-center justify-center">
+              <div className="flex flex-col items-center">
+                <div className="flex w-[100%] items-center justify-center">
                   {addNewSubBtn && (
                     <>
                       <button
@@ -563,10 +563,10 @@ const SubstanceTracker: React.FC = () => {
                     </select>
                   )}
                 </div>
-                <div className="flex w-[5%] items-center justify-center">
+                <div className="my-1 flex w-[5%] items-center justify-center font-semibold">
                   OR
                 </div>
-                <div className="w-[47.5%]">
+                <div className="w-[100%]">
                   {!addNewSubBtn && (
                     <>
                       <button
@@ -641,12 +641,12 @@ const SubstanceTracker: React.FC = () => {
                 cols={10}
                 value={methodOfConsumption}
                 maxLength={200}
-                className="w-[40%] rounded-lg border border-violet-900 bg-violet-100 p-1 text-slate-900 placeholder:text-violet-800 hover:bg-violet-300 hover:text-violet-900"
+                className="w-[100%] rounded-lg border border-violet-900 bg-violet-100 p-1 text-slate-900 placeholder:text-violet-800 hover:bg-violet-300 hover:text-violet-900"
                 onChange={(e) => setMethodOfConsumption(e.target.value)}
               />
             </div>
-            <div className="mb-1 flex flex-row justify-between">
-              <div className="w-[40%]">
+            <div className="mb-1 flex flex-col justify-between">
+              <div className="w-[100%]">
                 <div className="mb-1 font-semibold">
                   Your mood before substance intake:
                 </div>
@@ -658,7 +658,7 @@ const SubstanceTracker: React.FC = () => {
                   onChange={(e) => setMoodBefore(e.target.value)}
                 />
               </div>
-              <div className="w-[40%]">
+              <div className="w-[100%]">
                 <div className="mb-1 font-semibold">
                   Your mood after substance intake:
                 </div>
@@ -672,24 +672,26 @@ const SubstanceTracker: React.FC = () => {
               </div>
             </div>
           </div>
-          <button
-            onClick={(e) => {
-              addSubstance(e);
-            }}
-            className="ease focus:shadow-outline w-[100%] select-none rounded-md border border-violet-700 bg-violet-700 px-4 py-2 text-white transition duration-500 hover:bg-violet-900 focus:outline-none"
-          >
-            Add Substance
-            {addSubstanceisLoading && (
-              <>
-                <div className="lds-ring">
-                  <div></div>
-                  <div></div>
-                  <div></div>
-                  <div></div>
-                </div>
-              </>
-            )}
-          </button>
+          <div className="flex w-full py-2">
+            <button
+              onClick={(e) => {
+                addSubstance(e);
+              }}
+              className="ease focus:shadow-outline mx-2 my-2 w-[100%] select-none rounded-md border border-violet-700 bg-violet-700 px-4 py-2 text-white transition duration-500 hover:bg-violet-900 focus:outline-none"
+            >
+              Add Substance
+              {addSubstanceisLoading && (
+                <>
+                  <div className="lds-ring">
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                  </div>
+                </>
+              )}
+            </button>
+          </div>
         </section>
       </Modal>
     </>
