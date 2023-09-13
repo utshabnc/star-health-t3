@@ -167,8 +167,8 @@ const MentalHealthDiary: React.FC = () => {
                   type: "category",
                   ticks: {
                     callback: function (label: any) {
-                      let realLabel = this.getLabelForValue(label);
-                      let day = realLabel.split(";")[0];
+                      const realLabel = this.getLabelForValue(label);
+                      const day = realLabel.split(";")[0];
 
                       return day;
                     },
@@ -178,9 +178,9 @@ const MentalHealthDiary: React.FC = () => {
                   type: "category",
                   ticks: {
                     callback: function (label: any) {
-                      let realLabel = this.getLabelForValue(label);
+                      const realLabel = this.getLabelForValue(label);
 
-                      let date = realLabel.split(";")[1];
+                      const date = realLabel.split(";")[1];
                       return date;
                     },
                   },
