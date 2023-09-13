@@ -1,4 +1,5 @@
 import { PrismaClient } from "@prisma/client";
+import { startOfWeek } from "date-fns";
 
 const prisma = new PrismaClient();
 
@@ -45,33 +46,40 @@ export default async function handler(
         userId,
         entryDate: {
           gte: startWeekDate,
-          lte: endWeekDate,
+          lt: endWeekDate,
         },
       },
     });
     console.log("DDD");
     console.log(trackerWeekEntries);
     const moodByDayOfWeek: any = [
-      { id: 1, day: "Sunday", mood: 0 },
-      { id: 2, day: "Monday", mood: 0 },
-      { id: 3, day: "Tuesday", mood: 0 },
-      { id: 4, day: "Wednesday", mood: 0 },
-      { id: 5, day: "Thursday", mood: 0 },
-      { id: 6, day: "Friday", mood: 0 },
-      { id: 7, day: "Saturday", mood: 0 },
+      { id: 1, day: "Monday", mood: 0 },
+      { id: 2, day: "Tuesday", mood: 0 },
+      { id: 3, day: "Wednesday", mood: 0 },
+      { id: 4, day: "Thursday", mood: 0 },
+      { id: 5, day: "Friday", mood: 0 },
+      { id: 6, day: "Saturday", mood: 0 },
+      { id: 7, day: "Sunday", mood: 0 },
     ];
 
     // Update mood values based on the data retrieved from the database
     trackerWeekEntries.forEach((record) => {
       const recordDate = new Date(record.entryDate);
       const dayOfWeek = recordDate.getDay();
-      console.log(dayOfWeek);
-      moodByDayOfWeek[dayOfWeek].mood = record.moodScale;
+      moodByDayOfWeek[dayOfWeek == 0 ? 6 : dayOfWeek - 1].mood =
+        record.moodScale;
     });
+    const dateS = startWeekDate;
 
+    for (let i = 0; i < 7; i++) {
+      dateS.setDate(startWeekDate.getDate() + 1);
+      moodByDayOfWeek[i].day =
+        moodByDayOfWeek[i].day + ";" + dateS.toLocaleDateString("en-US");
+    }
     res.status(200).json({ diary, moodByDayOfWeek });
   } catch (error) {
-    console.error("An error occurred while fetching water intake data", error);
-    res.status(500).json({ message: "Failed to fetch water intake data" });
+    console.log(error);
+    console.error("An error occurred while fetching data", error);
+    res.status(500).json({ message: "Failed to fetch data" });
   }
 }

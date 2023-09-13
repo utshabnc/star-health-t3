@@ -22,13 +22,13 @@ const MentalHealthDiary: React.FC = () => {
   const [copingMechUsed, setCopingMechUsed] = useState("");
   const [isSaving, setIsSaving] = useState(false);
   const [moodGraphData, setMoodGraphData] = useState([
-    { id: 2, day: "Monday", mood: 0 },
-    { id: 3, day: "Tuesday", mood: 0 },
-    { id: 4, day: "Wednesday", mood: 0 },
-    { id: 5, day: "Thursday", mood: 0 },
-    { id: 6, day: "Friday", mood: 0 },
-    { id: 7, day: "Saturday", mood: 0 },
-    { id: 1, day: "Sunday", mood: 0 },
+    { id: 1, day: "Monday;", mood: 0 },
+    { id: 2, day: "Tuesday;", mood: 0 },
+    { id: 3, day: "Wednesday;", mood: 0 },
+    { id: 4, day: "Thursday;", mood: 0 },
+    { id: 5, day: "Friday;", mood: 0 },
+    { id: 6, day: "Saturday;", mood: 0 },
+    { id: 7, day: "Sunday;", mood: 0 },
   ]);
   const [chartData, setCharData] = useState({
     labels: moodGraphData.map((data) => data.day),
@@ -79,20 +79,20 @@ const MentalHealthDiary: React.FC = () => {
         }
         setMoodGraphData(data["moodByDayOfWeek"]);
         setCharData({
-          labels: data["moodByDayOfWeek"].map((data: any) => data.day),
+          labels: data["moodByDayOfWeek"].map((data: any) => data.day + "; aa"),
           datasets: [
             {
               label: "Mood Over the Week",
               data: data["moodByDayOfWeek"].map((data: any) => data.mood),
-              backgroundColor: ["rgba(75,192,192,1)"],
-              borderColor: "black",
-              borderWidth: 2,
+              backgroundColor: ["purple"],
+              borderColor: "purple",
+              borderWidth: 3,
             },
           ],
         });
       });
     });
-  }, [entryDate]);
+  }, [entryDate, isSaving]);
   const saveDiary = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -159,6 +159,31 @@ const MentalHealthDiary: React.FC = () => {
                 },
                 legend: {
                   display: false,
+                },
+              },
+
+              scales: {
+                x: {
+                  type: "category",
+                  ticks: {
+                    callback: function (label: any) {
+                      const realLabel = this.getLabelForValue(label);
+                      const day = realLabel.split(";")[0];
+
+                      return day;
+                    },
+                  },
+                },
+                xAxis2: {
+                  type: "category",
+                  ticks: {
+                    callback: function (label: any) {
+                      const realLabel = this.getLabelForValue(label);
+
+                      const date = realLabel.split(";")[1];
+                      return date;
+                    },
+                  },
                 },
               },
             }}

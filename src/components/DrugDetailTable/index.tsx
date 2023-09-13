@@ -43,7 +43,6 @@ function DrugDetailsTable({ rows, date }: { rows: any[]; date: any }) {
           [row.drug.id]: row.logs.amount == undefined ? 0 : row.logs.amount,
         };
       });
-    console.log(list);
     setDosageList(list);
   }, [rows]);
   const addDosage = (id: number) => {
@@ -63,7 +62,6 @@ function DrugDetailsTable({ rows, date }: { rows: any[]; date: any }) {
 
   const submitDosage = (id: number) => {
     const body = { userId: userId, date, dosage: dosageList[id], drugId: id };
-    console.log(body);
     try {
       fetch("/api/drugJournal/drugLog", {
         method: "POST",
