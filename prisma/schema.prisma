@@ -493,11 +493,11 @@ model customExercise {
   id                Int      @id @default(autoincrement())
   exerciseName      String
   unitToTrack       String
-  userId            String?
+  userId            String
   dailyGoal         Float @default(0)
   weeklyGoal        Float @default(0)
   monthlyGoal       Float @default(0)
-  user              User?     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   exerciseTrackers ExerciseTracker[]
 }
 

@@ -220,7 +220,8 @@ const DrugJournal: React.FC = () => {
             ></input>
             {isGettingData && (
               <>
-                <AiOutlineLoading3Quarters className="spinner ml-1 font-semibold text-violet-600" />
+
+                <AiOutlineLoading3Quarters className="spinner  ml-2  font-semibold text-violet-600" />
               </>
             )}
           </div>
