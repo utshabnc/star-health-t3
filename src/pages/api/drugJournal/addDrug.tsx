@@ -1,4 +1,5 @@
 import { PrismaClient } from "@prisma/client";
+import { parseISO } from "date-fns";
 
 const prisma = new PrismaClient();
 
@@ -22,21 +23,102 @@ export default async function handler(
     }
   } else if (req.method === "POST") {
     try {
-      const { spl_id, brand_name, manufacturer_name, dosge_descrip, userId } =
-        req.body;
+      const {
+        id,
+        isNewDrug,
+        spl_id,
+        dateTimeInput,
+        brand_name,
+        manufacturer_name,
+        dosge_descrip,
+        userId,
+        dosageAmount,
+        sideEffect,
+        selectedPrevDrug,
+      } = req.body;
+      if (id) {
+        //update
+        const formattedEntryDateTime = parseISO(dateTimeInput);
 
-      // Create a new UserDrugTracker record
-      const userDrugTracker = await prisma.userDrugTracker.create({
-        data: {
-          spl_id,
-          brand_name,
-          manufacturer_name,
-          dosge_descrip,
-          userId,
-        },
-      });
+        let newDrug: any = "";
+        if (isNewDrug) {
+          try {
+            newDrug = await prisma.userDrugTracker.create({
+              data: {
+                spl_id,
+                brand_name,
+                manufacturer_name,
+                dosge_descrip,
+                userId,
+              },
+            });
+          } catch (error) {
+            console.error("An error occurred while submitting the form", error);
+            res.status(500).json({ message: "Failed to submit form" });
+            return;
+          }
+        }
+        // Create a new UserDrugTracker record
+        try {
+          const userDrugTracker = await prisma.userDrugLog.update({
+            where: { id },
+            data: {
+              dateTimeOfLog: formattedEntryDateTime,
+              amount: dosageAmount,
+              sideEffectFelt: sideEffect,
+              drugId: isNewDrug ? newDrug["id"] : selectedPrevDrug,
+            },
+          });
 
-      res.status(201).json(userDrugTracker);
+          res.status(201).json(userDrugTracker);
+        } catch (error) {
+          console.error(error);
+          res.status(500).json({
+            error:
+              "An error occurred while creating the UserDrugTracker record.",
+          });
+        }
+      } else {
+        const formattedEntryDateTime = parseISO(dateTimeInput);
+
+        let newDrug: any = "";
+        if (isNewDrug) {
+          try {
+            newDrug = await prisma.userDrugTracker.create({
+              data: {
+                spl_id,
+                brand_name,
+                manufacturer_name,
+                dosge_descrip,
+                userId,
+              },
+            });
+          } catch (error) {
+            console.error("An error occurred while submitting the form", error);
+            res.status(500).json({ message: "Failed to submit form" });
+            return;
+          }
+        }
+        // Create a new UserDrugTracker record
+        try {
+          const userDrugTracker = await prisma.userDrugLog.create({
+            data: {
+              dateTimeOfLog: formattedEntryDateTime,
+              amount: dosageAmount,
+              sideEffectFelt: sideEffect,
+              drugId: isNewDrug ? newDrug["id"] : selectedPrevDrug,
+            },
+          });
+
+          res.status(201).json(userDrugTracker);
+        } catch (error) {
+          console.error(error);
+          res.status(500).json({
+            error:
+              "An error occurred while creating the UserDrugTracker record.",
+          });
+        }
+      }
     } catch (error) {
       console.error(error);
       res.status(500).json({

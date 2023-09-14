@@ -20,10 +20,22 @@ interface DrugSchema {
   spl_id: string;
 }
 interface ResultSchema {
+  id: any;
+  amount: any;
+  dateTimeOfLog: any;
+  sideEffectFelt: any;
+  drugId: any;
   drug: DrugSchema;
-  logs: JSON;
 }
-function DrugDetailsTable({ rows, date }: { rows: any[]; date: any }) {
+function DrugDetailsTable({
+  rows,
+  date,
+  editFunction,
+}: {
+  rows: any[];
+  date: any;
+  editFunction: any;
+}) {
   const [drugJournalEntries, setDrugJournalEntries] =
     useState<ResultSchema[]>(rows);
   const { data: session, status } = useSession();
@@ -31,52 +43,31 @@ function DrugDetailsTable({ rows, date }: { rows: any[]; date: any }) {
   const userId = session?.user?.id || "cllxyib7m0000lf08kqeao8nj";
   const [isLoading, setIsLoading] = useState<boolean>(false);
   // Initialize state with the dosageList
-  const [dosageList, setDosageList] = useState<any>({});
   useEffect(() => {
     setDrugJournalEntries(rows);
-    let list = {};
-    rows &&
-      rows.map((row) => {
-        // Assuming each 'row' object has a unique 'id' and a 'dosage' property
-        list = {
-          ...list,
-          [row.drug.id]: row.logs.amount == undefined ? 0 : row.logs.amount,
-        };
-      });
-    setDosageList(list);
   }, [rows]);
-  const addDosage = (id: number) => {
-    setDosageList({
-      ...dosageList,
-      [id]: dosageList[id] + 1,
-    });
-  };
-  const subtractDosage = (id: number) => {
-    if (dosageList[id] != 0) {
-      setDosageList({
-        ...dosageList,
-        [id]: dosageList[id] - 1,
-      });
-    }
-  };
+  function deleteDrug(id: any) {
+    fetch(`/api/drugJournal/deleteDrug/?key=${id}`, {
+      method: "DELETE",
+    })
+      .then((response) => {
+        if (response.ok) {
+          console.log("Exercise entry deleted successfully");
+          // Perform any additional actions you need after successful deletion
 
-  const submitDosage = (id: number) => {
-    const body = { userId: userId, date, dosage: dosageList[id], drugId: id };
-    try {
-      fetch("/api/drugJournal/drugLog", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(body),
-      }).then((message: any) => {
-        toast(`Successfully updated dosage.`, {});
+          setDrugJournalEntries((prevEntries: any) =>
+            prevEntries.filter((entry: any) => entry.id !== id)
+          );
+        } else {
+          console.error("Failed to delete Exercise entry");
+          // Handle the error scenario here
+        }
+      })
+      .catch((error) => {
+        console.error("An error occurred while making the request", error);
       });
-    } catch (error) {
-      console.error("An error occurred while submitting the form", error);
-    }
-    setIsLoading(false);
-  };
+  }
+
   return (
     <>
       <section
@@ -98,12 +89,29 @@ function DrugDetailsTable({ rows, date }: { rows: any[]; date: any }) {
                   className="mb-2 w-[100%] rounded-lg bg-white pt-2 text-center shadow-lg"
                 >
                   <div className="flex flex-row justify-between">
-                    <div className="ml-2 w-[60%]">
+                    <div className="ml-2 w-[80%]">
                       <div className="flex  flex-row justify-between ">
-                        <h5 className="text-md mb-2 font-medium text-violet-700">
+                        <h5 className="text-md mb-2 text-left font-medium text-violet-700">
                           {toTitleCase(row.drug.brand_name.toLowerCase())}
                         </h5>
                         <p className="mb-1 text-xs text-gray-600"></p>
+                      </div>
+                      <div className=" mb-2 mr-4 flex items-center">
+                        <div className="flex flex-col items-center"></div>
+                        <div className="flex h-full flex-row items-center justify-evenly">
+                          <div className="text-md font-semibold text-gray-900">
+                            Dosage Taken:
+                          </div>
+                          <div className=" flex flex-row items-center">
+                            <div className="text-md mx-5 flex items-center font-semibold text-violet-700">
+                              {row.amount}
+                              <PiPillFill
+                                className="ml-3 text-2xl font-semibold text-violet-700"
+                                size={20}
+                              ></PiPillFill>
+                            </div>
+                          </div>
+                        </div>
                       </div>
                       <div className="flex flex-row justify-between">
                         <h5 className="mb-2 text-sm  text-gray-700">
@@ -115,7 +123,35 @@ function DrugDetailsTable({ rows, date }: { rows: any[]; date: any }) {
                         </h5>
                       </div>
                       <div className="flex flex-row justify-between">
-                        <h5 className="mb-2 text-start text-sm text-gray-700">
+                        <h5 className="mb-2 text-sm  text-gray-700">
+                          <span className=" font-semibold text-gray-900">
+                            {" "}
+                            Date:{" "}
+                          </span>
+                          {new Intl.DateTimeFormat("en-US", {
+                            year: "numeric",
+                            month: "long",
+                            day: "numeric",
+                          }).format(new Date(row["dateTimeOfLog"]))}
+                        </h5>
+                      </div>
+                      <div className="flex flex-row justify-between">
+                        <h5 className="mb-2 text-sm  text-gray-700">
+                          <span className=" font-semibold text-gray-900">
+                            {" "}
+                            Time:{" "}
+                          </span>
+                          {new Intl.DateTimeFormat("en-US", {
+                            hour: "numeric",
+                            minute: "numeric",
+                            hour12: true,
+                            timeZoneName: "short",
+                          }).format(new Date(row["dateTimeOfLog"]))}
+                        </h5>
+                      </div>
+
+                      <div className="flex flex-row justify-between">
+                        <h5 className="mb-2 h-[80px]  overflow-y-scroll text-start text-sm text-gray-700">
                           <span className=" font-semibold text-gray-900">
                             {" "}
                             Doasage Description:{" "}
@@ -123,48 +159,37 @@ function DrugDetailsTable({ rows, date }: { rows: any[]; date: any }) {
                           {row.drug.dosge_descrip}
                         </h5>
                       </div>
-                    </div>
-                    <div className="mb-3 mr-4 mt-3 flex items-center">
-                      <div className="flex flex-col items-center"></div>
-                      <div className="mb-3  flex h-full flex-col items-center justify-between">
-                        <div className="text-2xl font-bold text-violet-700">
-                          Dosage Taken
-                        </div>
-                        <div className="mb-1 flex flex-row items-center">
-                          <AiOutlineMinus
-                            className="text-2xl font-bold text-violet-700"
-                            size={30}
-                            onClick={() => {
-                              subtractDosage(row.drug.id);
-                            }}
-                          ></AiOutlineMinus>
-                          <div className="mx-5 flex items-center text-2xl font-semibold text-violet-700">
-                            {dosageList[row.drug.id]}
-                            <PiPillFill
-                              className="ml-1 text-2xl font-semibold text-violet-700"
-                              size={30}
-                            ></PiPillFill>
-                          </div>
-                          <AiOutlinePlus
-                            className="text-2xl font-bold text-violet-700"
-                            size={30}
-                            onClick={() => {
-                              addDosage(row.drug.id);
-                            }}
-                          ></AiOutlinePlus>
-                        </div>
-                        <button
-                          className="ease focus:shadow-outline w-full select-none rounded-md border border-violet-700 bg-violet-700 px-4 py-2 text-white transition duration-500 hover:bg-violet-900 focus:outline-none"
-                          onClick={(e) => {
-                            if (!isLoading) {
-                              setIsLoading(true);
-                              submitDosage(row.drug.id);
-                            }
-                          }}
-                        >
-                          Save Dosage Amount
-                        </button>
+                      <div className="flex flex-row justify-between">
+                        <h5 className="mb-2 h-[80px] w-full  overflow-y-scroll text-start text-sm text-gray-700">
+                          <span className=" font-semibold text-gray-900">
+                            {" "}
+                            Side Effects Felt:{" "}
+                          </span>
+                          {row.sideEffectFelt}
+                        </h5>
                       </div>
+                    </div>
+
+                    <div className="flex">
+                      <button
+                        className="flex w-[70px] items-center justify-center bg-blue-600 hover:bg-blue-900 "
+                        onClick={() => {
+                          editFunction(row);
+                        }}
+                      >
+                        <AiOutlineEdit size={35} color="white"></AiOutlineEdit>
+                      </button>
+                      <button
+                        className="flex  w-[70px] items-center justify-center rounded-r-lg bg-red-600 hover:bg-red-900 "
+                        onClick={() => {
+                          deleteDrug(row.id);
+                        }}
+                      >
+                        <BsFillTrashFill
+                          size={35}
+                          color="white"
+                        ></BsFillTrashFill>
+                      </button>
                     </div>
                   </div>
                 </div>

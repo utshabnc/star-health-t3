@@ -24,32 +24,36 @@ export default async function handler(
     endOfDay.setDate(startOfDay.getDate() + 1);
     console.log(startOfDay);
     console.log(endOfDay);
-    const drugs = await prisma.userDrugTracker.findMany({
+
+    const userDrugs = await prisma.userDrugLog.findMany({
       where: {
-        userId: userId,
+        drug: {
+          userId: userId, // Filter by the user's ID
+        },
+        dateTimeOfLog: {
+          gte: startOfDay, // Filter for logs on or after the given date
+          lt: endOfDay, // Filter for logs before the next day
+        },
       },
-    });
-    const output: any = [];
-    const drugLogsPromises = drugs.map(async (drug: any) => {
-      const drugLogs = await prisma.userDrugLog.findFirst({
-        where: {
-          drugId: drug.id,
-          dateOfLog: {
-            equals: startOfDay,
+      include: {
+        drug: {
+          select: {
+            spl_id: true,
+            brand_name: true,
+            manufacturer_name: true,
+            dosge_descrip: true,
+            userId: true,
           },
         },
-      });
-
-      output.push({
-        drug: drug,
-        logs: drugLogs || {},
-      });
+      },
     });
-    await Promise.all(drugLogsPromises);
-    if (!drugs) {
+
+    console.log(userDrugs);
+
+    if (!userDrugs) {
       res.status(404).json({ message: "Form data not found for the user" });
     } else {
-      res.status(200).json({ drug: output });
+      res.status(200).json({ drug: userDrugs });
     }
   } catch (error) {
     console.error("An error occurred while fetching the form data", error);
