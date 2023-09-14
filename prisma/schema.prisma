@@ -483,7 +483,8 @@ model UserDrugTracker{
  model UserDrugLog{
   id                Int      @id @default(autoincrement())
   amount            Int
-  dateOfLog         DateTime
+  dateTimeOfLog     DateTime
+  sideEffectFelt   String   @db.VarChar(500)
   drugId            Int 
   drug              UserDrugTracker @relation(fields: [drugId], references: [id], onDelete: Cascade)
  }

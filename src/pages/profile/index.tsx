@@ -365,9 +365,9 @@ const ProfilePage: React.FC = () => {
             showWorkoutJournal
           }
           style={{
-            color: !showDrugJournal ? "#885CF6" : "white",
-            backgroundColor: !showDrugJournal ? "white" : "#885CF6",
-            border: !showDrugJournal ? "1px solid #885CF6" : "node",
+            color: !showWorkoutJournal ? "#885CF6" : "white",
+            backgroundColor: !showWorkoutJournal ? "white" : "#885CF6",
+            border: !showWorkoutJournal ? "1px solid #885CF6" : "node",
           }}
         >
           Exercise Tracker
