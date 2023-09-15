@@ -26,6 +26,7 @@ export default async function handler(
       const {
         id,
         isNewDrug,
+        dosageType,
         spl_id,
         dateTimeInput,
         brand_name,
@@ -65,6 +66,7 @@ export default async function handler(
             data: {
               dateTimeOfLog: formattedEntryDateTime,
               amount: dosageAmount,
+              dosageType,
               sideEffectFelt: sideEffect,
               drugId: isNewDrug ? newDrug["id"] : selectedPrevDrug,
             },
@@ -106,6 +108,7 @@ export default async function handler(
               dateTimeOfLog: formattedEntryDateTime,
               amount: dosageAmount,
               sideEffectFelt: sideEffect,
+              dosageType,
               drugId: isNewDrug ? newDrug["id"] : selectedPrevDrug,
             },
           });

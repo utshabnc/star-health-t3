@@ -9,9 +9,35 @@ const MentalHealthDiary: React.FC = () => {
   const { data: session, status } = useSession();
 
   const userId = session?.user?.id || "cllxyib7m0000lf08kqeao8nj";
+  function toISOLocal(d: any) {
+    const z = (n: any) => ("0" + n).slice(-2);
+    const zz = (n: any) => ("00" + n).slice(-3);
+    let off = d.getTimezoneOffset();
+    const sign = off > 0 ? "-" : "+";
+    off = Math.abs(off);
 
+    return (
+      d.getFullYear() +
+      "-" +
+      z(d.getMonth() + 1) +
+      "-" +
+      z(d.getDate()) +
+      "T" +
+      z(d.getHours()) +
+      ":" +
+      z(d.getMinutes()) +
+      ":" +
+      z(d.getSeconds()) +
+      "." +
+      zz(d.getMilliseconds()) +
+      sign +
+      z((off / 60) | 0) +
+      ":" +
+      z(off % 60)
+    );
+  }
   const [entryDate, setEntryDate] = useState<any>(
-    new Date().toISOString().split("T")[0]
+    toISOLocal(new Date()).split("T")[0]
   );
   const [diaryId, setDiaryId] = useState();
   const [moodScale, setMoodScale] = useState(0);
@@ -53,8 +79,10 @@ const MentalHealthDiary: React.FC = () => {
     "Excited",
   ];
   useEffect(() => {
+    const UTCFormat = new Date(entryDate).toISOString().split("T")[0];
+
     fetch(
-      `/api/mentalHealthDiary/getDiarybyDate/?userId=${userId}&date=${entryDate}`
+      `/api/mentalHealthDiary/getDiarybyDate/?userId=${userId}&date=${UTCFormat}`
     ).then((response) => {
       response.json().then((data) => {
         console.log(data);
@@ -163,6 +191,10 @@ const MentalHealthDiary: React.FC = () => {
               },
 
               scales: {
+                y: {
+                  min: 0,
+                  max: 10,
+                },
                 x: {
                   type: "category",
                   ticks: {

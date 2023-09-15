@@ -24,9 +24,11 @@ interface SubstanceSchema {
 function SubstanceDetailsTable({
   rows,
   setSubstanceData,
+  setIsDeleting,
 }: {
   rows: SubstanceSchema[];
   setSubstanceData: any;
+  setIsDeleting: any;
 }) {
   const [substanceJournalEntries, setSubstanceJournalEntries] =
     useState<SubstanceSchema[]>(rows);
@@ -43,6 +45,7 @@ function SubstanceDetailsTable({
         if (response.ok) {
           console.log("Substance entry deleted successfully");
           // Perform any additional actions you need after successful deletion
+          setIsDeleting(true);
 
           setSubstanceData((prevEntries: any) =>
             prevEntries.filter((entry: any) => entry.id !== id)

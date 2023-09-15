@@ -41,6 +41,33 @@ const Modal = ({
 };
 
 const ExerciseTracker: React.FC = () => {
+  function toISOLocal(d: any) {
+    const z = (n: any) => ("0" + n).slice(-2);
+    const zz = (n: any) => ("00" + n).slice(-3);
+    let off = d.getTimezoneOffset();
+    const sign = off > 0 ? "-" : "+";
+    off = Math.abs(off);
+
+    return (
+      d.getFullYear() +
+      "-" +
+      z(d.getMonth() + 1) +
+      "-" +
+      z(d.getDate()) +
+      "T" +
+      z(d.getHours()) +
+      ":" +
+      z(d.getMinutes()) +
+      ":" +
+      z(d.getSeconds()) +
+      "." +
+      zz(d.getMilliseconds()) +
+      sign +
+      z((off / 60) | 0) +
+      ":" +
+      z(off % 60)
+    );
+  }
   const { data: session, status } = useSession();
 
   const userId = session?.user?.id || "cllxyib7m0000lf08kqeao8nj";
@@ -68,7 +95,7 @@ const ExerciseTracker: React.FC = () => {
 
   const [exerciseTrackerData, setExerciseTrackerData] = useState<any[]>([]);
   const [exerciseTrackerDate, setExerciseTrackerDate] = useState<any>(
-    new Date().toISOString().split("T")[0]
+    toISOLocal(new Date()).split("T")[0]
   );
 
   const [customExerciseGoalsData, setCustomExerciseGoalsData] = useState<any>(
@@ -166,9 +193,9 @@ const ExerciseTracker: React.FC = () => {
     setOpenModal(true);
     setSelectedID(exercise["id"]);
     setExerciseCalories(exercise["calorieBurned"] + "");
-    const d = exercise["entryDateTime"].split("T");
-    setDate(d[0]);
-    setTime(d[1].slice(0, -8));
+    const d = toISOLocal(new Date(exercise["entryDateTime"])).split("T");
+    setDate(d[0] ?? "");
+    setTime(d[1] ? d[1].slice(0, -8) : "");
     setExerciseUnit(exercise["unit"]);
     setExerciseUnitVal(
       exercise["unit"] === "Calories" || exercise["unit"] === "Minutes"
@@ -191,8 +218,10 @@ const ExerciseTracker: React.FC = () => {
   };
   useEffect(() => {
     setIsGettingData(true);
+    const UTCFormat = new Date(exerciseTrackerDate).toISOString().split("T")[0];
+
     fetch(
-      `/api/exercise-tracker/getExerciseByDate/?userId=${userId}&date=${exerciseTrackerDate}`
+      `/api/exercise-tracker/getExerciseByDate/?userId=${userId}&date=${UTCFormat}`
     ).then((response) => {
       response.json().then((data) => {
         setExerciseTrackerData(data.exerciseTracker);
@@ -222,6 +251,7 @@ const ExerciseTracker: React.FC = () => {
 
   const submitExercise = async (e: React.FormEvent) => {
     const dateTimeInput = `${date}T${time}:00`;
+    const UTCFormat = new Date(dateTimeInput).toISOString();
 
     e.preventDefault();
     if (
@@ -245,7 +275,7 @@ const ExerciseTracker: React.FC = () => {
     setaddExerciseisLoading(true);
     const body = {
       id: selectedID,
-      entryDateTime: dateTimeInput,
+      entryDateTime: UTCFormat,
       customExerciseId: !addNewExBtn
         ? customExerciseArr[selectedExercise]["id"]
         : "",
@@ -884,9 +914,7 @@ const ExerciseTracker: React.FC = () => {
               </div>
             </div>
             <div className="mb-1">
-              <div className="mb-1 font-semibold">
-                Minutes spent on execrsie:
-              </div>
+              <div className="mb-1 font-semibold">Minutes:</div>
               <input
                 type="number"
                 value={exerciseDuration}

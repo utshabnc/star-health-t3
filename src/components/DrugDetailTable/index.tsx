@@ -26,6 +26,7 @@ interface ResultSchema {
   sideEffectFelt: any;
   drugId: any;
   drug: DrugSchema;
+  dosageType: any;
 }
 function DrugDetailsTable({
   rows,
@@ -104,7 +105,7 @@ function DrugDetailsTable({
                           </div>
                           <div className=" flex flex-row items-center">
                             <div className="text-md mx-5 flex items-center font-semibold text-violet-700">
-                              {row.amount}
+                              {row.amount} {row.dosageType}
                               <PiPillFill
                                 className="ml-3 text-2xl font-semibold text-violet-700"
                                 size={20}

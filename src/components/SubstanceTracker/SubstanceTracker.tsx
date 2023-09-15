@@ -34,22 +34,43 @@ const Modal = ({
 };
 
 const SubstanceTracker: React.FC = () => {
-  const getFormattedCurrentTime = () => {
-    const now = new Date();
-    const hours = now.getHours().toString().padStart(2, "0");
-    const minutes = now.getMinutes().toString().padStart(2, "0");
-    return `${hours}:${minutes}`;
-  };
+  function toISOLocal(d: any) {
+    const z = (n: any) => ("0" + n).slice(-2);
+    const zz = (n: any) => ("00" + n).slice(-3);
+    let off = d.getTimezoneOffset();
+    const sign = off > 0 ? "-" : "+";
+    off = Math.abs(off);
+
+    return (
+      d.getFullYear() +
+      "-" +
+      z(d.getMonth() + 1) +
+      "-" +
+      z(d.getDate()) +
+      "T" +
+      z(d.getHours()) +
+      ":" +
+      z(d.getMinutes()) +
+      ":" +
+      z(d.getSeconds()) +
+      "." +
+      zz(d.getMilliseconds()) +
+      sign +
+      z((off / 60) | 0) +
+      ":" +
+      z(off % 60)
+    );
+  }
   const { data: session, status } = useSession();
 
   const userId = session?.user?.id || "cllxyib7m0000lf08kqeao8nj";
   const [substanceTrackerData, setSubstanceTrackerData] = useState<any[]>([]);
   const [substanceTrackerDate, setSubstanceTrackerDate] = useState<any>(
-    new Date().toISOString().split("T")[0]
+    toISOLocal(new Date()).split("T")[0]
   );
   const [entryError, setEntryError] = useState<boolean>(false);
   const [subLimitArr, setSubLimitArr] = useState<any[]>([]);
-
+  const [isDeleteing, setIsDeleteing] = useState(false);
   const [customSubstanceArr, setCustomSubstanceArr] = useState<any[]>([]);
   const [openModal, setOpenModal] = useState<boolean>(false);
   const [selectedSubstance, setSelectedSubstance] = useState<any>(0);
@@ -78,8 +99,12 @@ const SubstanceTracker: React.FC = () => {
     getAllCustomSub();
   }, [openModal]);
   useEffect(() => {
+    const UTCFormat = new Date(substanceTrackerDate)
+      .toISOString()
+      .split("T")[0];
+
     fetch(
-      `/api/substanceTracker/getSubstancesByDate/?userId=${userId}&date=${substanceTrackerDate}`
+      `/api/substanceTracker/getSubstancesByDate/?userId=${userId}&date=${UTCFormat}`
     ).then((response) => {
       response.json().then((data) => {
         setSubstanceTrackerData(data.substanceTracker);
@@ -91,6 +116,7 @@ const SubstanceTracker: React.FC = () => {
     addSubstanceisLoading,
     saveDailyStatus,
     saveWeeklyStatus,
+    isDeleteing,
   ]);
   const resetAllInputs = () => {
     setDosageAmount("");
@@ -116,9 +142,9 @@ const SubstanceTracker: React.FC = () => {
     setOpenModal(true);
     setSelectedID(substance["id"]);
     setDosageAmount(substance["dosageAmount"] + "");
-    const d = substance["entryDateTime"].split("T");
-    setDate(d[0]);
-    setTime(d[1].slice(0, -8));
+    const d = toISOLocal(new Date(substance["entryDateTime"])).split("T");
+    setDate(d[0] ?? "");
+    setTime(d[1] ? d[1].slice(0, -8) : "");
     setMethodOfConsumption(substance["methodOfConsumption"]);
     setMoodAfter(substance["moodAfter"]);
     setMoodBefore(substance["moodBefore"]);
@@ -187,11 +213,12 @@ const SubstanceTracker: React.FC = () => {
 
     setaddSubstanceisLoading(true);
     const dateTimeInput = `${date}T${time}:00`;
+    const UTCFormat = new Date(dateTimeInput).toISOString();
 
     const body = {
       id: selectedID,
       userId: userId,
-      entryDateTime: dateTimeInput,
+      entryDateTime: UTCFormat,
       dosageAmount: parseFloat(dosageAmount),
       methodOfConsumption: methodOfConsumption,
       moodBefore: moodBefore,
@@ -308,8 +335,8 @@ const SubstanceTracker: React.FC = () => {
                           parseFloat(
                             subLimitArr[selectedSubstanceLimit]["totalDosage"]
                           ) - dailyLimit
-                        ) * 100
-                      ) / 100}{" "}
+                        )
+                      )}{" "}
                       {subLimitArr[selectedSubstanceLimit]["dosageUnit"]}
                     </div>
                   </div>
@@ -322,9 +349,9 @@ const SubstanceTracker: React.FC = () => {
                         className="text-2xl font-semibold text-violet-700"
                         size={30}
                         onClick={() => {
-                          setDailyLimit(
-                            Math.round((dailyLimit - 0.1) * 100) / 100
-                          );
+                          if (dailyLimit != 0) {
+                            setDailyLimit(Math.round(dailyLimit - 1));
+                          }
                         }}
                       ></AiOutlineMinus>
                       <div className="mx-5 text-xl font-semibold text-violet-700">
@@ -335,9 +362,7 @@ const SubstanceTracker: React.FC = () => {
                         className="text-2xl font-semibold text-violet-700"
                         size={30}
                         onClick={() => {
-                          setDailyLimit(
-                            Math.round((dailyLimit + 0.1) * 100) / 100
-                          );
+                          setDailyLimit(Math.round(dailyLimit + 1));
                         }}
                       ></AiOutlinePlus>
                     </div>
@@ -397,8 +422,8 @@ const SubstanceTracker: React.FC = () => {
                               "totalWeeklyDosage"
                             ]
                           ) - weeklyLimit
-                        ) * 100
-                      ) / 100}{" "}
+                        )
+                      )}{" "}
                       {subLimitArr[selectedSubstanceLimit]["dosageUnit"]}
                     </div>
                   </div>
@@ -411,9 +436,9 @@ const SubstanceTracker: React.FC = () => {
                         className="text-2xl font-semibold text-violet-700"
                         size={30}
                         onClick={() => {
-                          setWeeklyLimit(
-                            Math.round((weeklyLimit - 0.1) * 100) / 100
-                          );
+                          if (weeklyLimit != 0) {
+                            setWeeklyLimit(Math.round(weeklyLimit - 1));
+                          }
                         }}
                       ></AiOutlineMinus>
                       <div className="mx-5 text-xl font-semibold text-violet-700">
@@ -424,9 +449,7 @@ const SubstanceTracker: React.FC = () => {
                         className="text-2xl font-semibold text-violet-700"
                         size={30}
                         onClick={() => {
-                          setWeeklyLimit(
-                            Math.round((weeklyLimit + 0.1) * 100) / 100
-                          );
+                          setWeeklyLimit(Math.round(weeklyLimit + 1));
                         }}
                       ></AiOutlinePlus>
                     </div>
@@ -470,6 +493,7 @@ const SubstanceTracker: React.FC = () => {
       <section className="mt-2">
         <div>
           <SubstanceDetailsTable
+            setIsDeleting={setIsDeleteing}
             setSubstanceData={setSubstanceTrackerData}
             rows={[
               ...(substanceTrackerData?.map((substance: any) => ({
