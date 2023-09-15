@@ -10,10 +10,10 @@ const MentalHealthDiary: React.FC = () => {
 
   const userId = session?.user?.id || "cllxyib7m0000lf08kqeao8nj";
   function toISOLocal(d: any) {
-    var z = (n: any) => ("0" + n).slice(-2);
-    var zz = (n: any) => ("00" + n).slice(-3);
-    var off = d.getTimezoneOffset();
-    var sign = off > 0 ? "-" : "+";
+    const z = (n: any) => ("0" + n).slice(-2);
+    const zz = (n: any) => ("00" + n).slice(-3);
+    let off = d.getTimezoneOffset();
+    const sign = off > 0 ? "-" : "+";
     off = Math.abs(off);
 
     return (
