@@ -37,12 +37,6 @@ const Modal = ({
   );
 };
 const DrugJournal: React.FC = () => {
-  const getFormattedCurrentTime = () => {
-    const now = new Date();
-    const hours = now.getHours().toString().padStart(2, "0");
-    const minutes = now.getMinutes().toString().padStart(2, "0");
-    return `${hours}:${minutes}`;
-  };
   const { data: session, status } = useSession();
   const [openModal, setOpenModal] = useState<boolean>(false);
 
@@ -54,17 +48,47 @@ const DrugJournal: React.FC = () => {
   const [drugLogList, setDrugLogList] = useState<any[]>([]);
   const [isGettingData, setIsGettingData] = useState<boolean>(false);
   const [errorEntry, setErrorEntry] = useState<boolean>(false);
-  const [date, setDate] = useState<any>(new Date().toISOString().split("T")[0]);
+  function toISOLocal(d: any) {
+    var z = (n: any) => ("0" + n).slice(-2);
+    var zz = (n: any) => ("00" + n).slice(-3);
+    var off = d.getTimezoneOffset();
+    var sign = off > 0 ? "-" : "+";
+    off = Math.abs(off);
+
+    return (
+      d.getFullYear() +
+      "-" +
+      z(d.getMonth() + 1) +
+      "-" +
+      z(d.getDate()) +
+      "T" +
+      z(d.getHours()) +
+      ":" +
+      z(d.getMinutes()) +
+      ":" +
+      z(d.getSeconds()) +
+      "." +
+      zz(d.getMilliseconds()) +
+      sign +
+      z((off / 60) | 0) +
+      ":" +
+      z(off % 60)
+    );
+  }
+  const [date, setDate] = useState<any>(toISOLocal(new Date()).split("T")[0]);
   const [addNewDrugBtn, setAddNewDrugBtn] = useState<boolean>(false);
 
   const [drugPrevList, setDrugPrevList] = useState<any>([]);
   const [selectedPrevDrug, setSelectedPrevDrug] = useState<any>(0);
 
   const [dosageAmount, setDosageAmount] = useState("");
-  const [dateInput, setDateInput] = useState("");
+  const [dateInput, setDateInput] = useState<string>("");
   const [time, setTime] = useState("");
+  const [dosageType, setDosageType] = useState<number>(0);
+
   const [sideEffectFlt, setSideEffectFlt] = useState("");
   const [editID, setEditId] = useState();
+  const dosageTypeList: any[] = ["ml", "Pills"];
   useEffect(() => {
     try {
       fetch(`/api/drugJournal/getAllDrugs/?userId=${userId}`).then(
@@ -107,8 +131,10 @@ const DrugJournal: React.FC = () => {
   useEffect(() => {
     try {
       setIsGettingData(true);
+      const UTCFormat = new Date(date).toISOString().split("T")[0];
+
       fetch(
-        `/api/drugJournal/getDrugLogByDate/?userId=${userId}&date=${date}`
+        `/api/drugJournal/getDrugLogByDate/?userId=${userId}&date=${UTCFormat}`
       ).then((response) => {
         response.json().then((data) => {
           setDrugLogList(data["drug"] ? data["drug"] : []);
@@ -125,16 +151,22 @@ const DrugJournal: React.FC = () => {
     setOpenModal(true);
     setAddNewDrugBtn(false);
     setDosageAmount(drug["amount"] + "");
-    const d = drug["dateTimeOfLog"].split("T");
-    console.log(d);
-    setDateInput(d[0]);
-    setTime(d[1].slice(0, -8));
+    const d = toISOLocal(new Date(drug["dateTimeOfLog"])).split("T");
+    setDateInput(d[0] ?? "");
+    setTime(d[1] ? d[1].slice(0, -8) : "");
     setSideEffectFlt(drug["sideEffectFelt"]);
     setEditId(drug["id"]);
     for (let i = 0; i < drugPrevList.length; i++) {
       if (drugPrevList[i]["brand_name"] == drug["drug"]["brand_name"]) {
         setSelectedPrevDrug(i);
         setCurrentDrug(drug["drug"]);
+        break; // Stop the loop once a match is found
+      }
+    }
+
+    for (let i = 0; i < dosageTypeList.length; i++) {
+      if (dosageTypeList[i] == drug["dosageType"]) {
+        setDosageType(i);
         break; // Stop the loop once a match is found
       }
     }
@@ -151,6 +183,7 @@ const DrugJournal: React.FC = () => {
     setSelectedPrevDrug(0);
     setErrorEntry(false);
     setSearchStr("");
+    setDosageType(0);
   };
 
   const submitDrug = async (e: React.FormEvent) => {
@@ -166,16 +199,18 @@ const DrugJournal: React.FC = () => {
       return;
     }
     const dateTimeInput = `${dateInput}T${time}:00`;
+    const UTCFormat = new Date(dateTimeInput).toISOString();
     const body = {
       id: editID ? editID : null,
       isNewDrug: addNewDrugBtn,
       dosageAmount: parseInt(dosageAmount),
       sideEffect: sideEffectFlt,
       spl_id: currentDrug["id"],
-      dateTimeInput: dateTimeInput,
+      dateTimeInput: UTCFormat,
       brand_name: currentDrug["name"],
       manufacturer_name: currentDrug["manufacturer_name"],
       dosge_descrip: currentDrug["dosage"],
+      dosageType: dosageTypeList[dosageType],
       selectedPrevDrug: !addNewDrugBtn
         ? drugPrevList[selectedPrevDrug]["id"]
         : 0,
@@ -207,7 +242,7 @@ const DrugJournal: React.FC = () => {
       <section>
         <div className="mb-2">
           <div className="mb-1 font-semibold">
-            Pick date to retrieve the Food Journal for that day
+            Pick date to retrieve the Drug Journal for that day
           </div>
           <div className="flex items-center">
             <input
@@ -220,7 +255,6 @@ const DrugJournal: React.FC = () => {
             ></input>
             {isGettingData && (
               <>
-
                 <AiOutlineLoading3Quarters className="spinner  ml-2  font-semibold text-violet-600" />
               </>
             )}
@@ -344,6 +378,22 @@ const DrugJournal: React.FC = () => {
                         className="rounded-lg border border-violet-900 bg-violet-100 p-1 text-slate-900 placeholder:text-violet-800 hover:bg-violet-300 hover:text-violet-900"
                         onChange={(e) => setDosageAmount(e.target.value)}
                       />
+                    </div>
+                    <div className="mb-1">
+                      <div className="mb-1 font-semibold">Dosage Type:</div>
+                      <select
+                        className="w-full rounded-lg border border-violet-900 bg-violet-100 p-1 text-slate-900 placeholder:text-violet-800 hover:bg-violet-300 hover:text-violet-900"
+                        onChange={(e) => {
+                          setDosageType(e.target.selectedIndex);
+                        }}
+                        value={dosageType}
+                      >
+                        {dosageTypeList.map((option, index) => (
+                          <option key={option} value={index}>
+                            {option}
+                          </option>
+                        ))}
+                      </select>
                     </div>
                     <div className="mb-1">
                       <div className="mb-1 font-semibold">Date:</div>
