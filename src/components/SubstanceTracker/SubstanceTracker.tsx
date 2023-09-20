@@ -137,7 +137,8 @@ const SubstanceTracker: React.FC = () => {
     fetch(`/api/substanceTracker/getAllCustomSub/?userId=${userId}`).then(
       (response) => {
         response.json().then((data) => {
-          if (!data.customSubstance) {
+          console.log(data);
+          if (!data.customSubstance || data.customSubstance.length == 0) {
             setAddNewSubBtn(true);
           }
           setCustomSubstanceArr(data.customSubstance);

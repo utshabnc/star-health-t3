@@ -301,14 +301,41 @@ model User {
   substanceTrackers  SubstanceTracker[]
   customSubstances   customSubstance[]
   userDrugTracker    UserDrugTracker[]
+  hashedPassword  String?
+  userRegisterationInfo  UserRegisterInfo?
+  isRegistered  Boolean @default(false)
+}
+
+model UserRegisterInfo {
+  id            Int      @id @default(autoincrement())
+  userId        String   @unique
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  firstName     String?
+  lastName      String?
+  dob           String?
+  contactNumber String?
+  address       String?
+  profession    String?
+  company       String?
+  specialization String?
+  licenseNumber String?
+  insuranceInformation String?
+  gender        String?
+  medicalHistory String?
+  educationalBackground String?
+  linkedin      String?
+  twitter       String?
+  comments      String?
 }
 
 model VerificationToken {
-  identifier String
+  id         Int      @id @default(autoincrement())
+  hashedPassword String
+  identifier String   @unique
   token      String   @unique
   expires    DateTime
 
-  @@unique([identifier, token])
+  @@index([identifier])
 }
 
 model Test {

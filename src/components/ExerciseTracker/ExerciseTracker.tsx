@@ -119,7 +119,7 @@ const ExerciseTracker: React.FC = () => {
     fetch(`/api/exercise-tracker/getAllCustomExercise/?userId=${userId}`).then(
       (response) => {
         response.json().then((data) => {
-          if (!data.customExercise) {
+          if (!data.customExercise || data.customExercise.length == 0) {
             setAddNewExBtn(true);
           }
           setCustomExerciseArr(data.customExercise);
