@@ -137,6 +137,9 @@ const SubstanceTracker: React.FC = () => {
     fetch(`/api/substanceTracker/getAllCustomSub/?userId=${userId}`).then(
       (response) => {
         response.json().then((data) => {
+          if (!data.customSubstance) {
+            setAddNewSubBtn(true);
+          }
           setCustomSubstanceArr(data.customSubstance);
         });
       }
@@ -645,11 +648,13 @@ const SubstanceTracker: React.FC = () => {
                                   Create your own Substance
                                 </option>
                                 {substanceList && substanceList.length != 0 ? (
-                                  substanceList.map((option, index) => (
-                                    <option key={option} value={index}>
-                                      {option}
-                                    </option>
-                                  ))
+                                  substanceList.map(
+                                    (option: any, index: any) => (
+                                      <option key={option} value={index}>
+                                        {option}
+                                      </option>
+                                    )
+                                  )
                                 ) : (
                                   <option disabled={true}>
                                     No custom Substance. Add new substance to

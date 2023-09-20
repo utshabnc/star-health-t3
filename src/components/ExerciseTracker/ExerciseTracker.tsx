@@ -119,6 +119,9 @@ const ExerciseTracker: React.FC = () => {
     fetch(`/api/exercise-tracker/getAllCustomExercise/?userId=${userId}`).then(
       (response) => {
         response.json().then((data) => {
+          if (!data.customExercise) {
+            setAddNewExBtn(true);
+          }
           setCustomExerciseArr(data.customExercise);
         });
       }
@@ -864,7 +867,7 @@ const ExerciseTracker: React.FC = () => {
                       value={selectedExercise}
                     >
                       {customExerciseArr && customExerciseArr.length != 0 ? (
-                        customExerciseArr.map((option, index) => (
+                        customExerciseArr.map((option: any, index: any) => (
                           <option key={option.exerciseName} value={index}>
                             {option.exerciseName} (Tracking Method:{" "}
                             {option.unitToTrack})
