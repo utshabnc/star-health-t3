@@ -9,7 +9,7 @@ import { IconContext } from "react-icons";
 import { AiOutlineClose, AiOutlineMinus, AiOutlinePlus } from "react-icons/ai";
 import { BsChevronCompactRight } from "react-icons/bs";
 import { MdWaterDrop } from "react-icons/md";
-import { set, update } from "lodash";
+import { flatMap, set, update } from "lodash";
 import { toast } from "react-toastify";
 import React from "react";
 import { error } from "console";
@@ -94,7 +94,10 @@ const SubstanceTracker: React.FC = () => {
 
   const [saveDailyStatus, setSaveDailyStatus] = useState<boolean>(false);
   const [saveWeeklyStatus, setSaveWeeklyStatus] = useState<boolean>(false);
+  const [isNew, setIsNew] = useState<boolean>(false);
+  const [selectedListSubstance, setSelectedListSubstance] = useState<any>(0);
 
+  const [substanceList, setSubstanceList] = useState<any>([]);
   useEffect(() => {
     getAllCustomSub();
   }, [openModal]);
@@ -119,6 +122,7 @@ const SubstanceTracker: React.FC = () => {
     isDeleteing,
   ]);
   const resetAllInputs = () => {
+    setIsNew(false);
     setDosageAmount("");
     setDate("");
     setTime("");
@@ -133,11 +137,21 @@ const SubstanceTracker: React.FC = () => {
     fetch(`/api/substanceTracker/getAllCustomSub/?userId=${userId}`).then(
       (response) => {
         response.json().then((data) => {
+          if (!data.customSubstance) {
+            setAddNewSubBtn(true);
+          }
           setCustomSubstanceArr(data.customSubstance);
         });
       }
     );
   };
+  useEffect(() => {
+    fetch(`/api/substanceTracker/getAllData`).then((response) => {
+      response.json().then((data) => {
+        setSubstanceList(data);
+      });
+    });
+  }, [userId]);
   const editFunction = (substance: any) => {
     setOpenModal(true);
     setSelectedID(substance["id"]);
@@ -150,6 +164,7 @@ const SubstanceTracker: React.FC = () => {
     setMoodBefore(substance["moodBefore"]);
     setSubstanceNameInput("");
     setAddNewSubBtn(false);
+    setIsNew(false);
     for (let i = 0; i < subLimitArr.length; i++) {
       if (subLimitArr[i]["substance"] == substance["substance"]) {
         setSelectedSubstance(i);
@@ -202,7 +217,8 @@ const SubstanceTracker: React.FC = () => {
       date == "" ||
       time == "" ||
       parseFloat(dosageAmount) == 0 ||
-      (addNewSubBtn && (substancNameInput == "" || dosageUnitInput == "")) ||
+      (addNewSubBtn &&
+        ((isNew && substancNameInput == "") || dosageUnitInput == "")) ||
       (!addNewSubBtn && subLimitArr.length == 0)
     ) {
       setEntryError(true);
@@ -214,7 +230,6 @@ const SubstanceTracker: React.FC = () => {
     setaddSubstanceisLoading(true);
     const dateTimeInput = `${date}T${time}:00`;
     const UTCFormat = new Date(dateTimeInput).toISOString();
-
     const body = {
       id: selectedID,
       userId: userId,
@@ -225,7 +240,9 @@ const SubstanceTracker: React.FC = () => {
       moodAfter: moodAfter,
       isNewSubstance: addNewSubBtn,
       addNewSubstance: {
-        substanceName: substancNameInput,
+        substanceName: isNew
+          ? substancNameInput
+          : substanceList[selectedListSubstance],
         dosageUnit: dosageUnitInput,
       },
       substance: !addNewSubBtn ? subLimitArr[selectedSubstance]["id"] : "",
@@ -550,7 +567,9 @@ const SubstanceTracker: React.FC = () => {
               <div className="text-red-700">Invalid or missing input.</div>
             )}
             <div className="mb-1">
-              <div className="mb-1 font-semibold">Substance Consumed:</div>
+              <div className="mb-1 font-semibold">
+                Select Previously Added Substance:
+              </div>
               <div className="flex flex-col items-center">
                 <div className="flex w-[100%] items-center justify-center">
                   {addNewSubBtn && (
@@ -566,25 +585,27 @@ const SubstanceTracker: React.FC = () => {
                     </>
                   )}
                   {!addNewSubBtn && (
-                    <select
-                      className="w-full rounded-lg border border-violet-900 bg-violet-100 p-1 text-slate-900 placeholder:text-violet-800 hover:bg-violet-300 hover:text-violet-900"
-                      onChange={(e) => {
-                        setSelectedSubstance(e.target.selectedIndex);
-                      }}
-                      value={selectedSubstance}
-                    >
-                      {subLimitArr && subLimitArr.length != 0 ? (
-                        subLimitArr.map((option, index) => (
-                          <option key={option.substance} value={index}>
-                            {option.substance} ({option.dosageUnit})
+                    <>
+                      <select
+                        className="w-full rounded-lg border border-violet-900 bg-violet-100 p-1 text-slate-900 placeholder:text-violet-800 hover:bg-violet-300 hover:text-violet-900"
+                        onChange={(e) => {
+                          setSelectedSubstance(e.target.selectedIndex);
+                        }}
+                        value={selectedSubstance}
+                      >
+                        {subLimitArr && subLimitArr.length != 0 ? (
+                          subLimitArr.map((option, index) => (
+                            <option key={option.substance} value={index}>
+                              {option.substance} ({option.dosageUnit})
+                            </option>
+                          ))
+                        ) : (
+                          <option disabled={true}>
+                            No custom Substance. Add new substance to track.
                           </option>
-                        ))
-                      ) : (
-                        <option disabled={true}>
-                          No custom Substance. Add new substance to track.
-                        </option>
-                      )}
-                    </select>
+                        )}
+                      </select>
+                    </>
                   )}
                 </div>
                 <div className="my-1 flex w-[5%] items-center justify-center font-semibold">
@@ -604,36 +625,80 @@ const SubstanceTracker: React.FC = () => {
                     </>
                   )}
                   {addNewSubBtn && (
-                    <div className="w-full">
-                      <div className="mb-1 ">
-                        <div className="mb-1 font-semibold">Substance Name</div>
-                        <input
-                          value={substancNameInput}
-                          onChange={(e) => {
-                            setSubstanceNameInput(e.target.value);
-                          }}
-                          className="w-full rounded-lg border border-violet-900 bg-violet-100 p-1 text-slate-900 placeholder:text-violet-800 hover:bg-violet-300 hover:text-violet-900"
-                          type="text"
-                        ></input>
+                    <>
+                      <div className="w-full">
+                        <div className="mb-1 ">
+                          <div className="mb-1 font-semibold">
+                            Substance Name
+                          </div>
+                          {!isNew && (
+                            <>
+                              <select
+                                className="w-full rounded-lg border border-violet-900 bg-violet-100 p-1 text-slate-900 placeholder:text-violet-800 hover:bg-violet-300 hover:text-violet-900"
+                                onChange={(e) => {
+                                  if (e.target.value == "custom") {
+                                    setIsNew(true);
+                                  } else {
+                                    setSelectedListSubstance(e.target.value);
+                                  }
+                                }}
+                                value={selectedListSubstance}
+                              >
+                                <option value={"custom"}>
+                                  Create your own Substance
+                                </option>
+                                {substanceList && substanceList.length != 0 ? (
+                                  substanceList.map(
+                                    (option: any, index: any) => (
+                                      <option key={option} value={index}>
+                                        {option}
+                                      </option>
+                                    )
+                                  )
+                                ) : (
+                                  <option disabled={true}>
+                                    No custom Substance. Add new substance to
+                                    track.
+                                  </option>
+                                )}
+                              </select>
+                            </>
+                          )}
+                          {isNew && (
+                            <>
+                              <input
+                                value={substancNameInput}
+                                placeholder="Write your own substance name"
+                                onChange={(e) => {
+                                  setSubstanceNameInput(e.target.value);
+                                }}
+                                className="w-full rounded-lg border border-violet-900 bg-violet-100 p-1 text-slate-900 placeholder:text-violet-400 hover:bg-violet-300 hover:text-violet-900"
+                                type="text"
+                              ></input>
+                            </>
+                          )}
+                        </div>
+                        <div className="mb-1">
+                          <div className="mb-1 font-semibold">
+                            Dosage Method
+                          </div>
+                          <input
+                            value={dosageUnitInput}
+                            onChange={(e) => {
+                              setDosageUnitInput(e.target.value);
+                            }}
+                            className="w-full rounded-lg border border-violet-900 bg-violet-100 p-1 text-slate-900 placeholder:text-violet-800 hover:bg-violet-300 hover:text-violet-900"
+                            type="text"
+                          ></input>
+                        </div>
                       </div>
-                      <div className="mb-1">
-                        <div className="mb-1 font-semibold">Dosage Unit</div>
-                        <input
-                          value={dosageUnitInput}
-                          onChange={(e) => {
-                            setDosageUnitInput(e.target.value);
-                          }}
-                          className="w-full rounded-lg border border-violet-900 bg-violet-100 p-1 text-slate-900 placeholder:text-violet-800 hover:bg-violet-300 hover:text-violet-900"
-                          type="text"
-                        ></input>
-                      </div>
-                    </div>
+                    </>
                   )}
                 </div>
               </div>
             </div>
             <div className="mb-1">
-              <div className="mb-1 font-semibold">Dosage Amount:</div>
+              <div className="mb-1 font-semibold">Dosage Amount (Unit):</div>
               <input
                 type="number"
                 value={dosageAmount}

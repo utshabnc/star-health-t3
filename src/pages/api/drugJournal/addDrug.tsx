@@ -34,6 +34,7 @@ export default async function handler(
         dosge_descrip,
         userId,
         dosageAmount,
+        dosageMethod,
         sideEffect,
         selectedPrevDrug,
       } = req.body;
@@ -67,6 +68,7 @@ export default async function handler(
               dateTimeOfLog: formattedEntryDateTime,
               amount: dosageAmount,
               dosageType,
+              methodOfConsumption: dosageMethod,
               sideEffectFelt: sideEffect,
               drugId: isNewDrug ? newDrug["id"] : selectedPrevDrug,
             },
@@ -107,6 +109,7 @@ export default async function handler(
             data: {
               dateTimeOfLog: formattedEntryDateTime,
               amount: dosageAmount,
+              methodOfConsumption: dosageMethod,
               sideEffectFelt: sideEffect,
               dosageType,
               drugId: isNewDrug ? newDrug["id"] : selectedPrevDrug,

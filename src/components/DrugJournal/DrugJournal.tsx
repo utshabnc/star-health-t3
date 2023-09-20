@@ -85,10 +85,33 @@ const DrugJournal: React.FC = () => {
   const [dateInput, setDateInput] = useState<string>("");
   const [time, setTime] = useState("");
   const [dosageType, setDosageType] = useState<number>(0);
+  const [dosageMethod, setDosageMethod] = useState<number>(0);
 
   const [sideEffectFlt, setSideEffectFlt] = useState("");
   const [editID, setEditId] = useState();
-  const dosageTypeList: any[] = ["ml", "Pills"];
+  const dosageTypeList: any[] = [
+    "Milligrams (mg)",
+    "Micrograms (µg or mcg)",
+    "Grams (g)",
+    "Units",
+    "Drops",
+    "Pills/Capsules",
+    "Teaspoons/Tablespoons",
+    "Hits/Doses",
+    "Sprays",
+    "Plant Parts",
+    "Puffs",
+  ];
+
+  const dosageMethodList = [
+    "Oral Ingestion",
+    "Inhalation",
+    "Injection",
+    "Sublingual",
+    "Nasal (Intranasal)",
+    "Topical",
+    "Rectal",
+  ];
   useEffect(() => {
     try {
       fetch(`/api/drugJournal/getAllDrugs/?userId=${userId}`).then(
@@ -170,6 +193,13 @@ const DrugJournal: React.FC = () => {
         break; // Stop the loop once a match is found
       }
     }
+
+    for (let i = 0; i < dosageMethodList.length; i++) {
+      if (dosageMethodList[i] == drug["dosageType"]) {
+        setDosageMethod(i);
+        break; // Stop the loop once a match is found
+      }
+    }
     setSearchStr("");
   };
 
@@ -184,6 +214,7 @@ const DrugJournal: React.FC = () => {
     setErrorEntry(false);
     setSearchStr("");
     setDosageType(0);
+    setDosageMethod(0);
   };
 
   const submitDrug = async (e: React.FormEvent) => {
@@ -211,6 +242,7 @@ const DrugJournal: React.FC = () => {
       manufacturer_name: currentDrug["manufacturer_name"],
       dosge_descrip: currentDrug["dosage"],
       dosageType: dosageTypeList[dosageType],
+      dosageMethod: dosageMethodList[dosageMethod],
       selectedPrevDrug: !addNewDrugBtn
         ? drugPrevList[selectedPrevDrug]["id"]
         : 0,
@@ -389,6 +421,24 @@ const DrugJournal: React.FC = () => {
                         value={dosageType}
                       >
                         {dosageTypeList.map((option, index) => (
+                          <option key={option} value={index}>
+                            {option}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                    <div className="mb-1">
+                      <div className="mb-1 font-semibold">
+                        Method of consumption:
+                      </div>
+                      <select
+                        className="w-full rounded-lg border border-violet-900 bg-violet-100 p-1 text-slate-900 placeholder:text-violet-800 hover:bg-violet-300 hover:text-violet-900"
+                        onChange={(e) => {
+                          setDosageMethod(e.target.selectedIndex);
+                        }}
+                        value={dosageMethod}
+                      >
+                        {dosageMethodList.map((option, index) => (
                           <option key={option} value={index}>
                             {option}
                           </option>

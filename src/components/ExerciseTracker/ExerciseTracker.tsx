@@ -111,11 +111,17 @@ const ExerciseTracker: React.FC = () => {
 
   const [selectedExerciseGoal, setSelectedExerciseGoal] = useState<number>(0);
   const [isGettingData, setIsGettingData] = useState<boolean>(false);
+  const [isNew, setIsNew] = useState<boolean>(false);
+  const [selectedListExercise, setSelectedListExercise] = useState<any>(0);
 
+  const [exerciseList, setExerciseList] = useState<[]>([]);
   const getAllExercise = () => {
     fetch(`/api/exercise-tracker/getAllCustomExercise/?userId=${userId}`).then(
       (response) => {
         response.json().then((data) => {
+          if (!data.customExercise) {
+            setAddNewExBtn(true);
+          }
           setCustomExerciseArr(data.customExercise);
         });
       }
@@ -187,6 +193,13 @@ const ExerciseTracker: React.FC = () => {
     }
   };
   useEffect(() => {
+    fetch(`/api/exercise-tracker/getAllData`).then((response) => {
+      response.json().then((data) => {
+        setExerciseList(data);
+      });
+    });
+  }, [userId]);
+  useEffect(() => {
     getAllExercise();
   }, [openModal]);
   const editFunction = (exercise: any) => {
@@ -197,6 +210,8 @@ const ExerciseTracker: React.FC = () => {
     setDate(d[0] ?? "");
     setTime(d[1] ? d[1].slice(0, -8) : "");
     setExerciseUnit(exercise["unit"]);
+    setIsNew(false);
+
     setExerciseUnitVal(
       exercise["unit"] === "Calories" || exercise["unit"] === "Minutes"
         ? 0
@@ -238,6 +253,8 @@ const ExerciseTracker: React.FC = () => {
   ]);
   const resetAllInputs = () => {
     setSelectedID(undefined);
+    setIsNew(false);
+
     setExerciseCalories(0);
     setDate("");
     setTime("");
@@ -263,7 +280,8 @@ const ExerciseTracker: React.FC = () => {
         parseFloat(exerciseUnitVal) == 0) ||
       parseFloat(exerciseCalories) == 0 ||
       parseFloat(exerciseDuration) == 0 ||
-      (addNewExBtn && (exerciseNameInput == "" || exerciseUnit === "")) ||
+      (addNewExBtn &&
+        ((isNew && exerciseNameInput == "") || exerciseUnit === "")) ||
       (!addNewExBtn && customExerciseArr.length == 0)
     ) {
       setEntryError(true);
@@ -286,7 +304,9 @@ const ExerciseTracker: React.FC = () => {
       userId,
       isNewExercise: addNewExBtn,
       addNewExercise: {
-        exerciseName: exerciseNameInput,
+        exerciseName: isNew
+          ? exerciseNameInput
+          : exerciseList[selectedListExercise],
         unitToTrack: exerciseUnitList[exerciseUnit],
       },
     };
@@ -847,7 +867,7 @@ const ExerciseTracker: React.FC = () => {
                       value={selectedExercise}
                     >
                       {customExerciseArr && customExerciseArr.length != 0 ? (
-                        customExerciseArr.map((option, index) => (
+                        customExerciseArr.map((option: any, index: any) => (
                           <option key={option.exerciseName} value={index}>
                             {option.exerciseName} (Tracking Method:{" "}
                             {option.unitToTrack})
@@ -881,14 +901,46 @@ const ExerciseTracker: React.FC = () => {
                     <div className="w-full">
                       <div className="mb-1 ">
                         <div className="mb-1 font-semibold">Exercise Name</div>
-                        <input
-                          value={exerciseNameInput}
-                          onChange={(e) => {
-                            setExerciseNameInput(e.target.value);
-                          }}
-                          className="w-full rounded-lg border border-violet-900 bg-violet-100 p-1 text-slate-900 placeholder:text-violet-800 hover:bg-violet-300 hover:text-violet-900"
-                          type="text"
-                        ></input>
+                        {!isNew && (
+                          <>
+                            <select
+                              className="w-full rounded-lg border border-violet-900 bg-violet-100 p-1 text-slate-900 placeholder:text-violet-800 hover:bg-violet-300 hover:text-violet-900"
+                              onChange={(e) => {
+                                if (e.target.value == "custom") {
+                                  setIsNew(true);
+                                } else {
+                                  setSelectedListExercise(e.target.value);
+                                }
+                              }}
+                              value={selectedListExercise}
+                            >
+                              <option value={"custom"}>
+                                Create your own exercise
+                              </option>
+                              {exerciseList && exerciseList.length != 0 ? (
+                                exerciseList.map((option, index) => (
+                                  <option key={option} value={index}>
+                                    {option}
+                                  </option>
+                                ))
+                              ) : (
+                                <option disabled={true}>
+                                  No custom exercise. Add new exercise to track.
+                                </option>
+                              )}
+                            </select>
+                          </>
+                        )}
+                        {isNew && (
+                          <input
+                            value={exerciseNameInput}
+                            onChange={(e) => {
+                              setExerciseNameInput(e.target.value);
+                            }}
+                            className="w-full rounded-lg border border-violet-900 bg-violet-100 p-1 text-slate-900 placeholder:text-violet-800 hover:bg-violet-300 hover:text-violet-900"
+                            type="text"
+                          ></input>
+                        )}
                       </div>
                       <div className="mb-1">
                         <div className="mb-1 font-semibold">
