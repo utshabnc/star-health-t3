@@ -6,7 +6,6 @@ import DirectoryCards from "../../components/DirectoryCards";
 import Filters from "../../components/Filters";
 import { formatMoney } from "../../utils";
 import { trpc } from "../../utils/trpc";
-import { SignIn } from "../../components/SignIn/SignIn";
 import { toTitleCase } from "../../utils";
 
 import type { Observable } from "rxjs";
@@ -891,7 +890,7 @@ export default function Directory() {
 
   return (
     <>
-      <div className="min-h-screen rounded bg-white p-5 pb-44 w-full h-full ">
+      <div className="min-h-screen rounded bg-white p-5 pb-44">
         <div className="flex flex-row">
           <div>
             <button
@@ -914,7 +913,7 @@ export default function Directory() {
               </svg>
             </button>
           </div>
-          <div className="flex w-full flex-col justify-end px-8 pb-10 ">
+          <div className="flex w-full flex-col justify-end px-8 pb-10">
             <div className="wrap-opt flex justify-between">
               <div className="flex w-[60%] items-center gap-5">
                 <p className="flex text-2xl font-semibold text-violet-700">
@@ -1159,7 +1158,53 @@ export default function Directory() {
             <div className="my-1">
               <hr />
             </div>
-          
+            {selectedTab === Tab.ClinicalTrials && (
+              <div className="relative">
+                <ClinicalTrialsFilters
+                  Gender={clinicalTrialGenderFilters}
+                  Acronym={clinicalTrialAcronymFilters}
+                  OfficialTitle={clinicalTrialOfficialTitleFilters}
+                  Condition={clinicalTrialConditionFilters}
+                  LocationState={clinicalTrialLocationStateFilters}
+                  LocationCity={clinicalTrialLocationCityFilters}
+                  LocationCountry={clinicalTrialLocationCountryFilters}
+                  CollaboratorName={clinicalTrialCollaboratorNameFilters}
+                  LeadSponsorName={clinicalTrialLeadSponsorNameFilters}
+                  OverallStatus={clinicalTrialOverallStatusFilters}
+                  LocationContactName={locationContactNameFilters}
+                  LocationFacility={locationFacilityFilters}
+                  InterventionName={interventionNameFilters}
+                  OnSearchExprChange={(expr: string) => {
+                    setClinicalTrialSearchExpr(expr);
+                  }}
+                />
+                <div className="my-1">
+                  <hr />
+                </div>
+                <p className="p-1 text-xs font-semibold text-violet-900">
+                  Search for clinical trials
+                </p>
+                <div className="flex w-[100%] items-center gap-3">
+                  <AutocompleteInput
+                    expr={clinicalTrialSearchKeywordExpr}
+                    setExpr={setClinicalTrialSearchKeywordExpr}
+                    options={returnNamesOfClincalNames(
+                      clinicalTrialsData.studies
+                        ? clinicalTrialsData.studies
+                        : [],
+                      "briefTitle"
+                    )}
+                  ></AutocompleteInput>
+                </div>
+                <Image
+                  src={clinicalTrials}
+                  alt=""
+                  width={128}
+                  height={128}
+                  className="absolute -bottom-10 right-0 object-contain"
+                />
+              </div>
+            )}
             {selectedTab == Tab.Plans && (
               <div className="flex flex-col items-end">
                 <HealthPlansFilters
@@ -1390,67 +1435,16 @@ export default function Directory() {
                           />
                         )}
                       </div>
-                    </> 
+                    </>
                   )}
                 </>
               )}
           </div>
         </div>
-        <div className=" relative flex flex-wrap h-[100%] w-full justify-center">
-        {(location.hostname !== "" && location.hostname !== "") ?
-        <SignIn/> : ""}
-        {selectedTab === Tab.ClinicalTrials && (
-              <div className=" ml-20 mb-16 ">
-               
-                <ClinicalTrialsFilters
-                  Gender={clinicalTrialGenderFilters}
-                  Acronym={clinicalTrialAcronymFilters}
-                  OfficialTitle={clinicalTrialOfficialTitleFilters}
-                  Condition={clinicalTrialConditionFilters}
-                  LocationState={clinicalTrialLocationStateFilters}
-                  LocationCity={clinicalTrialLocationCityFilters}
-                  LocationCountry={clinicalTrialLocationCountryFilters}
-                  CollaboratorName={clinicalTrialCollaboratorNameFilters}
-                  LeadSponsorName={clinicalTrialLeadSponsorNameFilters}
-                  OverallStatus={clinicalTrialOverallStatusFilters}
-                  LocationContactName={locationContactNameFilters}
-                  LocationFacility={locationFacilityFilters}
-                  InterventionName={interventionNameFilters}
-                  OnSearchExprChange={(expr: string) => {
-                    setClinicalTrialSearchExpr(expr);
-                  }}
-                />
-                <div className="my-1">
-                  <hr />
-                </div>
-                <p className="p-1 text-xs font-semibold text-violet-900">
-                  Search for clinical trials
-                </p>
-                <div className="flex w-[100%] items-center gap-3">
-                  <AutocompleteInput
-                    expr={clinicalTrialSearchKeywordExpr}
-                    setExpr={setClinicalTrialSearchKeywordExpr}
-                    options={returnNamesOfClincalNames(
-                      clinicalTrialsData.studies
-                        ? clinicalTrialsData.studies
-                        : [],
-                      "briefTitle"
-                    )}
-                  ></AutocompleteInput>
-                </div>
-                <Image
-                  src={clinicalTrials}
-                  alt=""
-                  width={128}
-                  height={128}
-                  className="absolute -bottom-10 right-0 object-contain"
-                />
-              </div>
-            )}
-           
+        <div className="relative flex h-[100%] w-full justify-center">
+          <PayWall />
 
-          <div className="ml-20 flex min-h-[100%] w-[95%] flex-col overflow-scroll p-1"> 
-          
+          <div className="ml-5 flex min-h-[100%] w-[95%] flex-col overflow-scroll p-1">
             {isApiProcessing && <LoadingStarHealth />}
             {selectedTab === Tab.ClinicalTrials && (
               <ClinicalTrialsComponent data={clinicalTrialsData} />
