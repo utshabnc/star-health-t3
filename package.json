@@ -38,6 +38,7 @@
     "dotenv": "^16.0.3",
     "html-react-parser": "^3.0.16",
     "http-proxy-middleware": "^2.0.6",
+    "jsonwebtoken": "^9.0.2",
     "lodash": "^4.17.21",
     "multiselect-combo-box": "3.0.0-alpha.2",
     "multiselect-react-dropdown": "2.0.25",
