@@ -30,13 +30,40 @@ const signUpSchema = z.object({
   specialization: z.string().min(1, "Specialization is required"),
   licenseNumber: z.string().min(1, "Licence Number is required"),
   insuranceInformation: z.string().min(1, "Insurance Information is required"),
-  gender: z.string(),
+  gender: z.enum(["male", "female"]),
   medicalHistory: z.string().optional(),
   educationalBackground: z.string().optional(),
   linkedin: z.string().optional(),
   twitter: z.string().optional(),
   comments: z.string().optional(),
 })
+
+const personalSchema = z.object({
+  firstName : z.string().min(1,"First Name is required"),
+  lastName: z.string().min(1,"Last Name is required"),
+  dob: z.string().min(1,"Date of Birth is required"),
+  contactNumber: z.string().min(1,"Contact Number is required"),
+  address: z.string().min(1,"Address is required"),
+  profession: z.string().min(1,"Profession is required"),
+  gender: z.enum(["male", "female"]),
+})
+
+const professionalInfo = z.object({
+  company: z.string().optional(),
+  specialization: z.string().min(1, "Specialization is required"),
+  licenseNumber: z.string().min(1, "Licence Number is required"),
+  insuranceInformation: z.string().min(1, "Insurance Information is required"),
+  
+})
+
+const addionalInfoSchema = z.object({
+  medicalHistory: z.string().optional(),
+  educationalBackground: z.string().optional(),
+  linkedin: z.string().optional(),
+  twitter: z.string().optional(),
+  comments: z.string().optional(),
+})
+
 
 
 type ValidationSchema = z.infer<typeof signUpSchema>
@@ -70,6 +97,7 @@ export const SignIn = () => {
    
   
   }>>([])
+  const schemas = [personalSchema, professionalInfo, addionalInfoSchema]
 
 
   const router = useRouter()
@@ -129,7 +157,7 @@ export const SignIn = () => {
 
 
   useEffect(() => {
-    setProgress((activeSection + 2) * 25)
+    setProgress((activeSection * 2) * 25)
   }, [activeSection])
 
   useEffect(() => {
@@ -261,10 +289,6 @@ export const SignIn = () => {
   }
 
   const handlePrevious = (e : FormEvent) => {
-    e.preventDefault()
-    
-    unregister()
-   
     if (activeSection === 0) {
       return;
     }
@@ -273,7 +297,15 @@ export const SignIn = () => {
 
   const handleNext = async (e : FormEvent) => {
     e.preventDefault()
-    const fieldKeys = Object.keys(getValues())
+    let fieldKeys = Object.keys(getValues())
+
+    const fieldSchema = schemas[activeSection]
+    if(fieldSchema) {
+      fieldKeys = Object.keys(fieldSchema.shape)
+     
+    }
+
+
     const isValid = await trigger(fieldKeys)
       if(isValid){
         setActiveSection((prev) => prev + 1)

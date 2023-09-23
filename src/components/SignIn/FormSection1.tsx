@@ -136,7 +136,7 @@ const FormSectionA : React.FC<InputProps>  = ({  register , errors}) => {
                 className="block w-full bg-gray-200 text-gray-700 border border-indigo-500/75 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"
                 id="grid-profession"
             >
-                <option value="" disabled>Select a profession/role</option>
+                <option value="" disabled selected>Select a profession/role</option>
                 {[
                     "Patients",
                     "Providers",
