@@ -1243,8 +1243,8 @@ export default function Directory() {
           </div>
         </div>
         <div className=" relative flex flex-wrap h-[100%] w-full justify-center">
-        {(location.hostname !== "localhost" && location.hostname !== "localhost") ?
-        <SignIn/> : ""}
+       
+        <SignIn/>
         
         {selectedTab === Tab.ClinicalTrials && (
               <div className=" ml-20 mb-16 ">
