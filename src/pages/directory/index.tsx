@@ -863,6 +863,9 @@ export default function Directory() {
     message: string,
   }>>([])
 
+  const schemas = [personalSchema, professionalInfo, addionalInfoSchema]
+
+
 
 
 
