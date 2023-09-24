@@ -30,7 +30,7 @@ const signUpSchema = z.object({
   specialization: z.string().min(1, "Specialization is required"),
   licenseNumber: z.string().min(1, "Licence Number is required"),
   insuranceInformation: z.string().min(1, "Insurance Information is required"),
-  gender: z.enum(["male", "female"]),
+  gender: z.string(),
   medicalHistory: z.string().optional(),
   educationalBackground: z.string().optional(),
   linkedin: z.string().optional(),
@@ -45,7 +45,7 @@ const personalSchema = z.object({
   contactNumber: z.string().min(1,"Contact Number is required"),
   address: z.string().min(1,"Address is required"),
   profession: z.string().min(1,"Profession is required"),
-  gender: z.enum(["male", "female"]),
+  gender: z.string(),
 })
 
 const professionalInfo = z.object({
@@ -66,7 +66,6 @@ const addionalInfoSchema = z.object({
 
 
 
-type ValidationSchema = z.infer<typeof signUpSchema>
 
 
 
