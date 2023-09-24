@@ -19,7 +19,7 @@ import { z } from 'zod'
 
 
 
-const signUpSchema = z.object({
+export const signUpSchema = z.object({
   firstName : z.string().min(1,"First Name is required"),
   lastName: z.string().min(1,"Last Name is required"),
   dob: z.string().min(1,"Date of Birth is required"),
@@ -38,7 +38,7 @@ const signUpSchema = z.object({
   comments: z.string().optional(),
 })
 
-const personalSchema = z.object({
+export const personalSchema = z.object({
   firstName : z.string().min(1,"First Name is required"),
   lastName: z.string().min(1,"Last Name is required"),
   dob: z.string().min(1,"Date of Birth is required"),
@@ -48,7 +48,7 @@ const personalSchema = z.object({
   gender: z.string(),
 })
 
-const professionalInfo = z.object({
+export const professionalInfo = z.object({
   company: z.string().optional(),
   specialization: z.string().min(1, "Specialization is required"),
   licenseNumber: z.string().min(1, "Licence Number is required"),
@@ -56,7 +56,7 @@ const professionalInfo = z.object({
   
 })
 
-const addionalInfoSchema = z.object({
+export const addionalInfoSchema = z.object({
   medicalHistory: z.string().optional(),
   educationalBackground: z.string().optional(),
   linkedin: z.string().optional(),
@@ -159,9 +159,7 @@ const SignIn = () => {
     setProgress((activeSection * 2) * 25)
   }, [activeSection])
 
-  useEffect(() => {
-    console.log(errors)
-  }, [errors])
+  
 
 
   const handleEmailSignUp = () => {

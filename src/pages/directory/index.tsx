@@ -33,7 +33,6 @@ import {
 } from "../../components/ClinicalTrials/helpers";
 import { Tab } from "../../utils/Enums/Tab.enum";
 
-import { useSession } from "next-auth/react";
 import Image from "next/image";
 import clinicalTrials from "../../assets/logos/clinical-trials.png";
 import cms from "../../assets/logos/cms.png";
@@ -64,6 +63,21 @@ import HospitalsFilters from "../../components/Hospitals/HospitalsFilters";
 import LoadingStarHealth from "../../components/Loading";
 import { id } from "date-fns/locale";
 
+
+import { useSession, signIn } from "next-auth/react";
+import React, {FormEvent} from "react";
+import GoogleSignInButton from "../../components/SignIn/GoogleSignIn";
+import EmailSignInButton from "../../components/SignIn/EmailSignIn";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { FieldValues } from "react-hook-form"
+import FormSectionA from "../../components/SignIn/FormSection1";
+import FormSectionB from "../../components/SignIn/FormSection2";
+import FormSectionC from "../../components/SignIn/FormSection3";
+import { signUpSchema } from "../../components/SignIn/SignIn";
+import { personalSchema } from "../../components/SignIn/SignIn";
+import { professionalInfo } from "../../components/SignIn/SignIn";
+import { addionalInfoSchema } from "../../components/SignIn/SignIn";
 
 interface PriceFilter {
   min: number;
@@ -820,6 +834,249 @@ export default function Directory() {
         10 - (filterParams.price.max / 5000) * 10 + "%";
     }
   }, [filterParams.price.min, filterParams.price.max]);
+
+
+
+  //Custom Sign In Logic
+  const {data : session, status , update} = useSession();
+  const [showEmailSignUp, setShowEmailSignUp] = useState<boolean>(false);
+  const [isEmailSent , setIsEmailSent] = useState<boolean>(false)
+  const [showLogin, setShowLogin] = useState<boolean>(false)
+  const [loginErrors, setLoginErrors] = useState<boolean>(false)
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false)
+  const [registerErrors, setRegisterErrors] = useState<boolean>(false)
+  const [activeSection, setActiveSection] = useState<number>(0);
+  const [progress, setProgress] = useState<number>(0);
+  const [emailSignIn, setEmailSignIn] = useState<Record<string , string>>({
+    customFirstName : '',
+    customLastName : '',
+    customEmail : '',
+    customPassword : '',
+    message : ''
+  })
+  const [emailLogin, setEmailLogin] = useState<Record<string , string>>({
+    loginEmail : '',
+    loginPassword : '',
+    message :'',
+  })
+  const [customMessages,setCustomMessages]=useState<Array<{ 
+    message: string,
+   
+  
+  }>>([])
+  const schemas = [personalSchema, professionalInfo, addionalInfoSchema]
+
+
+  const router = useRouter()
+  const {
+    register , 
+    watch,
+    handleSubmit, 
+    getValues, 
+    trigger,
+    unregister,
+    formState : { errors }, 
+    reset
+  } = useForm({
+    resolver : zodResolver(signUpSchema),
+    mode : "onSubmit"
+  })
+
+  const {login} = router.query;
+
+
+  const onSubmit =  async (data : FieldValues) => {
+
+ 
+    try{
+      const response = await fetch("/api/update-auth/update-user-field",{
+        method : "POST",
+        headers : {
+          "Content-Type" : "application/json"
+        },
+        body : JSON.stringify({
+          userId :  session?.user?.id,
+          formData : data
+        })
+      })
+      if(!response.ok){
+        console.log("Registration couldn't be completed sucessfully")
+      }
+      else {
+
+        const newSession = {
+          ...session,
+          user: {
+            ...session?.user,
+            isRegistered: true
+          },
+        };
+    
+        await update(newSession);
+        
+      }
+    }
+    catch(error) {
+      console.log(error)
+    }
+  }
+
+
+
+  useEffect(() => {
+    setProgress((activeSection * 2) * 25)
+  }, [activeSection])
+
+  
+
+
+  const handleEmailSignUp = () => {
+    setShowEmailSignUp(true)
+  }
+
+  const handleshowLogin = () => {
+    setShowLogin(true)
+  }
+ 
+
+
+
+   // Email Verification
+   const handleChange = (e : React.ChangeEvent<HTMLInputElement>) => {
+      e.preventDefault()
+      setEmailSignIn({
+        ...emailSignIn,
+        [e.target.name] : e.target.value
+      })
+   }
+
+   const handleEmailSubmitForm = async (e : FormEvent) => {
+    e.preventDefault()
+
+    try {
+     
+      setCustomMessages([])
+      setIsSubmitting(true)
+      const response = await fetch('/api/register/register', {
+        method : "POST",
+        headers : {
+          "Content-Type" : "application/json"
+        },
+        body : JSON.stringify({
+          firstName : emailSignIn.customFirstName,
+          lastName : emailSignIn.customLastName,
+          email : emailSignIn.customEmail,
+          password : emailSignIn.customPassword
+        })
+      })
+      if(!response.ok) {
+        setIsSubmitting(false)
+        const errorResponse = await response.json()
+        if(errorResponse.message){
+          const errorMessage = errorResponse.message
+          console.log(errorMessage)
+          setRegisterErrors(true)
+          setEmailSignIn({
+            ...emailSignIn,
+            message : errorMessage as string
+          })
+        }
+        else {
+          console.log(errorResponse.errors)
+          setCustomMessages(errorResponse.errors)
+        }
+        
+      }
+      else{
+      
+        setEmailSignIn({
+          ...emailSignIn,
+          message : 'Success'
+        })
+        setIsEmailSent(true)
+      }
+
+    }
+    catch(error : any) {
+      console.log('catch errors ',error)
+    }
+    finally {
+      setIsSubmitting(false)
+    }
+    
+  
+  }
+
+
+  // handle Email Login
+  const handleEmailLoginChange = (e : React.ChangeEvent<HTMLInputElement>) => {
+   setEmailLogin({
+    ...emailLogin,
+    [e.target.name] : e.target.value
+   })
+
+  }
+
+  const handleEmailLoginForm = async (e : FormEvent) => {
+    e.preventDefault()
+  
+    const result = await signIn('credentials',{
+      email : emailLogin.loginEmail,
+      password : emailLogin.loginPassword,
+      redirect : false
+    })
+
+ 
+  
+    if(result) {
+      if (result.error) {
+        // Handle login error here
+        setEmailLogin({
+          ...emailLogin,
+          message : result.error as string,
+        })
+        setLoginErrors(true)
+      } else {
+        // If login is successful, the session will be updated automatically
+        setEmailLogin({
+          ...emailLogin,
+          message : 'Login Successful. You will now be redirected'
+        })
+        setLoginErrors(false)
+        delayReload('/directory',3000)
+      }
+    }
+  }
+  const delayReload = (url : string, milliseconds : number) => {
+    setTimeout(() => {
+      window.location.href = url;
+    },milliseconds)
+  }
+
+  const handlePrevious = (e : FormEvent) => {
+    if (activeSection === 0) {
+      return;
+    }
+    setActiveSection((prev) => prev - 1);
+  }
+
+  const handleNext = async (e : FormEvent) => {
+    e.preventDefault()
+    let fieldKeys = Object.keys(getValues())
+
+    const fieldSchema = schemas[activeSection]
+    if(fieldSchema) {
+      fieldKeys = Object.keys(fieldSchema.shape)
+     
+    }
+
+
+    const isValid = await trigger(fieldKeys)
+      if(isValid){
+        setActiveSection((prev) => prev + 1)
+      }
+    } 
+
 
   if (!data) {
     return (
