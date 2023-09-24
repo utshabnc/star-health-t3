@@ -1,5 +1,12 @@
-import type { InputProps } from "../FormComponents/InputFieldProps.model";
+import { FieldValues, UseFormRegister, FieldErrors } from "react-hook-form"
+import {InputHTMLAttributes} from "react";
 
+
+export interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
+    register : UseFormRegister<FieldValues>;
+    errors   : FieldErrors< FieldValues>;
+    
+}
 
 const Section3 : React.FC<InputProps> = ({ register, errors}) => {
 
