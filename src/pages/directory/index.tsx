@@ -863,7 +863,23 @@ export default function Directory() {
     message: string,
   }>>([])
 
-  const schemas = [personalSchema, professionalInfo, addionalInfoSchema]
+  const router = useRouter()
+  const {
+    register , 
+    watch,
+    handleSubmit, 
+    getValues, 
+    trigger,
+    unregister,
+    formState : { errors }, 
+    reset
+  } = useForm({
+    resolver : zodResolver(signUpSchema),
+    mode : "onSubmit"
+  })
+
+  const {login} = router.query;
+
 
 
 
