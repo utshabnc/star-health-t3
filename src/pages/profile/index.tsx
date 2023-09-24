@@ -13,6 +13,7 @@ import { PayWall } from "../../components/PayWall/PayWall";
 import MentalHealthDiary from "../../components/MentalHealthDiary";
 import DrugJournal from "../../components/DrugJournal/DrugJournal";
 import ExerciseTracker from "../../components/ExerciseTracker/ExerciseTracker";
+import SignIn from "../../components/SignIn/SignIn";
 
 interface BookmarkInterface {
   id: number;
@@ -187,7 +188,7 @@ const ProfilePage: React.FC = () => {
   ) : (
     <div className="p-16">
       <div className="mb-4 flex items-center">
-        <PayWall />
+        <SignIn />
         {userPhoto && (
           <Image
             className="mr-4 rounded-full"
