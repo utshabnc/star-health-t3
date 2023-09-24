@@ -6,6 +6,7 @@ import DirectoryCards from "../../components/DirectoryCards";
 import Filters from "../../components/Filters";
 import { formatMoney } from "../../utils";
 import { trpc } from "../../utils/trpc";
+import { SignIn } from "../../components/SignIn/SignIn";
 import { toTitleCase } from "../../utils";
 
 import type { Observable } from "rxjs";
@@ -890,7 +891,7 @@ export default function Directory() {
 
   return (
     <>
-      <div className="min-h-screen rounded bg-white p-5 pb-44">
+      <div className="min-h-screen rounded bg-white p-5 pb-44 w-full h-full ">
         <div className="flex flex-row">
           <div>
             <button
@@ -913,7 +914,7 @@ export default function Directory() {
               </svg>
             </button>
           </div>
-          <div className="flex w-full flex-col justify-end px-8 pb-10">
+          <div className="flex w-full flex-col justify-end px-8 pb-10 ">
             <div className="wrap-opt flex justify-between">
               <div className="flex w-[60%] items-center gap-5">
                 <p className="flex text-2xl font-semibold text-violet-700">
@@ -1158,53 +1159,7 @@ export default function Directory() {
             <div className="my-1">
               <hr />
             </div>
-            {selectedTab === Tab.ClinicalTrials && (
-              <div className="relative">
-                <ClinicalTrialsFilters
-                  Gender={clinicalTrialGenderFilters}
-                  Acronym={clinicalTrialAcronymFilters}
-                  OfficialTitle={clinicalTrialOfficialTitleFilters}
-                  Condition={clinicalTrialConditionFilters}
-                  LocationState={clinicalTrialLocationStateFilters}
-                  LocationCity={clinicalTrialLocationCityFilters}
-                  LocationCountry={clinicalTrialLocationCountryFilters}
-                  CollaboratorName={clinicalTrialCollaboratorNameFilters}
-                  LeadSponsorName={clinicalTrialLeadSponsorNameFilters}
-                  OverallStatus={clinicalTrialOverallStatusFilters}
-                  LocationContactName={locationContactNameFilters}
-                  LocationFacility={locationFacilityFilters}
-                  InterventionName={interventionNameFilters}
-                  OnSearchExprChange={(expr: string) => {
-                    setClinicalTrialSearchExpr(expr);
-                  }}
-                />
-                <div className="my-1">
-                  <hr />
-                </div>
-                <p className="p-1 text-xs font-semibold text-violet-900">
-                  Search for clinical trials
-                </p>
-                <div className="flex w-[100%] items-center gap-3">
-                  <AutocompleteInput
-                    expr={clinicalTrialSearchKeywordExpr}
-                    setExpr={setClinicalTrialSearchKeywordExpr}
-                    options={returnNamesOfClincalNames(
-                      clinicalTrialsData.studies
-                        ? clinicalTrialsData.studies
-                        : [],
-                      "briefTitle"
-                    )}
-                  ></AutocompleteInput>
-                </div>
-                <Image
-                  src={clinicalTrials}
-                  alt=""
-                  width={128}
-                  height={128}
-                  className="absolute -bottom-10 right-0 object-contain"
-                />
-              </div>
-            )}
+          
             {selectedTab == Tab.Plans && (
               <div className="flex flex-col items-end">
                 <HealthPlansFilters
@@ -1285,7 +1240,63 @@ export default function Directory() {
                 />
               </div>
             )}
-
+          </div>
+        </div>
+        <div className=" relative flex flex-wrap h-[100%] w-full justify-center">
+       
+        {(location.hostname !== "localhost" && location.hostname !== "localhost") ?
+        <SignIn/> : ""}
+        
+        {selectedTab === Tab.ClinicalTrials && (
+              <div className=" ml-20 mb-16 ">
+               
+                <ClinicalTrialsFilters
+                  Gender={clinicalTrialGenderFilters}
+                  Acronym={clinicalTrialAcronymFilters}
+                  OfficialTitle={clinicalTrialOfficialTitleFilters}
+                  Condition={clinicalTrialConditionFilters}
+                  LocationState={clinicalTrialLocationStateFilters}
+                  LocationCity={clinicalTrialLocationCityFilters}
+                  LocationCountry={clinicalTrialLocationCountryFilters}
+                  CollaboratorName={clinicalTrialCollaboratorNameFilters}
+                  LeadSponsorName={clinicalTrialLeadSponsorNameFilters}
+                  OverallStatus={clinicalTrialOverallStatusFilters}
+                  LocationContactName={locationContactNameFilters}
+                  LocationFacility={locationFacilityFilters}
+                  InterventionName={interventionNameFilters}
+                  OnSearchExprChange={(expr: string) => {
+                    setClinicalTrialSearchExpr(expr);
+                  }}
+                />
+                <div className="my-1">
+                  <hr />
+                </div>
+                <p className="p-1 text-xs font-semibold text-violet-900">
+                  Search for clinical trials
+                </p>
+                <div className="flex w-[100%] items-center gap-3">
+                  <AutocompleteInput
+                    expr={clinicalTrialSearchKeywordExpr}
+                    setExpr={setClinicalTrialSearchKeywordExpr}
+                    options={returnNamesOfClincalNames(
+                      clinicalTrialsData.studies
+                        ? clinicalTrialsData.studies
+                        : [],
+                      "briefTitle"
+                    )}
+                  ></AutocompleteInput>
+                </div>
+                <Image
+                  src={clinicalTrials}
+                  alt=""
+                  width={128}
+                  height={128}
+                  className="absolute -bottom-10 right-0 object-contain"
+                />
+              </div>
+            )}
+          <div className=" w-full flex-col justify-end px-8 pb-10 ">
+            <div className="wrap-opt  justify-between">
             {selectedTab !== Tab.ClinicalTrials &&
               selectedTab !== Tab.Plans &&
               selectedTab !== Tab.Hospitals &&
@@ -1303,7 +1314,7 @@ export default function Directory() {
                   />
                   {"data" && (
                     <>
-                      <div className="relative">
+                      <div>
                         <p className="p-1 text-xs font-semibold text-violet-900">{`Search for
                             ${
                               filterParams.subject ===
@@ -1333,13 +1344,13 @@ export default function Directory() {
                           <div className="ml-5 flex flex-col items-center">
                             {filterParams.subject === "transactions" && (
                               <div className="mb-4 mt-5 w-80">
-                                <div className="slider relative h-1 rounded-md bg-violet-100">
+                                <div className="slider h-1 rounded-md bg-violet-100">
                                   <div
                                     ref={progressRef}
-                                    className="progress absolute h-2  rounded"
+                                    className="progress h-2  rounded"
                                   ></div>
                                 </div>
-                                <div className="range-input relative">
+                                <div className="range-input ">
                                   <input
                                     type="range"
                                     value={filterParams.price.min}
@@ -1349,7 +1360,7 @@ export default function Directory() {
                                     max={5000}
                                     name="price-range"
                                     id="price-range-low"
-                                    className="range-min pointer-events-none absolute -top-1 h-1 w-full cursor-pointer appearance-none bg-transparent accent-violet-500"
+                                    className="range-min pointer-events-none   -top-1 h-1 w-full cursor-pointer appearance-none bg-transparent accent-violet-500"
                                   />
                                   <input
                                     type="range"
@@ -1360,7 +1371,7 @@ export default function Directory() {
                                     max={5000}
                                     name="price-range"
                                     id="price-range-high"
-                                    className="range-max pointer-events-none absolute -top-1 h-1 w-full cursor-pointer appearance-none bg-transparent accent-violet-500"
+                                    className="range-max pointer-events-none  -top-1 h-1 w-full cursor-pointer appearance-none bg-transparent accent-violet-500"
                                   />
                                 </div>
                               </div>
@@ -1435,16 +1446,17 @@ export default function Directory() {
                           />
                         )}
                       </div>
-                    </>
+                    </> 
                   )}
                 </>
               )}
+           
+            </div>
           </div>
-        </div>
-        <div className="relative flex h-[100%] w-full justify-center">
-          <PayWall />
+            
 
-          <div className="ml-5 flex min-h-[100%] w-[95%] flex-col overflow-scroll p-1">
+          <div className="ml-20 flex min-h-[100%] w-[95%] flex-col overflow-scroll p-1"> 
+          
             {isApiProcessing && <LoadingStarHealth />}
             {selectedTab === Tab.ClinicalTrials && (
               <ClinicalTrialsComponent data={clinicalTrialsData} />
