@@ -74,10 +74,10 @@ import { FieldValues } from "react-hook-form"
 import FormSectionA from "../../components/SignIn/FormSection1";
 import FormSectionB from "../../components/SignIn/FormSection2";
 import FormSectionC from "../../components/SignIn/FormSection3";
-import { signUpSchema } from "../../components/SignIn/SignIn";
-import { personalSchema } from "../../components/SignIn/SignIn";
-import { professionalInfo } from "../../components/SignIn/SignIn";
-import { addionalInfoSchema } from "../../components/SignIn/SignIn";
+import { signUpSchema } from "../../env/schema.mjs";
+import { personalSchema } from "../../env/schema.mjs";
+import { professionalInfo } from "../../env/schema.mjs";
+import { addionalInfoSchema } from "../../env/schema.mjs";
 
 interface PriceFilter {
   min: number;
@@ -861,10 +861,7 @@ export default function Directory() {
   })
   const [customMessages,setCustomMessages]=useState<Array<{ 
     message: string,
-   
-  
   }>>([])
-  const schemas = [personalSchema, professionalInfo, addionalInfoSchema]
 
 
 

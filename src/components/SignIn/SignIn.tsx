@@ -9,60 +9,16 @@ import FormSectionA from "./FormSection1";
 import FormSectionB from "./FormSection2";
 import FormSectionC from "./FormSection3";
 import { FieldValues } from "react-hook-form"
-
 import {useRouter} from 'next/router'
+import { signUpSchema } from "../../env/schema.mjs";
+import { personalSchema } from "../../env/schema.mjs";
+import { professionalInfo } from "../../env/schema.mjs";
+import { addionalInfoSchema } from "../../env/schema.mjs";
 
 
-import { z } from 'zod'
 
 
 
-
-
-export const signUpSchema = z.object({
-  firstName : z.string().min(1,"First Name is required"),
-  lastName: z.string().min(1,"Last Name is required"),
-  dob: z.string().min(1,"Date of Birth is required"),
-  contactNumber: z.string().min(1,"Contact Number is required"),
-  address: z.string().min(1,"Address is required"),
-  profession: z.string().min(1,"Profession is required"),
-  company: z.string().optional(),
-  specialization: z.string().min(1, "Specialization is required"),
-  licenseNumber: z.string().min(1, "Licence Number is required"),
-  insuranceInformation: z.string().min(1, "Insurance Information is required"),
-  gender: z.string(),
-  medicalHistory: z.string().optional(),
-  educationalBackground: z.string().optional(),
-  linkedin: z.string().optional(),
-  twitter: z.string().optional(),
-  comments: z.string().optional(),
-})
-
-export const personalSchema = z.object({
-  firstName : z.string().min(1,"First Name is required"),
-  lastName: z.string().min(1,"Last Name is required"),
-  dob: z.string().min(1,"Date of Birth is required"),
-  contactNumber: z.string().min(1,"Contact Number is required"),
-  address: z.string().min(1,"Address is required"),
-  profession: z.string().min(1,"Profession is required"),
-  gender: z.string(),
-})
-
-export const professionalInfo = z.object({
-  company: z.string().optional(),
-  specialization: z.string().min(1, "Specialization is required"),
-  licenseNumber: z.string().min(1, "Licence Number is required"),
-  insuranceInformation: z.string().min(1, "Insurance Information is required"),
-  
-})
-
-export const addionalInfoSchema = z.object({
-  medicalHistory: z.string().optional(),
-  educationalBackground: z.string().optional(),
-  linkedin: z.string().optional(),
-  twitter: z.string().optional(),
-  comments: z.string().optional(),
-})
 
 
 
