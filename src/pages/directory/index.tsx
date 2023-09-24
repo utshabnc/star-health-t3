@@ -33,6 +33,7 @@ import {
 } from "../../components/ClinicalTrials/helpers";
 import { Tab } from "../../utils/Enums/Tab.enum";
 
+import { useSession } from "next-auth/react";
 import Image from "next/image";
 import clinicalTrials from "../../assets/logos/clinical-trials.png";
 import cms from "../../assets/logos/cms.png";
@@ -61,25 +62,9 @@ import type { Hospital } from "../../components/Hospitals/Hospital.model";
 import HospitalsComponent from "../../components/Hospitals/Hospitals";
 import HospitalsFilters from "../../components/Hospitals/HospitalsFilters";
 import LoadingStarHealth from "../../components/Loading";
+import { PayWall } from "../../components/PayWall/PayWall";
 import { id } from "date-fns/locale";
-
-
-import { useSession, signIn } from "next-auth/react";
-import React, {FormEvent} from "react";
-import GoogleSignInButton from "../../components/SignIn/GoogleSignIn";
-import EmailSignInButton from "../../components/SignIn/EmailSignIn";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { FieldValues } from "react-hook-form"
-import FormSectionA from "../../components/SignIn/FormSection1";
-import FormSectionB from "../../components/SignIn/FormSection2";
-import FormSectionC from "../../components/SignIn/FormSection3";
-import { signUpSchema } from "../../env/schema.mjs";
-import { personalSchema } from "../../env/schema.mjs";
-import { professionalInfo } from "../../env/schema.mjs";
-import { addionalInfoSchema } from "../../env/schema.mjs";
 import SignIn from "../../components/SignIn/SignIn";
-
 
 interface PriceFilter {
   min: number;
@@ -837,253 +822,6 @@ export default function Directory() {
     }
   }, [filterParams.price.min, filterParams.price.max]);
 
-
-
-  //Custom Sign In Logic
-  const {data : session, status , update} = useSession();
-  const [showEmailSignUp, setShowEmailSignUp] = useState<boolean>(false);
-  const [isEmailSent , setIsEmailSent] = useState<boolean>(false)
-  const [showLogin, setShowLogin] = useState<boolean>(false)
-  const [loginErrors, setLoginErrors] = useState<boolean>(false)
-  const [isSubmitting, setIsSubmitting] = useState<boolean>(false)
-  const [registerErrors, setRegisterErrors] = useState<boolean>(false)
-  const [activeSection, setActiveSection] = useState<number>(0);
-  const [progress, setProgress] = useState<number>(0);
-  const [emailSignIn, setEmailSignIn] = useState<Record<string , string>>({
-    customFirstName : '',
-    customLastName : '',
-    customEmail : '',
-    customPassword : '',
-    message : ''
-  })
-  const [emailLogin, setEmailLogin] = useState<Record<string , string>>({
-    loginEmail : '',
-    loginPassword : '',
-    message :'',
-  })
-  const [customMessages,setCustomMessages]=useState<Array<{ 
-    message: string,
-  }>>([])
-
-  const router = useRouter()
-  const {
-    register , 
-    watch,
-    handleSubmit, 
-    getValues, 
-    trigger,
-    unregister,
-    formState : { errors }, 
-    reset
-  } = useForm({
-    resolver : zodResolver(signUpSchema),
-    mode : "onSubmit"
-  })
-
-  const {login} = router.query;
-
-  const onSubmit =  async (data : FieldValues) => {
-
- 
-    try{
-      const response = await fetch("/api/update-auth/update-user-field",{
-        method : "POST",
-        headers : {
-          "Content-Type" : "application/json"
-        },
-        body : JSON.stringify({
-          userId :  session?.user?.id,
-          formData : data
-        })
-      })
-      if(!response.ok){
-        console.log("Registration couldn't be completed sucessfully")
-      }
-      else {
-
-        const newSession = {
-          ...session,
-          user: {
-            ...session?.user,
-            isRegistered: true
-          },
-        };
-    
-        await update(newSession);
-        
-      }
-    }
-    catch(error) {
-      console.log(error)
-    }
-  }
-
-
-
-  useEffect(() => {
-    setProgress((activeSection * 2) * 25)
-  }, [activeSection])
-
-  
-
-
-  const handleEmailSignUp = () => {
-    setShowEmailSignUp(true)
-  }
-
-  const handleshowLogin = () => {
-    setShowLogin(true)
-  }
- 
-
-
-
-   // Email Verification
-   const handleChange = (e : React.ChangeEvent<HTMLInputElement>) => {
-      e.preventDefault()
-      setEmailSignIn({
-        ...emailSignIn,
-        [e.target.name] : e.target.value
-      })
-   }
-
-   const handleEmailSubmitForm = async (e : FormEvent) => {
-    e.preventDefault()
-
-    try {
-     
-      setCustomMessages([])
-      setIsSubmitting(true)
-      const response = await fetch('/api/register/register', {
-        method : "POST",
-        headers : {
-          "Content-Type" : "application/json"
-        },
-        body : JSON.stringify({
-          firstName : emailSignIn.customFirstName,
-          lastName : emailSignIn.customLastName,
-          email : emailSignIn.customEmail,
-          password : emailSignIn.customPassword
-        })
-      })
-      if(!response.ok) {
-        setIsSubmitting(false)
-        const errorResponse = await response.json()
-        if(errorResponse.message){
-          const errorMessage = errorResponse.message
-          console.log(errorMessage)
-          setRegisterErrors(true)
-          setEmailSignIn({
-            ...emailSignIn,
-            message : errorMessage as string
-          })
-        }
-        else {
-          console.log(errorResponse.errors)
-          setCustomMessages(errorResponse.errors)
-        }
-        
-      }
-      else{
-      
-        setEmailSignIn({
-          ...emailSignIn,
-          message : 'Success'
-        })
-        setIsEmailSent(true)
-      }
-
-    }
-    catch(error : any) {
-      console.log('catch errors ',error)
-    }
-    finally {
-      setIsSubmitting(false)
-    }
-    
-  
-  }
-
-
-  // handle Email Login
-  const handleEmailLoginChange = (e : React.ChangeEvent<HTMLInputElement>) => {
-   setEmailLogin({
-    ...emailLogin,
-    [e.target.name] : e.target.value
-   })
-
-  }
-
-  const handleEmailLoginForm = async (e : FormEvent) => {
-    e.preventDefault()
-  
-    const result = await signIn('credentials',{
-      email : emailLogin.loginEmail,
-      password : emailLogin.loginPassword,
-      redirect : false
-    })
-
- 
-  
-    if(result) {
-      if (result.error) {
-        // Handle login error here
-        setEmailLogin({
-          ...emailLogin,
-          message : result.error as string,
-        })
-        setLoginErrors(true)
-      } else {
-        // If login is successful, the session will be updated automatically
-        setEmailLogin({
-          ...emailLogin,
-          message : 'Login Successful. You will now be redirected'
-        })
-        setLoginErrors(false)
-        delayReload('/directory',3000)
-      }
-    }
-  }
-  const delayReload = (url : string, milliseconds : number) => {
-    setTimeout(() => {
-      window.location.href = url;
-    },milliseconds)
-  }
-
-  const handlePrevious = (e : FormEvent) => {
-    if (activeSection === 0) {
-      return;
-    }
-    setActiveSection((prev) => prev - 1);
-  }
-
-  const handleNext = async (e : FormEvent) => {
-    e.preventDefault()
-    let fieldKeys = Object.keys(getValues())
-    if(activeSection === 0){
-      fieldKeys = Object.keys(personalSchema)
-    }
-    else if (activeSection === 1){
-      fieldKeys = Object.keys(professionalInfo)
-    }
-    else{
-      fieldKeys = Object.keys(addionalInfoSchema)
-
-    }
-
-    const isValid = await trigger(fieldKeys)
-    if(isValid){
-        setActiveSection((prev) => prev + 1)
-    }
-
-  }
-
-
-
-
-
-
-
   if (!data) {
     return (
       <>
@@ -1421,53 +1159,7 @@ export default function Directory() {
             <div className="my-1">
               <hr />
             </div>
-            {selectedTab === Tab.ClinicalTrials && (
-              <div className="relative">
-                <ClinicalTrialsFilters
-                  Gender={clinicalTrialGenderFilters}
-                  Acronym={clinicalTrialAcronymFilters}
-                  OfficialTitle={clinicalTrialOfficialTitleFilters}
-                  Condition={clinicalTrialConditionFilters}
-                  LocationState={clinicalTrialLocationStateFilters}
-                  LocationCity={clinicalTrialLocationCityFilters}
-                  LocationCountry={clinicalTrialLocationCountryFilters}
-                  CollaboratorName={clinicalTrialCollaboratorNameFilters}
-                  LeadSponsorName={clinicalTrialLeadSponsorNameFilters}
-                  OverallStatus={clinicalTrialOverallStatusFilters}
-                  LocationContactName={locationContactNameFilters}
-                  LocationFacility={locationFacilityFilters}
-                  InterventionName={interventionNameFilters}
-                  OnSearchExprChange={(expr: string) => {
-                    setClinicalTrialSearchExpr(expr);
-                  }}
-                />
-                <div className="my-1">
-                  <hr />
-                </div>
-                <p className="p-1 text-xs font-semibold text-violet-900">
-                  Search for clinical trials
-                </p>
-                <div className="flex w-[100%] items-center gap-3">
-                  <AutocompleteInput
-                    expr={clinicalTrialSearchKeywordExpr}
-                    setExpr={setClinicalTrialSearchKeywordExpr}
-                    options={returnNamesOfClincalNames(
-                      clinicalTrialsData.studies
-                        ? clinicalTrialsData.studies
-                        : [],
-                      "briefTitle"
-                    )}
-                  ></AutocompleteInput>
-                </div>
-                <Image
-                  src={clinicalTrials}
-                  alt=""
-                  width={128}
-                  height={128}
-                  className="absolute -bottom-10 right-0 object-contain"
-                />
-              </div>
-            )}
+            
             {selectedTab == Tab.Plans && (
               <div className="flex flex-col items-end">
                 <HealthPlansFilters
@@ -1549,7 +1241,63 @@ export default function Directory() {
               </div>
             )}
 
-            {selectedTab !== Tab.ClinicalTrials &&
+           
+          </div>
+        </div>
+        <div className="relative flex flex-wrap h-[100%] w-full justify-center">
+        {(location.hostname !== "localhost") ?
+        <SignIn/> : ""}
+
+
+          {selectedTab === Tab.ClinicalTrials && (
+              <div>
+                <ClinicalTrialsFilters
+                  Gender={clinicalTrialGenderFilters}
+                  Acronym={clinicalTrialAcronymFilters}
+                  OfficialTitle={clinicalTrialOfficialTitleFilters}
+                  Condition={clinicalTrialConditionFilters}
+                  LocationState={clinicalTrialLocationStateFilters}
+                  LocationCity={clinicalTrialLocationCityFilters}
+                  LocationCountry={clinicalTrialLocationCountryFilters}
+                  CollaboratorName={clinicalTrialCollaboratorNameFilters}
+                  LeadSponsorName={clinicalTrialLeadSponsorNameFilters}
+                  OverallStatus={clinicalTrialOverallStatusFilters}
+                  LocationContactName={locationContactNameFilters}
+                  LocationFacility={locationFacilityFilters}
+                  InterventionName={interventionNameFilters}
+                  OnSearchExprChange={(expr: string) => {
+                    setClinicalTrialSearchExpr(expr);
+                  }}
+                />
+                <div className="my-1">
+                  <hr />
+                </div>
+                <p className="p-1 text-xs font-semibold text-violet-900">
+                  Search for clinical trials
+                </p>
+                <div className="flex w-[100%] items-center gap-3">
+                  <AutocompleteInput
+                    expr={clinicalTrialSearchKeywordExpr}
+                    setExpr={setClinicalTrialSearchKeywordExpr}
+                    options={returnNamesOfClincalNames(
+                      clinicalTrialsData.studies
+                        ? clinicalTrialsData.studies
+                        : [],
+                      "briefTitle"
+                    )}
+                  ></AutocompleteInput>
+                </div>
+                <Image
+                  src={clinicalTrials}
+                  alt=""
+                  width={128}
+                  height={128}
+                  className="absolute -bottom-10 right-0 object-contain"
+                />
+              </div>
+            )}
+
+          {selectedTab !== Tab.ClinicalTrials &&
               selectedTab !== Tab.Plans &&
               selectedTab !== Tab.Hospitals &&
               selectedTab !== Tab.HospitalOwners &&
@@ -1566,7 +1314,7 @@ export default function Directory() {
                   />
                   {"data" && (
                     <>
-                      <div className="relative">
+                      <div>
                         <p className="p-1 text-xs font-semibold text-violet-900">{`Search for
                             ${
                               filterParams.subject ===
@@ -1596,13 +1344,13 @@ export default function Directory() {
                           <div className="ml-5 flex flex-col items-center">
                             {filterParams.subject === "transactions" && (
                               <div className="mb-4 mt-5 w-80">
-                                <div className="slider relative h-1 rounded-md bg-violet-100">
+                                <div className="slider  h-1 rounded-md bg-violet-100">
                                   <div
                                     ref={progressRef}
-                                    className="progress absolute h-2  rounded"
+                                    className="progress h-2  rounded"
                                   ></div>
                                 </div>
-                                <div className="range-input relative">
+                                <div className="range-input ">
                                   <input
                                     type="range"
                                     value={filterParams.price.min}
@@ -1702,10 +1450,6 @@ export default function Directory() {
                   )}
                 </>
               )}
-          </div>
-        </div>
-        <div className="relative flex h-[100%] w-full justify-center">
-          <SignIn/>
 
           <div className="ml-5 flex min-h-[100%] w-[95%] flex-col overflow-scroll p-1">
             {isApiProcessing && <LoadingStarHealth />}
