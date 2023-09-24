@@ -880,6 +880,181 @@ export default function Directory() {
 
   const {login} = router.query;
 
+  const onSubmit =  async (data : FieldValues) => {
+
+ 
+    try{
+      const response = await fetch("/api/update-auth/update-user-field",{
+        method : "POST",
+        headers : {
+          "Content-Type" : "application/json"
+        },
+        body : JSON.stringify({
+          userId :  session?.user?.id,
+          formData : data
+        })
+      })
+      if(!response.ok){
+        console.log("Registration couldn't be completed sucessfully")
+      }
+      else {
+
+        const newSession = {
+          ...session,
+          user: {
+            ...session?.user,
+            isRegistered: true
+          },
+        };
+    
+        await update(newSession);
+        
+      }
+    }
+    catch(error) {
+      console.log(error)
+    }
+  }
+
+
+
+  useEffect(() => {
+    setProgress((activeSection * 2) * 25)
+  }, [activeSection])
+
+  
+
+
+  const handleEmailSignUp = () => {
+    setShowEmailSignUp(true)
+  }
+
+  const handleshowLogin = () => {
+    setShowLogin(true)
+  }
+ 
+
+
+
+   // Email Verification
+   const handleChange = (e : React.ChangeEvent<HTMLInputElement>) => {
+      e.preventDefault()
+      setEmailSignIn({
+        ...emailSignIn,
+        [e.target.name] : e.target.value
+      })
+   }
+
+   const handleEmailSubmitForm = async (e : FormEvent) => {
+    e.preventDefault()
+
+    try {
+     
+      setCustomMessages([])
+      setIsSubmitting(true)
+      const response = await fetch('/api/register/register', {
+        method : "POST",
+        headers : {
+          "Content-Type" : "application/json"
+        },
+        body : JSON.stringify({
+          firstName : emailSignIn.customFirstName,
+          lastName : emailSignIn.customLastName,
+          email : emailSignIn.customEmail,
+          password : emailSignIn.customPassword
+        })
+      })
+      if(!response.ok) {
+        setIsSubmitting(false)
+        const errorResponse = await response.json()
+        if(errorResponse.message){
+          const errorMessage = errorResponse.message
+          console.log(errorMessage)
+          setRegisterErrors(true)
+          setEmailSignIn({
+            ...emailSignIn,
+            message : errorMessage as string
+          })
+        }
+        else {
+          console.log(errorResponse.errors)
+          setCustomMessages(errorResponse.errors)
+        }
+        
+      }
+      else{
+      
+        setEmailSignIn({
+          ...emailSignIn,
+          message : 'Success'
+        })
+        setIsEmailSent(true)
+      }
+
+    }
+    catch(error : any) {
+      console.log('catch errors ',error)
+    }
+    finally {
+      setIsSubmitting(false)
+    }
+    
+  
+  }
+
+
+  // handle Email Login
+  const handleEmailLoginChange = (e : React.ChangeEvent<HTMLInputElement>) => {
+   setEmailLogin({
+    ...emailLogin,
+    [e.target.name] : e.target.value
+   })
+
+  }
+
+  const handleEmailLoginForm = async (e : FormEvent) => {
+    e.preventDefault()
+  
+    const result = await signIn('credentials',{
+      email : emailLogin.loginEmail,
+      password : emailLogin.loginPassword,
+      redirect : false
+    })
+
+ 
+  
+    if(result) {
+      if (result.error) {
+        // Handle login error here
+        setEmailLogin({
+          ...emailLogin,
+          message : result.error as string,
+        })
+        setLoginErrors(true)
+      } else {
+        // If login is successful, the session will be updated automatically
+        setEmailLogin({
+          ...emailLogin,
+          message : 'Login Successful. You will now be redirected'
+        })
+        setLoginErrors(false)
+        delayReload('/directory',3000)
+      }
+    }
+  }
+  const delayReload = (url : string, milliseconds : number) => {
+    setTimeout(() => {
+      window.location.href = url;
+    },milliseconds)
+  }
+
+  const handlePrevious = (e : FormEvent) => {
+    if (activeSection === 0) {
+      return;
+    }
+    setActiveSection((prev) => prev - 1);
+  }
+
 
 
 
