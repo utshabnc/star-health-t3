@@ -9,7 +9,7 @@ export interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
     errors   : FieldErrors< FieldValues>;
     
 }
-const Section2 : React.FC<InputProps> = ({ register, errors  }) => {
+const FormSectionB : React.FC<InputProps> = ({ register, errors  }) => {
     return (
     <>
       
@@ -90,5 +90,5 @@ const Section2 : React.FC<InputProps> = ({ register, errors  }) => {
     )
 };
   
-export default Section2;
+export default FormSectionB;
   
