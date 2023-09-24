@@ -638,7 +638,7 @@ export const SignIn = () => {
                 </div>
               </div>
             </div>
-            {/* Sign in block */} 
+            {/* Sign in block */}
           </div>
         </>)}
       </div>
