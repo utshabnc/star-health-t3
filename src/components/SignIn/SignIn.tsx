@@ -70,7 +70,7 @@ type ValidationSchema = z.infer<typeof signUpSchema>
 
 
 
-const SignIn = () => {
+export default function SignInFlow  () {
   const {data : session, status , update} = useSession();
   const [showEmailSignUp, setShowEmailSignUp] = useState<boolean>(false);
   const [isEmailSent , setIsEmailSent] = useState<boolean>(false)
@@ -192,7 +192,7 @@ const SignIn = () => {
      
       setCustomMessages([])
       setIsSubmitting(true)
-      const response = await fetch('/api/auth/register', {
+      const response = await fetch('/api/register/register', {
         method : "POST",
         headers : {
           "Content-Type" : "application/json"
@@ -648,4 +648,3 @@ const SignIn = () => {
     );  
 };
 
-export default SignIn
