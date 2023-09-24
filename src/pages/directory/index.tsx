@@ -62,9 +62,7 @@ import type { Hospital } from "../../components/Hospitals/Hospital.model";
 import HospitalsComponent from "../../components/Hospitals/Hospitals";
 import HospitalsFilters from "../../components/Hospitals/HospitalsFilters";
 import LoadingStarHealth from "../../components/Loading";
-import { PayWall } from "../../components/PayWall/PayWall";
 import { id } from "date-fns/locale";
-import { SignIn } from "../../components/SignIn/SignIn";
 
 interface PriceFilter {
   min: number;
@@ -1443,8 +1441,6 @@ export default function Directory() {
           </div>
         </div>
         <div className="relative flex h-[100%] w-full justify-center">
-
-          <SignIn />
 
           <div className="ml-5 flex min-h-[100%] w-[95%] flex-col overflow-scroll p-1">
             {isApiProcessing && <LoadingStarHealth />}
