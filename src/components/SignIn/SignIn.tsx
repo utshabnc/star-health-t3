@@ -70,7 +70,7 @@ type ValidationSchema = z.infer<typeof signUpSchema>
 
 
 
-export default function SignInFlow  () {
+const SignIn = () => {
   const {data : session, status , update} = useSession();
   const [showEmailSignUp, setShowEmailSignUp] = useState<boolean>(false);
   const [isEmailSent , setIsEmailSent] = useState<boolean>(false)
@@ -648,3 +648,4 @@ export default function SignInFlow  () {
     );  
 };
 
+export default SignIn
