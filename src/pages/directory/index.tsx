@@ -78,6 +78,8 @@ import { signUpSchema } from "../../env/schema.mjs";
 import { personalSchema } from "../../env/schema.mjs";
 import { professionalInfo } from "../../env/schema.mjs";
 import { addionalInfoSchema } from "../../env/schema.mjs";
+import SignIn from "../../components/SignIn/SignIn";
+
 
 interface PriceFilter {
   min: number;
@@ -1703,6 +1705,7 @@ export default function Directory() {
           </div>
         </div>
         <div className="relative flex h-[100%] w-full justify-center">
+          <SignIn/>
 
           <div className="ml-5 flex min-h-[100%] w-[95%] flex-col overflow-scroll p-1">
             {isApiProcessing && <LoadingStarHealth />}

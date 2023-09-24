@@ -52,7 +52,6 @@ const SignIn = () => {
    
   
   }>>([])
-  const schemas = [personalSchema, professionalInfo, addionalInfoSchema]
 
 
   const router = useRouter()
@@ -251,19 +250,22 @@ const SignIn = () => {
   const handleNext = async (e : FormEvent) => {
     e.preventDefault()
     let fieldKeys = Object.keys(getValues())
+    if(activeSection === 0){
+      fieldKeys = Object.keys(personalSchema)
+    }
+    else if (activeSection === 1){
+      fieldKeys = Object.keys(professionalInfo)
+    }
+    else{
+      fieldKeys = Object.keys(addionalInfoSchema)
 
-    const fieldSchema = schemas[activeSection]
-    if(fieldSchema) {
-      fieldKeys = Object.keys(fieldSchema.shape)
-     
     }
 
-
     const isValid = await trigger(fieldKeys)
-      if(isValid){
+    if(isValid){
         setActiveSection((prev) => prev + 1)
-      }
-    } 
+    }
+  } 
 
   
 
