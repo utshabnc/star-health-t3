@@ -1245,8 +1245,8 @@ export default function Directory() {
           </div>
         </div>
         <div className="relative flex flex-wrap h-[100%] w-full justify-center">
-        {(location.hostname !== "localhost") ?
-        <SignIn/> : ""}
+        {/**{(location.hostname !== "localhost") ?
+        <SignIn/> : ""}**/}
 
 
           {selectedTab === Tab.ClinicalTrials && (
