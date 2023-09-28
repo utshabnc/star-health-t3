@@ -13,8 +13,6 @@ import { PayWall } from "../../components/PayWall/PayWall";
 import MentalHealthDiary from "../../components/MentalHealthDiary";
 import DrugJournal from "../../components/DrugJournal/DrugJournal";
 import ExerciseTracker from "../../components/ExerciseTracker/ExerciseTracker";
-import SignIn from "../../components/SignIn/SignIn";
-
 
 interface BookmarkInterface {
   id: number;
@@ -189,7 +187,7 @@ const ProfilePage: React.FC = () => {
   ) : (
     <div className="p-16">
       <div className="mb-4 flex items-center">
-        {/* <SignIn /> */}
+        <PayWall />
         {userPhoto && (
           <Image
             className="mr-4 rounded-full"
@@ -206,8 +204,9 @@ const ProfilePage: React.FC = () => {
       </div>
       <hr className="my-4" />
       <div className="mb-4 flex space-x-4">
-<button className="relative ml-2 mr-2 flex w-full flex-col items-center rounded-[6px] rounded-md border-[1.5px] border-bordercolor bg-white px-6 py-8 shadow-md  h-[17.188rem] 
-                p-1 sm:w-[27%] sm:p-3 md:w-[25.5%] xl:w-[21%] "        
+        <button
+          className={`rounded} bg-blue-500 px-4 py-2 text-white hover:bg-blue-600`}
+          onClick={handleFormToggle}
           disabled={
             showForm &&
             !showBookmark &&
@@ -223,12 +222,11 @@ const ProfilePage: React.FC = () => {
             backgroundColor: !showForm ? "white" : "#885CF6",
             border: !showForm ? "1px solid #885CF6" : "node",
           }}
-            onClick={handleFormToggle}
         >
           Patient Intake Form
         </button>
         <button
-          className='relative  w-[10rem] ml-2 mr-2 h-1/2 flex w-full flex-col items-center rounded-[6px] rounded-md border-[1.5px] border-bordercolor bg-white px-6 py-8 shadow-md'
+          className={`} rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600`}
           onClick={handleBookmarkToggle}
           disabled={
             showBookmark &&
@@ -249,7 +247,7 @@ const ProfilePage: React.FC = () => {
           Bookmarks
         </button>
         <button
-          className='relative  w-[10rem] ml-2 mr-2 h-1/2 flex w-full flex-col items-center rounded-[6px] rounded-md border-[1.5px] border-bordercolor bg-white px-6 py-8 shadow-md'
+          className={`} rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600`}
           onClick={handleCompareToggle}
           disabled={
             showCompare &&
@@ -270,7 +268,7 @@ const ProfilePage: React.FC = () => {
           Comparison Tool
         </button>
         <button
-          className='relative  w-[10rem] ml-2 mr-2 h-1/2 flex w-full flex-col items-center rounded-[6px] rounded-md border-[1.5px] border-bordercolor bg-white px-6 py-8 shadow-md'
+          className={`} rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600`}
           onClick={handleFoodJournalToggle}
           disabled={
             showFoodJournal &&
@@ -291,7 +289,7 @@ const ProfilePage: React.FC = () => {
           Food Journal
         </button>
         <button
-          className='relative  w-[10rem] ml-2 mr-2 h-1/2 flex w-full flex-col items-center rounded-[6px] rounded-md border-[1.5px] border-bordercolor bg-white px-6 py-8 shadow-md'
+          className={`} rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600`}
           onClick={handleSubstanceTrackerToggle}
           disabled={
             !showFoodJournal &&
