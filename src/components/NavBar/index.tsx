@@ -112,7 +112,7 @@ function NavBar() {
                 <p
                   className={`text-white   ${!session == null && "opacity-0"} `}
                 >
-                  {/* Signed in as {session?.data?.user?.email} */}
+                  Signed in as {session?.data?.user?.email}
                 </p>
               )}
 
