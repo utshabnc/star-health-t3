@@ -34,7 +34,7 @@ const FormSectionB : React.FC<InputProps> = ({ register, errors  }) => {
       <div className="w-full md:w-1/2 px-3">
         <div className="col">
           <label htmlFor="grid-specialization" className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">
-              Specialization
+          Job Title / Specialization
           </label>
           <input
               {...register("specialization")}
