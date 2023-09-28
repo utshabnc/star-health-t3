@@ -14,6 +14,8 @@ export default function ToolsFilter() {
 
     const [showNutritions, setShowNutritions] = useState(false);
     const [showRecipes, setShowRecipes] = useState(false);
+    const [showTableHead, setShowTableHead] = useState(false);
+    const [showAncestryTree, setShowAncestryTree] = useState(false);
 
     const navigate = useRouter();
     const toolName = navigate.query?.tab;
@@ -22,8 +24,9 @@ export default function ToolsFilter() {
     useEffect(() => {
         if (!!toolName) {
             setTool(toolName as string);
-            setShowNutritions(false);
-            setShowRecipes(false);
+            setShowNutritions(!showNutritions);
+            setShowRecipes(!showRecipes);
+            setShowTableHead(false);
         }
 
     }, [toolName, setTool, setShowNutritions, setShowRecipes]);
@@ -36,6 +39,12 @@ export default function ToolsFilter() {
     },
     {
         label: "Recipes",
+        img: recipesimg,
+        route: '/tools',
+        linkparam: 'recipe'
+    },
+    {
+        label: "Ancestry Tree",
         img: recipesimg,
         route: '/tools',
         linkparam: 'recipe'
@@ -90,6 +99,7 @@ export default function ToolsFilter() {
                 <button
                     className="mx-1 cursor-pointer rounded-lg border border-violet-900 bg-transparent p-1 text-sm text-slate-900 placeholder:text-violet-800 hover:bg-violet-300 hover:text-violet-900"
                     onClick={async () => {
+                        setShowTableHead(true);
                         const recipeFoodText = (document.getElementById('recipeInput') as HTMLInputElement).value;
                         try {
                             const response = await fetch(`/api/tools/getRecipe?recipe=${encodeURIComponent(recipeFoodText)}`);
@@ -137,7 +147,7 @@ export default function ToolsFilter() {
     };
 
     const NutritionTableHead = () => {
-        if (!showNutritions) {
+        if (!showTableHead) {
             return null;
         }
         const texts = ['Name',
@@ -171,7 +181,7 @@ export default function ToolsFilter() {
     }
 
     const RecipeTableHead = () => {
-        if (!showRecipes) {
+        if (!showTableHead) {
             return null;
         }
         const texts = ['Title',
