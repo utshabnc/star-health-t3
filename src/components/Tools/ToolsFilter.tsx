@@ -45,7 +45,6 @@ export default function ToolsFilter() {
       const [categories, setCategories] = useState<Category[]>([]);
     const [bookmarks, setBookmarks] = useState<BookmarkInterface[]>([]);
     const [selectedCategory, setSelectedCategory] = useState("");
-    const removeBookmark = trpc.db.removeBookmarkById.useMutation();
     const [selectedFilter, setSelectedFilter] = useState<string>(() => {
     if (typeof localStorage !== "undefined") {
       // Retrieve the selected category from local storage or set a default value
@@ -53,12 +52,14 @@ export default function ToolsFilter() {
     } else {
       return "Clinical Trials";
     }
-  });
+    });
+const removeBookmark = trpc.db.removeBookmarkById.useMutation();
   const { data: allCategories } = trpc.db.allCategories.useQuery();
   const { data: allBookmarks, refetch } = trpc.db.bookmarks.useQuery({
     categoryId: parseInt(selectedFilter),
     userId: (session?.user?.id as string) || "",
   });
+    
     useEffect(() => {
     if (allBookmarks) {
       setBookmarks(allBookmarks);
@@ -88,7 +89,13 @@ export default function ToolsFilter() {
         refetch();
       });
   };
-
+    
+  useEffect(() => {
+    if (typeof localStorage !== "undefined") {
+      // Update local storage when the selected category changes
+      localStorage.setItem("selectedCategory", selectedFilter);
+    }
+  }, [selectedFilter]);
      const ref = useRef<HTMLDivElement>(null)
     const [tool, setTool] = useState<string>("");
 

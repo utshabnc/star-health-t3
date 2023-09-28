@@ -23,7 +23,7 @@ const ToolsTab = ({
   textSize?: string;
   itemTextSpacing?: boolean;
   }) => {
-  items = items.sort((a, b) => { return a.label[0].localeCompare(b.label[0]) });
+  // items = items.sort((a, b) => { return a.label[0].localeCompare(b.label[0]) });
   return (
     <div
       className={`flex flex-col py-4 pb-24 ${
