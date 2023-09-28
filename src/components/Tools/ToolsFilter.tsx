@@ -124,68 +124,68 @@ const removeBookmark = trpc.db.removeBookmarkById.useMutation();
     }, [toolName, setTool, setShowNutritions, setShowRecipes]);
 
 
-    const features = [{
-        label: "Text 2 Nutrients",
-        img: text2nutrients,
-        route: '/tools',
-        linkparam: 'text_input'
-    },
-    {
-        label: "Recipes",
-        img: recipesimg,
-        route: '/tools',
-        linkparam: 'recipe'
-        },
-    {
-        label: "Comparison Tool",
-        img: comparisonImg,
-        route: '/tools',
-        linkparam: 'comparison'
-        },
-
-    {
-        label: "Mental Health Diary",
-        img: mentalHealthImg,
-        route: '/tools',
-        linkparam: 'mental_health_diary'
-        },
-    {
-        label: "Drug Journal",
-        img: drugjournalImg,
-        route: '/tools',
-        linkparam: 'drug_journal'
-        },
-    {
-        label: "Exercise Tracker",
-        img: exerciseTrackerImg,
-        route: '/tools',
-        linkparam: 'exercise_tracker'
-        },
-    {
-        label: "Patient Intake Form",
-        img: patientIntakeImg,
-        route: '/tools',
-        linkparam: 'patient_intake_form'
-        },
-    {
-        label: "Food Journal",
-        img: foodJournalImg,
-        route: '/tools',
-        linkparam: 'food_journal'
-        },
-    {
-        label: "Substance Tracker",
-        img: substanceAbuseImg,
-        route: '/tools',
-        linkparam: 'substance_tracker'
-        },
-    {
-        label: "Bookmarks",
-        img: bookmarkImg,
-        route: '/tools',
-        linkparam: 'bookmark'
-        },
-    ];
+    const features = [
+  {
+    label: "Bookmarks",
+    img: bookmarkImg,
+    route: '/tools',
+    linkparam: 'bookmark',
+  },
+  {
+    label: "Comparison Tool",
+    img: comparisonImg,
+    route: '/tools',
+    linkparam: 'comparison',
+  },
+  {
+    label: "Drug Journal",
+    img: drugjournalImg,
+    route: '/tools',
+    linkparam: 'drug_journal',
+  },
+  {
+    label: "Exercise Tracker",
+    img: exerciseTrackerImg,
+    route: '/tools',
+    linkparam: 'exercise_tracker',
+  },
+  {
+    label: "Food Journal",
+    img: foodJournalImg,
+    route: '/tools',
+    linkparam: 'food_journal',
+  },
+  {
+    label: "Mental Health Diary",
+    img: mentalHealthImg,
+    route: '/tools',
+    linkparam: 'mental_health_diary',
+  },
+  {
+    label: "Patient Intake Form",
+    img: patientIntakeImg,
+    route: '/tools',
+    linkparam: 'patient_intake_form',
+  },
+  {
+    label: "Recipes",
+    img: recipesimg,
+    route: '/tools',
+    linkparam: 'recipe',
+  },
+  {
+    label: "Substance Tracker",
+    img: substanceAbuseImg,
+    route: '/tools',
+    linkparam: 'substance_tracker',
+  },
+  {
+    label: "Text 2 Nutrients",
+    img: text2nutrients,
+    route: '/tools',
+    linkparam: 'text_input',
+  },
+];
 
     const NutritioinTextInput = () => {
         return (
