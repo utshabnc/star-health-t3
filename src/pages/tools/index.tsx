@@ -1,5 +1,4 @@
 import ToolsFilter from "../../components/Tools/ToolsFilter";
-import ProfilePage from "../profile";
 
 const Tools = () => {
   return (

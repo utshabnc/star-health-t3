@@ -148,23 +148,29 @@ const Graphs = () => {
             id="diseaseFilterContainer"
             style={{ display: `${selectedTab === Tab.DiseasesAndGenetics ? 'block' : 'none'}` }}
             onClick={() => console.log('clicked')}
-            className=""
+            className="space-y-1 p-3 relative"
           >
-            <div className="w-full m-4 space-x-3 border border-gray-300 p-2 rounded-md space-y-1"
+              <h1 className="w-3/4 mx-auto">Disease Filter:</h1>   
+            <div className="w-full space-x-3 space-y-1 w-3/4"
            style={{ display: `${selectedTab === Tab.DiseasesAndGenetics ? 'block' : 'none'}` }}
             >
-              <div className="space-x-3 w-100 flex cursor-pointer"
+
+              <div className="space-x-3  flex cursor-pointer  w-3/4  mx-auto border border-gray-300  p-2 rounded-md"
                 onClick={() => {setToRender(!toRender)}}
               >
             <input
               placeholder="Search for a disease"
-              className="border border-gray-300 rounded-md px-4 py-2 5"
+              className="border border-gray-300 rounded-md px-4 py-2 5 w-11/12"
               value={input}
               onChange={(event) => { setInput(event.target.value);  handleSearch()}}
           />
+                <button className="tester1 bg-violet-400 px-3 py-1 text-white rounded hover:bg-violet-500 active:bg-violet-600"
+                  onClick={() => {setInput(''); setSearchedDiseases([])}}
+                >Clear</button>
             <button className="tester1 bg-violet-400 px-3 py-1 text-white rounded hover:bg-violet-500 active:bg-violet-600"
                 >Search</button>
-                {
+                <div className="w">
+{
                   !toRender ?
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6 ">
   <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
@@ -173,28 +179,13 @@ const Graphs = () => {
   <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 15.75l7.5-7.5 7.5 7.5" />
 </svg>
                 }
+                </div>
+                
               </div>
-
             </div>
-            <div className={`${searchedDiseases.length && toRender? `h-[10rem]` : `h-[0rem]`} overflow-y-auto border border-gray-300 rounded ml-0`}>
-              <ul className="">
-                              {
-                  searchedDiseases.length ? searchedDiseases.map((disease) => (
-                    <li key={disease.url._text} className=" p-1 hover:bg-[#0096fb] hover:text-white">
-                      <div className="flex">
-                      <input type="checkbox" className="p-2" value={disease.title._text}
-                      onChange={() => setFilteredDisease(disease.url._text)}
-                      />
-                      <p className="py-1 px-3">{disease.title._text}</p>
-                      </div>
-                      
-                    </li>
-                  )) : <li>No Results</li>
-                   }
-                    </ul> 
-              </div>
-            Disease Filter: 
-                <MultiSelect 
+            
+            <div className="w-3/4 mx-auto">
+                  <MultiSelect 
                   options={!searchedDiseases.length ? diseasesList.slice(1).map((disease) => ({
                     link: disease?.url?._text,
                     name: _.capitalize(disease?.title?._text),
@@ -209,9 +200,27 @@ const Graphs = () => {
                     const name = remItem.link.toString().split('/');
                     setRemovedDisease(name[name.length - 1])
                   }}
-                  placeholder="Select the Disease"
+                  placeholder="     Select the Disease"
               selectedValues={[]}
                 />
+            </div>
+            <div className={`${searchedDiseases.length && toRender? `h-[15rem]` : `hidden`} overflow-y-auto border border-gray-300  ml-0 w-[73.75%] rounded absolute left-[11rem]`}>
+              <ul className="px-2 w-100 rounded ">
+                              {
+                  searchedDiseases.length ? searchedDiseases.map((disease) => (
+                    <li key={disease.url._text} className="cursor-pointer p-2 w-100 hover:bg-[#0096fb] hover:text-white">
+                      <div className="flex">
+                      <input type="checkbox" className="p-2" value={disease.title._text}
+                      onChange={() => setFilteredDisease(disease.url._text)}
+                      />
+                      <p className="py-1 px-3">{disease.title._text}</p>
+                      </div>
+                      
+                    </li>
+                  )) : <li className="py-1 px-3" >No Results</li>
+                   }
+                    </ul> 
+              </div>
                 <div 
                   id="graphUpdateLoaderContainer"
                   style={{

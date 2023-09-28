@@ -51,7 +51,7 @@ const ToolsTab = ({
           >
             {item.img && (
               <>
-                {(  <a
+                {(  <div
                     onClick={() => {
                       if (item?.linkparam) {
                         localStorage.setItem(
@@ -85,12 +85,12 @@ const ToolsTab = ({
                         }}
                       />
                     </Link>
-                  </a>
+                  </div>
                 )}
               </>
             )}
             {(
-              <a
+              <div
                 onClick={() => {
                   if (item?.linkparam) {
                     localStorage.setItem(
@@ -113,7 +113,7 @@ const ToolsTab = ({
                     {/* <IoIosArrowDroprightCircle color="#0e1936" size={50} /> */}
                   </div>
                 </Link>
-              </a>)}
+              </div>)}
 
             {
               item.label && (

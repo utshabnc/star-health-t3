@@ -11,10 +11,75 @@ import ExerciseTracker from "../../components/ExerciseTracker/ExerciseTracker";
 import PatientIntakeForm from "../../components/PatientIntakeForm/PatientIntakeForm";
 import FoodJournal from "../../components/FoodJournal/FoodJournal";
 import SubstanceTracker from "../../components/SubstanceTracker/SubstanceTracker";
-
+import Bookmark from "../../components/Bookmark";
+import { useSession } from "next-auth/react";
+import { trpc } from "../../utils/trpc";
 import { useRouter } from "next/router";
+import Dropdown from "../../components/Dropdown";
+
+interface BookmarkInterface {
+  id: number;
+  title: string;
+  url: string;
+  notes: string | null;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+interface Category {
+  id: number;
+  name: string;
+}
 
 export default function ToolsFilter() {
+    const { data: session, status } = useSession();
+    const [showBookmark, setShowBookmark] = useState(false);
+      const [categories, setCategories] = useState<Category[]>([]);
+    const [bookmarks, setBookmarks] = useState<BookmarkInterface[]>([]);
+    const [selectedCategory, setSelectedCategory] = useState("");
+    const removeBookmark = trpc.db.removeBookmarkById.useMutation();
+    const [selectedFilter, setSelectedFilter] = useState<string>(() => {
+    if (typeof localStorage !== "undefined") {
+      // Retrieve the selected category from local storage or set a default value
+      return localStorage.getItem("selectedCategory") || "all";
+    } else {
+      return "Clinical Trials";
+    }
+  });
+  const { data: allCategories } = trpc.db.allCategories.useQuery();
+  const { data: allBookmarks, refetch } = trpc.db.bookmarks.useQuery({
+    categoryId: parseInt(selectedFilter),
+    userId: (session?.user?.id as string) || "",
+  });
+    useEffect(() => {
+    if (allBookmarks) {
+      setBookmarks(allBookmarks);
+    }
+  }, [allBookmarks]);
+
+  useEffect(() => {
+    if (allCategories) {
+      setCategories(allCategories);
+    }
+  }, [allCategories]);
+    
+    const handleFilterChange = (value: string | undefined) => {
+    if (value) {
+      refetch();
+      setSelectedFilter(value);
+      setSelectedCategory(value);
+    }
+  };
+
+  const handleDelete = (id: number) => {
+    removeBookmark
+      .mutateAsync({
+        bookmarkId: id,
+      })
+      .then(() => {
+        refetch();
+      });
+  };
 
      const ref = useRef<HTMLDivElement>(null)
     const [tool, setTool] = useState<string>("");
@@ -24,6 +89,8 @@ export default function ToolsFilter() {
 
     const [showNutritions, setShowNutritions] = useState(false);
     const [showRecipes, setShowRecipes] = useState(false);
+
+    const [renderRef, setRenderRef] = useState(false);
 
     const navigate = useRouter();
     const toolName = navigate.query?.tab;
@@ -91,10 +158,16 @@ export default function ToolsFilter() {
         linkparam: 'food_journal'
         },
     {
-        label: "Substance Tracke",
+        label: "Substance Tracker",
         img: recipesimg,
         route: '/tools',
         linkparam: 'substance_tracker'
+        },
+    {
+        label: "Bookmarks",
+        img: recipesimg,
+        route: '/tools',
+        linkparam: 'bookmark'
         },
     ];
 
@@ -325,6 +398,9 @@ export default function ToolsFilter() {
     };
 
     const renderComponent = () => {
+        if (tool && !renderRef) {
+            setRenderRef(true)
+        }
         switch (tool) {
             case 'text_input':
                 return <NutritioinTextInput />;
@@ -351,6 +427,41 @@ export default function ToolsFilter() {
                 break;
             case 'substance_tracker':
                 return <SubstanceTracker />;
+                break;
+            case 'bookmark':
+                return <div className="w-1/2 mx-auto p-5">
+                    <div className="w-1/2 mx-auto">
+                    <h1 className="text-left">Bookmarks:</h1>
+                    <Dropdown
+            items={categories.map((category) => ({
+              value: category.id.toString(),
+              label: category.name,
+            }))}
+            onChange={handleFilterChange}
+            label={"Category"}
+            placeholder={"-"}
+            value={selectedFilter}
+                    /> 
+                    {
+                bookmarks.length > 0 ? (
+            bookmarks.map((bookmark) => (
+              <div className="mb-3" key={bookmark.id}>
+                <Bookmark
+                  createdAt={bookmark.createdAt}
+                  id={bookmark.id}
+                  notes={bookmark.notes || undefined}
+                  title={bookmark.title}
+                  url={bookmark.url}
+                  onDelete={handleDelete}
+                />
+              </div>
+            ))
+          ) : (
+            <p className="text-left text-xs font-bold">Select an option from the dropdown to start comparing</p>
+          )
+                    }
+                </div>
+                    </div>
                 break;
             default:
                 return null;
@@ -386,7 +497,7 @@ export default function ToolsFilter() {
                     </div>
                 </div>
 
-                <div ref={ref} className="tools-container text-center border "
+                <div ref={ref} className={`tools-container text-center border ${!renderRef ? 'hidden' : null}`}
                 >
                     {renderComponent()}
                     <div className="relative flex h-[100%] w-full justify-center">
