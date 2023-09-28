@@ -196,11 +196,11 @@ const SearchPage = ({setSearchVar, buttonPlaceholder, buttonSmall }: Props) => {
       <input
         type="text"
         placeholder={
-          buttonPlaceholder ?? "Search the StarHealth Database"
+           "Search the StarHealth Database"
         }
         className={`
               ${buttonSmall ? "max-w-[160px]" : ""}
-							 mx-20 h-[8rem] w-[65rem] rounded-full px-[8rem] text-[2.5rem] lg:h-[2.488rem] lg:w-[390px] lg:px-[2.2rem] lg:text-base
+							 mx-20 z-10  text-gray-300 rounded-full px-[8rem] md:text-sm  md:w-[1rem] text-[2.5rem]  md:h-[2.488rem] lg:w-[20rem] lg:px-[2.2rem] lg:text-base
                `}
         value={search}
         onChange={(e) => {setSearch(e.target.value);setSearchVar(e.target.value)} }
