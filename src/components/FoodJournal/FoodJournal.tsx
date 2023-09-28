@@ -25,7 +25,7 @@ const Modal = ({
 
   return (
     <div className={showHideClassName}>
-      <section className='modal-main rounded-lg '>
+      <section className='modal-main rounded-lg'>
         {children}
       </section>
     </div>

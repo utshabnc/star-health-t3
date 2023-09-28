@@ -4,9 +4,19 @@ import { catchError, finalize } from "rxjs";
 import text2nutrients from "../../assets/logos/text2nutrients.png";
 import recipesimg from "../../assets/logos/recipes.png";
 import ToolsTab from "./ToolsTab";
+import Compare from "../../components/Compare";
+import MentalHealthDiary from "../../components/MentalHealthDiary";
+import DrugJournal from "../../components/DrugJournal/DrugJournal";
+import ExerciseTracker from "../../components/ExerciseTracker/ExerciseTracker";
+import PatientIntakeForm from "../../components/PatientIntakeForm/PatientIntakeForm";
+import FoodJournal from "../../components/FoodJournal/FoodJournal";
+import SubstanceTracker from "../../components/SubstanceTracker/SubstanceTracker";
+
 import { useRouter } from "next/router";
 
 export default function ToolsFilter() {
+
+     const ref = useRef<HTMLDivElement>(null)
     const [tool, setTool] = useState<string>("");
 
     const [tableHtml, setTableHtml] = useState<string>("");
@@ -25,8 +35,12 @@ export default function ToolsFilter() {
             setShowNutritions(false);
             setShowRecipes(false);
         }
+        if (ref.current) {
+             ref.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
 
     }, [toolName, setTool, setShowNutritions, setShowRecipes]);
+
 
     const features = [{
         label: "Text 2 Nutrients",
@@ -39,12 +53,54 @@ export default function ToolsFilter() {
         img: recipesimg,
         route: '/tools',
         linkparam: 'recipe'
-    }
+        },
+    {
+        label: "Comparison Tool",
+        img: recipesimg,
+        route: '/tools',
+        linkparam: 'comparison'
+        },
+    {
+        label: "Mental Health Diary",
+        img: recipesimg,
+        route: '/tools',
+        linkparam: 'mental_health_diary'
+        },
+    {
+        label: "Drug Journal",
+        img: recipesimg,
+        route: '/tools',
+        linkparam: 'drug_journal'
+        },
+    {
+        label: "Exercise Tracker",
+        img: recipesimg,
+        route: '/tools',
+        linkparam: 'exercise_tracker'
+        },
+    {
+        label: "Patient Intake Form",
+        img: recipesimg,
+        route: '/tools',
+        linkparam: 'patient_intake_form'
+        },
+    {
+        label: "Food Journal",
+        img: recipesimg,
+        route: '/tools',
+        linkparam: 'food_journal'
+        },
+    {
+        label: "Substance Tracke",
+        img: recipesimg,
+        route: '/tools',
+        linkparam: 'substance_tracker'
+        },
     ];
 
     const NutritioinTextInput = () => {
         return (
-            <div>
+            <div className="">
                 <input
                     type="text"
                     placeholder="Type in food eaten..."
@@ -272,8 +328,30 @@ export default function ToolsFilter() {
         switch (tool) {
             case 'text_input':
                 return <NutritioinTextInput />;
+                break;
             case 'recipe':
                 return <Recipe />;
+            case 'comparison':
+                return <Compare />;
+                break;
+            case 'mental_health_diary':
+                return <MentalHealthDiary />;
+                break;
+            case 'drug_journal':
+                return <DrugJournal  />;
+                break;
+            case 'exercise_tracker':
+                return <ExerciseTracker />;
+                break;
+            case 'patient_intake_form':
+                return <PatientIntakeForm  />;
+                break;
+            case 'food_journal':
+                return <FoodJournal />;
+                break;
+            case 'substance_tracker':
+                return <SubstanceTracker />;
+                break;
             default:
                 return null;
         }
@@ -294,8 +372,10 @@ export default function ToolsFilter() {
         <>
             <div className="w-full">
                 <div>
+                     <h1 className="text-4xl border-b border-black">Tools</h1>
                     <div className="filters flex w-full items-center">
-                        <div className="wrap-filters flex w-full items-center py-2">
+                        <div className="wrap-filters flex w-full items-center py-2"
+                        >
                             <ToolsTab
                                 items={features}
                                 textColor="font-custom"
@@ -306,7 +386,8 @@ export default function ToolsFilter() {
                     </div>
                 </div>
 
-                <div className="tools-container text-center">
+                <div ref={ref} className="tools-container text-center border "
+                >
                     {renderComponent()}
                     <div className="relative flex h-[100%] w-full justify-center">
                         {renderResult()}

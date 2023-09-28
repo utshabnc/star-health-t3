@@ -8,7 +8,7 @@ const ToolsTab = ({
   boxStyle,
   itemTextSpacing = false,
   textColor,
-  textSize = "sm:text-5xl"
+  textSize = "sm:text-5xl",
 }: {
   items: {
     label: string | string[];
@@ -39,11 +39,11 @@ const ToolsTab = ({
         </p>
       )}
 
-      <div className="mx-2 flex flex-row  justify-around gap-10 sm:mx-2">
+      <div className="w-3/4 flex mx-auto flex-wrap  gap-1">
         {items.map((item, i) => (
           // <div key={i} className='relative w-full gap-4 rounded-md bg-white px-6 py-12'>
           <div
-            className={`relative ml-2 mr-2 flex w-full flex-col items-center rounded-[6px] rounded-md border-[1.5px] border-bordercolor bg-white px-6 py-8 shadow-md ${
+            className={`relative m-5 space-y-5 flex w-full flex-col items-center rounded-[6px] rounded-md border-[1.5px] border-bordercolor bg-white px-6 py-8 shadow-md  h-full p-1 sm:w-[27%] sm:p-3 md:w-[25.5%] xl:w-[21%] ${
               boxStyle ? "" : "rounded-lg bg-[#0e1936] "
             } h-[10.8rem]
                 p-1 sm:w-[27%] sm:p-3 md:w-[25.5%] xl:w-[21%] hover:bg-gray-200`}
@@ -118,7 +118,7 @@ const ToolsTab = ({
             {
               item.label && (
                 <p
-                  className={`justify-center pb-10 text-center text-xs font-semibold capitalize lg:text-lg ${
+                  className={`justify-center py-5 text-center text-xs font-semibold capitalize lg:text-lg ${
                     "text-" + textColor ?? "text-violet-700"
                   }          ${itemTextSpacing && "mt-0"}`}
                 >

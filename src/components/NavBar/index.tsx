@@ -46,7 +46,7 @@ function NavBar() {
   return (
     <>
       <nav
-        className={`bg-nav relative h-full w-[100%] bg-[#010139] p-5 pb-14 pt-12 md:p-2`}
+        className={`bg-nav relative h-full w-[100%] bg-[#010139] sm:p-2`}
       >
         <div className="flex flex-1 items-center">
           <div className={`hidden md:block`}>
@@ -61,14 +61,14 @@ function NavBar() {
             </Link>
           </div>
           {/* Mobile */}
-          <div className={`md:hidden`}>
+          <div className={` md:hidden`}>
             <Link href={"/"}>
               <Image
                 src={"/favicon.ico"}
                 alt="logo"
-                className=""
-                width={140}
-                height={140}
+                className="h-full"
+                width={48}
+                height={75}
               />
             </Link>
           </div>
@@ -82,7 +82,7 @@ function NavBar() {
             <div className="absolute mr-[22rem]">
               <HiOutlineSearch size={21} />
             </div>
-            <div>
+            <div className="">
               <SearchPage setSearchVar={setSearch} />
             </div>
           </div>
@@ -102,7 +102,7 @@ function NavBar() {
               position: "absolute",
               right: "10px",
             }}
-            className={`flex flex-row items-center justify-end space-x-2 ${
+            className={`lg:flex flex flex-row items-center justify-end space-x-2 ${
               session?.status === "loading" && "opacity-0"
             }`}
           >
@@ -119,43 +119,43 @@ function NavBar() {
             {/* <Link href='/' className='w-30 lg:w-22 text-white font-custom font-medium hover:text-blue-600 rounded px-3 py-1'>Clients</Link> */}
             <Link
               href={"/directory"}
-              className="w-30 md:w-22 hidden rounded px-3 py-1 font-custom font-medium 
-							text-white hover:text-blue-300 md:block"
+              className="blerg w-30 md:w-22 hidden rounded px-3 py-1 font-custom font-medium 
+							text-white hover:text-blue-300  lg:block  md:text-sm lg:text-md"
             >
               Data Directory
             </Link>
             <Link
               href={"/tools"}
-              className="w-30 md:w-22 hidden rounded px-3 py-1 font-custom font-medium 
-							text-white hover:text-blue-300 md:block"
+              className="blerg w-30 md:w-22 hidden rounded px-3 py-1 font-custom font-medium 
+							text-white hover:text-blue-300 lg:block md:text-sm lg:text-md"
             >
               Tools
             </Link>
             <Link
               href={"/visualization"}
               className="w-30 md:w-22 hidden rounded px-3 py-1 font-custom font-medium 
-              text-white hover:text-blue-300 md:block"
+              text-white hover:text-blue-300 lg:block md:text-sm lg:text-md" 
             >
               Data Visualization
             </Link>
             <Link
               href={"/pricing"}
               className="w-30 md:w-22 hidden rounded px-3 py-1 font-custom font-medium 
-							text-white hover:text-blue-300 md:block"
+							text-white hover:text-blue-300 lg:block md:text-sm lg:text-md"
             >
               Pricing
             </Link>
             <Link
               href={"/profile"}
-              className="w-30 md:w-22 hidden rounded px-3 py-1 font-custom font-medium 
-            text-white hover:text-blue-300 md:block"
+              className="w-30 md:w-10 hidden rounded px-3 py-1 font-custom font-medium 
+            text-white hover:text-blue-300 lg:block md:text-sm lg:text-md"
             >
               Profile
             </Link>
             <Link
               href={"/search"}
               className="w-30 md:w-22 hidden rounded px-3 py-1 font-custom font-medium 
-							text-white hover:text-blue-300 md:block"
+							text-white hover:text-blue-300 lg:block md:text-sm lg:text-md"
             >
               Search
             </Link>
@@ -177,15 +177,15 @@ function NavBar() {
               </button>
             )}
             <button
-              className="p-2 pr-6 md:hidden"
+              className="p-2 pr-6  lg:hidden"
               onClick={() => setNavbarOpen((prev) => !prev)}
             >
               <span className="sr-only">Open main menu</span>
 
               {navbarOpen ? (
-                <IoMdClose size={110} color="white" />
+                <IoMdClose size={48} color="white" />
               ) : (
-                <VscMenu size={110} color="white" />
+                <VscMenu size={48} color="white" />
               )}
             </button>
           </div>

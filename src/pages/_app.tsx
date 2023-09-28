@@ -42,14 +42,13 @@ const MyApp: AppType<{ session: Session | null }> = ({
       <SessionProvider session={session}>
         <Head>
           <title>StarHealth</title>
-          <link href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.css" rel="stylesheet" type="text/css" />
+          {/* <link href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.css" rel="stylesheet" type="text/css" /> */}
         </Head>
         <NavFoot>
           <Component {...pageProps} />
           <ToastContainer />
         </NavFoot>
       </SessionProvider>
-      
   );
 };
 
