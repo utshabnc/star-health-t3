@@ -26,6 +26,7 @@ export default function ToolsFilter() {
             setTool(toolName as string);
             setShowNutritions(!showNutritions);
             setShowRecipes(!showRecipes);
+            setShowAncestryTree(!showAncestryTree);
             setShowTableHead(false);
         }
 
@@ -47,7 +48,7 @@ export default function ToolsFilter() {
         label: "Ancestry Tree",
         img: recipesimg,
         route: '/tools',
-        linkparam: 'recipe'
+        linkparam: 'ancestry_tree'
     }
     ];
 
@@ -145,6 +146,14 @@ export default function ToolsFilter() {
             </div>
         )
     };
+
+    const AncestryTree = () => {
+        return (
+            <div>
+
+            </div>
+        );
+    }
 
     const NutritionTableHead = () => {
         if (!showTableHead) {
@@ -284,6 +293,8 @@ export default function ToolsFilter() {
                 return <NutritioinTextInput />;
             case 'recipe':
                 return <Recipe />;
+            case 'ancestry_tree':
+                return <AncestryTree />;
             default:
                 return null;
         }
