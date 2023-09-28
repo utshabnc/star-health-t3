@@ -15,8 +15,6 @@ import DrugJournal from "../../components/DrugJournal/DrugJournal";
 import ExerciseTracker from "../../components/ExerciseTracker/ExerciseTracker";
 import SignIn from "../../components/SignIn/SignIn";
 
-{/* <div class="relative ml-2 mr-2 flex w-full flex-col items-center rounded-[6px] rounded-md border-[1.5px] border-bordercolor bg-white px-6 py-8 shadow-md  h-[17.188rem] 
-                p-1 sm:w-[27%] sm:p-3 md:w-[25.5%] xl:w-[21%] "><img alt="Mapping" loading="lazy" width="360" height="320" decoding="async" data-nimg="1" class="" srcset="/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fmapping.867f5ed7.png&amp;w=384&amp;q=75 1x, /_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fmapping.867f5ed7.png&amp;w=750&amp;q=75 2x" src="/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fmapping.867f5ed7.png&amp;w=750&amp;q=75" style="color: transparent; height: 185px; width: 185px; object-fit: contain;"><p class="justify-center pb-10 text-center text-xs font-semibold capitalize lg:text-lg text-font-custom          mt-0">Mapping</p></div> */}
 
 interface BookmarkInterface {
   id: number;
@@ -190,7 +188,7 @@ const ProfilePage: React.FC = () => {
     <LoadingStarHealth />
   ) : (
     <div className="p-16">
-      <div className="mb-4 flex flex-wrap items-center">
+      <div className="mb-4 flex items-center">
         {/* <SignIn /> */}
         {userPhoto && (
           <Image
@@ -207,9 +205,9 @@ const ProfilePage: React.FC = () => {
         </div>
       </div>
       <hr className="my-4" />
-      <div className="mb-4 flex flex-wrap space-x-4">
-          <button
-            className="relative ml-2 mr-2 flex w-full flex-col items-center rounded-[6px] rounded-md border-[1.5px] border-bordercolor bg-white px-6 py-8 shadow-md  h-[17.188rem] p-1 sm:w-[27%] sm:p-3 md:w-[25.5%] xl:w-[21%]"        
+      <div className="mb-4 flex space-x-4">
+<button className="relative ml-2 mr-2 flex w-full flex-col items-center rounded-[6px] rounded-md border-[1.5px] border-bordercolor bg-white px-6 py-8 shadow-md  h-[17.188rem] 
+                p-1 sm:w-[27%] sm:p-3 md:w-[25.5%] xl:w-[21%] "        
           disabled={
             showForm &&
             !showBookmark &&
@@ -230,7 +228,7 @@ const ProfilePage: React.FC = () => {
           Patient Intake Form
         </button>
         <button
-         className="relative ml-2 mr-2 flex w-full flex-col items-center rounded-[6px] rounded-md border-[1.5px] border-bordercolor bg-white px-6 py-8 shadow-md  h-[17.188rem] p-1 sm:w-[27%] sm:p-3 md:w-[25.5%] xl:w-[21%]"
+          className='relative  w-[10rem] ml-2 mr-2 h-1/2 flex w-full flex-col items-center rounded-[6px] rounded-md border-[1.5px] border-bordercolor bg-white px-6 py-8 shadow-md'
           onClick={handleBookmarkToggle}
           disabled={
             showBookmark &&
@@ -251,7 +249,7 @@ const ProfilePage: React.FC = () => {
           Bookmarks
         </button>
         <button
-         className="relative ml-2 mr-2 flex w-full flex-col items-center rounded-[6px] rounded-md border-[1.5px] border-bordercolor bg-white px-6 py-8 shadow-md  h-[17.188rem] p-1 sm:w-[27%] sm:p-3 md:w-[25.5%] xl:w-[21%]"        
+          className='relative  w-[10rem] ml-2 mr-2 h-1/2 flex w-full flex-col items-center rounded-[6px] rounded-md border-[1.5px] border-bordercolor bg-white px-6 py-8 shadow-md'
           onClick={handleCompareToggle}
           disabled={
             showCompare &&
@@ -272,8 +270,7 @@ const ProfilePage: React.FC = () => {
           Comparison Tool
         </button>
         <button
-         className="relative ml-2 mr-2 flex w-full flex-col items-center rounded-[6px] rounded-md border-[1.5px] border-bordercolor bg-white px-6 py-8 shadow-md  h-[17.188rem] p-1 sm:w-[27%] sm:p-3 md:w-[25.5%] xl:w-[21%]"        
-
+          className='relative  w-[10rem] ml-2 mr-2 h-1/2 flex w-full flex-col items-center rounded-[6px] rounded-md border-[1.5px] border-bordercolor bg-white px-6 py-8 shadow-md'
           onClick={handleFoodJournalToggle}
           disabled={
             showFoodJournal &&
@@ -294,7 +291,7 @@ const ProfilePage: React.FC = () => {
           Food Journal
         </button>
         <button
-         className="relative ml-2 mr-2 flex w-full flex-col items-center rounded-[6px] rounded-md border-[1.5px] border-bordercolor bg-white px-6 py-8 shadow-md  h-[17.188rem] p-1 sm:w-[27%] sm:p-3 md:w-[25.5%] xl:w-[21%]"
+          className='relative  w-[10rem] ml-2 mr-2 h-1/2 flex w-full flex-col items-center rounded-[6px] rounded-md border-[1.5px] border-bordercolor bg-white px-6 py-8 shadow-md'
           onClick={handleSubstanceTrackerToggle}
           disabled={
             !showFoodJournal &&
@@ -315,7 +312,7 @@ const ProfilePage: React.FC = () => {
           Substance Tracker
         </button>
         <button
-          className="relative ml-2 mr-2 flex w-full flex-col items-center rounded-[6px] rounded-md border-[1.5px] border-bordercolor bg-white px-6 py-8 shadow-md  h-[17.188rem] p-1 sm:w-[27%] sm:p-3 md:w-[25.5%] xl:w-[21%]"        
+          className={`} rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600`}
           onClick={handleMentalDiaryToggle}
           disabled={
             !showFoodJournal &&
@@ -336,8 +333,7 @@ const ProfilePage: React.FC = () => {
           Mental Health Diary
         </button>
         <button
-          className="relative ml-2 mr-2 flex w-full flex-col items-center rounded-[6px] rounded-md border-[1.5px] border-bordercolor bg-white px-6 py-8 shadow-md  h-[17.188rem] p-1 sm:w-[27%] sm:p-3 md:w-[25.5%] xl:w-[21%]"        
-
+          className={`} rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600`}
           onClick={handleDrugJournalToggle}
           disabled={
             !showFoodJournal &&
@@ -358,8 +354,7 @@ const ProfilePage: React.FC = () => {
           Drug Journal
         </button>
         <button
-          className="relative ml-2 mr-2 flex w-full flex-col items-center rounded-[6px] rounded-md border-[1.5px] border-bordercolor bg-white px-6 py-8 shadow-md  h-[17.188rem] p-1 sm:w-[27%] sm:p-3 md:w-[25.5%] xl:w-[21%]"        
-
+          className={`} rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600`}
           onClick={handleWorkoutJournalToggle}
           disabled={
             !showFoodJournal &&
