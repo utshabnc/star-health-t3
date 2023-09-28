@@ -13,7 +13,7 @@ import { labelStyle, diseaseStyle, genesStyle, labelContainer, conditionStyle } 
 
 const Graphs = () => {
   const [drugType, setDrugType] = useState<string>();
-  const [toRender, setToRender] = useState<boolean>(false);
+  // const [toRender, setToRender] = useState<boolean>(false);
   const { data: allStates } = trpc.db.allStates.useQuery({ drugType });
   const navigate = useRouter();
   const [selectedTab, setSelectedTab] = useState<Tab>(Tab.PaymentsToDoctors);
@@ -22,23 +22,23 @@ const Graphs = () => {
 }>>([]);
   const [filteredDisease, setFilteredDisease] = useState<string>('');
   const [removedDisease, setRemovedDisease] = useState<string>('');
-  const [loading, setLoading] = useState(true);
-  const [input, setInput] = useState('');
-  const [searchedDiseases, setSearchedDiseases] = useState<Array<{
-    url: any;title: { _text: string}
-}>>([]);
+  // const [loading, setLoading] = useState(true);
+  // const [input, setInput] = useState('');
+  // const [searchedDiseases, setSearchedDiseases] = useState<Array<{
+//     url: any;title: { _text: string}
+// }>>([]);
   
-  const handleSearch = () => {
-    const regex = new RegExp(input, 'gi');
-        console.log(input, regex)
+  // const handleSearch = () => {
+  //   const regex = new RegExp(input, 'gi');
+  //       console.log(input, regex)
 
-    const searchedDiseases = diseasesList.filter((element, index) => {
-      if (regex.test(element.title._text)) {
-        return element;
-      }
-    });
-    setSearchedDiseases(searchedDiseases);
-  };
+  //   const searchedDiseases = diseasesList.filter((element, index) => {
+  //     if (regex.test(element.title._text)) {
+  //       return element;
+  //     }
+  //   });
+  //   setSearchedDiseases(searchedDiseases);
+  // };
 
   useEffect(() => {
     fetch("/api/genetics/getAll")
@@ -114,7 +114,7 @@ const Graphs = () => {
                   onClick={
                     () => {
                       setSelectedTab(Tab.DiseasesAndGenetics);
-                      setLoading(true);
+                      // setLoading(true);
                     }
                   }
                   className={`border-b-2 hover:border-zinc-500 ${

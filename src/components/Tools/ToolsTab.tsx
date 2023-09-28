@@ -22,7 +22,8 @@ const ToolsTab = ({
   textColor?: string;
   textSize?: string;
   itemTextSpacing?: boolean;
-}) => {
+  }) => {
+  items = items.sort((a, b) => { return a.label[0].localeCompare(b.label[0]) });
   return (
     <div
       className={`flex flex-col py-4 pb-24 ${
@@ -39,14 +40,15 @@ const ToolsTab = ({
         </p>
       )}
 
-      <div className="w-3/4 flex mx-auto flex-wrap  gap-1">
+      <div className="mx-2 flex flex-wrap justify-around gap-10 sm:mx-2">
         {items.map((item, i) => (
           // <div key={i} className='relative w-full gap-4 rounded-md bg-white px-6 py-12'>
           <div
-            className={`relative m-5 space-y-5 flex w-full flex-col items-center rounded-[6px] rounded-md border-[1.5px] border-bordercolor bg-white px-6 py-8 shadow-md  h-full p-1 sm:w-[27%] sm:p-3 md:w-[25.5%] xl:w-[21%] ${
+            className={`relative flex w-full flex-col items-center rounded-[6px] rounded-md border-[1.5px] border-bordercolor bg-white  py-8 shadow-md ${
               boxStyle ? "" : "rounded-lg bg-[#0e1936] "
-            } h-[10.8rem]
-                p-1 sm:w-[27%] sm:p-3 md:w-[25.5%] xl:w-[21%] hover:bg-gray-200`}
+            } ${itemTextSpacing ? "h-[17.188rem]" : "h-[9.8rem]"} 
+                p-1 sm:w-[27%] sm:p-3 md:w-[25.5%] xl:w-[17%]
+                  `}
             key={i}
           >
             {item.img && (
@@ -79,7 +81,7 @@ const ToolsTab = ({
                         }
                         className=""
                         style={{
-                          height: 100,
+                          height: 185,
                           width: 185,
                           objectFit: "contain",
                         }}
@@ -118,10 +120,10 @@ const ToolsTab = ({
             {
               item.label && (
                 <p
-                  className={`justify-center py-5 text-center text-xs font-semibold capitalize lg:text-lg ${
-                    "text-" + textColor ?? "text-violet-700"
-                  }          ${itemTextSpacing && "mt-0"}`}
-                >
+                  className={`justify-center pb-10 text-center text-xs font-semibold capitalize lg:text-lg ${
+                        "text-" + textColor ?? "text-violet-700"
+                      }          ${itemTextSpacing && "mt-0"}`}
+                    >
                   {typeof item.label === "string"
                     ? item.label
                     : item.label.map((line, idx) => <p key={idx}>{line}</p>)}
