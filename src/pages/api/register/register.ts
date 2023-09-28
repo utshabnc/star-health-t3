@@ -13,8 +13,11 @@ const schema = z.object({
     email : z.string().email({
         message : 'Invalid Email Address'
     }),
-    password : z.string()
-}).refine((data)=>/^(?=.*[A-Z].*[A-Z])(?=.*[!@#$&*])(?=.*[0-9].*[0-9])(?=.*[a-z].*[a-z].*[a-z]).*$/.test(data.password),'Password must contain at least: 8 characters length, 2 letters in Upper Case, 1 Special Character (!@#$&*), 2 numerals (0-9), 3 letters in Lower Case')
+    password : z.string().min(8, {
+        message: "Password must contain at least: 8 characters length",
+    }),
+    confirmPassword : z.string(),
+}).refine((data)=> data.password === data.confirmPassword,'Passwords must match!')
 
 
 const handler = async (req:NextApiRequest, res: NextApiResponse) => {
@@ -23,15 +26,15 @@ const handler = async (req:NextApiRequest, res: NextApiResponse) => {
         return res.status(405).json({message : "Method is not allowed"})
     }
 
-    const  { firstName, lastName, email , password } = req.body
+    const  { firstName, lastName, email , password, confirmPassword } = req.body
     try {
 
 
-        if(!email || !password || !firstName || !lastName) {
+        if(!email || !password || !firstName || !lastName || !confirmPassword) {
             return res.status(400).json({message: "Missing Fields"})
         }
 
-        const check  = schema.safeParse({firstName: firstName,lastName: lastName, email: email, password:password})
+        const check  = schema.safeParse({firstName: firstName,lastName: lastName, email: email, password:password, confirmPassword : confirmPassword})
         if(!check.success){
             const errors = check.error.issues
             return res.status(400).json({errors})
