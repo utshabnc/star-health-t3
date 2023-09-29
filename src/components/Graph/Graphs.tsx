@@ -1,9 +1,9 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { drugTypes } from "../../utils";
 import UnitedStatesHeatmap from "../charts/UnitedStatesHeatmap";
 import Dropdown from "../Dropdown";
 import { useRouter } from 'next/router';
-import _ from "lodash";
+import _, { set } from "lodash";
 import { trpc } from "../../utils/trpc";
 import LoadingStarHealth from "../Loading";
 import { Tab } from "../../utils/Enums/Tab.enum";
@@ -13,6 +13,7 @@ import { labelStyle, diseaseStyle, genesStyle, labelContainer, conditionStyle } 
 
 const Graphs = () => {
   const [drugType, setDrugType] = useState<string>();
+  const [toRender, setToRender] = useState<boolean>(false);
   const { data: allStates } = trpc.db.allStates.useQuery({ drugType });
   const navigate = useRouter();
   const [selectedTab, setSelectedTab] = useState<Tab>(Tab.PaymentsToDoctors);
@@ -22,10 +23,24 @@ const Graphs = () => {
   const [filteredDisease, setFilteredDisease] = useState<string>('');
   const [removedDisease, setRemovedDisease] = useState<string>('');
   const [loading, setLoading] = useState(true);
+  const [input, setInput] = useState('');
+  const [searchedDiseases, setSearchedDiseases] = useState<Array<{
+    url: any;title: { _text: string}
+}>>([]);
+  
+  const handleSearch = () => {
+    const regex = new RegExp(input, 'gi');
+        console.log(input, regex)
 
+    const searchedDiseases = diseasesList.filter((element, index) => {
+      if (regex.test(element.title._text)) {
+        return element;
+      }
+    });
+    setSearchedDiseases(searchedDiseases);
+  };
 
   useEffect(() => {
-
     fetch("/api/genetics/getAll")
     .then(async (response) => {
 
@@ -36,8 +51,7 @@ const Graphs = () => {
       setDiseasesList(diseases);
 
       console.log(`Diseases Loaded`);
-      console.log(diseases);
-      
+      // console.log(diseases);
 
     });
 
@@ -48,6 +62,7 @@ const Graphs = () => {
       <LoadingStarHealth />
     );
   }
+      console.log(filteredDisease)
 
   return (
     <div className="bg-white p-5 pb-44 w-full h-full">
@@ -116,7 +131,7 @@ const Graphs = () => {
           <div className="my-1">
             <hr />
           </div>
-          <div style={{ display: `${ selectedTab === Tab.PaymentsToDoctors ? 'block' : 'none' }` }}>
+          <div style={{ display: `${selectedTab === Tab.PaymentsToDoctors ? 'block' : 'none'}` }}>
             <Dropdown
               items={drugTypes.map((type) => ({
                 value: type,
@@ -128,13 +143,53 @@ const Graphs = () => {
               onChange={setDrugType}
             />
           </div>
+          
           <nav 
             id="diseaseFilterContainer"
-            style={{ display: `${ selectedTab === Tab.DiseasesAndGenetics ? 'block' : 'none' }` }}
+            style={{ display: `${selectedTab === Tab.DiseasesAndGenetics ? 'block' : 'none'}` }}
+            onClick={() => console.log('clicked')}
+            className="space-y-1 p-3 relative"
+          >
+              <h1 className="w-3/4 mx-auto">Disease Filter:</h1>   
+            <div className="w-full space-x-3 space-y-1 w-3/4"
+           style={{ display: `${selectedTab === Tab.DiseasesAndGenetics ? 'block' : 'none'}` }}
             >
-              Disease Filter: 
-                <MultiSelect 
-                  options={diseasesList.slice(1).map((disease) => ({
+
+              <div className="space-x-3  flex cursor-pointer  w-3/4  mx-auto border border-gray-300  p-2 rounded-md"
+                onClick={() => {setToRender(!toRender)}}
+              >
+            <input
+              placeholder="Search for a disease"
+              className="border border-gray-300 rounded-md px-4 py-2 5 w-11/12"
+              value={input}
+              onChange={(event) => { setInput(event.target.value);  handleSearch()}}
+          />
+                <button className="tester1 bg-violet-400 px-3 py-1 text-white rounded hover:bg-violet-500 active:bg-violet-600"
+                  onClick={() => {setInput(''); setSearchedDiseases([])}}
+                >Clear</button>
+            <button className="tester1 bg-violet-400 px-3 py-1 text-white rounded hover:bg-violet-500 active:bg-violet-600"
+                >Search</button>
+                <div className="w">
+{
+                  !toRender ?
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6 ">
+  <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                    </svg> :
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+  <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 15.75l7.5-7.5 7.5 7.5" />
+</svg>
+                }
+                </div>
+                
+              </div>
+            </div>
+            
+            <div className="w-3/4 mx-auto">
+                  <MultiSelect 
+                  options={!searchedDiseases.length ? diseasesList.slice(1).map((disease) => ({
+                    link: disease?.url?._text,
+                    name: _.capitalize(disease?.title?._text),
+                  })) : searchedDiseases.slice(1).map((disease) => ({
                     link: disease?.url?._text,
                     name: _.capitalize(disease?.title?._text),
                   }))}
@@ -145,9 +200,27 @@ const Graphs = () => {
                     const name = remItem.link.toString().split('/');
                     setRemovedDisease(name[name.length - 1])
                   }}
-                  placeholder="Select the Disease"
-                  selectedValues={[]}
+                  placeholder="     Select the Disease"
+              selectedValues={[]}
                 />
+            </div>
+            <div className={`${searchedDiseases.length && toRender? `h-[15rem]` : `hidden`} overflow-y-auto border border-gray-300  ml-0 w-[73.75%] rounded absolute left-[11rem]`}>
+              <ul className="px-2 w-100 rounded ">
+                              {
+                  searchedDiseases.length ? searchedDiseases.map((disease) => (
+                    <li key={disease.url._text} className="cursor-pointer p-2 w-100 hover:bg-[#0096fb] hover:text-white">
+                      <div className="flex">
+                      <input type="checkbox" className="p-2" value={disease.title._text}
+                      onChange={() => setFilteredDisease(disease.url._text)}
+                      />
+                      <p className="py-1 px-3">{disease.title._text}</p>
+                      </div>
+                      
+                    </li>
+                  )) : <li className="py-1 px-3" >No Results</li>
+                   }
+                    </ul> 
+              </div>
                 <div 
                   id="graphUpdateLoaderContainer"
                   style={{
@@ -164,7 +237,6 @@ const Graphs = () => {
                 <span id="removedDisease" style={{display: 'none'}}>{removedDisease}</span>
               </nav>
         </div>
-        
       </div>
       <div style={{ height: '100%' }}>
         <PayWall />
