@@ -13,7 +13,34 @@ export interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
 const FormSectionA : React.FC<InputProps>  = ({  register , errors}) => {
 
     const [dob, setFormattedDate] = useState('');
+    const [contactNumber, setContactNumber] = useState('')
+
+    const handlePhoneNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const inputDate = e.target.value;
+        // Remove any non-numeric characters from the input
+        const numericNumber = inputDate.replace(/\D/g, '');
+
+
     
+        // Check if the numericDate has a valid length for MMDDYYYY format
+        if (numericNumber.length <= 10) {
+          // Format the date with separators
+          let formatted = '';
+          formatted += '('
+          for (let i = 0; i < numericNumber.length; i++) {
+            if (i === 3) {
+              formatted += ')-';
+            }
+            if(i === 6) {
+                formatted += '-'
+            }
+            formatted += numericNumber[i];
+          }
+          setContactNumber(formatted);
+        }
+    };
+
+
     
   
     const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -42,6 +69,7 @@ const FormSectionA : React.FC<InputProps>  = ({  register , errors}) => {
                     <label htmlFor="firstName" className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">First Name</label>
                         <input
                         {...register('firstName')}
+                        autoComplete="off"
                         type='text'
                         name="firstName"
                         placeholder='John'
@@ -100,9 +128,12 @@ const FormSectionA : React.FC<InputProps>  = ({  register , errors}) => {
                         </label>
                         <input
                             {...register("contactNumber")}
+                            autoComplete="off"
                             type="text"
                             name="contactNumber"
-                            placeholder="1234567890"
+                            value={contactNumber}
+                            onChange={handlePhoneNumberChange}
+                            placeholder="(xxx)-xxx-xxxx"
                             className="appearance-none block w-full bg-gray-200 text-gray-700 border border-indigo-500/75 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"
                             id="grid-contact-number"
                         />
@@ -137,7 +168,7 @@ const FormSectionA : React.FC<InputProps>  = ({  register , errors}) => {
                                 <input
                                 {...register("gender")}
                                 type="radio"
-                                value="male"
+                                value="Male"
                                 className="form-radio text-indigo-600"
                                 />
                                 <span className="ml-2">Male</span>
@@ -146,7 +177,7 @@ const FormSectionA : React.FC<InputProps>  = ({  register , errors}) => {
                                 <input
                                 {...register("gender")}
                                 type="radio"
-                                value="female"
+                                value="Female"
                                 className="form-radio text-indigo-600"
                                 /> 
                                 <span className="ml-2">Female</span>
@@ -168,7 +199,7 @@ const FormSectionA : React.FC<InputProps>  = ({  register , errors}) => {
                 className="block w-full bg-gray-200 text-gray-700 border border-indigo-500/75 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"
                 id="grid-profession"
             >
-                <option value="" disabled selected>Select a profession/role</option>
+                <option value="" disabled selected>Select a role</option>
                 {[
                     "Patient",
                     "Provider",

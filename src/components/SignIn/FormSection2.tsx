@@ -13,10 +13,10 @@ const FormSectionB : React.FC<InputProps> = ({ register, errors  }) => {
     return (
     <>
       
-      <div className="w-full md:w-1/2 px-3">
-        <div className="col">
+      <div className="w-full md:w-1/2 px-3 pt-4">
+        <div className="col ">
           <label htmlFor="grid-company" className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">
-              Company
+              Company (Optional)
           </label>
           <input
               {...register("company")}
@@ -32,9 +32,9 @@ const FormSectionB : React.FC<InputProps> = ({ register, errors  }) => {
         </div>
       </div>
       <div className="w-full md:w-1/2 px-3">
-        <div className="col">
+        <div className="col ">
           <label htmlFor="grid-specialization" className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">
-          Job Title / Specialization
+          Job Title / Specialization (Optional)
           </label>
           <input
               {...register("specialization")}
@@ -49,10 +49,10 @@ const FormSectionB : React.FC<InputProps> = ({ register, errors  }) => {
           )}
         </div>
       </div>
-      <div className="w-full md:w-1/2 px-3">
+      <div className="w-full md:w-1/2 px-3 pt-4">
           <div className="col">
             <label htmlFor="grid-license-number" className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">
-                License Number
+                License Number (Optional)
             </label>
             <input
                 {...register("licenseNumber")}
@@ -70,7 +70,7 @@ const FormSectionB : React.FC<InputProps> = ({ register, errors  }) => {
       <div className="w-full md:w-1/2 px-3">
         <div className="col">
           <label htmlFor="grid-insurance-information" className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">
-              Insurance Information
+              Insurance Information (Optional)
           </label>
           <input
               {...register("insuranceInformation")}

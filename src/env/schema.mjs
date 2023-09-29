@@ -54,10 +54,10 @@ export const signUpSchema = z.object({
   address: z.string().min(1,"Address is required"),
   profession: z.string().min(1,"Profession is required"),
   company: z.string().optional(),
-  specialization: z.string().min(1, "Specialization is required"),
-  licenseNumber: z.string().min(1, "Licence Number is required"),
-  insuranceInformation: z.string().min(1, "Insurance Information is required"),
-  gender: z.string(),
+  specialization: z.string().optional(),
+  licenseNumber: z.string().optional(),
+  insuranceInformation: z.string().optional(),
+  gender: z.enum(["Male", "Female"]),
   medicalHistory: z.string().optional(),
   educationalBackground: z.string().optional(),
   linkedin: z.string().optional(),
@@ -72,14 +72,14 @@ export const personalSchema = z.object({
   contactNumber: z.string().min(1,"Contact Number is required"),
   address: z.string().min(1,"Address is required"),
   profession: z.string().min(1,"Profession is required"),
-  gender: z.string(),
+  gender: z.enum(["Male", "Female"]),
 })
 
 export const professionalInfo = z.object({
   company: z.string().optional(),
-  specialization: z.string().min(1, "Specialization is required"),
-  licenseNumber: z.string().min(1, "Licence Number is required"),
-  insuranceInformation: z.string().min(1, "Insurance Information is required"),
+  specialization: z.string().optional(),
+  licenseNumber: z.string().optional(),
+  insuranceInformation: z.string().optional(),
   
 })
 
