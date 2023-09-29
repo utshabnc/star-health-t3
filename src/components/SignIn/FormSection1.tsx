@@ -1,7 +1,8 @@
 import React from "react";
 import { FieldValues, UseFormRegister, FieldErrors } from "react-hook-form"
 import {InputHTMLAttributes} from "react";
-
+import { useState } from "react";
+import { format } from 'date-fns';
 
 export interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
     register : UseFormRegister<FieldValues>;
@@ -10,6 +11,29 @@ export interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
 }
 
 const FormSectionA : React.FC<InputProps>  = ({  register , errors}) => {
+
+    const [dob, setFormattedDate] = useState('');
+    
+    
+  
+    const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const inputDate = e.target.value;
+        // Remove any non-numeric characters from the input
+        const numericDate = inputDate.replace(/\D/g, '');
+    
+        // Check if the numericDate has a valid length for MMDDYYYY format
+        if (numericDate.length <= 8) {
+          // Format the date with separators (MM/DD/YYYY)
+          let formatted = '';
+          for (let i = 0; i < numericDate.length; i++) {
+            if (i === 2 || i === 4) {
+              formatted += '/';
+            }
+            formatted += numericDate[i];
+          }
+          setFormattedDate(formatted);
+        }
+    };
    
     return (
         <>
@@ -37,6 +61,7 @@ const FormSectionA : React.FC<InputProps>  = ({  register , errors}) => {
                         type='text'
                         name="lastName"
                         placeholder="Doe"
+                       
                         className="appearance-none block w-full bg-gray-200 text-gray-700 border border-indigo-500/75 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white" id="grid-first-name"
                         
                         />
@@ -57,6 +82,8 @@ const FormSectionA : React.FC<InputProps>  = ({  register , errors}) => {
                             type="text"
                             name="dob"
                             placeholder="DD/MM/YYYY"
+                            onChange={handleDateChange}
+                            value={dob}
                             className="appearance-none block w-full bg-gray-200 text-gray-700 border border-indigo-500/75 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"
                             id="grid-dob"
                         />

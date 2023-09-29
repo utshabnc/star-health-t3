@@ -266,17 +266,18 @@ const SignIn = () => {
     e.preventDefault()
     let fieldKeys = Object.keys(getValues())
     if(activeSection === 0){
-      fieldKeys = Object.keys(personalSchema)
+      fieldKeys = Object.keys(personalSchema.shape)
     }
     else if (activeSection === 1){
-      fieldKeys = Object.keys(professionalInfo)
+      fieldKeys = Object.keys(professionalInfo.shape)
     }
     else{
-      fieldKeys = Object.keys(addionalInfoSchema)
+      fieldKeys = Object.keys(addionalInfoSchema.shape)
 
     }
 
     const isValid = await trigger(fieldKeys)
+    console.log(isValid)
     if(isValid){
         setActiveSection((prev) => prev + 1)
     }
