@@ -3,6 +3,14 @@ import { getNutritionByText } from './httpsRequests'
 import { catchError, finalize } from "rxjs";
 import text2nutrients from "../../assets/logos/text2nutrients.png";
 import recipesimg from "../../assets/logos/recipes.png";
+import bookmarkImg from "../../assets/logos/bookmark.png";
+import drugjournalImg from "../../assets/logos/drugjournal.png";
+import exerciseTrackerImg from "../../assets/logos/exerciseTracker.png";
+import foodJournalImg from "../../assets/logos/foodJournal.png";
+import mentalHealthImg from "../../assets/logos/mentalHealthDiary.png";
+import patientIntakeImg from "../../assets/logos/patientIntake.png";
+import substanceAbuseImg from "../../assets/logos/substanceAbuse.png";
+import comparisonImg from "../../assets/logos/comparison.png"
 import ToolsTab from "./ToolsTab";
 import Compare from "../../components/Compare";
 import MentalHealthDiary from "../../components/MentalHealthDiary";
@@ -37,7 +45,6 @@ export default function ToolsFilter() {
       const [categories, setCategories] = useState<Category[]>([]);
     const [bookmarks, setBookmarks] = useState<BookmarkInterface[]>([]);
     const [selectedCategory, setSelectedCategory] = useState("");
-    const removeBookmark = trpc.db.removeBookmarkById.useMutation();
     const [selectedFilter, setSelectedFilter] = useState<string>(() => {
     if (typeof localStorage !== "undefined") {
       // Retrieve the selected category from local storage or set a default value
@@ -45,12 +52,14 @@ export default function ToolsFilter() {
     } else {
       return "Clinical Trials";
     }
-  });
+    });
+const removeBookmark = trpc.db.removeBookmarkById.useMutation();
   const { data: allCategories } = trpc.db.allCategories.useQuery();
   const { data: allBookmarks, refetch } = trpc.db.bookmarks.useQuery({
     categoryId: parseInt(selectedFilter),
     userId: (session?.user?.id as string) || "",
   });
+    
     useEffect(() => {
     if (allBookmarks) {
       setBookmarks(allBookmarks);
@@ -80,7 +89,13 @@ export default function ToolsFilter() {
         refetch();
       });
   };
-
+    
+  useEffect(() => {
+    if (typeof localStorage !== "undefined") {
+      // Update local storage when the selected category changes
+      localStorage.setItem("selectedCategory", selectedFilter);
+    }
+  }, [selectedFilter]);
      const ref = useRef<HTMLDivElement>(null)
     const [tool, setTool] = useState<string>("");
 
@@ -502,12 +517,11 @@ export default function ToolsFilter() {
 
     return (
         <>
-            <div className="w-full">
+            <div className="w-full   justify-around gap-10">
                 <div>
-                     <h1 className="text-4xl border-b border-black">Tools</h1>
+                     <h1 className="text-5xl text-violet-700 p-5 text-center font-bold">Tools</h1>
                     <div className="filters flex w-full items-center">
-                        <div className="wrap-filters flex w-full items-center py-2"
-                        >
+                        <div className="wrap-filters border-b border-t border-violet-700 flex w-full items-center py-2 ">
                             <ToolsTab
                                 items={features}
                                 textColor="font-custom"
@@ -518,7 +532,7 @@ export default function ToolsFilter() {
                     </div>
                 </div>
 
-                <div ref={ref} className={`tools-container text-center border ${!renderRef ? 'hidden' : null}`}
+                <div ref={ref} className={`tools-container py-5 text-center border ${!renderRef ? 'hidden' : null}`}
                 >
                     {renderComponent()}
                     <div className="relative flex h-[100%] w-full justify-center">

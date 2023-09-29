@@ -147,7 +147,7 @@ function NavBar() {
             </Link>
             <Link
               href={"/profile"}
-              className="w-30 md:w-10 hidden rounded px-3 py-1 font-custom font-medium 
+              className="w-30 md:w-22 hidden rounded px-3 py-1 font-custom font-medium 
             text-white hover:text-blue-300 lg:block md:text-sm lg:text-md"
             >
               Profile

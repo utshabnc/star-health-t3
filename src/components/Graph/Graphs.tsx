@@ -13,7 +13,7 @@ import { labelStyle, diseaseStyle, genesStyle, labelContainer, conditionStyle } 
 
 const Graphs = () => {
   const [drugType, setDrugType] = useState<string>();
-  const [toRender, setToRender] = useState<boolean>(false);
+  // const [toRender, setToRender] = useState<boolean>(false);
   const { data: allStates } = trpc.db.allStates.useQuery({ drugType });
   const navigate = useRouter();
   const [selectedTab, setSelectedTab] = useState<Tab>(Tab.PaymentsToDoctors);
@@ -22,23 +22,23 @@ const Graphs = () => {
 }>>([]);
   const [filteredDisease, setFilteredDisease] = useState<string>('');
   const [removedDisease, setRemovedDisease] = useState<string>('');
-  const [loading, setLoading] = useState(true);
-  const [input, setInput] = useState('');
-  const [searchedDiseases, setSearchedDiseases] = useState<Array<{
-    url: any;title: { _text: string}
-}>>([]);
+  // const [loading, setLoading] = useState(true);
+  // const [input, setInput] = useState('');
+  // const [searchedDiseases, setSearchedDiseases] = useState<Array<{
+//     url: any;title: { _text: string}
+// }>>([]);
   
-  const handleSearch = () => {
-    const regex = new RegExp(input, 'gi');
-        console.log(input, regex)
+  // const handleSearch = () => {
+  //   const regex = new RegExp(input, 'gi');
+  //       console.log(input, regex)
 
-    const searchedDiseases = diseasesList.filter((element, index) => {
-      if (regex.test(element.title._text)) {
-        return element;
-      }
-    });
-    setSearchedDiseases(searchedDiseases);
-  };
+  //   const searchedDiseases = diseasesList.filter((element, index) => {
+  //     if (regex.test(element.title._text)) {
+  //       return element;
+  //     }
+  //   });
+  //   setSearchedDiseases(searchedDiseases);
+  // };
 
   useEffect(() => {
     fetch("/api/genetics/getAll")
@@ -114,7 +114,7 @@ const Graphs = () => {
                   onClick={
                     () => {
                       setSelectedTab(Tab.DiseasesAndGenetics);
-                      setLoading(true);
+                      // setLoading(true);
                     }
                   }
                   className={`border-b-2 hover:border-zinc-500 ${
@@ -147,15 +147,13 @@ const Graphs = () => {
           <nav 
             id="diseaseFilterContainer"
             style={{ display: `${selectedTab === Tab.DiseasesAndGenetics ? 'block' : 'none'}` }}
-            onClick={() => console.log('clicked')}
-            className="space-y-1 p-3 relative"
+            // className="space-y-1 p-3 relative"
           >
-              <h1 className="w-3/4 mx-auto">Disease Filter:</h1>   
-            <div className="w-full space-x-3 space-y-1 w-3/4"
+            {/* <div className="w-full space-x-3 space-y-1 w-3/4 "
            style={{ display: `${selectedTab === Tab.DiseasesAndGenetics ? 'block' : 'none'}` }}
-            >
+            > */}
 
-              <div className="space-x-3  flex cursor-pointer  w-3/4  mx-auto border border-gray-300  p-2 rounded-md"
+              {/* <div className="space-x-3  flex cursor-pointer   w-3/4  mx-auto border border-gray-300  p-2 rounded-md"
                 onClick={() => {setToRender(!toRender)}}
               >
             <input
@@ -181,18 +179,15 @@ const Graphs = () => {
                 }
                 </div>
                 
-              </div>
-            </div>
-            
-            <div className="w-3/4 mx-auto">
+              </div> */}
+            {/* </div> */}
+                          Disease Filter: 
+            {/* <div className="w-3/4 mx-auto"> */}
                   <MultiSelect 
-                  options={!searchedDiseases.length ? diseasesList.slice(1).map((disease) => ({
-                    link: disease?.url?._text,
-                    name: _.capitalize(disease?.title?._text),
-                  })) : searchedDiseases.slice(1).map((disease) => ({
-                    link: disease?.url?._text,
-                    name: _.capitalize(disease?.title?._text),
-                  }))}
+              options={diseasesList.slice(1).map((disease) => ({
+                link: disease?.url?._text,
+                name: _.capitalize(disease?.title?._text),
+              }))}
                   displayValue="name"
                   showCheckbox={true}
                   onSelect={(list, selItem) => setFilteredDisease(selItem.link)}
@@ -200,12 +195,13 @@ const Graphs = () => {
                     const name = remItem.link.toString().split('/');
                     setRemovedDisease(name[name.length - 1])
                   }}
-                  placeholder="     Select the Disease"
+                  placeholder="Select the Disease"
               selectedValues={[]}
-                />
-            </div>
-            <div className={`${searchedDiseases.length && toRender? `h-[15rem]` : `hidden`} overflow-y-auto border border-gray-300  ml-0 w-[73.75%] rounded absolute left-[11rem]`}>
-              <ul className="px-2 w-100 rounded ">
+            />
+            
+            {/* </div> */}
+            {/* <div className={`${searchedDiseases.length && toRender? `h-[15rem]` : `hidden`} bg-white z-10 overflow-y-auto border border-gray-300  ml-0 w-[73.75%] rounded absolute left-[11rem]`}>
+              <ul className="px-2 w-100 rounded bg-white z-10">
                               {
                   searchedDiseases.length ? searchedDiseases.map((disease) => (
                     <li key={disease.url._text} className="cursor-pointer p-2 w-100 hover:bg-[#0096fb] hover:text-white">
@@ -220,7 +216,7 @@ const Graphs = () => {
                   )) : <li className="py-1 px-3" >No Results</li>
                    }
                     </ul> 
-              </div>
+              </div> */}
                 <div 
                   id="graphUpdateLoaderContainer"
                   style={{
