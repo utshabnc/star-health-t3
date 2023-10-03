@@ -19,6 +19,7 @@ import ExerciseTracker from "../../components/ExerciseTracker/ExerciseTracker";
 import PatientIntakeForm from "../../components/PatientIntakeForm/PatientIntakeForm";
 import FoodJournal from "../../components/FoodJournal/FoodJournal";
 import SubstanceTracker from "../../components/SubstanceTracker/SubstanceTracker";
+import AncestryTree from "../../components/AncestryTree";
 import Bookmark from "../../components/Bookmark";
 import { useSession } from "next-auth/react";
 import { trpc } from "../../utils/trpc";
@@ -148,49 +149,49 @@ const removeBookmark = trpc.db.removeBookmarkById.useMutation();
     },
     {
         label: "Comparison Tool",
-        img: recipesimg,
+        img: comparisonImg,
         route: '/tools',
         linkparam: 'comparison'
         },
     {
         label: "Mental Health Diary",
-        img: recipesimg,
+        img: mentalHealthImg,
         route: '/tools',
         linkparam: 'mental_health_diary'
         },
     {
         label: "Drug Journal",
-        img: recipesimg,
+        img: drugjournalImg,
         route: '/tools',
         linkparam: 'drug_journal'
         },
     {
         label: "Exercise Tracker",
-        img: recipesimg,
+        img: exerciseTrackerImg,
         route: '/tools',
         linkparam: 'exercise_tracker'
         },
     {
         label: "Patient Intake Form",
-        img: recipesimg,
+        img: patientIntakeImg,
         route: '/tools',
         linkparam: 'patient_intake_form'
         },
     {
         label: "Food Journal",
-        img: recipesimg,
+        img: foodJournalImg,
         route: '/tools',
         linkparam: 'food_journal'
         },
     {
         label: "Substance Tracker",
-        img: recipesimg,
+        img: substanceAbuseImg,
         route: '/tools',
         linkparam: 'substance_tracker'
         },
     {
         label: "Bookmarks",
-        img: recipesimg,
+        img: bookmarkImg,
         route: '/tools',
         linkparam: 'bookmark'
         },
@@ -290,15 +291,6 @@ const removeBookmark = trpc.db.removeBookmarkById.useMutation();
             </div>
         )
     };
-
-    const AncestryTree = () => {
-        return (
-            <div>
-
-            </div>
-        );
-    }
-
     const NutritionTableHead = () => {
         if (!showTableHead) {
             return null;
