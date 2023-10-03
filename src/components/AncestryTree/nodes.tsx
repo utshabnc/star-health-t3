@@ -23,11 +23,11 @@ export const Person: React.FC<PersonNode> = (props: PersonNode) => {
     const {id, name, age, place_of_birth} = props;
 
     return (
-        <div id={id} className="rounded-full">
-            <button className="rounded-full">
+        <div>
+            <button id={id} className="m-4 p-4 border-2 rounded-full border-stone-500 hover:border-indigo-600 object-contain">
                 <h3>{name}</h3>
-                <p>Age: {age} </p>
-                <p>Place Of Birth: {place_of_birth}</p>
+                <p className="text-slate-400">Age: {age} </p>
+                <p className="text-slate-400">From: {place_of_birth} </p>
             </button>
         </div>
     )
@@ -37,9 +37,9 @@ export const Person: React.FC<PersonNode> = (props: PersonNode) => {
 export const Spouse: React.FC<SpousalNode> = (props: SpousalNode) => {
     const {id, main_person, spouse} = props;
     return (
-        <div id={id} className="flex flex-row space-x-5">
+        <div id={id} className="flex flex-row justify-center">
             <Person id={main_person.id} name={main_person.name} age={main_person.age} place_of_birth={main_person.place_of_birth} />
-            <Xarrow start={main_person.id} end={spouse.id} showHead={false} lineColor={"#4C25DF"}/>
+            <Xarrow start={main_person.id} end={spouse.id}  showHead={false} lineColor={"#4C25DF"}/>
             <Person id={spouse.id} name={spouse.name} age={spouse.age} place_of_birth={spouse.place_of_birth} />
         </div>
     )
@@ -50,7 +50,7 @@ export const Ancestry: React.FC<AncestryNode> = (props: AncestryNode) => {
     const {item, branches} = props;
 
     const edges = branches.map((branch) => {
-        return <Xarrow start={item.id} end={branch.item.id} showHead={false} lineColor={"#4C25DF"} key={branch.item.id}/>
+        return <Xarrow start={item.id} end={branch.item.id} showHead={false} startAnchor={"bottom"} endAnchor={"top"} lineColor={"#4C25DF"} key={branch.item.id}/>
     });
 
     const branchNodes = branches.map((branch) => {
@@ -58,7 +58,7 @@ export const Ancestry: React.FC<AncestryNode> = (props: AncestryNode) => {
     })
     
     return (
-        <div>
+        <div className="flex flex-col justify-center">
             {
                 'name' in item ? 
                     <Person id={item.id} name={item.name} age={item.age} place_of_birth={item.place_of_birth} />
@@ -68,7 +68,7 @@ export const Ancestry: React.FC<AncestryNode> = (props: AncestryNode) => {
             {
                 edges
             }
-        <div className="flex flex-row">
+        <div className="flex flex-row justify-center">
             {
                 branchNodes
             }
