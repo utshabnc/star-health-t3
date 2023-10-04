@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { HiOutlinePlus } from 'react-icons/hi';
 import Xarrow from "react-xarrows";
 
 export interface PersonNode {
@@ -24,10 +25,22 @@ export const Person: React.FC<PersonNode> = (props: PersonNode) => {
 
     return (
         <div>
-            <button id={id} className="m-4 p-4 border-2 rounded-full border-stone-500 hover:border-indigo-600 object-contain">
-                <h3>{name}</h3>
-                <p className="text-slate-400">Age: {age} </p>
-                <p className="text-slate-400">From: {place_of_birth} </p>
+            <button id={id} className="m-4 p-4 border-2 rounded-full border-stone-500 hover:border-indigo-600 hover:text-indigo-600 object-contain">
+                {
+                    id ?
+                    (
+                        <div>
+                            <h3>{name}</h3>
+                            <p className="text-slate-400">Age: {age} </p>
+                            <p className="text-slate-400">From: {place_of_birth} </p>
+                        </div>
+                    )
+                    :
+                    (
+                    <HiOutlinePlus />
+                    )
+
+                }
             </button>
         </div>
     )
