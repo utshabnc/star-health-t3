@@ -24,6 +24,10 @@ const AncestryTree: React.FC = () => {
     });
 
     const [showPopup, setShowPopup] = useState<boolean>(false);
+    const [showEdit, setShowEdit] = useState<boolean>(false);
+    const [showChild, setShowChild] = useState<boolean>(false);
+    const [showParent, setShowParent] = useState<boolean>(false);
+    const [showSpouse, setShowSpouse] = useState<boolean>(false);
 
     const addNodeForm = (event) => {
         event.preventDefault();
@@ -56,11 +60,20 @@ const AncestryTree: React.FC = () => {
     };
 
     
-
     const addPerson = (person: PersonNode) => {
         ancestry.item = person;
         setAncestry(ancestry);
         setShowPopup(false);
+    }
+
+    const editPerson = (person: PersonNode) => {
+        const currentNode = findNode(id);
+        if (currentNode === null) {
+            alert('Node not found!');
+        }
+        currentNode.item = person;
+        setShowPopup(false);
+        setShowEdit(false);
     }
 
     const addParent = (parent: PersonNode) => {
@@ -75,29 +88,18 @@ const AncestryTree: React.FC = () => {
         setAncestry(newAncestry);
         
         setShowPopup(false);
-        setCount(count + 1);
+        setShowParent(false);
         return;
     }
 
     const addChild = (child: PersonNode) => {
-        const child_demo = {
-            id: "childid",
-            name: "Child Person",
-            age: 5,
-            place_of_birth: "San Jose, CA, USA"
-        };
         const currentNode = findNode(id);
-        currentNode?.branches.push({item:child_demo, branches:[]});
+        currentNode?.branches.push({item:child, branches:[]});
         setShowPopup(false);
+        setShowChild(false);
     }
 
     const addSpouse = (spouse: PersonNode) => {
-        const spouse_demo = {
-            id: "spouseid",
-            name: "Spuse Person",
-            age: 25,
-            place_of_birth: "San Jose, CA, USA"
-        };
         const currentNode = findNode(id);
         if (!currentNode) {
             alert('Node not found!');
@@ -108,13 +110,76 @@ const AncestryTree: React.FC = () => {
             return
         }
         currentNode.item = {
-            id: "spousalId",
+            id: Date.now().toString(),
             main_person: (currentNode.item as PersonNode),
-            spouse: spouse_demo
+            spouse: spouse
         }
         setShowPopup(false);
+        setShowSpouse(false);
     }
 
+    const cancel = () => {
+        setShowPopup(false);
+        setShowEdit(false);
+        setShowParent(false);
+        setShowSpouse(false);
+        setShowChild(false);
+    }
+
+    const chooseNodeType = () => {
+        if (!showEdit && !showParent && !showSpouse && !showChild ) {
+            return (
+                <div className="grid grid-cols-2">
+                    <div>
+
+                        <button className="border rounded-full p-3 bg-indigo-600 text-white" onClick={() => setShowEdit(true)}>
+                            Edit Person
+                        </button> 
+                    </div>
+                    <div className="flex flex-col gap-3">
+                        <div>
+                        <button className="border rounded-full p-3 bg-indigo-600 text-white" onClick={() => setShowParent(true)}>
+                            Add Parent
+                        </button> 
+                        </div>
+                        <div>
+                        <button className="border rounded-full p-3 bg-indigo-600 text-white" onClick={() => setShowSpouse(true)}>
+                            Add Spouse
+                        </button> 
+                        </div>
+                        <div>
+                        <button className="border rounded-full p-3 bg-indigo-600 text-white" onClick={() => setShowChild(true)}>
+                            Add Child
+                        </button> 
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+        if (showEdit) {
+            return (
+                <AncestryInfo nodeFns={[editPerson, cancel]} fnNames={["Edit Information", "Go Back"]} />
+            ); 
+        }
+        if (showParent) {
+            return (
+                <AncestryInfo nodeFns={[addParent, cancel]} fnNames={["Add Parent", "Go Back"]} />
+            ); 
+        }
+        if (showSpouse) {
+            return (
+                <AncestryInfo nodeFns={[addSpouse, cancel]} fnNames={["Add Spouse", "Go Back"]} />
+            ); 
+        }
+        if (showChild) {
+            return (
+                <AncestryInfo nodeFns={[addChild, cancel]} fnNames={["Edit Information", "Go Back"]} />
+            ); 
+        }
+        return (
+            <div></div>
+        );
+    }
 
     return(
         <div className="w-screen height-screen">
@@ -126,7 +191,7 @@ const AncestryTree: React.FC = () => {
                 (
                     ancestry.item.id ? 
                     (
-                        <AncestryInfo nodeFns={[addParent, addChild, addSpouse]} fnNames={["Add Parent", "Add Child", "Add Spouse"]}/>
+                        chooseNodeType()
                     )
                     :
                     (

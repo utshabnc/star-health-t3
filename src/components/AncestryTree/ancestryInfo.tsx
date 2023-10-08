@@ -41,15 +41,21 @@ export interface PersonalData {
 }
 
 
-export interface AddNodeType {
-    nodeFns: (() => void)[];
+interface AddNodeTypeRequired {
+    nodeFns: ((person: PersonNode) => void)[];
     fnNames: string[];
 }
 
+interface AddNodeTypeOptional {
+    person?: PersonalData;
+}
 
-export const AncestryInfo: React.FC<AddNodeType> = (props: AddNodeType) => {
-    const {nodeFns, fnNames } = props
-    const [personalData, setPersonalData] = useState<PersonalData>({
+export interface AddNodeType
+extends AddNodeTypeRequired, AddNodeTypeOptional {}
+
+
+const defaultProps: AddNodeTypeOptional = {
+    person: {
         name: "",
         gender: "",
         dateOfBirth: new Date("10-06-2023"), 
@@ -85,17 +91,83 @@ export const AncestryInfo: React.FC<AddNodeType> = (props: AddNodeType) => {
         genealogicalRecord: "",
         educationHistory: "",
         specialAchievements: ""
-    });
-    const [personNode, setPersonNode] = useState<PersonNode>();
+    }
+};
+
+
+export const AncestryInfo: React.FC<AddNodeType> = (props: AddNodeType) => {
+    const {nodeFns, fnNames, person} = props;
+    const id = Date.now().toString();
+    const [personalData, setPersonalData] = useState<PersonalData>(person);
     const [tab, setTab] = useState<string>("personalInfo");
-    const [isAlive, setIsAlive] = useState<boolean>(true);
 
     const changeInput = (event) => {
         event.preventDefault();
+        const dateInputs = ["dateOfBirth", "dateOfDeath"];
         if (event.target.name in personalData) {
-            personalData[event.target.name] = event.target.value;  
+            if (dateInputs.includes(event.target.name)) {
+
+                personalData[event.target.name] = new Date(event.target.value);
+            }
+            else {
+                personalData[event.target.name] = event.target.value;
+            }
         }
+
     };
+
+    const submitPerson = (nodeFn: (person: PersonNode) => void) => {
+        if (personalData.name === ""   || personalData.placeOfBirth === "") {
+            alert("Please fill out Personal Information!");
+            return;
+        }
+        
+        nodeFn({
+            id: id,
+            name: personalData.name,
+            age: getAge(personalData.dateOfBirth),
+            place_of_birth: personalData.placeOfBirth,
+            personalData: personalData
+        });
+
+        setPersonalData({
+            name: "",
+            gender: "",
+            dateOfBirth: new Date("10-06-2023"), 
+            placeOfBirth: "",
+            alive: false,
+            dateOfDeath: new Date("10-06-2023"),
+            placeOfDeath: "",
+            causeOfDeath: "",
+            maritalStatus: "",
+            biographicalInfo: "",
+            medicalHistory: "",
+            stories: "",
+            accomplishments: "",
+            religiousAffiliation: "",
+            ethnicity: "",
+            militaryService: "",
+            occupation: "",
+            placeOfResidence: "",
+            socialMediaLinks: "",
+            immigrationDetails: "",
+            languagesSpoken: "",
+            nickname: "",
+            favoriteQuotes: "",
+            favoriteHobbies: "",
+            pets: "",
+            travelHistory: "",
+            politicalAffiliation: "",
+            religiousPractices: "",
+            favoriteMedia: "",
+            businessVentures: "",
+            familyTraditions: "",
+            criminalRecord: "",
+            genealogicalRecord: "",
+            educationHistory: "",
+            specialAchievements: ""
+        });
+    }
 
     const renderInputType = (property: string) => {
         const oneLineInputs = ["name", "placeOfBirth", "placeOfDeath", "causeOfDeath", "ethnicity", "occupation", "placeOfResidence", "nickname", "pets", "politicalAffiliation", "favoriteMedia"];
@@ -115,11 +187,12 @@ export const AncestryInfo: React.FC<AddNodeType> = (props: AddNodeType) => {
                             property.replace(property[0], property[0]?.toUpperCase()).replace(/([a-z])([A-Z])/g, '$1 $2')
                         } 
                     </label>
-                    <input name={property}  onChange={changeInput} onClick={(e) => e.preventDefault()}/>
+                    <input className="w-full rounded-lg border border-violet-900 bg-violet-100" defaultValue={personalData[property]} name={property}  onChange={changeInput} onClick={(e) => e.preventDefault()}/>
                 </div>
             );
         }
         else if (dateInputs.includes(property)) {
+            const dateString = personalData[property].toLocaleDateString();
             return (
                 <div key={property} className="mb-4">
                     <label className="block text-sm font-bold mb-2 text-left">
@@ -127,7 +200,7 @@ export const AncestryInfo: React.FC<AddNodeType> = (props: AddNodeType) => {
                             property.replace(property[0], property[0]?.toUpperCase()).replace(/([a-z])([A-Z])/g, '$1 $2')
                         } 
                     </label>
-                    <input name={property} type="date"/>
+                    <input className="w-1/4 rounded-lg border border-violet-900 bg-violet-100" defaultValue={dateString} name={property} onChange={changeInput} type="date"/>
                 </div>
             );
         }
@@ -139,7 +212,7 @@ export const AncestryInfo: React.FC<AddNodeType> = (props: AddNodeType) => {
                             property.replace(property[0], property[0]?.toUpperCase()).replace(/([a-z])([A-Z])/g, '$1 $2')
                         } 
                     </label>
-                    <textarea name={property} />
+                    <textarea className="w-full rounded-lg border border-violet-900 bg-violet-100" defaultValue={personalData[property]} name={property} />
                 </div>
             );
         }
@@ -151,7 +224,7 @@ export const AncestryInfo: React.FC<AddNodeType> = (props: AddNodeType) => {
                             property.replace(property[0], property[0]?.toUpperCase()).replace(/([a-z])([A-Z])/g, '$1 $2')
                         } 
                     </label>
-                    <input name={property} type="checkbox" onClick={(e) => e.preventDefault()}/>
+                    <input className="w-full rounded-lg border border-violet-900 bg-violet-100" defaultValue={personalData[property]} name={property} type="checkbox" onClick={(e) => e.preventDefault()}/>
                 </div>
 
             );
@@ -164,7 +237,7 @@ export const AncestryInfo: React.FC<AddNodeType> = (props: AddNodeType) => {
                             property.replace(property[0], property[0]?.toUpperCase()).replace(/([a-z])([A-Z])/g, '$1 $2')
                         } 
                     </label>
-                    <select name={property} onChange={changeInput}>
+                    <select className="w-1/4 bg-inherit rounded-lg border border-violet-900 bg-violet-100" defaultValue={personalData[property]} name={property} onChange={changeInput}>
                         {
                             dropdownInputs[property].map((dropdownOption) => {
                                 return (
@@ -178,6 +251,16 @@ export const AncestryInfo: React.FC<AddNodeType> = (props: AddNodeType) => {
         }
         return;
 
+    };
+
+    const getAge = (date: Date) => {
+        const today = new Date();
+        let age = today.getFullYear() - date.getFullYear();
+        const month = today.getMonth() - date.getMonth();
+        if (month < 0 && today.getDate() < date.getDate()) {
+            age -= 1;
+        }
+        return age;
     };
 
 
@@ -225,8 +308,10 @@ export const AncestryInfo: React.FC<AddNodeType> = (props: AddNodeType) => {
     }
     return (
         <div>
-            <h1 className="text-lg">
-                Ancestry Information
+            <h1 className="text-lg text-bold">
+                {
+                    fnNames[0]
+                }
             </h1>
             <ul className="flex justify-center space-x-5">
                 <li className="text-lg">
@@ -272,7 +357,7 @@ export const AncestryInfo: React.FC<AddNodeType> = (props: AddNodeType) => {
                         )
                         :
                         (
-                            <button id="biographicalInfo" className="focus:bg-indigo-600 focus:text-white px-3 rounded" onClick={switchTab}>
+                            <button id="biographicalInfo" className="px-3 rounded" onClick={switchTab}>
                                 Biographical Information
                             </button>
                         )
@@ -296,7 +381,7 @@ export const AncestryInfo: React.FC<AddNodeType> = (props: AddNodeType) => {
                     }
                 </li>
             </ul>
-            <div className="grid grid-cols-2 m-5">
+            <div className="grid grid-cols-2 m-5 gap-3">
             {
                 tabContents(tab)
             }
@@ -305,7 +390,7 @@ export const AncestryInfo: React.FC<AddNodeType> = (props: AddNodeType) => {
            {
             nodeFns.map((fn, index) => {
                 return (
-                    <button onClick={fn} key={fnNames[index]}>
+                    <button className="hover:bg-indigo-600 hover:text-white rounded px-3" onClick={() => submitPerson(fn)} key={fnNames[index]}>
                         {fnNames[index]}
                     </button>
                 )
@@ -315,3 +400,5 @@ export const AncestryInfo: React.FC<AddNodeType> = (props: AddNodeType) => {
     )
 
 }
+
+AncestryInfo.defaultProps = defaultProps;
