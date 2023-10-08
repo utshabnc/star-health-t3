@@ -11,6 +11,7 @@ import mentalHealthImg from "../../assets/logos/mentalHealthDiary.png";
 import patientIntakeImg from "../../assets/logos/patientIntake.png";
 import substanceAbuseImg from "../../assets/logos/substanceAbuse.png";
 import comparisonImg from "../../assets/logos/comparison.png"
+import ancestryTreeImg from "../../assets/logos/ancestrytree.png";
 import ToolsTab from "./ToolsTab";
 import Compare from "../../components/Compare";
 import MentalHealthDiary from "../../components/MentalHealthDiary";
@@ -143,7 +144,7 @@ const removeBookmark = trpc.db.removeBookmarkById.useMutation();
     },
     {
         label: "Ancestry Tree",
-        img: recipesimg,
+        img: ancestryTreeImg,
         route: '/tools',
         linkparam: 'ancestry_tree'
     },
