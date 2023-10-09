@@ -1,6 +1,5 @@
 import { useSession } from "next-auth/react";
 import { useState, useRef } from "react";
-import { set, update } from "lodash";
 import {type AncestryNode, Ancestry, type PersonNode, type SpousalNode} from './nodes';
 
 import { AncestryInfo } from "./ancestryInfo";
@@ -29,7 +28,7 @@ const AncestryTree: React.FC = () => {
     const [showParent, setShowParent] = useState<boolean>(false);
     const [showSpouse, setShowSpouse] = useState<boolean>(false);
 
-    const addNodeForm = (event) => {
+    const addNodeForm = (event: any) => {
         event.preventDefault();
         setId(event.target.id);
         setShowPopup(true);
@@ -41,8 +40,10 @@ const AncestryTree: React.FC = () => {
         let searchTargets = [copyAncestry]
         while (searchTargets.length > 0) {
             const node = searchTargets.shift();
+            if (!node) {
+                return null;
+            }
             searchTargets = searchTargets.concat(node.branches);
-            console.log(`Current Item Id: ${node?.item.id}\n Searching Id:${id}`);
             if (id === node?.item.id) {
                 return node;
             }
@@ -54,7 +55,6 @@ const AncestryTree: React.FC = () => {
                     return node
                 }
             }
-            console.log(searchTargets);
         }
         return null;
     };
@@ -70,6 +70,7 @@ const AncestryTree: React.FC = () => {
         const currentNode = findNode(id);
         if (currentNode === null) {
             alert('Node not found!');
+            return;
         }
         currentNode.item = person;
         setShowPopup(false);
@@ -80,6 +81,7 @@ const AncestryTree: React.FC = () => {
         const currentNode = findNode(id);
         if (currentNode === null) {
             alert('Node not found!');
+            return;
         }
         const newAncestry = {
             item: parent,
@@ -103,11 +105,11 @@ const AncestryTree: React.FC = () => {
         const currentNode = findNode(id);
         if (!currentNode) {
             alert('Node not found!');
-            return
+            return;
         }
         if ("main_person" in currentNode.item) {
             alert("Can't add spouse already married spouse")
-            return
+            return;
         }
         currentNode.item = {
             id: Date.now().toString(),
