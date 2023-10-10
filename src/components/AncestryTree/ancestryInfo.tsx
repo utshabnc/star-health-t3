@@ -216,7 +216,7 @@ export const AncestryInfo: React.FC<AddNodeType> = (props: AddNodeType) => {
                             property.replace((property[0] as string), (property[0]?.toUpperCase() as string)).replace(/([a-z])([A-Z])/g, '$1 $2')
                         } 
                     </label>
-                    <textarea className="w-full rounded-lg border border-violet-900 bg-violet-100" defaultValue={defaultValue as string} name={property}  onChan={changeInput}/>
+                    <textarea className="w-full rounded-lg border border-violet-900 bg-violet-100" defaultValue={defaultValue as string} name={property}  onChange={changeInput}/>
                 </div>
             );
         }
