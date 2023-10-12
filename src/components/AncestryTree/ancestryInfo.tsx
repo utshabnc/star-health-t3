@@ -118,8 +118,8 @@ export const AncestryInfo: React.FC<AddNodeType> = (props: AddNodeType) => {
 
     };
 
-    const submitPerson = (nodeFn: (person: PersonNode) => void) => {
-        if (personalData.name === ""   || personalData.placeOfBirth === "") {
+    const submitPerson = (nodeFn: (((person: PersonNode) => void)) | (() => void))  => {
+        if (nodeFn.name !== "cancel" && (personalData.name === ""   || personalData.placeOfBirth === "")) {
             alert("Please fill out Personal Information!");
             return;
         }
@@ -277,8 +277,8 @@ export const AncestryInfo: React.FC<AddNodeType> = (props: AddNodeType) => {
     const tabContents = (tab: string) => {
         const personalInfo = ["name", "gender", "dateOfBirth", "placeOfBirth"];
         const lifeEvents = ["dateOfDeath", "placeOfDeath", "causeOfDeath", "maritalStatus"];
-        const biographicalInfo = ["biographicalInfo", "medicalHistory", "injuries", "stories", "accomplishments", "religiousAffiliation", "ethnicity", "militaryService", "occupation", "placeOfResidence", "socialMediaLinks"];
-        const additionalInfo = ["mentalHealthHistory", "immigrationDetails", "languagesSpoken", "nickname", "favoriteQuotes", "favoriteHobbies", "pets", "travelHistory", "politicalAffiliation", "religiousPractices", "favoriteMedia", "businessVentures", "familyTraditions", "criminalRecord", "genealogicalRecord", "educationHistory", "specialAchievements"];
+        const biographicalInfo = ["accomplishments", "biographicalInfo", "ethnicity",  "injuries", "medicalHistory", "militaryService", "occupation", "placeOfResidence",  "religiousAffiliation", "socialMediaLinks", "stories"];
+        const additionalInfo = ["businessVentures", "criminalRecord", "educationHistory", "familyTraditions", "favoriteHobbies", "favoriteMedia", "favoriteQuotes",  "genealogicalRecord", "immigrationDetails", "languagesSpoken", "mentalHealthHistory", "nickname", "pets", "politicalAffiliation", "religiousPractices", "specialAchievements" , "travelHistory"];
         switch (tab) {
             case "personalInfo":
                 return (
