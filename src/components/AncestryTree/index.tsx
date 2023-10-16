@@ -11,6 +11,55 @@ const AncestryTree: React.FC = () => {
     const name = session?.user?.name || null;
     const [count, setCount] = useState<number>(0);
     const [id, setId] = useState<string>("");
+    const person = {
+        name: {
+            firstName: "",
+            middleName: "",
+            lastName: ""
+        },
+        gender: "",
+        dateOfBirth: new Date("10-06-2023"), 
+        placeOfBirth: {
+            city: "",
+            state: "",
+            country: ""
+        },
+        alive: false,
+        dateOfDeath: new Date("10-06-2023"),
+        placeOfDeath: {
+            city: "",
+            state: "",
+            country: ""
+        },
+        causeOfDeath: "",
+        maritalStatus: "",
+        biographicalInfo: "",
+        medicalHistory: "",
+        stories: "",
+        accomplishments: "",
+        religiousAffiliation: "",
+        ethnicity: "",
+        militaryService: "",
+        occupation: "",
+        placeOfResidence: "",
+        socialMediaLinks: "",
+        immigrationDetails: "",
+        languagesSpoken: "",
+        nickname: "",
+        favoriteQuotes: "",
+        favoriteHobbies: "",
+        pets: "",
+        travelHistory: "",
+        politicalAffiliation: "",
+        religiousPractices: "",
+        favoriteMedia: "",
+        businessVentures: "",
+        familyTraditions: "",
+        criminalRecord: "",
+        genealogicalRecord: "",
+        educationHistory: "",
+        specialAchievements: ""
+    };
     const [ancestry, setAncestry] = useState<AncestryNode>({
         item: {
             id: userId ? userId : "",
@@ -159,23 +208,24 @@ const AncestryTree: React.FC = () => {
             );
         }
         if (showEdit) {
+            const currentPerson = (findNode(id)?.item as PersonNode);
             return (
-                <AncestryInfo nodeFns={[editPerson, cancel]} fnNames={["Edit Information", "Go Back"]} />
+                <AncestryInfo person={currentPerson.personalData} nodeFns={[editPerson, cancel]} fnNames={["Edit Information", "Go Back"]} />
             ); 
         }
         if (showParent) {
             return (
-                <AncestryInfo nodeFns={[addParent, cancel]} fnNames={["Add Parent", "Go Back"]} />
+                <AncestryInfo person={person} nodeFns={[addParent, cancel]} fnNames={["Add Parent", "Go Back"]} />
             ); 
         }
         if (showSpouse) {
             return (
-                <AncestryInfo nodeFns={[addSpouse, cancel]} fnNames={["Add Spouse", "Go Back"]} />
+                <AncestryInfo person={person} nodeFns={[addSpouse, cancel]} fnNames={["Add Spouse", "Go Back"]} />
             ); 
         }
         if (showChild) {
             return (
-                <AncestryInfo nodeFns={[addChild, cancel]} fnNames={["Edit Information", "Go Back"]} />
+                <AncestryInfo person={person} nodeFns={[addChild, cancel]} fnNames={["Add Child", "Go Back"]} />
             ); 
         }
         return (
