@@ -235,7 +235,7 @@ const Graphs = () => {
         </div>
       </div>
       <div style={{ height: '100%' }}>
-        <PayWall />
+        {/* <PayWall /> */}
         <div id="initialLoadingSpinner">
           <LoadingStarHealth />
         </div>
