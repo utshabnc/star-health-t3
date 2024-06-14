@@ -1,6 +1,6 @@
 // import { type NextPage } from "next";
 // import Head from "next/head";
-// import Link from "next/link";
+import Link from "next/link";
 // import { signIn, signOut, useSession } from "next-auth/react";
 // import { trpc } from "../utils/trpc";
 // ***********************************************************************************************************************************************
@@ -169,23 +169,23 @@ export default function Home() {
               {/* <button type="submit" className='my-4 bg-blue-500 hover:bg-blue-700 text-white text-2xl font-custom py-2 px-4 rounded-full'>
 								Sign In
 							</button> */}
-              <button
-                className="w-62 lg:w-62 h-24 rounded bg-purple-600 px-3 py-1 font-custom text-xl font-extrabold font-medium text-white hover:bg-purple-500 active:bg-purple-600"
-                onClick={() => signIn("google")}
+              <Link
+                className="rounded bg-purple-600 px-3 py-8 font-custom text-xl font-medium text-white hover:bg-purple-500 focus:bg-purple-500"
+                href="/directory"
               >
                 Access Data
-              </button>
+              </Link>
             </div>
           </div>
           <div>
             <iframe
               width="720"
-              height="460"
-              src="https://www.youtube.com/embed/GrAa8Jz-_0E"
+              height="405"
+              src="https://www.youtube.com/embed/JMG0hYFhH0o?autoplay=1"
               title="StarHealth.io - Comprehensive Healthcare Data Tool"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture;"
               allowFullScreen
-            ></iframe>
+            />
           </div>
         </div>
 

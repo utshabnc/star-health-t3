@@ -64,7 +64,7 @@ const pricing = () => {
           <div className="mt-auto flex flex-wrap items-center justify-center">
             <div
               className="button m-0 inline-block  w-[205px] cursor-pointer rounded-lg bg-[#8D47FC] p-[18px] text-white"
-              onClick={() => signIn("google")}
+              // onClick={() => signIn("google")}
             >
               <a className=" font-medium">
                 <BsLightningFill className="absolute left-[54px] mt-[3px]" />{" "}
@@ -88,7 +88,7 @@ const pricing = () => {
           </p> */}
           <div className="mt-auto flex flex-wrap items-center justify-center">
             <div
-              onClick={() => signIn("google")}
+              // onClick={() => signIn("google")}
               className="button m-0 inline-block  w-[205px] cursor-pointer rounded-lg bg-[#8D47FC] p-[18px] text-white"
             >
               <a className=" font-medium">
@@ -112,7 +112,7 @@ const pricing = () => {
           <p className="mb-[125px] font-medium italic">Best for Large Teams</p> */}
           <div className="mt-auto flex flex-wrap items-center justify-center">
             <div
-              onClick={() => signIn("google")}
+              // onClick={() => signIn("google")}
               className="button m-0 inline-block  w-[205px] cursor-pointer rounded-lg bg-purple-800 p-[18px] text-white"
             >
               <a className=" font-medium">
