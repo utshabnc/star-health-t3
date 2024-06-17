@@ -105,7 +105,7 @@ function Footer() {
 						</Link> */}
 
           <div>
-            <p className="">StarHealth Inc. | All Rights Reserved 2023</p>
+            <p>© 2024 StarHealth, Inc. All rights reserved.</p>
           </div>
         </div>
       </div>
