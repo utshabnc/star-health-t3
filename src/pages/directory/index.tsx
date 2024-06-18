@@ -18,7 +18,10 @@ import type {
   FieldValueLegacy,
   FieldValue,
 } from "../../components/ClinicalTrials/ClinicalTrialsFieldValuesResponse.model";
-import type {  ClinicalTrialStudies , ClinicalTrialStudy} from "../../components/ClinicalTrials/ClinicalTrialsStudyFieldsResponse.model";
+import type {
+  ClinicalTrialStudies,
+  ClinicalTrialStudy,
+} from "../../components/ClinicalTrials/ClinicalTrialsStudyFieldsResponse.model";
 
 import ClinicalTrialsFilters from "../../components/ClinicalTrials/ClinicalTrialsFilters";
 import AutocompleteInput from "../../components/AutoCompleteInput";
@@ -145,7 +148,7 @@ export default function Directory() {
   const [selectedTab, setSelectedTab] = useState<Tab>(Tab.Transactions);
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
   const [clinicalTrialsData, setClinicalTrialsData] = useState<
-  ClinicalTrialStudies<ClinicalTrialStudy>
+    ClinicalTrialStudies<ClinicalTrialStudy>
   >({} as ClinicalTrialStudies<ClinicalTrialStudy>);
   const [hospitalsData, setHospitalsData] = useState<Hospital[]>(
     [] as Hospital[]
@@ -165,40 +168,53 @@ export default function Directory() {
     FieldValueLegacy[]
   >([] as FieldValueLegacy[]);
 
-
-    const [clinicalTrialAcronymFilters, setClinicalTrialAcronymFilters] =
+  const [clinicalTrialAcronymFilters, setClinicalTrialAcronymFilters] =
     useState<FieldValueLegacy[]>([] as FieldValueLegacy[]);
 
-    const [clinicalTrialOfficialTitleFilters, setClinicalTrialOfficialTitleFilters] =
+  const [
+    clinicalTrialOfficialTitleFilters,
+    setClinicalTrialOfficialTitleFilters,
+  ] = useState<FieldValueLegacy[]>([] as FieldValueLegacy[]);
+
+  const [clinicalTrialConditionFilters, setClinicalTrialConditionFilters] =
     useState<FieldValueLegacy[]>([] as FieldValueLegacy[]);
 
-    const [clinicalTrialConditionFilters, setClinicalTrialConditionFilters] =
-    useState<FieldValueLegacy[]>([] as FieldValueLegacy[]);
+  const [
+    clinicalTrialLocationStateFilters,
+    setClinicalTrialLocationStateFilters,
+  ] = useState<FieldValueLegacy[]>([] as FieldValueLegacy[]);
 
-    const [clinicalTrialLocationStateFilters, setClinicalTrialLocationStateFilters] =
-    useState<FieldValueLegacy[]>([] as FieldValueLegacy[]);
+  const [
+    clinicalTrialLocationCityFilters,
+    setClinicalTrialLocationCityFilters,
+  ] = useState<FieldValueLegacy[]>([] as FieldValueLegacy[]);
 
-    const [clinicalTrialLocationCityFilters, setClinicalTrialLocationCityFilters] =
-    useState<FieldValueLegacy[]>([] as FieldValueLegacy[]);
+  const [
+    clinicalTrialLocationCountryFilters,
+    setClinicalTrialLocationCountryFilters,
+  ] = useState<FieldValueLegacy[]>([] as FieldValueLegacy[]);
 
-    const [clinicalTrialLocationCountryFilters, setClinicalTrialLocationCountryFilters] =
-    useState<FieldValueLegacy[]>([] as FieldValueLegacy[]);
+  const [
+    clinicalTrialCollaboratorNameFilters,
+    setClinicalTrialCollaboratorNameFilters,
+  ] = useState<FieldValueLegacy[]>([] as FieldValueLegacy[]);
 
-    const [clinicalTrialCollaboratorNameFilters, setClinicalTrialCollaboratorNameFilters] =
-    useState<FieldValueLegacy[]>([] as FieldValueLegacy[]);
+  const [
+    clinicalTrialLeadSponsorNameFilters,
+    setClinicalTrialLeadSponsorNameFilters,
+  ] = useState<FieldValueLegacy[]>([] as FieldValueLegacy[]);
 
-    const [clinicalTrialLeadSponsorNameFilters, setClinicalTrialLeadSponsorNameFilters] =
-    useState<FieldValueLegacy[]>([] as FieldValueLegacy[]);
+  const [locationContactNameFilters, setLocationContactNameFilters] = useState<
+    FieldValueLegacy[]
+  >([] as FieldValueLegacy[]);
 
+  const [locationFacilityFilters, setLocationFacilityFilters] = useState<
+    FieldValueLegacy[]
+  >([] as FieldValueLegacy[]);
 
-    const [locationContactNameFilters, setLocationContactNameFilters] = 
-    useState<FieldValueLegacy[]>([] as FieldValueLegacy[]);
-
-    const [locationFacilityFilters, setLocationFacilityFilters] =
-    useState<FieldValueLegacy[]>([] as FieldValueLegacy[]);
-
-    const [interventionNameFilters, setInterventionNameFilters] =
-    useState<FieldValueLegacy[]>([] as FieldValueLegacy[]);
+  const [interventionNameFilters, setInterventionNameFilters] = useState<
+    FieldValueLegacy[]
+  >([] as FieldValueLegacy[]);
   const [genetics, setGenetics] = useState<Genetic[]>([] as Genetic[]);
   const [filteredGenetics, setFilteredGenetics] = useState<Genetic[]>(
     [] as Genetic[]
@@ -219,7 +235,6 @@ export default function Directory() {
     Field.NCTId,
     Field.OverallStatus,
   ];
-
 
   const {
     data: searchResults,
@@ -291,8 +306,6 @@ export default function Directory() {
     localStorage.setItem("curDirTab", JSON.stringify({ tab, subject }));
   };
 
- 
-
   useEffect(() => {
     const searchParam = querySearch["search"] as string;
     if (searchParam) {
@@ -307,24 +320,26 @@ export default function Directory() {
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const clinicalTrialsSearch = useCallback(
-    debounce( async (expr: string) => {
+    debounce(async (expr: string) => {
       setIsProcessing(true);
-      
-     try {
-      const response = await fetch(`/api/clinical-trial/all-trials?fields=${defaultClinicalTrialFields.join(",")}&expr=${expr}`);
-      const data = await response.json();
-      if(response.status != 200) {
-        setError(data);
-      } else {
-        setClinicalTrialsData(data);
+
+      try {
+        const response = await fetch(
+          `/api/clinical-trial/all-trials?fields=${defaultClinicalTrialFields.join(
+            ","
+          )}&expr=${expr}`
+        );
+        const data = await response.json();
+        if (response.status != 200) {
+          setError(data);
+        } else {
+          setClinicalTrialsData(data);
+        }
+      } catch (error) {
+        setError(error);
+      } finally {
+        setIsProcessing(false);
       }
-     }
-     catch(error) {
-      setError(error);
-     }
-     finally {
-      setIsProcessing(false);
-     }
     }, 1000),
     []
   );
@@ -442,13 +457,16 @@ export default function Directory() {
     }
   }, [selectedTab]);
 
-
   useEffect(() => {
     if (selectedTab == Tab.ClinicalTrials) {
       const fetchClinicalTrials = async () => {
         try {
           setIsApiProcessing(true);
-          const response = await fetch(`/api/clinical-trial/all-trials?fields=${defaultClinicalTrialFields.join(",")}`);
+          const response = await fetch(
+            `/api/clinical-trial/all-trials?fields=${defaultClinicalTrialFields.join(
+              ","
+            )}`
+          );
           const data = await response.json();
           if (response.status != 200) {
             setError(data);
@@ -462,25 +480,25 @@ export default function Directory() {
         }
       };
       fetchClinicalTrials();
-      loadFilterData()
+      loadFilterData();
     }
-  }, [selectedTab])
+  }, [selectedTab]);
 
-  const getClinicalTrialFieldValuesRequest = async (field :  Field) => {
+  const getClinicalTrialFieldValuesRequest = async (field: Field) => {
     try {
-      const response = await fetch(`/api/clinical-trial/getFieldValues?fieldValue=${field}`);
+      const response = await fetch(
+        `/api/clinical-trial/getFieldValues?fieldValue=${field}`
+      );
       const data = await response.json();
       if (response.status != 200) {
         setError(data);
-      }
-      else {
+      } else {
         return data;
       }
-    }
-    catch (error) {
+    } catch (error) {
       setError(error);
     }
-  }
+  };
 
   const loadFilterData = async () => {
     const filterRequests = [
@@ -499,14 +517,13 @@ export default function Directory() {
       Field.LeadSponsorName,
       Field.LocationContactName,
       Field.LocationFacility,
-      Field.InterventionName
-    ].map((field : Field) => getClinicalTrialFieldValuesRequest(field));
+      Field.InterventionName,
+    ].map((field: Field) => getClinicalTrialFieldValuesRequest(field));
 
     const filterResponses = await Promise.all(filterRequests);
-   
 
-    filterResponses.forEach((data , index) => {
-      const field  = [
+    filterResponses.forEach((data, index) => {
+      const field = [
         Field.OverallStatus,
         Field.Gender,
         Field.HealthyVolunteers,
@@ -519,56 +536,55 @@ export default function Directory() {
         Field.LocationCity,
         Field.LocationCountry,
         Field.CollaboratorName,
-        Field.LeadSponsorName ,
+        Field.LeadSponsorName,
         Field.LocationContactName,
         Field.LocationFacility,
-        Field.InterventionName
-      ][index]
+        Field.InterventionName,
+      ][index];
 
       switch (field) {
         case Field.OverallStatus:
-          setClinicalTrialOverallStatusFilters(data.topValues)
-        break;
+          setClinicalTrialOverallStatusFilters(data.topValues);
+          break;
         case Field.Gender:
-          setClinicalTrialGenderFilters(data.topValues)
-        break;
+          setClinicalTrialGenderFilters(data.topValues);
+          break;
         case Field.Acronym:
-          setClinicalTrialAcronymFilters(data.topValues)
-        break;
+          setClinicalTrialAcronymFilters(data.topValues);
+          break;
         case Field.OfficialTitle:
-          setClinicalTrialOfficialTitleFilters(data.topValues)
-        break;
+          setClinicalTrialOfficialTitleFilters(data.topValues);
+          break;
         case Field.Condition:
-          setClinicalTrialConditionFilters(data.topValues)
-        break;
+          setClinicalTrialConditionFilters(data.topValues);
+          break;
         case Field.LocationState:
-          setClinicalTrialLocationStateFilters(data.topValues)
-        break;
+          setClinicalTrialLocationStateFilters(data.topValues);
+          break;
         case Field.LocationCity:
-          setClinicalTrialLocationCityFilters(data.topValues)
-        break;
+          setClinicalTrialLocationCityFilters(data.topValues);
+          break;
         case Field.LocationCountry:
-          setClinicalTrialLocationCountryFilters(data.topValues)
-        break;
+          setClinicalTrialLocationCountryFilters(data.topValues);
+          break;
         case Field.CollaboratorName:
-          setClinicalTrialCollaboratorNameFilters(data.topValues)
-        break;
+          setClinicalTrialCollaboratorNameFilters(data.topValues);
+          break;
         case Field.LeadSponsorName:
-          setClinicalTrialLeadSponsorNameFilters(data.topValues)
-        break;
+          setClinicalTrialLeadSponsorNameFilters(data.topValues);
+          break;
         case Field.LocationContactName:
-          setLocationContactNameFilters(data.topValues)
-        break;
+          setLocationContactNameFilters(data.topValues);
+          break;
         case Field.LocationFacility:
-          setLocationFacilityFilters(data.topValues)
-        break;
+          setLocationFacilityFilters(data.topValues);
+          break;
         case Field.InterventionName:
-          setInterventionNameFilters(data.topValues)
-        break;
+          setInterventionNameFilters(data.topValues);
+          break;
       }
-    })
-    
-  }
+    });
+  };
 
   useEffect(() => {
     if (selectedTab == Tab.HospitalOwners) {
@@ -624,13 +640,10 @@ export default function Directory() {
       if (clinicalTrialSearchExpr.length > 1) {
         searchExpr = `${clinicalTrialSearchKeywordExpr} AND ${clinicalTrialSearchExpr}`;
       } else {
-
         searchExpr = clinicalTrialSearchKeywordExpr;
-
       }
     } else {
       searchExpr = clinicalTrialSearchExpr;
-
     }
 
     clinicalTrialsSearch(searchExpr);
@@ -934,7 +947,6 @@ export default function Directory() {
                     handleTabClick(Tab.ClinicalTrials, "");
                     setIsProcessing(true);
                     loadFilterData();
-                    
                   }}
                   className={`whitespace-nowrap border-b-2 hover:border-zinc-500 ${
                     selectedTab === Tab.ClinicalTrials
@@ -1159,7 +1171,7 @@ export default function Directory() {
             <div className="my-1">
               <hr />
             </div>
-            
+
             {selectedTab == Tab.Plans && (
               <div className="flex flex-col items-end">
                 <HealthPlansFilters
@@ -1240,156 +1252,151 @@ export default function Directory() {
                 />
               </div>
             )}
-
-           
           </div>
         </div>
-        <div className="relative flex flex-wrap h-[100%] w-full justify-center">
-        {/**{(location.hostname !== "localhost") ?
+        <div className="relative flex h-[100%] w-full flex-wrap justify-center">
+          {/**{(location.hostname !== "localhost") ?
         <SignIn/> : ""}**/}
 
-
           {selectedTab === Tab.ClinicalTrials && (
-              <div>
-                <ClinicalTrialsFilters
-                  Gender={clinicalTrialGenderFilters}
-                  Acronym={clinicalTrialAcronymFilters}
-                  OfficialTitle={clinicalTrialOfficialTitleFilters}
-                  Condition={clinicalTrialConditionFilters}
-                  LocationState={clinicalTrialLocationStateFilters}
-                  LocationCity={clinicalTrialLocationCityFilters}
-                  LocationCountry={clinicalTrialLocationCountryFilters}
-                  CollaboratorName={clinicalTrialCollaboratorNameFilters}
-                  LeadSponsorName={clinicalTrialLeadSponsorNameFilters}
-                  OverallStatus={clinicalTrialOverallStatusFilters}
-                  LocationContactName={locationContactNameFilters}
-                  LocationFacility={locationFacilityFilters}
-                  InterventionName={interventionNameFilters}
-                  OnSearchExprChange={(expr: string) => {
-                    setClinicalTrialSearchExpr(expr);
-                  }}
-                />
-                <div className="my-1">
-                  <hr />
-                </div>
-                <p className="p-1 text-xs font-semibold text-violet-900">
-                  Search for clinical trials
-                </p>
-                <div className="flex w-[100%] items-center gap-3">
-                  <AutocompleteInput
-                    expr={clinicalTrialSearchKeywordExpr}
-                    setExpr={setClinicalTrialSearchKeywordExpr}
-                    options={returnNamesOfClincalNames(
-                      clinicalTrialsData.studies
-                        ? clinicalTrialsData.studies
-                        : [],
-                      "briefTitle"
-                    )}
-                  ></AutocompleteInput>
-                </div>
-                <Image
-                  src={clinicalTrials}
-                  alt=""
-                  width={128}
-                  height={128}
-                  className="absolute -bottom-10 right-0 object-contain"
-                />
+            <div>
+              <ClinicalTrialsFilters
+                Gender={clinicalTrialGenderFilters}
+                Acronym={clinicalTrialAcronymFilters}
+                OfficialTitle={clinicalTrialOfficialTitleFilters}
+                Condition={clinicalTrialConditionFilters}
+                LocationState={clinicalTrialLocationStateFilters}
+                LocationCity={clinicalTrialLocationCityFilters}
+                LocationCountry={clinicalTrialLocationCountryFilters}
+                CollaboratorName={clinicalTrialCollaboratorNameFilters}
+                LeadSponsorName={clinicalTrialLeadSponsorNameFilters}
+                OverallStatus={clinicalTrialOverallStatusFilters}
+                LocationContactName={locationContactNameFilters}
+                LocationFacility={locationFacilityFilters}
+                InterventionName={interventionNameFilters}
+                OnSearchExprChange={(expr: string) => {
+                  setClinicalTrialSearchExpr(expr);
+                }}
+              />
+              <div className="my-1">
+                <hr />
               </div>
-            )}
+              <p className="p-1 text-xs font-semibold text-violet-900">
+                Search for clinical trials
+              </p>
+              <div className="flex w-[100%] items-center  justify-between gap-3">
+                <AutocompleteInput
+                  expr={clinicalTrialSearchKeywordExpr}
+                  setExpr={setClinicalTrialSearchKeywordExpr}
+                  options={returnNamesOfClincalNames(
+                    clinicalTrialsData.studies
+                      ? clinicalTrialsData.studies
+                      : [],
+                    "briefTitle"
+                  )}
+                ></AutocompleteInput>
+              </div>
+              <Image
+                src={clinicalTrials}
+                alt=""
+                width={128}
+                height={128}
+                className="absolute -bottom-10 right-0 object-contain"
+              />
+            </div>
+          )}
 
           {selectedTab !== Tab.ClinicalTrials &&
-              selectedTab !== Tab.Plans &&
-              selectedTab !== Tab.Hospitals &&
-              selectedTab !== Tab.HospitalOwners &&
-              selectedTab !== Tab.Genetics &&
-              selectedTab !== Tab.Diseases &&
-              selectedTab !== Tab.Food && (
-                <>
-                  <Filters
-                    search={search}
-                    setSearch={setSearch}
-                    data={data}
-                    filterParams={filterParams}
-                    setFilterParams={setFilterParams}
-                  />
-                  {"data" && (
-                    <>
-                      <div>
-                        <p className="p-1 text-xs font-semibold text-violet-900">{`Search for
+            selectedTab !== Tab.Plans &&
+            selectedTab !== Tab.Hospitals &&
+            selectedTab !== Tab.HospitalOwners &&
+            selectedTab !== Tab.Genetics &&
+            selectedTab !== Tab.Diseases &&
+            selectedTab !== Tab.Food && (
+              <div className="mx-5 w-[100%] px-5">
+                <Filters
+                  search={search}
+                  setSearch={setSearch}
+                  data={data}
+                  filterParams={filterParams}
+                  setFilterParams={setFilterParams}
+                />
+                {"data" && (
+                  <>
+                    <p className="p-1 text-xs font-semibold text-violet-900">{`Search for
                             ${
                               filterParams.subject ===
                               "opioidTreatmentProviders"
                                 ? "Opioid Treatment Providers"
                                 : filterParams.subject
                             } by ${
-                          filterParams.subject === "opioidTreatmentProviders" ||
-                          filterParams.subject === "payment"
-                            ? "name"
-                            : "product"
-                        }`}</p>
-                        <div className="flex w-[100%] items-center gap-3">
-                          <AutocompleteInput
-                            expr={filterParams.name ? filterParams.name : ""}
-                            setFilterParam={setFilterParams}
-                            options={
-                              searchResults
-                                ? returnNamesOfObjects(
-                                    searchResults,
-                                    selectedTab
-                                  )
-                                : []
-                            }
-                          ></AutocompleteInput>
+                      filterParams.subject === "opioidTreatmentProviders" ||
+                      filterParams.subject === "payment"
+                        ? "name"
+                        : "product"
+                    }`}</p>
+                    <div className="flex w-[100%] w-full items-center justify-between gap-3">
+                      <div className="flex w-[100%] items-center justify-between gap-3">
+                        <AutocompleteInput
+                          expr={filterParams.name ? filterParams.name : ""}
+                          setFilterParam={setFilterParams}
+                          options={
+                            searchResults
+                              ? returnNamesOfObjects(searchResults, selectedTab)
+                              : []
+                          }
+                        ></AutocompleteInput>
 
-                          <div className="ml-5 flex flex-col items-center">
-                            {filterParams.subject === "transactions" && (
-                              <div className="mb-4 mt-5 w-80">
-                                <div className="slider  h-1 rounded-md bg-violet-100">
-                                  <div
-                                    ref={progressRef}
-                                    className="progress h-2  rounded"
-                                  ></div>
-                                </div>
-                                <div className="range-input ">
-                                  <input
-                                    type="range"
-                                    value={filterParams.price.min}
-                                    onChange={handleMinPrice}
-                                    min={0}
-                                    step={10}
-                                    max={5000}
-                                    name="price-range"
-                                    id="price-range-low"
-                                    className="range-min pointer-events-none absolute -top-1 h-1 w-full cursor-pointer appearance-none bg-transparent accent-violet-500"
-                                  />
-                                  <input
-                                    type="range"
-                                    value={filterParams.price.max}
-                                    onChange={handleMaxPrice}
-                                    min={0}
-                                    step={10}
-                                    max={5000}
-                                    name="price-range"
-                                    id="price-range-high"
-                                    className="range-max pointer-events-none absolute -top-1 h-1 w-full cursor-pointer appearance-none bg-transparent accent-violet-500"
-                                  />
-                                </div>
-                              </div>
-                            )}
-                          </div>
+                        <div className="ml-5 flex flex-col items-center">
                           {filterParams.subject === "transactions" && (
-                            <div className="flex gap-5 text-violet-400">
-                              <p>{formatMoney(filterParams.price.min)}</p>
-                              <p>To</p>
-                              <p>{formatMoney(filterParams.price.max)}</p>
+                            <div className="mb-4 mt-5 w-80">
+                              <div className="slider  h-1 rounded-md bg-violet-100">
+                                <div
+                                  ref={progressRef}
+                                  className="progress h-2  rounded"
+                                ></div>
+                              </div>
+                              <div className="range-input relative">
+                                <input
+                                  type="range"
+                                  value={filterParams.price.min}
+                                  onChange={handleMinPrice}
+                                  min={0}
+                                  step={10}
+                                  max={5000}
+                                  name="price-range"
+                                  id="price-range-low"
+                                  className="range-min pointer-events-none absolute -top-1 h-1 w-full cursor-pointer appearance-none bg-transparent accent-violet-500"
+                                />
+                                <input
+                                  type="range"
+                                  value={filterParams.price.max}
+                                  onChange={handleMaxPrice}
+                                  min={0}
+                                  step={10}
+                                  max={5000}
+                                  name="price-range"
+                                  id="price-range-high"
+                                  className="range-max pointer-events-none absolute -top-1 h-1 w-full cursor-pointer appearance-none bg-transparent accent-violet-500"
+                                />
+                              </div>
                             </div>
                           )}
                         </div>
+                        {filterParams.subject === "transactions" && (
+                          <div className="flex gap-5 text-violet-400">
+                            <p>{formatMoney(filterParams.price.min)}</p>
+                            <p>To</p>
+                            <p>{formatMoney(filterParams.price.max)}</p>
+                          </div>
+                        )}
+                      </div>
+                      <div className="flex">
                         {(selectedTab === Tab.Doctors ||
                           selectedTab === Tab.Manufacturers ||
                           selectedTab === Tab.Transactions ||
                           selectedTab === Tab.Products) && (
-                          <div className="absolute bottom-0 right-0 flex gap-10">
+                          <>
                             <Image
                               src={cms}
                               alt=""
@@ -1404,29 +1411,9 @@ export default function Directory() {
                               height={128}
                               className=" object-contain"
                             />
-                          </div>
+                          </>
                         )}
-                        {(selectedTab === Tab.Doctors ||
-                          selectedTab === Tab.Manufacturers ||
-                          selectedTab === Tab.Transactions ||
-                          selectedTab === Tab.Products) && (
-                          <div className="absolute bottom-0 right-0 flex gap-10">
-                            <Image
-                              src={cms}
-                              alt=""
-                              width={128}
-                              height={128}
-                              className=" object-contain"
-                            />
-                            <Image
-                              src={openPayments}
-                              alt=""
-                              width={128}
-                              height={128}
-                              className=" object-contain"
-                            />
-                          </div>
-                        )}
+
                         {selectedTab === Tab.OpioidTreatmentProviders && (
                           <Image
                             src={cmsDataLogo}
@@ -1446,10 +1433,11 @@ export default function Directory() {
                           />
                         )}
                       </div>
-                    </>
-                  )}
-                </>
-              )}
+                    </div>
+                  </>
+                )}
+              </div>
+            )}
 
           <div className="ml-5 flex min-h-[100%] w-[95%] flex-col overflow-scroll p-1">
             {isApiProcessing && <LoadingStarHealth />}
