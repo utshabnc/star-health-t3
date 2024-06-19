@@ -525,7 +525,7 @@ const removeBookmark = trpc.db.removeBookmarkById.useMutation();
                     </div>
                 </div>
 
-                <div ref={ref} className={`tools-container py-5 text-center border ${!renderRef ? 'hidden' : null}`}
+                <div ref={ref} className={`tools-container py-5 border ${!renderRef ? 'hidden' : null}`}
                 >
                     {renderComponent()}
                     <div className="relative flex h-[100%] w-full justify-center">
