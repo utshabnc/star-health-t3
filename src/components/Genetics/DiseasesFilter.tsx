@@ -68,9 +68,7 @@ export default function DiseasesFilters({ params }: DiseasesFiltersProps) {
     <>
       <div className="w-full">
         <div>
-          <div className="my-1">
-            <hr />
-          </div>
+          <div className="my-1"></div>
           <p className="p-1 text-xs font-semibold text-violet-900">Search by Condition Name</p>
           <div className="flex w-[100%] items-center justify-between gap-3">
           <AutocompleteInput setExpr={setSearchStr} expr={searchStr} options={returnNames(diseaseslist?diseaseslist:[],'title')}></AutocompleteInput>
