@@ -15,7 +15,6 @@ import DrugJournal from "../../components/DrugJournal/DrugJournal";
 import ExerciseTracker from "../../components/ExerciseTracker/ExerciseTracker";
 import SignIn from "../../components/SignIn/SignIn";
 
-
 interface BookmarkInterface {
   id: number;
   title: string;
@@ -45,7 +44,7 @@ const ProfilePage: React.FC = () => {
   });
   const [bookmarks, setBookmarks] = useState<BookmarkInterface[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
-  const [showForm, setShowForm] = useState<boolean>(false);
+  const [showForm, setShowForm] = useState<boolean>(true);
   const [showBookmark, setShowBookmark] = useState(false);
   const [showCompare, setShowCompare] = useState(false);
   const [showFoodJournal, setShowFoodJournal] = useState(false);
@@ -206,7 +205,8 @@ const ProfilePage: React.FC = () => {
       </div>
       <hr className="my-4" />
       <div className="mb-4 flex space-x-4">
-<button  className={`} rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600`}       
+        <button
+          className={`} rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600`}
           disabled={
             showForm &&
             !showBookmark &&
@@ -222,11 +222,12 @@ const ProfilePage: React.FC = () => {
             backgroundColor: !showForm ? "white" : "#885CF6",
             border: !showForm ? "1px solid #885CF6" : "node",
           }}
-            onClick={handleFormToggle}
+          onClick={handleFormToggle}
         >
           Patient Intake Form
         </button>
-<button  className={`} rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600`}       
+        <button
+          className={`} rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600`}
           onClick={handleBookmarkToggle}
           disabled={
             showBookmark &&
@@ -246,7 +247,8 @@ const ProfilePage: React.FC = () => {
         >
           Bookmarks
         </button>
-<button  className={`} rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600`}       
+        <button
+          className={`} rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600`}
           onClick={handleCompareToggle}
           disabled={
             showCompare &&
@@ -266,7 +268,8 @@ const ProfilePage: React.FC = () => {
         >
           Comparison Tool
         </button>
-<button  className={`} rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600`}       
+        <button
+          className={`} rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600`}
           onClick={handleFoodJournalToggle}
           disabled={
             showFoodJournal &&
@@ -286,7 +289,8 @@ const ProfilePage: React.FC = () => {
         >
           Food Journal
         </button>
-<button  className={`} rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600`}       
+        <button
+          className={`} rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600`}
           onClick={handleSubstanceTrackerToggle}
           disabled={
             !showFoodJournal &&
@@ -306,7 +310,8 @@ const ProfilePage: React.FC = () => {
         >
           Substance Tracker
         </button>
-<button  className={`} rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600`}       
+        <button
+          className={`} rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600`}
           onClick={handleMentalDiaryToggle}
           disabled={
             !showFoodJournal &&
@@ -347,7 +352,8 @@ const ProfilePage: React.FC = () => {
         >
           Drug Journal
         </button>
-<button  className={`} rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600`}       
+        <button
+          className={`} rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600`}
           onClick={handleWorkoutJournalToggle}
           disabled={
             !showFoodJournal &&
