@@ -1439,7 +1439,7 @@ export default function Directory() {
               </div>
             )}
 
-          <div className="ml-5 flex min-h-[100%] w-[95%] flex-col overflow-scroll p-1">
+          <div className="ml-5 flex min-h-[100%] w-[95%] flex-col p-1">
             {isApiProcessing && <LoadingStarHealth />}
             {selectedTab === Tab.ClinicalTrials && (
               <ClinicalTrialsComponent data={clinicalTrialsData} />
