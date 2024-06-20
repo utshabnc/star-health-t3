@@ -100,7 +100,7 @@ export default function Directory() {
   const navigate = useRouter();
 
   const [filterParams, setFilterParams] = useState<FilterParams>({
-    subject: (navigate.query.tab as string) ?? "transactions",
+    subject: "",
     state: "",
     city: "",
     zipCode: "",
@@ -145,7 +145,7 @@ export default function Directory() {
   const [isApiProcessing, setIsApiProcessing] = useState<boolean>(false);
   const [healthPlansDataError, setHealthPlansDataError] = useState<string>("");
   const [search, setSearch] = useState<string>();
-  const [selectedTab, setSelectedTab] = useState<Tab>(Tab.Transactions);
+  const [selectedTab, setSelectedTab] = useState<Tab>(Tab.ClinicalTrials);
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
   const [clinicalTrialsData, setClinicalTrialsData] = useState<
     ClinicalTrialStudies<ClinicalTrialStudy>
@@ -260,37 +260,6 @@ export default function Directory() {
     { enabled: false }
   );
 
-  /* makes sure user on the right tab when press back btn */
-  useEffect(() => {
-    const curTab = localStorage.getItem("curDirTab");
-    if (curTab) {
-      const { tab, subject } = JSON.parse(curTab);
-      setSelectedTab(tab);
-      setFilterParams((prev) => {
-        return {
-          ...prev,
-          subject,
-          cursor: "",
-          name: "",
-        };
-      });
-    } else {
-      localStorage.setItem(
-        "curDirTab",
-        JSON.stringify({ tab: selectedTab, subject: "transactions" })
-      );
-      setSelectedTab(Tab.Transactions);
-      setFilterParams((prev) => {
-        return {
-          ...prev,
-          subject: "transactions",
-          cursor: "",
-          name: "",
-        };
-      });
-    }
-  }, []);
-
   const handleTabClick = (tab: Tab, subject: string) => {
     if (tab !== Tab.ClinicalTrials && tab !== Tab.Hospitals) {
       setFilterParams((prev) => {
@@ -303,7 +272,6 @@ export default function Directory() {
       });
     }
     setSelectedTab(tab);
-    localStorage.setItem("curDirTab", JSON.stringify({ tab, subject }));
   };
 
   useEffect(() => {
