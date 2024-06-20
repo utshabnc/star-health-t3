@@ -1,26 +1,36 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import { trpc } from "../../utils/trpc";
-import { useRouter } from 'next/router'
-import { StarIcon } from '@heroicons/react/solid';
-import { StarIcon as StarOutlineIcon } from '@heroicons/react/outline';
-import { useSession } from 'next-auth/react';
+import { useRouter } from "next/router";
+import { StarIcon } from "@heroicons/react/solid";
+import { StarIcon as StarOutlineIcon } from "@heroicons/react/outline";
+import { useSession } from "next-auth/react";
 
 interface BookmarkButtonProps {
   title: string;
   categoryId: number;
 }
 
-const BookmarkButton: React.FC<BookmarkButtonProps> = ({ title, categoryId }) => {
-  const router = useRouter()
+const BookmarkButton: React.FC<BookmarkButtonProps> = ({
+  title,
+  categoryId,
+}) => {
+  const router = useRouter();
   const { data: session, status } = useSession();
-  const authenticated = status === 'authenticated';
-  const userId = session?.user?.id as string || '';
+  const authenticated = status === "authenticated";
+  const userId = (session?.user?.id as string) || "";
   const addBookmark = trpc.db.addBookmark.useMutation();
   const removeBookmark = trpc.db.removeBookmark.useMutation();
-  const { data: bookmarkExists, refetch } = trpc.db.bookmarkExists.useQuery({ title, categoryId, userId, url: router.asPath });
+  const { data: bookmarkExists, refetch } = trpc.db.bookmarkExists.useQuery({
+    title,
+    categoryId,
+    userId,
+    url: router.asPath,
+  });
 
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
-  const [isBookmarkExisting, setIsBookmarkExisting] = useState<boolean | undefined>(bookmarkExists?.exists);
+  const [isBookmarkExisting, setIsBookmarkExisting] = useState<
+    boolean | undefined
+  >(bookmarkExists?.exists);
 
   useEffect(() => {
     if (userId) {
@@ -28,7 +38,7 @@ const BookmarkButton: React.FC<BookmarkButtonProps> = ({ title, categoryId }) =>
         setIsBookmarkExisting(data.data?.exists);
       });
     }
-  }, [userId, refetch])
+  }, [userId, refetch]);
 
   const handleClick = () => {
     setIsProcessing(true);
@@ -36,12 +46,15 @@ const BookmarkButton: React.FC<BookmarkButtonProps> = ({ title, categoryId }) =>
       if (isBookmarkExisting) {
         removeBookmark
           .mutateAsync({
-            title, categoryId, userId, url: router.asPath
+            title,
+            categoryId,
+            userId,
+            url: router.asPath,
           })
           .then(() => {
             setIsProcessing(false);
             setIsBookmarkExisting(false);
-          })
+          });
       } else {
         addBookmark
           .mutateAsync({
@@ -53,7 +66,7 @@ const BookmarkButton: React.FC<BookmarkButtonProps> = ({ title, categoryId }) =>
           .then(() => {
             setIsProcessing(false);
             setIsBookmarkExisting(true);
-          })
+          });
       }
     }
   };
@@ -67,16 +80,18 @@ const BookmarkButton: React.FC<BookmarkButtonProps> = ({ title, categoryId }) =>
       <div className="flex items-center justify-center">
         {isBookmarkExisting ? (
           <>
-            <StarIcon className="w-5 h-5 mr-2" />
+            <StarIcon className="mr-2 h-5 w-5" />
             Remove Bookmark
-          </>) :
-          (<>
-            <StarOutlineIcon className="w-5 h-5 mr-2" />
+          </>
+        ) : (
+          <>
+            <StarOutlineIcon className="mr-2 h-5 w-5" />
             Bookmark
-          </>)
-        }
+          </>
+        )}
       </div>
-    </button>);
+    </button>
+  );
 };
 
 export default BookmarkButton;

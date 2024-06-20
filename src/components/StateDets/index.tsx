@@ -71,7 +71,7 @@ export const StateDets = ({
           <hr />
         </div>
 
-        <div className="mb-3 flex flex-col lg:flex-row justify-between items-center">
+        <div className="mb-3 flex flex-col items-center justify-between lg:flex-row">
           <Dropdown
             items={drugTypes.map((type) => ({
               value: type,
@@ -163,7 +163,7 @@ export const StateDets = ({
           </div>
         </div>
         <div className="grid grid-cols-1">
-          <div className=" my-2 mx-1 grid grid-cols-2 rounded-lg border-2 border-violet-400 p-2">
+          <div className=" mx-1 my-2 grid grid-cols-2 rounded-lg border-2 border-violet-400 p-2">
             <div className="flex flex-col ">
               <p className="font flex justify-center text-sm font-semibold underline sm:text-base">
                 Top Paid Doctors
