@@ -32,6 +32,8 @@ const Modal = ({
   );
 };
 
+const Anonymous = 'ANONYMOUS';
+
 const FoodJournal: React.FC = () => {
   const getFormattedCurrentTime = () => {
     const now = new Date();
@@ -40,7 +42,7 @@ const FoodJournal: React.FC = () => {
     return `${hours}:${minutes}`;
   };
     const { data: session, status } = useSession();
-    const userId = session?.user?.id || 'clkruomvr0000mj088c28m3a6';
+    const userId = session?.user?.id || Anonymous;
     const [foodList,setFoodList]=useState<any[]>([])
     const [searchStr, setSearchStr] = useState<any>("");
     const [currentFood,setCurrentFood] = useState<any>()
@@ -68,38 +70,37 @@ const FoodJournal: React.FC = () => {
     // 1 Ready
     // 2 Loading
     // 3 Done
-    function waterIntakeComp()
-    {
+    function waterIntakeComp() {
       const icons = [];
 
-  for (let i = 0; i < waterIntake; i++) {
-    icons.push(<MdWaterDrop key={i} size={40} color="#21b6f5" />);
-  }
+      for (let i = 0; i < waterIntake; i++) {
+        icons.push(<MdWaterDrop key={i} size={40} color="#21b6f5" />);
+      }
 
-  for (let i = 0; i < 8-waterIntake; i++) {
-    icons.push(<MdWaterDrop key={i} size={40} color="grey" />);
-  }
-  return <div className="flex flex-row">{icons}</div>;
+      for (let i = 0; i < 8-waterIntake; i++) {
+        icons.push(<MdWaterDrop key={i} size={40} color="grey" />);
+      }
+      return <div className="flex flex-row">{icons}</div>;
     }
     function overallFoodNutrients() {
       let count=0;
       return (
         <div>
-    {Object.entries(foodJournalSummary).map((nutrient: any) => {
-      if (nutrient.number !== 0) {
-        count++;
-        return (
-          <tr key={nutrient[0]} className={count % 2 == 0 ? "bg-violet-100" : ""}>
-            <td className="w-[100%] px-4 py-1 whitespace-nowrap text-md text-gray-800">
-              {nutrient[1].name}
-            </td>
-            <td className="px-4 py-1 whitespace-nowrap text-md text-gray-800">
-              {(nutrient[1].amount+0).toFixed(0) + " " + nutrient[1].unit}
-            </td>
-          </tr>
-        );
-      }
-    })}
+        {Object.entries(foodJournalSummary).map((nutrient: any) => {
+          if (nutrient.number !== 0) {
+            count++;
+            return (
+              <tr key={nutrient[0]} className={count % 2 == 0 ? "bg-violet-100" : ""}>
+                <td className="w-[100%] px-4 py-1 whitespace-nowrap text-md text-gray-800">
+                  {nutrient[1].name}
+                </td>
+                <td className="px-4 py-1 whitespace-nowrap text-md text-gray-800">
+                  {(nutrient[1].amount+0).toFixed(0) + " " + nutrient[1].unit}
+                </td>
+              </tr>
+            );
+          }})
+        }
     </div>
     )
     }
@@ -166,6 +167,12 @@ const FoodJournal: React.FC = () => {
           }
     }
       const submitWaterIntake=()=>{
+        if(userId==Anonymous) {
+          toast(`Please login to add food items to your journal.`, {})
+          setOpenFoodModal(false);
+          setAddStatus(1);
+          return
+        }
         const body = {
           userId,
           date:foodJournalDate,
@@ -291,31 +298,37 @@ const FoodJournal: React.FC = () => {
 },[currentFood])
 
 const submitFood = async (e: React.FormEvent) =>{
-    e.preventDefault();
-    if (mealDate==''||mealTime==''||numOfServings==''||!currentFood)
-    {
-      setEntryError(true)
-      setAddStatus(1)
+  e.preventDefault();  
+  if(userId==Anonymous) {
+    toast(`Please login to add food items to your journal.`, {})
+    setOpenFoodModal(false);
+    setAddStatus(1);
+    return  
+  }
+    
+  if (mealDate==''||mealTime==''||numOfServings==''||!currentFood) {
+    setEntryError(true)
+    setAddStatus(1)
 
-      return
-    }
-    setEntryError(false)
-    const dateTimeOfMeal = `${mealDate}T${mealTime}:00`;
-    const body= {
-      id:selectedID,
-      userId : userId,
-      foodItemID: currentFood.id+'',
-      foodItemAPI:'FDC API',
-      dateTimeOfMeal:dateTimeOfMeal,
-      nutrientResponse:{
-        foodName:currentFoodDetails['description'],
-        selectedPortion:portionOptions[selectedPortion]['gram'],
-        nutrientFacts:currentFoodDetails['foodNutrients']
-      } ,
-      numberOfServings: parseFloat(numOfServings),
-      mealCategory:mealCategoryOptions[mealCategory]
-    }
-    try{
+    return
+  }
+  setEntryError(false)
+  const dateTimeOfMeal = `${mealDate}T${mealTime}:00`;
+  const body= {
+    id:selectedID,
+    userId : userId,
+    foodItemID: currentFood.id+'',
+    foodItemAPI:'FDC API',
+    dateTimeOfMeal:dateTimeOfMeal,
+    nutrientResponse:{
+      foodName:currentFoodDetails['description'],
+      selectedPortion:portionOptions[selectedPortion]['gram'],
+      nutrientFacts:currentFoodDetails['foodNutrients']
+    } ,
+    numberOfServings: parseFloat(numOfServings),
+    mealCategory:mealCategoryOptions[mealCategory]
+  }
+  try{
     setAddStatus(2)
     await fetch("/api/foodJournal/foodEntry", {
       method: "POST",
@@ -331,13 +344,12 @@ const submitFood = async (e: React.FormEvent) =>{
         setSearchStr('');
         setMealCategory(0)
       }
-      )
-    }
-    catch (error) {
-      setEntryError(true)
-      console.error("An error occurred while submitting the form", error);
-    }
-    }
+    )
+  } catch (error) {
+    setEntryError(true)
+    console.error("An error occurred while submitting the form", error);
+  }
+  }
 
     return(
         <>
@@ -357,29 +369,30 @@ const submitFood = async (e: React.FormEvent) =>{
           ADD MEAL
           </div>
           <div onClick={(e)=>{if(addStatus!=2){setOpenFoodModal(false);setAddStatus(1);setNumOfServings(1);setCurrentFood('');setSearchStr('');setMealCategory(0)}}} className='closeFoodModal bg-violet-700 mt-3 mr-2 justify-end'>
-                    <AiOutlineClose size={25} color="white"  ></AiOutlineClose>
+              <AiOutlineClose size={25} color="white"  ></AiOutlineClose>
           </div>
-                            </div>
+        </div>
         {addStatus==2&&<LoadingStarHealth></LoadingStarHealth>}
         {addStatus!=2&&<div className="flex justify-between p-3">
             <div className="w-[50%] mr-2">
             {entryError&&
-            <div className="text-red-700">
-              Invalid or missing input.
-              </div>}
-            <div className="font-semibold mb-1">Select Food from suggestions:</div>
-            <FoodAutocompleteInput expr={searchStr} setExpr={setSearchStr}  options={foodList} setFoodItem={setCurrentFood}></FoodAutocompleteInput>
+              <div className="text-red-700">
+                Invalid or missing input.
+              </div>
+            }
+              <div className="font-semibold mb-1">Select Food from suggestions:</div>
+              <FoodAutocompleteInput expr={searchStr} setExpr={setSearchStr}  options={foodList} setFoodItem={setCurrentFood}></FoodAutocompleteInput>
             {currentFood&&
-            <div className="mb-1">
-                <div className="font-semibold mb-1">Serving Size:</div>
-                <select  className="rounded-lg border border-violet-900 bg-violet-100 p-1 text-slate-900 placeholder:text-violet-800 hover:bg-violet-300 hover:text-violet-900" onChange={(e)=>{setSelectedPortion(e.target.selectedIndex)}}>
-          {portionOptions.map((option) => (
-            <option key={option.name} value={option.gram}>
-              {option.name}
-            </option>
-          ))}
-        </select>
-            </div>
+              <div className="mb-1">
+                  <div className="font-semibold mb-1">Serving Size:</div>
+                  <select  className="rounded-lg border border-violet-900 bg-violet-100 p-1 text-slate-900 placeholder:text-violet-800 hover:bg-violet-300 hover:text-violet-900" onChange={(e)=>{setSelectedPortion(e.target.selectedIndex)}}>
+                  {portionOptions.map((option) => (
+                    <option key={option.name} value={option.gram}>
+                      {option.name}
+                    </option>
+                  ))}
+                  </select>
+              </div>
 }            
             <div className="mb-1">
                 <div className="font-semibold mb-1">Number Of Servings:</div>
