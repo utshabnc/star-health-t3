@@ -153,7 +153,6 @@ export default function ClinicalTrialsFilters(
               onChange={(e) => {
                 setAcronym(e.target.value);
               }}
-              placeholder="Acronym"
               >
                 {acronym.length < 1 ? <option value="">Acronym</option> : <option value="">-</option>}
                 {Acronym?.sort?.((a , b) => a.value.localeCompare(b.value)).map((item, index: number) => (
@@ -190,7 +189,6 @@ export default function ClinicalTrialsFilters(
                   onChange={(e) => {
                     setGender(e.target.value);
                   }}
-                  placeholder="Gender"
                 >
                   {gender.length < 1 ? <option value="">Gender</option> : <option value="">-</option>}
                   {Gender?.map((item, index: number) => (
@@ -202,7 +200,6 @@ export default function ClinicalTrialsFilters(
                 onChange={(e) => {
                   setHealthyVolunteers(e.target.value);
                 }}
-                placeholder="Healthy Volunteers"
               >
                  <option value="">Healthy Volunteers</option>
 
@@ -331,7 +328,6 @@ export default function ClinicalTrialsFilters(
                     onChange={(e) => {
                       setOverallStatus(e.target.value);
                     }}
-                    placeholder="Status"
                   >
                     {overallStatus.length < 1 ? <option value="">Status</option> : <option value="">-</option>}
                     {OverallStatus?.sort?.((a , b) => a.value.localeCompare(b.value)).map((item, index: number) => (

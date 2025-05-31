@@ -25,7 +25,7 @@ export default function HealthPlansFilters({
     0,
   ];
   const issuerList =
-    [...new Set(healthPlansData?.map((hp: any) => hp?.issuer?.name))] || [];
+    [...new Set(healthPlansData?.map((hp: any) => hp?.issuer?.name))];
 
   const minNum = Math.min(...premiumList);
   const maxNum = Math.max(...premiumList);
@@ -111,7 +111,7 @@ export default function HealthPlansFilters({
                 value={zipcode}
                 onChange={(e) => {
                   setZipcode(e.target.value);
-                  if (e.target.value.length === (5 || 0)) {
+                  if (e.target.value.length === 5) {
                     setHealthPlansData(undefined);
                   }
                 }}
@@ -121,7 +121,6 @@ export default function HealthPlansFilters({
                 onChange={(e) => {
                   filterByIssuer(e.target.value);
                 }}
-                placeholder="Issuer"
               >
                 <option selected value="">
                   Issuer

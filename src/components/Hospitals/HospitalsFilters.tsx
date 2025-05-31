@@ -208,7 +208,6 @@ export default function HospitalsFilters({ params }: HospitalsFiltersProps) {
                 title="State"
                 className="my-2 mr-5 w-[20%] cursor-pointer rounded-lg bg-violet-500 p-1 text-white hover:bg-violet-400 hover:text-violet-900"
                 onChange={(e) => onSelectState(e.target.value)}
-                placeholder="Issuer"
               >
                 <option selected disabled value="">
                   State
@@ -223,7 +222,6 @@ export default function HospitalsFilters({ params }: HospitalsFiltersProps) {
               <select
                 className="my-2 mr-5 w-[20%] cursor-pointer rounded-lg bg-violet-500 p-1 text-white hover:bg-violet-400 hover:text-violet-900"
                 onChange={(e) => onSelectCity(e.target.value)}
-                placeholder="Issuer"
               >
                 <option selected disabled value="">
                   City
@@ -238,7 +236,6 @@ export default function HospitalsFilters({ params }: HospitalsFiltersProps) {
               <select
                 className="my-2 mr-5 w-[20%] cursor-pointer rounded-lg bg-violet-500 p-1 text-white hover:bg-violet-400 hover:text-violet-900"
                 onChange={(e) => onSelectHospitalId(e.target.value)}
-                placeholder="Issuer"
               >
                 <option selected disabled value="">
                   Hospital ID
