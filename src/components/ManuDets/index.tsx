@@ -20,6 +20,7 @@ interface MenuSchema {
   state: string;
   country: string;
   amount: string;
+  year: string;
   onChangeYear: (year?: number) => void;
   manufacturer: ManufacturerResponse;
 }
@@ -36,7 +37,7 @@ export const ManuDets = (schema: MenuSchema) => {
     return compareMenus.some((compMenu: MenuSchema) => compMenu.manufacturer?.name === schema.manufacturer?.name);
   };
   const d = new Date();
-  const [year, setYear] = useState<number>(0);
+  const [year, setYear] = useState<number>(typeof schema.year === 'number' ? schema.year : Number(schema.year) || 0);
   const [isCompared, setIsCompared] = useState(isMenuInCompareList);
 
   useEffect(() => {

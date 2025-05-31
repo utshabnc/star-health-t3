@@ -129,6 +129,7 @@ const ManufacturerDetails = () => {
             country={manufacturer.country ?? ''}
             amount={formatMoney(manufacturer.totalAmount)}
             manufacturer={manufacturer}
+            year={year ?? 'undefined'}
             onChangeYear={(year) =>
               setYear((oldYear) => {
                 if (!year) return undefined;
