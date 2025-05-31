@@ -50,9 +50,6 @@ function formatMultiSelect(){
           domLoading = document.getElementById('domLoading')?.innerHTML;
           if(document.getElementById('initialLoadingSpinner'))
             document.getElementById('initialLoadingSpinner').style.display = 'none';
-          
-          if(document.getElementById('headMapPlaceholder'))
-            document.getElementById('headMapPlaceholder').style.display = 'block';
   
           document.addEventListener('click', (e) => {
             const clickedComponent = e?.target;

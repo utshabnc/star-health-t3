@@ -177,79 +177,9 @@ const Map = ({ state, data, width, height, setTooltipContent }: Props) => {
         height={height}
         projection={proj as any}
       >
-    
-          <Geographies
-          geography={geography}
-            // geography={
-            //   'https://raw.githubusercontent.com/deldersveld/topojson/master/countries/us-states/AL-01-alabama-counties.json'
-            // }
-          >
-            {({ geographies }) => (
-              <>
-                {geographies.map((geo) => {
-                  const countyFips =
-                    geo.properties.STATE + geo.properties.COUNTY;
-                  const countyVal = data.find((d) => d.fips === countyFips);
-
-                  const totalAmount = countyVal?.totalAmount ?? 0;
-                  // const paymentPerCapita =
-                  //   (countyVal?.totalAmount ?? 0) /
-                  //   (countyVal?.population ?? 0);
-                  const fillColor = colorScale(totalAmount) ?? '#DDD';
-
-                  return (
-                    <Geography
-                      cursor='pointer'
-                      onMouseEnter={() => {
-                        if (countyVal == null) return;
-
-                        setTooltipContent?.(
-                          `${countyVal?.name} - ${formatMoney(totalAmount)}`
-                        );
-                      }}
-                      onMouseLeave={() => {
-                        setTooltipContent?.('');
-                      }}
-                      // onClick={() => navigate.push(`/state/${stateId}`)}
-                      key={geo.rsmKey}
-                      stroke='#FFF'
-                      geography={geo}
-                      fill={fillColor}
-                    />
-                  );
-                })}
-                {/* {geographies.map((geo) => {
-              const centroid = geoCentroid(geo);
-              const cur = allStates.find((s) => s.val === geo.id);
-              return (
-                <g key={geo.rsmKey + '-name'}>
-                  {cur &&
-                    centroid[0] > -160 &&
-                    centroid[0] < -67 &&
-                    (Object.keys(offsets).indexOf(cur.id) === -1 ? (
-                      <Marker coordinates={centroid}>
-                        <text y='2' fontSize={14} textAnchor='middle'>
-                          {cur.id}
-                        </text>
-                      </Marker>
-                    ) : (
-                      <Annotation
-                        connectorProps={{}}
-                        subject={centroid}
-                        dx={offsets[cur.id][0]}
-                        dy={offsets[cur.id][1]}
-                      >
-                        <text x={4} fontSize={14} alignmentBaseline='middle'>
-                          {cur.id}
-                        </text>
-                      </Annotation>
-                    ))}
-                </g>
-              );
-            })} */}
-              </>
-            )}
-          </Geographies>
+        {geography && (
+         <>{state} counties</>
+        )}
       </ComposableMap>
     </div>
   );
