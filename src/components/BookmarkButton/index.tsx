@@ -35,7 +35,7 @@ const BookmarkButton: React.FC<BookmarkButtonProps> = ({
   useEffect(() => {
     if (userId) {
       refetch().then((data) => {
-        setIsBookmarkExisting(data.data?.exists);
+        setIsBookmarkExisting(data.data?.exists ?? false);
       });
     }
   }, [userId, refetch]);
@@ -68,14 +68,19 @@ const BookmarkButton: React.FC<BookmarkButtonProps> = ({
             setIsBookmarkExisting(true);
           });
       }
+    } else {
+      setIsProcessing(false);
+      alert("Please log in to bookmark this item.");
     }
+    console.log("Bookmark button isBookmarkExisting state: " + isBookmarkExisting);
+    console.log("Bookmark button userId state: " + userId);
   };
 
   return (
     <button
       className="ease focus:shadow-outline select-none rounded-md border border-violet-700 bg-violet-700 px-4 py-2 text-white transition duration-500 hover:bg-violet-900 focus:outline-none"
       onClick={handleClick}
-      disabled={!authenticated || isProcessing}
+      disabled={isProcessing}
     >
       <div className="flex items-center justify-center">
         {isBookmarkExisting ? (
