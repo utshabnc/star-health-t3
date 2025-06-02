@@ -44,21 +44,12 @@ export default function Filters({data, filterParams, setFilterParams, search, se
     // }
 
     const filteredDocListToggle = () => {
-        if(filterParams.doctorFilter || filterParams.manufacturerFilter || filterParams.productFilter) {
-            return data?.doctorList
-        }
         return listData?.doctorNames
     }
     const filteredManuListToggle = () => {
-        if(filterParams.doctorFilter || filterParams.manufacturerFilter || filterParams.productFilter) {
-            return data?.manufacturerList
-        }
         return listData?.manufacturerNames
     }
     const filteredProdListToggle = () => {
-        if(filterParams.doctorFilter || filterParams.manufacturerFilter || filterParams.productFilter) {
-            return data?.productNameList
-        }
         return listData?.productNameList
     }
     
@@ -183,7 +174,7 @@ export default function Filters({data, filterParams, setFilterParams, search, se
                                 }
                             })
                            
-                        }} value={filterParams.doctorFilter} className='bg-violet-500 my-2 text-white w-[20%] p-1 rounded-lg mx-1 hover:bg-violet-400 hover:text-violet-900 cursor-pointer' name="state-filter" id="state-filter">
+                        }} value={filterParams.doctorFilter} className='bg-violet-500 my-2 text-white w-[20%] p-1 rounded-lg mx-1 hover:bg-violet-400 hover:text-violet-900 cursor-pointer' name="doctor-filter" id="doctor-filter">
                             <option value={""}>{filterParams.doctorFilter == "" ? "Doctor" : "Reset"}</option>
                             {filteredDocListToggle()?.sort().map((item: {id: string, name: string}, index: number) => (
                                 <option key={index} value={item.id}>{item.name.split(" ").map((li: string) => `${li.charAt(0).toUpperCase()}${li.slice(1, li.length).toLowerCase()}`).join(" ")}</option>
@@ -198,7 +189,7 @@ export default function Filters({data, filterParams, setFilterParams, search, se
                                 }
                             })
                            
-                        }} value={filterParams.manufacturerFilter} className='bg-violet-500 my-2 text-white w-[20%] p-1 rounded-lg mx-1 hover:bg-violet-400 hover:text-violet-900 cursor-pointer' name="state-filter" id="state-filter">
+                        }} value={filterParams.manufacturerFilter} className='bg-violet-500 my-2 text-white w-[20%] p-1 rounded-lg mx-1 hover:bg-violet-400 hover:text-violet-900 cursor-pointer' name="manufacturer-filter" id="manufacturer-filter">
                             <option value="">{filterParams.category == "" ? "Manufacturer" : "Reset"}</option>
                             {filteredManuListToggle()?.map((item: {id: string, name: string}, index: number) => (
                                 <option key={index} value={item.id}>{item.name}</option>
@@ -213,7 +204,7 @@ export default function Filters({data, filterParams, setFilterParams, search, se
                                 }
                             })
                            
-                        }} value={filterParams.productFilter} className='bg-violet-500 my-2 text-white w-[20%] p-1 rounded-lg mx-1 hover:bg-violet-400 hover:text-violet-900 cursor-pointer' name="state-filter" id="state-filter">
+                        }} value={filterParams.productFilter} className='bg-violet-500 my-2 text-white w-[20%] p-1 rounded-lg mx-1 hover:bg-violet-400 hover:text-violet-900 cursor-pointer' name="product-filter" id="state-filter">
                             <option value="">{filterParams.productFilter == "" ? "Product" : "Reset"}</option>
                             {filteredProdListToggle()?.map((item: {id: string, name: string}, index: number) => (
                                 <option key={index} value={item.id}>{item.name}</option>
