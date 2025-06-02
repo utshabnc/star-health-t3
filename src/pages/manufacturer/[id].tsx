@@ -131,10 +131,9 @@ const ManufacturerDetails = () => {
             manufacturer={manufacturer}
             year={year ?? 'undefined'}
             onChangeYear={(year) =>
-              setYear((oldYear) => {
-                if (!year) return undefined;
-                if (oldYear === String(year)) return;
-
+              setYear(() => {
+                if(year === 0) return undefined;
+                if (!year) return;
                 return String(year);
               })
             }
