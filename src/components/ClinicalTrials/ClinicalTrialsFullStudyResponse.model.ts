@@ -1,89 +1,88 @@
 interface CentralContact {
-  CentralContactEMail: string;
-  CentralContactName: string;
-  CentralContactPhone: string;
-  CentralContactRole: string;
+  centralContactEMail: string;
+  centralContactName: string;
+  centralContactPhone: string;
+  centralContactRole: string;
 }
 
 interface ConditionsModule {
-  ConditionList: { Condition: string[] };
+  conditions: string[];
 }
 
 interface DesignInfo {
-  DesignAllocation: string;
-  DesignInterventionModel: string;
-  DesignInterventionModelDescription: string;
-  DesignMaskingInfo: { DesignMasking: string };
-  DesignPrimaryPurpose: string;
+  designAllocation: string;
+  designInterventionModel: string;
+  designInterventionModelDescription: string;
+  maskingInfo: { masking: string };
+  primaryPurpose: string;
 }
 
 interface EnrollmentInfo {
-  EnrollmentCount: string;
-  EnrollmentType: string;
+  enrollmentCount: string;
+  enrollmentType: string;
 }
 
 interface DesignModule {
-  DesignInfo: DesignInfo;
-  EnrollmentInfo: EnrollmentInfo;
-  PhaseList: { Phase: string[] };
-  StudyType: string;
+  designInfo: DesignInfo;
+  enrollmentInfo: EnrollmentInfo;
+  phaseList: { phase: string[] };
+  studyType: string;
 }
 
 interface OverallOfficial {
-  OverallOfficialAffiliation: string;
-  OverallOfficialName: string;
-  OverallOfficialRole: string;
+  affiliation: string;
+  name: string;
+  role: string;
 }
 
 interface ContactsLocationsModule {
-  CentralContactList: { CentralContact: CentralContact[] };
-  OverallOfficialList: { OverallOfficial: OverallOfficial[] };
+  overallOfficials: OverallOfficial[];
 }
 
 interface DescriptionModule {
-  BriefSummary: string;
-  DetailedDescription: string;
+  briefSummary: string;
+  detailedDescription: string;
 }
 
 interface EligibilityModule {
-  EligibilityCriteria: string;
-  Gender: string;
-  HealthyVolunteers: string;
-  MaximumAge: string;
-  MinimumAge: string;
+  eligibilityCriteria: string;
+  gender: string;
+  healthyVolunteers: string;
+  maximumAge: string;
+  minimumAge: string;
 }
 
 interface IdentificationModule {
-  Acronym: string;
-  BriefTitle: string;
-  NCTId: string;
-  OfficialTitle: string;
-  OrgStudyIdInfo: { OrgStudyId: string };
-  Organization: { OrgClass: string; OrgFullName: string };
+  acronym: string;
+  briefTitle: string;
+  nctId: string;
+  officialTitle: string;
+  orgStudyIdInfo: { orgStudyId: string };
+  organization: { orgClass: string; fullName: string };
 }
 
 interface StatusModule {
-  StartDateStruct: { StartDate: string; StartDateType: string };
-  OverallStatus: string;
-  PrimaryCompletionDateStruct: {
-    PrimaryCompletionDate: string;
-    PrimaryCompletionDateType: string;
+  startDateStruct: { date: string; startDateType: string };
+  overallStatus: string;
+  primaryCompletionDateStruct: {
+    date: string;
+    primaryCompletionDateType: string;
   };
 }
 
 interface ProtocolSection {
-  DescriptionModule: DescriptionModule;
-  IdentificationModule: IdentificationModule;
-  StatusModule: StatusModule;
-  ContactsLocationsModule: ContactsLocationsModule;
-  EligibilityModule: EligibilityModule;
-  ConditionsModule: ConditionsModule;
-  DesignModule: DesignModule;
+  descriptionModule: DescriptionModule;
+  identificationModule: IdentificationModule;
+  statusModule: StatusModule;
+  contactsLocationsModule: ContactsLocationsModule;
+  eligibilityModule: EligibilityModule;
+  conditionsModule: ConditionsModule;
+  designModule: DesignModule;
 }
 
-interface Study {
-  DerivedSection: object;
-  ProtocolSection: ProtocolSection;
+export interface Study {
+  derivedSection: object;
+  protocolSection: ProtocolSection;
 }
 
 export interface FullStudy {

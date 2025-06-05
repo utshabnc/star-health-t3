@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { TrashIcon } from '@heroicons/react/outline';
 import Link from 'next/link';
-import { ClinicalTrialsFullStudyResponse } from '../ClinicalTrials/ClinicalTrialsFullStudyResponse.model';
+import { ClinicalTrialsFullStudyResponse, Study } from '../ClinicalTrials/ClinicalTrialsFullStudyResponse.model';
 import { any } from 'zod';
 
 interface CentralContact {
@@ -55,19 +55,19 @@ interface StatusModule {
 }
 
 const CompareClinicalTrials: React.FC = () => {
-  const [trials, setTrials] = useState<ClinicalTrialsFullStudyResponse[]>([]);
+  const [trials, setTrials] = useState<Study[]>([]);
 
   useEffect(() => {
+    console.log('Loading trials from localStorage...');
     let loadedTrials = JSON.parse(localStorage.getItem('compareTrials') || '[]');
-    loadedTrials = loadedTrials.filter((trial: ClinicalTrialsFullStudyResponse | null) => trial !== null);
+    loadedTrials = loadedTrials.filter((trial: Study | null) => trial !== null);
     setTrials(loadedTrials);
   }, []);
 
   const removeTrial = (id: string) => {
     let compareTrials = JSON.parse(localStorage.getItem('compareTrials') || '[]');
     
-    compareTrials = compareTrials.filter((trial: ClinicalTrialsFullStudyResponse) => trial.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.IdentificationModule.NCTId !== id);
-    localStorage.setItem('compareTrials', JSON.stringify(compareTrials));
+    compareTrials = compareTrials.filter((trial: Study) => trial.protocolSection.identificationModule.nctId !== id);
     setTrials(compareTrials);
   }
   
@@ -107,8 +107,8 @@ const CompareClinicalTrials: React.FC = () => {
           <tr>
             <th className="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider"></th>
             {trials.map((trial) => (
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider" key={trial.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.IdentificationModule.NCTId}>
-                {trial.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.IdentificationModule.BriefTitle}
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider" key={trial.protocolSection.identificationModule.nctId}>
+                {trial?.protocolSection.identificationModule.nctId}&nbsp;
               </th>
             ))}
           </tr>
@@ -117,72 +117,76 @@ const CompareClinicalTrials: React.FC = () => {
           <tr>
             <th className="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">Brief Title</th>
             {trials.map((trial) => {
-              const nctId = trial.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.IdentificationModule.NCTId;
-              const briefTitle = trial.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.IdentificationModule.BriefTitle;
-              if (nctId && briefTitle) {
+              const nctId = trial?.protocolSection.identificationModule.nctId;
+              const briefTitle = trial?.protocolSection.identificationModule.briefTitle;
+              if (briefTitle) {
                 return (
                   <td className="px-6 py-4 whitespace-nowrap" key={nctId}>
                     <div dangerouslySetInnerHTML={{ __html: wrapText(briefTitle, 15) }} />
                   </td>
                 );
               } else {
-                return null;
+                return (
+                  <td key={nctId}>&nbsp;</td>
+                );
               }
             })}
           </tr>
           <tr>
             <th className="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">Brief Summary</th>
             {trials.map((trial) => {
-              const nctId = trial.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.IdentificationModule.NCTId;
-              const briefSummary = trial.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.DescriptionModule.BriefSummary;
-              if (nctId && briefSummary) {
+              const nctId = trial?.protocolSection.identificationModule.nctId;
+              const briefSummary = trial?.protocolSection.descriptionModule.briefSummary;
+              if (briefSummary) {
                 return (
                   <td className="px-6 py-4 whitespace-nowrap" key={nctId}>
                     <div dangerouslySetInnerHTML={{ __html: wrapText(briefSummary, 15) }} />
                   </td>
                 );
               } else {
-                return null;
+                return (
+                  <td key={nctId}>&nbsp;</td>
+                );
               }
             })}
           </tr>
           <tr>
             <th className="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">Organization Name</th>
             {trials.map((trial) => (
-              <td className="px-6 py-4 whitespace-nowrap" key={trial.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.IdentificationModule.NCTId}>
-                {trial.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.IdentificationModule.Organization.OrgFullName}
+              <td className="px-6 py-4 whitespace-nowrap" key={trial.protocolSection.identificationModule.nctId}>
+                {trial.protocolSection.identificationModule.organization.fullName}
               </td>
             ))}
           </tr>
           <tr>
             <th className="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">Sponsor</th>
             {trials.map((trial) => (
-              <td className="px-6 py-4 whitespace-nowrap" key={trial.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.IdentificationModule.NCTId}>
-                {(trial.FullStudiesResponse.FullStudies[0] as any).Study.ProtocolSection.SponsorCollaboratorsModule.LeadSponsor.LeadSponsorName?? 'N/A'}
+              <td className="px-6 py-4 whitespace-nowrap" key={trial.protocolSection.identificationModule.nctId}>
+                N/A
               </td>
             ))}
           </tr>
           <tr>
             <th className="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">Overall Status</th>
             {trials.map((trial) => (
-              <td className="px-6 py-4 whitespace-nowrap" key={trial.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.IdentificationModule.NCTId}>
-                {trial.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.StatusModule.OverallStatus}
+              <td className="px-6 py-4 whitespace-nowrap" key={trial.protocolSection.identificationModule.nctId}>
+                {trial.protocolSection.statusModule.overallStatus}
               </td>
             ))}
           </tr>
           <tr>
             <th className="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">Start Date</th>
             {trials.map((trial) => (
-              <td className="px-6 py-4 whitespace-nowrap" key={trial.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.IdentificationModule.NCTId}>
-                {trial.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.StatusModule.StartDateStruct.StartDate}
+              <td className="px-6 py-4 whitespace-nowrap" key={trial.protocolSection.identificationModule.nctId}>
+                {trial.protocolSection.statusModule.startDateStruct.date}
               </td>
             ))}
           </tr>
           <tr>
             <th className="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">Completion Date</th>
             {trials.map((trial) => (
-              <td className="px-6 py-4 whitespace-nowrap" key={trial.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.IdentificationModule.NCTId}>
-                {trial.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.StatusModule.PrimaryCompletionDateStruct.PrimaryCompletionDate}
+              <td className="px-6 py-4 whitespace-nowrap" key={trial.protocolSection.identificationModule.nctId}>
+                {trial.protocolSection.statusModule.primaryCompletionDateStruct.date}
               </td>
             ))}
           </tr>
@@ -190,41 +194,33 @@ const CompareClinicalTrials: React.FC = () => {
           <tr>
             <th className="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">Sponsor Class</th>
             {trials.map((trial) => (
-              <td className="px-6 py-4 whitespace-nowrap" key={trial.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.IdentificationModule.NCTId}>
-                {(trial.FullStudiesResponse.FullStudies[0] as any).Study.ProtocolSection.SponsorCollaboratorsModule.LeadSponsor.LeadSponsorClass?? 'N/A'}
+              <td className="px-6 py-4 whitespace-nowrap" key={trial.protocolSection.identificationModule.nctId}>
+                N/A
               </td>
             ))}
           </tr>
           <tr>
             <th className="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">Design Info</th>
             {trials.map((trial) => (
-              <td className="px-6 py-4 whitespace-nowrap" key={trial.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.IdentificationModule.NCTId}>
-                {trial.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.DesignModule.DesignInfo.DesignPrimaryPurpose}
-              </td>
-            ))}
-          </tr>
-          <tr>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">Design Allocation</th>
-            {trials.map((trial) => (
-              <td className="px-6 py-4 whitespace-nowrap" key={trial.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.IdentificationModule.NCTId}>
-                {trial.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.DesignModule.DesignInfo.DesignAllocation}
+              <td className="px-6 py-4 whitespace-nowrap" key={trial.protocolSection.identificationModule.nctId}>
+                {trial.protocolSection.designModule.designInfo.primaryPurpose}
               </td>
             ))}
           </tr>
           <tr>
             <th className="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">Design Purpose</th>
             {trials.map((trial) => (
-              <td className="px-6 py-4 whitespace-nowrap" key={trial.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.IdentificationModule.NCTId}>
-                {trial.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.DesignModule.DesignInfo.DesignPrimaryPurpose}
+              <td className="px-6 py-4 whitespace-nowrap" key={trial.protocolSection.identificationModule.nctId}>
+                {trial.protocolSection.designModule.designInfo.primaryPurpose}
               </td>
             ))}
           </tr>
           <tr>
           <th className="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">Design Description</th>
           {trials.map((trial) => {
-              const nctId = trial.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.IdentificationModule.NCTId;
-              const designModule = (trial.FullStudiesResponse.FullStudies[0] as any).Study.ProtocolSection.DesignModule.DesignInfo.DesignMaskingInfo;
-              const designdesc = designModule ? designModule.DesignMaskingDescription : null;
+              const nctId = trial.protocolSection.identificationModule.nctId;
+              const designModule = trial.protocolSection.designModule.designInfo.maskingInfo;
+              const designdesc = designModule ? designModule.masking : null;
 
               return (
                   <td className="px-6 py-4 whitespace-nowrap" key={nctId ?? ''}>
@@ -239,218 +235,73 @@ const CompareClinicalTrials: React.FC = () => {
           <tr>
             <th className="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">Conditions</th>
             {trials.map((trial) => (
-              <td className="px-6 py-4 whitespace-nowrap" key={trial.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.IdentificationModule.NCTId}>
-                {trial.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.ConditionsModule.ConditionList.Condition}
+              <td className="px-6 py-4 whitespace-nowrap" key={trial.protocolSection.identificationModule.nctId}>
+                {trial.protocolSection.conditionsModule.conditions}
               </td>
             ))}
-          </tr>
-          <tr>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">Arms Group Label</th>
-            {trials.map((trial) => {
-              const fullStudies = trial.FullStudiesResponse?.FullStudies;
-              const study = fullStudies ? fullStudies[0] as any : undefined;
-              const armsInterventionsModule = study?.Study?.ProtocolSection?.ArmsInterventionsModule;
-              const armGroupList = armsInterventionsModule?.ArmGroupList;
-              const armGroups = armGroupList?.ArmGroup;
-
-              if (!armGroups) {
-                return null;
-              }
-
-              return (
-                <td className="px-6 py-4 whitespace-nowrap" key={study?.Study.ProtocolSection.IdentificationModule.NCTId}>
-                  {armGroups.map((group: any, index: number) => (
-                    <p key={index}>
-                      {group?.ArmGroupLabel ?? 'N/A'} --- {group?.ArmGroupType ?? 'N/A'}
-                    </p>
-                  ))}
-                </td>
-              );
-            })}
-          </tr>
-                    <tr>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">Intervention Drug List</th>
-            {trials.map((trial) => {
-              const fullStudies = trial.FullStudiesResponse?.FullStudies;
-              const study = fullStudies ? fullStudies[0] as any : undefined;
-              const armsInterventionsModule = study?.Study?.ProtocolSection?.ArmsInterventionsModule;
-              const interventionList = armsInterventionsModule?.InterventionList;
-              const IntGroups = interventionList?.Intervention;
-
-              if (!IntGroups) {
-                // If IntGroups is undefined, don't render anything for this trial
-                return null;
-              }
-
-              return (
-                <td className="px-6 py-4 whitespace-nowrap" key={study?.Study.ProtocolSection.IdentificationModule.NCTId}>
-                  {IntGroups.map((group: any, index: number) => (
-                    <p key={index}>
-                      {group?.InterventionType ?? 'N/A'} --- {group?.InterventionName ?? 'N/A'}
-                    </p>
-                  ))}
-                </td>
-              );
-            })}
           </tr>
           <tr>
             <th className="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">Enrollment Info</th>
             {trials.map((trial) => (
-              <td className="px-6 py-4 whitespace-nowrap" key={trial.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.IdentificationModule.NCTId}>
-                {trial.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.DesignModule.EnrollmentInfo.EnrollmentCount}
+              <td className="px-6 py-4 whitespace-nowrap" key={trial.protocolSection.identificationModule.nctId}>
+                {trial.protocolSection.designModule.enrollmentInfo?.enrollmentCount}
               </td>
             ))}
           </tr>
-          <tr>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">Primary Outcome Measure</th>
-            {trials.map((trial) => (
-              
-              <td className="px-6 py-4 whitespace-nowrap" key={trial.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.IdentificationModule.NCTId}>
-                {(trial.FullStudiesResponse.FullStudies[0] as any).Study.ProtocolSection.OutcomesModule.PrimaryOutcomeList.PrimaryOutcome[0].PrimaryOutcomeMeasure?? 'N/A'}
-              </td>
-            ))}
-          </tr>
-          <tr>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">Volunteer Types</th>
-            {trials.map((trial) => (
-              <td className="px-6 py-4 whitespace-nowrap" key={trial.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.IdentificationModule.NCTId}>
-                {trial.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.EligibilityModule.HealthyVolunteers}
-              </td>
-            ))}
-          </tr>
+
           <tr>
             <th className="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">Gender(s)</th>
             {trials.map((trial) => (
-              <td className="px-6 py-4 whitespace-nowrap" key={trial.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.IdentificationModule.NCTId}>
-                {trial.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.EligibilityModule.Gender}
+              <td className="px-6 py-4 whitespace-nowrap" key={trial.protocolSection.identificationModule.nctId}>
+                {trial.protocolSection.eligibilityModule.gender}
               </td>
             ))}
           </tr>
           <tr>
             <th className="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">Minimum Age</th>
             {trials.map((trial) => (
-              <td className="px-6 py-4 whitespace-nowrap" key={trial.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.IdentificationModule.NCTId}>
-                {trial.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.EligibilityModule.MinimumAge}
+              <td className="px-6 py-4 whitespace-nowrap" key={trial.protocolSection.identificationModule.nctId}>
+                {trial.protocolSection.eligibilityModule.minimumAge}
               </td>
             ))}
           </tr>
           <tr>
             <th className="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">Maximum Age</th>
             {trials.map((trial) => (
-              <td className="px-6 py-4 whitespace-nowrap" key={trial.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.IdentificationModule.NCTId}>
-                {trial.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.EligibilityModule.MaximumAge}
+              <td className="px-6 py-4 whitespace-nowrap" key={trial.protocolSection.identificationModule.nctId}>
+                {trial.protocolSection.eligibilityModule.maximumAge}
               </td>
             ))}
           </tr>
           <tr>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">Contact Info</th>
               {trials.map((trial) => {
-                const centralContactList = (trial.FullStudiesResponse.FullStudies[0] as any).Study.ProtocolSection.ContactsLocationsModule.CentralContactList;
-                const centralContact = centralContactList && centralContactList.CentralContact ? centralContactList.CentralContact[0] : null;
+                const centralContactList = trial.protocolSection.contactsLocationsModule;
+                const centralContact = centralContactList && centralContactList.overallOfficials ? centralContactList.overallOfficials[0] : null;
                 
-                const phoneNumber = centralContact ? centralContact.CentralContactPhone : null;
-                const contactName = centralContact ? centralContact.CentralContactName : 'N/A';
-                const contactEmail = centralContact ? centralContact.CentralContactEmail : 'N/A';
+                const name = centralContact ? centralContact.name : null;
+                const affiliation = centralContact ? centralContact.affiliation : 'N/A';
+                const role = centralContact ? centralContact.role : 'N/A';
 
                 return (
-                  <td className="px-6 py-4 whitespace-nowrap" key={trial.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.IdentificationModule.NCTId}>
-                    {contactName}
+                  <td className="px-6 py-4 whitespace-nowrap" key={trial.protocolSection.identificationModule.nctId}>
+                    {name}
                     <p>
-                      Phone: {formatPhoneNumber(phoneNumber ?? 'N/A')}
+                      Affiliation: {affiliation}
                     </p>
                     <p>
-                      {contactEmail}
+                      Role: {role}
                     </p>
                   </td>
                 );
               })}
           </tr>
-          <tr>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">Location Facility</th>
-            {trials.map((trial) => {
-              const locationList = (trial.FullStudiesResponse.FullStudies[0] as any).Study.ProtocolSection.ContactsLocationsModule.LocationList;
-              const location = locationList && locationList.Location ? locationList.Location[0] : null;
-              
-              const locationFacility = location ? location.LocationFacility : 'N/A';
 
-              return (
-                <td className="px-6 py-4 whitespace-nowrap" key={trial.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.IdentificationModule.NCTId}>
-                  {locationFacility}
-                </td>
-              );
-            })}
-        </tr>
-        <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">Location City</th>
-              {trials.map((trial) => {
-                const locationList = (trial.FullStudiesResponse.FullStudies[0] as any).Study.ProtocolSection.ContactsLocationsModule.LocationList;
-                const location = locationList && locationList.Location ? locationList.Location[0] : null;
-                
-                const locationCity = location ? location.LocationCity : 'N/A';
-
-                return (
-                  <td className="px-6 py-4 whitespace-nowrap" key={trial.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.IdentificationModule.NCTId}>
-                    {locationCity}
-                  </td>
-                );
-              })}
-          </tr>
-          <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">Location State</th>
-              {trials.map((trial) => {
-                const locationList = (trial.FullStudiesResponse.FullStudies[0] as any).Study.ProtocolSection.ContactsLocationsModule.LocationList;
-                const location = locationList && locationList.Location ? locationList.Location[0] : null;
-
-                const locationState = location ? location.LocationState : 'N/A';
-
-                return (
-                  <td className="px-6 py-4 whitespace-nowrap" key={trial.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.IdentificationModule.NCTId}>
-                    {locationState}
-                  </td>
-                );
-              })}
-          </tr>
-          <tr>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">Location Country</th>
-            {trials.map((trial) => {
-              const locationList = (trial.FullStudiesResponse.FullStudies[0] as any).Study.ProtocolSection.ContactsLocationsModule.LocationList;
-              const location = locationList && locationList.Location ? locationList.Location[0] : null;
-
-              const locationCountry = location ? location.LocationCountry : 'N/A';
-
-              return (
-                <td className="px-6 py-4 whitespace-nowrap" key={trial.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.IdentificationModule.NCTId}>
-                  {locationCountry}
-                </td>
-              );
-            })}
-        </tr>
-        <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">Ancestral Conditions</th>
-              {trials.map((trial) => {
-                const conditionBrowseModule = (trial.FullStudiesResponse.FullStudies[0] as any).Study.DerivedSection.ConditionBrowseModule;
-                const conditionAncestorList = conditionBrowseModule && conditionBrowseModule.ConditionAncestorList ? conditionBrowseModule.ConditionAncestorList.ConditionAncestor : null;
-                
-                return (
-                  <td className="px-6 py-4 whitespace-nowrap" key={trial.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.IdentificationModule.NCTId}>
-                    {conditionAncestorList && conditionAncestorList.length > 0 ? (
-                      conditionAncestorList.map((conditionAncestor: any, index: string) => (
-                        <p key={index}>
-                          {conditionAncestor.ConditionAncestorTerm ?? 'N/A'}
-                        </p>
-                      ))
-                    ) : (
-                      <p>N/A</p>
-                    )}
-                  </td>
-                );
-              })}
-          </tr>
           <tr>
             <th className="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">Eligibility Criteria</th>
             {trials.map((trial) => {
-              const nctId = trial.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.IdentificationModule.NCTId;
-              const eligCriteria = trial.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.EligibilityModule.EligibilityCriteria;
+              const nctId = trial.protocolSection.identificationModule.nctId;
+              const eligCriteria = trial.protocolSection.eligibilityModule.eligibilityCriteria;
               if (nctId && eligCriteria) {
                 return (
                   <td className="px-6 py-4 whitespace-nowrap" key={nctId}>
@@ -465,7 +316,7 @@ const CompareClinicalTrials: React.FC = () => {
           <tr>
             <th className="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">Remove</th>
             {trials.map((trial) => {
-              const nctId = trial.FullStudiesResponse.FullStudies[0]?.Study.ProtocolSection.IdentificationModule.NCTId;
+              const nctId = trial.protocolSection.identificationModule.nctId;
               if (nctId) {
                 return (
                   <td className="px-6 py-4 whitespace-nowrap" key={nctId}>
@@ -477,7 +328,7 @@ const CompareClinicalTrials: React.FC = () => {
               }
             })}
           </tr>
-        </tbody>
+         </tbody>
       </table>
       )}
     </div>
