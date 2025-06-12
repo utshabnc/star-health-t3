@@ -22,7 +22,7 @@ model Doctor {
   rank                   Int
   ManufacturerDoctors    ManufacturerDoctors[]
   ManufacturerTopPayment ManufacturerTopPayment[]
-  payments               Payment[]
+  productPayments        ProductPayment[]
   reviews                Review[]
   stateSummary           StateDoctor[]
 }
@@ -157,6 +157,7 @@ model Manufacturer {
   ManufacturerSummary    ManufacturerSummary[]
   ManufacturerTopPayment ManufacturerTopPayment[]
   payments               Payment[]
+  productPayments        ProductPayment[]
   stateItems             StateItem[]
   stateSummaries         StateManufacturer[]
 }
@@ -224,6 +225,28 @@ model Review {
   @@unique([doctorId, createdBy], name: "review_doctor_user_unique")
   @@index([doctorId], map: "review_doctor_index")
   @@index([createdBy], map: "review_user_index")
+}
+
+model ProductPayment {
+  id               String       @id
+  doctorId         String
+  manufacturerName String
+  manufacturerId   String
+  amount           Float
+  date             DateTime     @db.Date
+  year             String
+  paymentType      String?
+  paymentNature    String?
+  contextualInfo   String?
+  productType      String?
+  productCategory  String?
+  productName      String?
+  doctor           Doctor       @relation(fields: [doctorId], references: [id])
+  manufacturer     Manufacturer @relation(fields: [manufacturerId], references: [id])
+
+  @@index([year], map: "product_payment_year_index")
+  @@index([doctorId], map: "product_payment_doctor_index")
+  @@index([manufacturerId], map: "product_payment_manufacturer_index")
 }
 
 model Payment {

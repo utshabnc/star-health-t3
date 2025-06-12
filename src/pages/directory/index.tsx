@@ -684,7 +684,7 @@ export default function Directory() {
       list = searchObj["payments"];
       console.log(list);
       list.forEach((element: any) => {
-        output.push(toTitleCase(element.product.name.toLowerCase()));
+        output.push(toTitleCase(element.productName.toLowerCase()));
       });
       return output;
     }
@@ -1292,7 +1292,7 @@ export default function Directory() {
                   filterParams={filterParams}
                   setFilterParams={setFilterParams}
                 />
-                {"data" && (
+                {data && (
                   <>
                     <p className="p-1 text-xs font-semibold text-violet-900">{`Search for
                             ${

@@ -185,6 +185,9 @@ export const db = router({
           specialty: true,
         },
         take: 5,
+        orderBy: {
+          firstName: "asc",
+        },
       });
 
       const manufacturers = await prisma.manufacturer.findMany({
@@ -286,7 +289,8 @@ export const db = router({
       });
 
       return { doctors, manufacturers,drugs, products, opioidTreatmentProviders, diseases,genetics, hospital,clinicalTrials };    }),
-      searchAll: publicProcedure
+      
+    searchAll: publicProcedure
       .input(z.object({
         searchTerm: z.string(),
 
@@ -366,6 +370,9 @@ export const db = router({
             addressLine1: true,
             specialty: true,
           },
+          orderBy: {
+            firstName: "asc",
+          },
         });
   
         const manufacturers = await prisma.manufacturer.findMany({
@@ -394,6 +401,9 @@ export const db = router({
               contains: search,
               mode: "insensitive",
             },
+          },
+          orderBy: {
+            name: "asc",
           },
         });
         const drugs = await prisma.drugs.findMany({
@@ -458,28 +468,18 @@ export const db = router({
           },
 
         });
-        const payments = await prisma.payment.findMany({
+        const payments = await prisma.productPayment.findMany({
           where: {
             AND: [
               {
-                product: {
-                  name: {
-                    contains: search,
-                    mode: "insensitive",
-                  },
+                productName: {
+                  contains: search,
+                  mode: "insensitive",
                 },
               },
             ],
           },
-          include: {
-                      
-            product: {
-              select: {
-                name: true,
-                type: true,
-              },
-            },
-          },
+          // Removed invalid include properties
           orderBy: {
             year: "desc",
           },
@@ -500,9 +500,13 @@ export const db = router({
         where: { id },
         select: {
           ...defaultDoctorSelect,
-          payments: {
+          productPayments: {
             include: {
-              product: true,
+              manufacturer: {
+                select: {
+                  name: true,
+                },
+              },
             },
             where: year ? { year } : undefined,
             take: 50,
@@ -516,17 +520,16 @@ export const db = router({
       });
 
       const payments =
-        doctor?.payments.filter((p) => !year || p.year === year) ?? [];
+        doctor?.productPayments?.filter((p) => !year || p.year === year) ?? [];
 
       const totalAmount = _.round(_.sum(payments.map((p) => p.amount)), 2);
 
       const topProducts = _(payments)
-        .groupBy((p) => p.product.name)
+        .groupBy((p) => p.productName)
         .map((pmts, productName) => ({
           productName,
           amount: _.round(_.sumBy(pmts, "amount"), 2),
-          type: payments.find((p) => p.product.name === productName)?.product
-            .type,
+          type: payments.find((p) => p.productName === productName)?.productType,
           count: pmts.length,
         }))
         .value();
@@ -1166,7 +1169,7 @@ export const db = router({
       }
 
       if (input.subject === "transactions") {
-        const payments = await prisma.payment.findMany({
+        const payments = await prisma.productPayment.findMany({
           where: {
             AND: [
               {
@@ -1180,17 +1183,9 @@ export const db = router({
                     : { not: "" },
               },
               {
-                productId:
-                  input.productFilter !== ""
-                    ? input.productFilter
-                    : { not: "" },
-              },
-              {
-                product: {
-                  name: {
-                    contains: input.name,
-                    mode: "insensitive",
-                  },
+                productName: {
+                  contains: input.name,
+                  mode: "insensitive",
                 },
               },
               {
@@ -1210,12 +1205,6 @@ export const db = router({
                 firstName: true,
                 lastName: true,
                 id: true,
-              },
-            },
-            product: {
-              select: {
-                name: true,
-                type: true,
               },
             },
           },
@@ -1248,8 +1237,8 @@ export const db = router({
 
         productNameList = payments.map((item) => {
           return {
-            id: item.productId,
-            name: item.product.name,
+            id: item.id,
+            name: item.productName,
           };
         });
 

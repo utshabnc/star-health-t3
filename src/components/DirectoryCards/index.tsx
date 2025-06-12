@@ -322,11 +322,11 @@ export default function DirectoryCards({
                   <div className="flex flex-row justify-between">
                     <h5 className="text-md mb-2 font-medium ">
                       <span className="text-violet-700 underline">
-                        {item.product.name !== "UNKNOWN"
-                          ? item.product.name
+                        {item.productName !== "UNKNOWN"
+                          ? item.productName
                           : "N/A"}
                       </span>
-                      <span className="pl-2 text-sm text-slate-400">{`(${item.product.type})`}</span>
+                      <span className="pl-2 text-sm text-slate-400">{`(${item.productType})`}</span>
                     </h5>
                     <p className="mb-1 text-right text-sm text-gray-600">
                       {formatMoney(item.amount)}
