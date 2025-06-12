@@ -51,9 +51,9 @@ const defaultDoctorSelect = Prisma.validator<Prisma.DoctorSelect>()({
 // added selections for product
 const defaultProductSelect = Prisma.validator<Prisma.ProductSelect>()({
   id: true,
-  type: true,
-  name: true,
-  category: true,
+  productType: true,
+  productName: true,
+  productCategory: true,
 });
 
 // const defaultReviewSelect = Prisma.validator<Prisma.ReviewSelect>()({
@@ -858,50 +858,52 @@ export const db = router({
       })
     )
     .query(async ({ ctx: { prisma }, input: { id, year } }) => {
-      const product = await prisma.product.findFirst({
-        where: { id },
+      // Fetch all product payments for the given product id (and year if provided)
+      const payments = await prisma.productPayment.findMany({
+        where: {
+          id: id,
+          ...(year ? { year } : {}),
+        },
         select: {
           ...defaultProductSelect,
-          payments: {
-            include: {
-              doctor: true,
-              manufacturer: true,
-            },
-            where: year ? { year } : undefined,
-            take: 50,
-          },
+          year: true,
+          doctor: true,
+          manufacturer: true,
+          amount: true,
+          paymentNature: true,
+          productName: true,
+          manufacturerName: true,
         },
+        take: 50,
       });
 
-      // check for no result -- uncomment once there is data to display
-      // if(!product){
-      //   return {errMsg: "Product not found"}
-      // }
-
-      const payments =
-        product?.payments.filter((p) => !year || p.year === year) ?? [];
+      // Optionally fetch the product info itself
+      const productInfo = await prisma.product.findFirst({
+        where: { id },
+        select: defaultProductSelect,
+      });
 
       const totalAmount = _.round(_.sum(payments.map((p) => p.amount)), 2);
 
       const topDoctors = _(payments)
-        .groupBy((d) => d.doctor.firstName)
+        .groupBy((d) => d.doctor?.firstName)
         .map((pmts, doctorName) => ({
           doctorName,
           amount: _.round(_.sumBy(pmts, "amount"), 2),
           paymentNature: payments.find(
-            (payment) => payment.doctor.firstName === doctorName
+            (payment) => payment.doctor?.firstName === doctorName
           )?.paymentNature,
           count: pmts.length,
         }))
         .value();
 
       const topManufacturers = _(payments)
-        .groupBy((m) => m.manufacturer.name)
+        .groupBy((m) => m.manufacturer?.name)
         .map((pmts, manufacturerName) => ({
           manufacturerName,
           amount: _.round(_.sumBy(pmts, "amount"), 2),
           paymentNature: payments.find(
-            (payment) => payment.manufacturerName === manufacturerName
+            (payment) => payment.manufacturer?.name === manufacturerName
           )?.paymentNature,
           count: pmts.length,
         }))
@@ -911,7 +913,7 @@ export const db = router({
       const transactionsSummary = [...topDoctors, ...topManufacturers];
 
       return {
-        ...product,
+        ...productInfo,
         payments,
         totalAmount,
         topDoctors,
@@ -1432,7 +1434,7 @@ export const db = router({
         };
       }
 
-      const stateSummary = await prisma.payment.findMany({
+      const stateSummary = await prisma.productPayment.findMany({
         include: {
           doctor: true,
         },
