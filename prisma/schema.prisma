@@ -261,7 +261,6 @@ model Payment {
   paymentNature    String?
   contextualInfo   String?
   productId        String
-  doctor           Doctor       @relation(fields: [doctorId], references: [id])
   manufacturer     Manufacturer @relation(fields: [manufacturerId], references: [id])
   product          Product      @relation(fields: [productId], references: [id])
 
