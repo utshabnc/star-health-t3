@@ -51,9 +51,6 @@ const defaultDoctorSelect = Prisma.validator<Prisma.DoctorSelect>()({
 // added selections for product
 const defaultProductSelect = Prisma.validator<Prisma.ProductSelect>()({
   id: true,
-  productType: true,
-  productName: true,
-  productCategory: true,
 });
 
 // const defaultReviewSelect = Prisma.validator<Prisma.ReviewSelect>()({

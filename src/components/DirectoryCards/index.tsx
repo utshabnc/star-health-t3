@@ -456,8 +456,8 @@ export default function DirectoryCards({
               >
                 <div className=" p-2">
                   <div className="flex flex-row justify-between">
-                    <h5 className="text-md mb-2 font-medium text-violet-700 underline">
-                      {item.brand_name}
+                    <h5 className="text-md mb-2 font-medium text-gray-900">
+                        {item.brand_name}
                     </h5>
                     <p className="mb-1 text-right text-sm text-gray-600">
                       Effective Date: {formatDate(item.effective_time, "-")}

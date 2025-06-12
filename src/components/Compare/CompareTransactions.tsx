@@ -13,7 +13,6 @@ interface Transaction {
   paymentType: string;
   paymentNature: string | null;
   contextualInfo: string;
-  productId: string;
   manufacturer: {
     name: string;
     id: string;
@@ -22,10 +21,8 @@ interface Transaction {
     firstName: string;
     lastName: string;
     id: string;
-  };
-  product: {
-    name: string;
-    type: string;
+    productName: string;
+    productType: string;
   };
 }
 
@@ -114,7 +111,7 @@ const CompareTransactions: React.FC = () => {
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">Product Name</th>
               {transactions.map((transaction) => (
                 <td className="px-6 py-4 whitespace-nowrap" key={transaction.id}>
-                  {transaction.productName}
+                  {transaction.doctor.productName}
                 </td>
               ))}
             </tr>

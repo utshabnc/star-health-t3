@@ -247,30 +247,6 @@ const DoctorDetails = () => {
                 }}
               />
             </div>
-            <div
-              style={{
-                maxHeight:
-                  typeof window != "undefined" && window.screen.width > 640
-                    ? Math.ceil(window.screen.width * 0.24)
-                    : undefined,
-              }}
-              className="flex max-h-[100%] flex-col overflow-scroll sm:w-1/2"
-            >
-              <p className="mt-2 flex justify-center text-base font-semibold">
-                All Transaction Summaries
-              </p>
-              <div className="flex flex-col gap-2">
-                {drug.payments &&
-                  drug.payments
-                    .sort(
-                      (a, b) =>
-                        new Date(b.date).getTime() - new Date(a.date).getTime()
-                    )
-                    .map((payment) => (
-                      <Transaction key={payment.id} transaction={payment} />
-                    ))}
-              </div>
-            </div>
           </div>
         </div>
       </div>

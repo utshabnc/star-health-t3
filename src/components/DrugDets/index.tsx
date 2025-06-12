@@ -4,7 +4,7 @@ import { ChevronDownIcon } from '@heroicons/react/solid';
 import { Fragment, SetStateAction, useEffect, useState } from 'react';
 import { availableYears, formatMoney, formatName, formatNumber } from '../../utils';
 import _ from 'lodash';
-import type { ProductResponse } from '../../server/trpc/router/db';
+import type { DrugResponse, ProductResponse } from '../../server/trpc/router/db';
 import Citation from '../Citation';
 import { DataDirectoryCategory } from '../../utils/Enums/DataDirectoryCategory.enum';
 import BookmarkButton from '../BookmarkButton';
@@ -48,7 +48,7 @@ export const DrugDets = ({ drug, onChangeYear }: DrugSchema) => {
   const removeCompare = () => {
 
     const compareDrugDevs = JSON.parse(localStorage.getItem('compareDrugDevs') || '[]');
-    const index = compareDrugDevs.findIndex((compDrugDevs: ProductResponse) => compDrugDevs.id === drug.name);
+    const index = compareDrugDevs.findIndex((compDrugDevs: ProductResponse) => compDrugDevs.id === drug.id);
   
     if (index !== -1) {
       compareDrugDevs.splice(index, 1);
@@ -62,12 +62,12 @@ export const DrugDets = ({ drug, onChangeYear }: DrugSchema) => {
       <div className="flex flex-col justify-end sm:px-2 lg:px-28">
         <div className="flex flex-row justify-between	items-start">
           <p className="text-2xl font-semibold text-violet-700">
-            {formatName(drug.name || "Unknown")}
+            {formatName((drug as any).productName || "Unknown")}
           </p>
           <div className="flex justify-end min-w-[375px]">
-            <Citation title={formatName(drug.name || "Unknown")} />
+            <Citation title={formatName((drug as any).productName || "Unknown")} />
             <div className="ml-1">
-              <BookmarkButton title={formatName(drug.name || "Unknown")} categoryId={DataDirectoryCategory.MedicalDevices} />
+              <BookmarkButton title={formatName((drug as any).productName || "Unknown")} categoryId={DataDirectoryCategory.MedicalDevices} />
             </div>
             <div className="ml-1">
               <button

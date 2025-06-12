@@ -117,13 +117,13 @@ useEffect(()=>{
         category: "Food" as const,
       })),
     ...hospitalOwners??[],
-    ...searchResults?.payments
-  .map(({ id,amount,product }) => ({
-    title: product['name'] ?? "",
-    subtitle: "Amount: $"+ amount??"",
-    link:'',
-    category: "Payments",
-    }))??[]
+  ...searchResults?.payments
+    .map(({ id, amount, productName }) => ({
+      title: productName ?? "",
+      subtitle: "Amount: $" + (amount ?? ""),
+      link: '',
+      category: "Payments",
+      }))??[]
   ]
   setSelectedTab(Tab.All)
   setCurrentData(array)
@@ -327,9 +327,9 @@ setCurrentData(array)
                           })),
                         ...hospitalOwners??[],
                         ...searchResults?.payments
-                      .map(({ id,amount,product }) => ({
-                        title: product['name'] ?? "",
-                        subtitle: "Amount: $"+ amount??"",
+                      .map(({ id,amount,productName }) => ({
+                        title: productName ?? "",
+                        subtitle: "Amount: $" + (amount ?? ""),
                         link:'',
                         category: "Payments",
                         }))??[]
@@ -376,7 +376,7 @@ setCurrentData(array)
                         link:'/genetic/condition?name='+url?.substring(url.lastIndexOf('/')+1),                  
                         category: "Diseases",
                       })
-                    )]??[]);
+                    )]);
                   }}
                   className={`border-b-2 hover:border-zinc-500 ${
                     selectedTab === Tab.Diseases
@@ -504,9 +504,9 @@ setCurrentData(array)
                         subtitle: formatLocation(country, state),
                         category: "Manufacturer",
                         link:'/manufacturer/'+id,
-                
+                    
                       })
-                    )]??[]);
+                    )]);
                   }}
                   className={`border-b-2 hover:border-zinc-500 ${
                     selectedTab === Tab.Manufacturers
@@ -559,9 +559,9 @@ setCurrentData(array)
       <button
             onClick={() => {
                     handleTabClick(Tab.Transactions, [...searchResults?.payments
-                      .map(({ id,amount,product }) => ({
-                        title: product['name'] ?? "",
-                        subtitle: "Amount: $"+ amount??"",
+                      .map(({ id, amount, productName }) => ({
+                        title: productName ?? "",
+                        subtitle: "Amount: $" + (amount ?? ""),
                         link:'',
                         category: "Payments",
                         }))??[]]);
