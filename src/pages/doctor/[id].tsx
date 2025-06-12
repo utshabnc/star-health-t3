@@ -218,7 +218,7 @@ const DoctorDetails = () => {
                 {doctor.payments
                   .sort((a, b) => b.amount - a.amount)
                   .slice(0, 4)
-                  .map(({ amount, product: { id, name } }) => {
+                  .map(({ amount, id, productName }) => {
                     return (
                       <li
                         key={id}
@@ -226,7 +226,7 @@ const DoctorDetails = () => {
                       >
                         {typeof window != "undefined" &&
                           window.screen.width > 1000 &&
-                          `${formatProductName(name)}: ${formatMoney(amount)}`}
+                          `${formatProductName(productName)}: ${formatMoney(amount)}`}
                       </li>
                     );
                   })}
@@ -284,19 +284,8 @@ const DoctorDetails = () => {
               }}
               className="flex max-h-[100%] flex-col overflow-scroll sm:w-1/2"
             >
-              <p className="mt-2 flex justify-center text-base font-semibold">
-                All Transaction Summaries
-              </p>
-              <div className="flex flex-col gap-2">
-                {doctor.payments
-                  .sort(
-                    (a, b) =>
-                      new Date(b.date).getTime() - new Date(a.date).getTime()
-                  )
-                  .map((payment, i) => (
-                    <Transaction key={i} transaction={payment} />
-                  ))}
-              </div>
+
+  
             </div>
           </div>
 

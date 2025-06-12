@@ -114,7 +114,7 @@ const CompareTransactions: React.FC = () => {
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">Product Name</th>
               {transactions.map((transaction) => (
                 <td className="px-6 py-4 whitespace-nowrap" key={transaction.id}>
-                  {transaction.product.name}
+                  {transaction.productName}
                 </td>
               ))}
             </tr>
