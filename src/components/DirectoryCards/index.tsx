@@ -250,23 +250,23 @@ export default function DirectoryCards({
                 <div className=" p-2">
                   <div className="flex flex-row justify-between">
                     <h5 className="text-md mb-2 font-medium text-violet-700 underline">
-                      {item.name}
+                      <Link href={`/drug/${item.id}`}>{item.productName}</Link>
                     </h5>
                     <p className="mb-1 text-xs text-gray-600"></p>
                   </div>
                   <div className="flex flex-row justify-between">
                     <h5 className="text-md mb-2 text-gray-900">
-                      Product: {item.type}
+                      Product: {item.productType}
                     </h5>
                     <p className="mb-1 text-base text-gray-700"> </p>
                   </div>
                   <div className="flex flex-row justify-between text-sm">
                     <p className="mb-1 text-xs text-violet-400">
                       Category:{" "}
-                      {item.category &&
-                        item.category.charAt(0).toUpperCase() +
-                          item.category
-                            .slice(1, item.category.length)
+                      {item.productCategory &&
+                        item.productCategory.charAt(0).toUpperCase() +
+                          item.productCategory
+                            .slice(1, item.productCategory.length)
                             .toLowerCase()}
                     </p>
 
@@ -322,9 +322,9 @@ export default function DirectoryCards({
                   <div className="flex flex-row justify-between">
                     <h5 className="text-md mb-2 font-medium ">
                       <span className="text-violet-700 underline">
-                        {item.productName !== "UNKNOWN"
+                        <Link href={`/drug/${item.id}`}>{item.productName !== "UNKNOWN"
                           ? item.productName
-                          : "N/A"}
+                          : "N/A"}</Link>
                       </span>
                       <span className="pl-2 text-sm text-slate-400">{`(${item.productType})`}</span>
                     </h5>

@@ -51,6 +51,7 @@ const defaultDoctorSelect = Prisma.validator<Prisma.DoctorSelect>()({
 // added selections for product
 const defaultProductSelect = Prisma.validator<Prisma.ProductSelect>()({
   id: true,
+
 });
 
 // const defaultReviewSelect = Prisma.validator<Prisma.ReviewSelect>()({
@@ -171,7 +172,6 @@ export const db = router({
       }
 
       const doctors = await prisma.doctor.findMany({
-        where: searchArgs,
         select: {
           id: true,
           firstName: true,
@@ -357,7 +357,9 @@ export const db = router({
         }
   
         const doctors = await prisma.doctor.findMany({
-          where: searchArgs,
+          where: {
+            ...searchArgs,
+          },
           select: {
             id: true,
             firstName: true,
@@ -398,10 +400,7 @@ export const db = router({
               contains: search,
               mode: "insensitive",
             },
-          },
-          orderBy: {
-            name: "asc",
-          },
+          }
         });
         const drugs = await prisma.drugs.findMany({
           where: {
@@ -885,7 +884,9 @@ export const db = router({
       const topDoctors = _(payments)
         .groupBy((d) => d.doctor?.firstName)
         .map((pmts, doctorName) => ({
-          doctorName,
+          doctorName: pmts[0]?.doctor
+            ? `${pmts[0].doctor.firstName} ${pmts[0].doctor.lastName}`
+            : "Unknown Doctor",
           amount: _.round(_.sumBy(pmts, "amount"), 2),
           paymentNature: payments.find(
             (payment) => payment.doctor?.firstName === doctorName
@@ -944,6 +945,13 @@ export const db = router({
                     input.specialty !== "" ? input.specialty : { not: "" },
                 },
                 {
+                  productPayments: {
+                    some: {
+                      productName: {not: null}
+                    },
+                  },
+                },
+                {
                   OR: [
                     {
                       firstName: {
@@ -984,7 +992,14 @@ export const db = router({
                 {
                   specialty:
                     input.specialty !== "" ? input.specialty : { not: "" },
-                },
+                },  
+                {
+                  productPayments: {
+                    some: {
+                      productName: {not: null}
+                    },
+                  },
+                },                            
                 {
                   firstName: {
                     contains: names[0],
@@ -1016,11 +1031,19 @@ export const db = router({
                 },
                 {
                   zipCode: input.zipCode !== "" ? input.zipCode : { not: "" },
-                },
+                },    
+                {
+                  productPayments: {
+                    some: {
+                      productName: {not: null}
+                    },
+                  },
+                },                           
                 {
                   specialty:
                     input.specialty !== "" ? input.specialty : { not: "" },
                 },
+
               ],
             },
             cursor: {
@@ -1092,17 +1115,17 @@ export const db = router({
       }
 
       if (input.subject?.toLowerCase() === "products") {
-        const products = await prisma.product.findMany({
+        const products = await prisma.productPayment.findMany({
           where: {
             AND: [
               {
-                type: input.type !== "" ? input.type : { not: "" },
+                productType: input.type !== "" ? input.type : { not: "" },
               },
               {
-                category: input.category !== "" ? input.category : { not: "" },
+                productCategory: input.category !== "" ? input.category : { not: "" },
               },
               {
-                name: {
+                productName: {
                   contains: input.name,
                   mode: "insensitive",
                 },
@@ -1117,8 +1140,8 @@ export const db = router({
 
         const productTypes = products.map((item) => {
           return {
-            type: item.type,
-            category: item.category,
+            type: item.productType,
+            category: item.productCategory,
           };
         });
 
@@ -1183,7 +1206,7 @@ export const db = router({
               },
               {
                 productName: {
-                  contains: input.name,
+                  contains: input.productFilter,
                   mode: "insensitive",
                 },
               },
@@ -1459,27 +1482,50 @@ export const db = router({
     let drugNames = [];
     let opioidTreatmentProviderNames = [];
     const manufacturers = await prisma.manufacturer.findMany({
+      select: {
+        id: true,
+        name: true,
+      },
       where: {
-        payments: { none: undefined },
+        productPayments: {
+          some: {
+            productName: {not: null}
+          },
+        },
       },
-      select: {
-        id: true,
-        name: true,
-      },
-      take: 1000,
-    });
-    const products = await prisma.product.findMany({
-      select: {
-        id: true,
-        name: true,
+      orderBy: {
+        name: "asc",
       },
       take: 1000,
     });
+    const productsRaw = await prisma.productPayment.findMany({
+      select: {
+        id: true,
+        productName: true,
+      },
+      take: 1000,
+    });
+
+    const products = productsRaw.map(product => ({
+      id: product.productName,
+      name: product.productName,
+    }));
+
     const doctors = await prisma.doctor.findMany({
       select: {
         id: true,
         firstName: true,
         lastName: true,
+      },
+      where: {
+        productPayments: {
+          some: {
+            productName: {not: null}
+          },
+        },
+      },
+      orderBy: {
+        firstName: "asc",
       },
       take: 1000,
     });
@@ -1522,22 +1568,11 @@ export const db = router({
       };
     });
 
-    // manufacturerNames = manufacturers.map(item => {
-    //   return {
-    //     id: item.id,
-    //     name: item.name
-    //   }
-    // })
-
-    // manufacturers.filter(item => {
-    //   return item.payments.length > 0
-    // })
-
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    productNameList = products.map((item) => {
+    productNameList = productsRaw.map((item) => {
       return {
         id: item.id,
-        name: item.name,
+        name: `${item.productName}`,
       };
     });
 

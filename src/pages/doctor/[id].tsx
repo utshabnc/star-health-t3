@@ -186,7 +186,7 @@ const DoctorDetails = () => {
             })
           }
         />
-
+      {doctor.topProducts.length > 0 && (
         <div className="grid grid-cols-1">
           <div className="mx-1 grid grid-cols-3 rounded-lg border-2 border-violet-400 p-2">
             <div className="flex flex-col ">
@@ -298,6 +298,7 @@ const DoctorDetails = () => {
             </div>
           </div>
         </div>
+      )}
       </div>
     </div>
   );

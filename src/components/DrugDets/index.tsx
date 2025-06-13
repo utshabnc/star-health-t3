@@ -62,12 +62,13 @@ export const DrugDets = ({ drug, onChangeYear }: DrugSchema) => {
       <div className="flex flex-col justify-end sm:px-2 lg:px-28">
         <div className="flex flex-row justify-between	items-start">
           <p className="text-2xl font-semibold text-violet-700">
-            {formatName((drug as any).productName || "Unknown")}
+            {formatName(drug.payments[0]?.productName || "Unknown")}
           </p>
+
           <div className="flex justify-end min-w-[375px]">
-            <Citation title={formatName((drug as any).productName || "Unknown")} />
+            <Citation title={formatName(drug.payments[0]?.productName || "Unknown")} />
             <div className="ml-1">
-              <BookmarkButton title={formatName((drug as any).productName || "Unknown")} categoryId={DataDirectoryCategory.MedicalDevices} />
+              <BookmarkButton title={formatName(drug.payments[0]?.productName || "Unknown")} categoryId={DataDirectoryCategory.MedicalDevices} />
             </div>
             <div className="ml-1">
               <button
@@ -77,6 +78,13 @@ export const DrugDets = ({ drug, onChangeYear }: DrugSchema) => {
                 {isCompared ? 'Remove Compare Item' : 'Compare'}
               </button>
             </div>
+          </div>
+        </div>
+        <div className="flex flex-col sm:flex-row sm:justify-between">
+          <div className="flex flex-col"> 
+            <p className="text-lg font-semibold text-gray-800">
+              <span>{drug.payments[0]?.manufacturerName || "Unknown"}</span>
+            </p>
           </div>
         </div>
 

@@ -383,6 +383,7 @@ model Drugs {
   laboratory_tests      String?
   overdosage            String?
   microbiology          String?
+  productPayments       ProductPayment?     @relation(fields: [productName], references: [id])
 }
 
 model OpioidTreatment {

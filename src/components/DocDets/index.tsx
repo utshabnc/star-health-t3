@@ -29,7 +29,7 @@ export const DocDets = ({ doctor, onChangeYear }: DocSchema) => {
     const compareDoctors = JSON.parse(localStorage.getItem('compareDoctors') || '[]');
     return compareDoctors.some((compDoctor: DoctorResponse) => compDoctor.id === doctor.id);
   };
-  
+
   const [year, setYear] = useState(0);
   const [isCompared, setIsCompared] = useState(isDoctorInCompareList);
 
@@ -83,7 +83,6 @@ export const DocDets = ({ doctor, onChangeYear }: DocSchema) => {
   const formatttedAddress = doctor !== undefined && handleAddress()
 
   return (
-    <>
       <div className="flex flex-col justify-end sm:px-2 lg:px-28">
         <div className="flex flex-row justify-between	items-start">
           <p className="text-2xl font-semibold text-violet-700">
@@ -145,6 +144,7 @@ export const DocDets = ({ doctor, onChangeYear }: DocSchema) => {
         <div className="my-1">
           <hr />
         </div>
+        {doctor.topProducts.length > 0 && (
         <div className="flex flex-col items-center justify-around sm:h-[60px] sm:flex-row">
           <div className="flex">
             <div className="flex flex-row text-lg font-semibold">
@@ -162,7 +162,6 @@ export const DocDets = ({ doctor, onChangeYear }: DocSchema) => {
                   />
                 </Menu.Button>
               </div>
-
               <Transition
                 as={Fragment}
                 enter="transition ease-out duration-100"
@@ -220,7 +219,12 @@ export const DocDets = ({ doctor, onChangeYear }: DocSchema) => {
             </p>
           </div>
         </div>
+      )}
+      {doctor.topProducts.length === 0 && (
+        <div className="flex flex-col items-center justify-center h-64">
+          <p className="text-gray-500 text-lg"> No transaction records available for {formatName(doctor.firstName + " " + doctor.lastName)}.</p>
+        </div>)
+      }
       </div>
-    </>
   );
-};
+}
