@@ -65,7 +65,7 @@ cd star-health-t3/
 
 1. Install packages.
 ```
-npm ci
+npm ci --legacy-peer-deps
 ```
 
 1. Run in development mode.
