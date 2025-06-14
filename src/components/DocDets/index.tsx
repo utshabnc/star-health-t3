@@ -144,7 +144,6 @@ export const DocDets = ({ doctor, onChangeYear }: DocSchema) => {
         <div className="my-1">
           <hr />
         </div>
-        {doctor.topProducts.length > 0 && (
         <div className="flex flex-col items-center justify-around sm:h-[60px] sm:flex-row">
           <div className="flex">
             <div className="flex flex-row text-lg font-semibold">
@@ -219,7 +218,6 @@ export const DocDets = ({ doctor, onChangeYear }: DocSchema) => {
             </p>
           </div>
         </div>
-      )}
       {doctor.topProducts.length === 0 && (
         <div className="flex flex-col items-center justify-center h-64">
           <p className="text-gray-500 text-lg"> No transaction records available for {formatName(doctor.firstName + " " + doctor.lastName)}.</p>
