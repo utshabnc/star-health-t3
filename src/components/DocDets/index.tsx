@@ -22,7 +22,7 @@ function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ');
 }
 
-const NUM_DOCTORS = 1267275;
+const NUM_DOCTORS = 178121;
 
 export const DocDets = ({ doctor, onChangeYear }: DocSchema) => {
   const isDoctorInCompareList = () => {

@@ -24,7 +24,7 @@ interface Doctor {
 
 const CompareDoctorsTable: React.FC = () => {
   const [doctors, setDoctors] = useState<Doctor[]>([]);
-  const NUM_DOCTORS = 1267275;
+  const NUM_DOCTORS = 178121;
 
   useEffect(() => {
     const loadedDoctors = JSON.parse(localStorage.getItem('compareDoctors') || '[]');

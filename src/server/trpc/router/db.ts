@@ -969,9 +969,7 @@ export const db = router({
                 },
               ],
             },
-            cursor: {
-              id: input.cursor ? input.cursor : "1",
-            },
+            orderBy: {rank: "asc" },
             take: 10,
           });
         }
@@ -1012,9 +1010,7 @@ export const db = router({
                 },
               ],
             },
-            cursor: {
-              id: input.cursor ? input.cursor : "1",
-            },
+            orderBy: {rank: "asc" },
             take: 10,
           });
         }
@@ -1046,9 +1042,7 @@ export const db = router({
 
               ],
             },
-            cursor: {
-              id: input.cursor ? input.cursor : "1",
-            },
+            orderBy: {rank: "asc" },
             take: 100,
           });
         }
